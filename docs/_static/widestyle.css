@@ -1,0 +1,13 @@
+.wy-nav-content {
+    max-width: 2000px;
+}
+
+.section {
+     text-align:justify;
+}
+
+img.align-center {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}

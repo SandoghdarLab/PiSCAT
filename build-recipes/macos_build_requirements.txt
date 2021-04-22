@@ -1,0 +1,5 @@
+# Any additional requirements for building the application
+pyinstaller>=4.2
+# pyinstaller is missing a hook for the latest release of scipy
+scipy<1.5.0
+
