@@ -41,8 +41,8 @@ def protein_trajectories_list2dic(v_shape_list):
             dic_particles = {}
 
             if type(v_shape_list[n_particle][0]) is list:
-                dic_particles['intensity_horizontal'] = fixed_length(v_shape_list[n_particle][0].ravel())
-                dic_particles['intensity_vertical'] = fixed_length(v_shape_list[n_particle][1].ravel())
+                dic_particles['intensity_horizontal'] = np.asarray(fixed_length(v_shape_list[n_particle][0]))
+                dic_particles['intensity_vertical'] = np.asarray(fixed_length(v_shape_list[n_particle][1]))
                 dic_particles['center_int'] = np.asarray(v_shape_list[n_particle][2])
                 dic_particles['center_int_flow'] = np.asarray(v_shape_list[n_particle][3])
                 dic_particles['frame_number'] = np.asarray(v_shape_list[n_particle][4])
