@@ -779,11 +779,6 @@ class Localization_GUI(QtWidgets.QWidget):
                     self.setting_localization['asymmetry_PSFs_filtering_scale'] = self.scale
                     self.PSFs_Particels_num['#PSFs_after_asymmetry_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
                     self.empty_value_box_flag = False
-            elif self.checkbox_2DFitting.isChecked() is not True:
-                self.msg_box2 = QtWidgets.QMessageBox()
-                self.msg_box2.setWindowTitle("Warning!")
-                self.msg_box2.setText("This filter needs 2D Gaussian fitting information!")
-                self.msg_box2.exec_()
 
             if self.checkbox_remove_overlay.isChecked():
                 self.df_PSFs_s_filter = s_filters.remove_overlay_particles(df_PSFs=self.df_PSFs_s_filter, filter_thr=0)
