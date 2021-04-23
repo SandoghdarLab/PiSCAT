@@ -1,7 +1,11 @@
 # Detection & contrast estimation of the proteins in iSCAT videos 
 
 ## Previously on PiSCAT tutorials...
-Previously, we demonstrated how to use PiSCAT's APIs for [setting up the PiSCAT modules and downloading a demo iSCAT video](Tutorial1.ipynb#Setting-up-the-PiSCAT-modules-and-downloading-a-demo-iSCAT-video), [performing basic checks on the acquisition process](Tutorial1.ipynb#Examining-the-status-line-&-removing-it) and [basic data visualization](Tutorial1.ipynb#Display-and-inspect-a-loaded-video).
+Previously, we demonstrated how to use PiSCAT's APIs for 
+[setting up the PiSCAT modules and downloading a demo iSCAT video](
+https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 
+[performing basic checks on the acquisition process](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#examining-the-status-line-removing-it) and 
+[basic data visualization](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#display-and-inspect-a-loaded-video).
 
 
 ```python
@@ -93,7 +97,10 @@ JupyterSubplotDisplay(list_videos=[video_remove_status, video_remove_status_dc,
 ![png](../Fig/tu4_vid1.png)
 
 
-Next, we perform [power normalization to suppress the temporal instability of the laser light](Tutorial1.ipynb#Normalization-of-the-power-in-the-frames-of-a-video) and [DRA](Tutorial2.ipynb#Frame-averaging-to-boost-SNR-of-imaged-proteins,-followed-by-visualization-of-their-signal-via-differential-imaging) with a batch size of 500 frames.  
+Next, we perform 
+[power normalization to suppress the temporal instability of the laser light](
+https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#normalization-of-the-power-in-the-frames-of-a-video) and 
+[DRA](https://piscat.readthedocs.io/en/latest/Tutorial2/Tutorial2.html#frame-averaging-to-boost-snr-of-imaged-proteins-followed-by-visualization-of-their-signal-via-differential-imaging) with a batch size of 500 frames.  
 
 
 ```python
@@ -578,7 +585,9 @@ JupyterSelectedPSFs_localizationDisplay(video=RVideo_PN, particles=all_trajector
 
 
 ## Histogram of the protein contrasts
-In the following cell, the distribution of the contrasts of the proteins (dark, bright and total) which were previuosly estimated using [three different methods of fitting, peak and prominence](Tutorial4.ipynb#Estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[2]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
+In the following cell, the distribution of the contrasts of the proteins 
+(dark, bright and total) which were previuosly estimated using 
+[three different methods of fitting, peak and prominence](https://piscat.readthedocs.io/en/latest/Tutorial3/Tutorial3.html#estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[2]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
 
 
 ```python

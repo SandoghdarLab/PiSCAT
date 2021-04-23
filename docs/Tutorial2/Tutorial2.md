@@ -1,7 +1,11 @@
 # Differential imaging of averaged iSCAT frames    
 
 ## Previously on PiSCAT tutorials...
-In the last tutorial, we [set up the PiSCAT modules and downloaded a demo iSCAT video](Tutorial1.ipynb#Setting-up-the-PiSCAT-modules-and-downloading-a-demo-iSCAT-video), [did some basic checks on the acquisition process](Tutorial1.ipynb#Examining-the-status-line-&-removing-it), [suppressed the temporal instability of the laser light](Tutorial1.ipynb#Normalization-of-the-power-in-the-frames-of-a-video) and used some of the [basic data visualization](Tutorial1.ipynb#Display-and-inspect-a-loaded-video) tools provided in PiSCAT for inspection of the iSCAT videos.  
+In the last tutorial, we [set up the PiSCAT modules and downloaded a demo iSCAT video](
+https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 
+[did some basic checks on the acquisition process](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#examining-the-status-line-removing-it), 
+[suppressed the temporal instability of the laser light](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#normalization-of-the-power-in-the-frames-of-a-video) 
+and used some of the [basic data visualization](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#display-and-inspect-a-loaded-video) tools provided in PiSCAT for inspection of the iSCAT videos.  
 
 
 ```python
