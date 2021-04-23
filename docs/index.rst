@@ -35,7 +35,7 @@ Documentation
 -------------
 
 The documentation webpage of PiSCAT modules can be found
-`here <https://doi.org/10.1021/acs.nanolett.7b04494>`_.
+`here <https://piscat.readthedocs.io/en/latest/#>`_.
 
 The outputs from most of the PiSCAT localization and tracking methods are of `Panda data frame type <https://pandas.pydata.org/pandas-docs/stable/reference/frame.html>`_.
 This data structure has the ability to be easily appended/extended with more information based on different levels of analysis.
