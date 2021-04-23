@@ -8,7 +8,7 @@ In this first release, we provide analysis tools for the sensitive detection of 
 ## Documentation
 
 The documentation webpage of PiSCAT modules can be found
-[here](https://max-planck-institute-for-the-science-of-light-piscat.readthedocs-hosted.com).
+[here](https://piscat.readthedocs.io/en/latest/index.html).
 
 The outputs from most of the PiSCAT localization and tracking methods are of [Panda data frame type](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html). This data structure has the ability to be easily appended/extended with more information based on different levels of analysis. The data structures containing the results of localization and tracking routines can be saved as csv, mat and HDF5 files. This helps users to work with the analyzed information using different softwares namely, MATLAB and Microsoft Excel. HDF5 is a well-known format that is readable in different programming languages and supports large, complex, heterogeneous data. HDF5 uses a "file directory" like structure that allows users to organize data within the file in structured ways and to embed metadata as well, making it self-describing. 
 
