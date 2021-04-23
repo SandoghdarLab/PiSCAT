@@ -100,7 +100,6 @@ noise_floor_DRA_pn = NoiseFloor(video_pn, list_range=l_range)
 
 import matplotlib.pyplot as plt
 %matplotlib inline
-plt.figure(figsize=(8, 5), dpi=300)
 plt.plot(l_range, noise_floor_DRA.mean, label='DRA')
 plt.plot(l_range, noise_floor_DRA_pn.mean, label='PN+DRA')
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
@@ -111,7 +110,7 @@ plt.show()
 ```
 
 
-![](../Fig/tu2_noise_floor.png)
+![](output_7_0.png)
     
 
 We see about 10% improvement in our detection limit with performing power normalization on top of the differential rolling averaging with the best results obtained when the batch size corresponds to 120 frames.
