@@ -7,17 +7,14 @@ class StatusLine():
 
     def __init__(self, video):
         """
-        Reading the status line from an image frame.
-        This function takes an image frame and reads the status line.
-        The status line is the last line of the image.
-        All information is returned as a struct and it also returns the cut-frame without the status line.
-        One can also give it only the last line of the frame (the status line). Then the cut-frame will be empty.
-        For more information, refer to the Photonfocus Manual about the status line.
+        A status line from an image frame is read.
+        The last line of the Photonfocus camra picture is the status line.
+        All data is returned in the form of a struct, as well as the cut-frame without the status line.
 
         Parameters
         ----------
         video: NDArray
-            Video should be Numpy array with the following shape (number of frame, width, height).
+            Numpy array with the following form should be used for video (number of frame, width, height).
         """
 
         self.video = video
@@ -76,7 +73,7 @@ class StatusLine():
         Parameters
         ----------
         frame: NDArray
-            first frame in video.
+            First frame in video.
         """
 
         # constants for our camera

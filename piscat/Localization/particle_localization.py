@@ -25,20 +25,23 @@ class PSFsExtraction():
     def __init__(self, video, flag_transform=False, flag_GUI=False, **kwargs):
 
         """
-        This class uses different PSF localization methods like DoG/LoG/DoH/RS.
-        It returns a lists that contains the following information:
-        [frame_number, center_y, center_x, sigma]
+        This class employs a variety of PSF localization methods, including DoG/LoG/DoH/RS/RVT.
+
+        It returns a list containing the following details:
+
+        |[[frame number, center y, center x, sigma], [frame number, center y, center x, sigma], ...]
 
         Parameters
         ----------
         video: NDArray
-            numpy 3D video array that PSFs should be extracted from.
+            Numpy 3D video array.
 
         flag_transform: bool
-            In case it is defined as true, the input video is already transformed. So it does not need to run this task during localization.
+            In case it is defined as true, the input video is already transformed.
+            So it does not need to run this task during localization.
 
         flag_GUI: bool
-            flag_paint that shows this function class is called from GUI
+            While the GUI is calling this class, it is true.
 
         """
         super(PSFsExtraction, self).__init__()
@@ -81,10 +84,12 @@ class PSFsExtraction():
 
     def dog(self, image):
         """
+        PSF localization using DoG.
+
         Parameters
         ----------
         image: NDArray
-            frame of video that PSFs should be extracted from that.
+            image is an input numpy array.
 
         Returns
         -------
@@ -97,10 +102,12 @@ class PSFsExtraction():
 
     def doh(self, image):
         """
+        PSF localization using DoH.
+
         Parameters
         ----------
         image: NDArray
-           frame of video that PSFs should be extracted from that.
+            image is an input numpy array.
 
         Returns
         -------
@@ -115,10 +122,12 @@ class PSFsExtraction():
 
     def log(self, image):
         """
+        PSF localization using LoG.
+
         Parameters
         ----------
         image: NDArray
-            frame of video that PSFs should be extracted from that.
+            image is an input numpy array.
 
         Returns
         -------
@@ -132,10 +141,12 @@ class PSFsExtraction():
 
     def frst(self, image):
         """
+        PSF localization using frst.
+
         Parameters
         ----------
         image: NDArray
-            frame of video that PSFs should be extracted from that.
+            image is an input numpy array.
 
         Returns
         -------
@@ -155,6 +166,19 @@ class PSFsExtraction():
         return tmp
 
     def rvt(self, image):
+        """
+        PSF localization using RVT.
+
+        Parameters
+        ----------
+        image: NDArray
+            image is an input numpy array.
+
+        Returns
+        -------
+        tmp: list
+            [y, x, sigma]
+        """
         if self.flag_transform:
             tr_img = image
         else:
@@ -182,14 +206,15 @@ class PSFsExtraction():
 
     def fit_Gaussian2D_wrapper(self, PSF_List, scale=5, internal_parallel_flag=False):
         """
+        PSF localization using fit_Gaussian2D.
 
         Parameters
         ----------
         PSF_List: pandas dataframe
-            the data frame contains PSFs locations( x, y, frame, sigma)
+            The data frame contains PSFs locations( x, y, frame, sigma)
 
         scale: int
-            scale that is used for defining the ROI around PSFs based on their sigmas
+            The ROI around PSFs is defined using this scale, which is based on their sigmas.
 
         internal_parallel_flag: bool
             Internal flag for activating parallel computation. Default is True!
@@ -313,14 +338,14 @@ class PSFsExtraction():
 
     def frst_one_PSF(self, image):
         """
-        This function returns the lateral position of PSFs with subpixels resolution. Since This function works when
-        we have only one PSF in the field of view, therefore, it mostly used after coarse localization for each
-        PSFs to extract fine localization.
+        The lateral position of PSFs with subpixel resolution is returned by this function.
+        Because this function only works when there is only one PSF in the field of view, it
+        is typically used after coarse localization to extract fine localization for each PSF.
 
         Parameters
         ----------
         image: NDArray
-            frame of video that PSFs should be extracted from that.
+            image is an input numpy array.
 
         Returns
         -------
@@ -353,24 +378,23 @@ class PSFsExtraction():
 
     def improve_localization_with_frst(self, df_PSFs, scale, flag_preview=False):
         """
-        It uses frst_one_PSF methods for all detected PSFs to extract subpixels localization based on initial pixel
-        localization.
+        It extracts subpixels localization based on initial pixel localization using ``frst_one_PSF`` methods for all detected PSFs.
 
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            the data frame contains PSFs locations( x, y, frame, sigma)
+            The data frame contains PSFs locations( x, y, frame, sigma)
 
         scale: int
-            scale that is used for defining the ROI around PSFs based on their sigmas
+            The ROI around PSFs is defined using this scale, which is based on their sigmas.
 
         flag_preview: bool
-            This flag is used when GUI call this functions
+            When the GUI calls these functions, this flag is set as True.
 
         Returns
         -------
         sub_pixel_localization: pandas dataframe
-            the data frame contains subpixels PSFs locations( x, y, frame, sigma)
+            The data frame contains subpixels PSFs locations( x, y, frame, sigma)
         """
         sigma = df_PSFs['sigma'].tolist()
         psf_position_x = df_PSFs['x'].tolist()
@@ -448,7 +472,7 @@ class PSFsExtraction():
                       rvt_kind="basic",  highpass_size=None, upsample=1, rweights=None, coarse_factor=1, coarse_mode="add",
                       pad_mode="constant", mode='BOTH', flag_GUI_=False):
         """
-        This function is a wrapper to call different methods for PSFs localization.
+        This function is a wrapper for calling various PSF localization methods.
 
         Parameters
         ----------
@@ -457,10 +481,10 @@ class PSFsExtraction():
             ``'frst_one_psf'``, ``'RVT'``)
 
         mode: str
-            Detecting BRIGHT, DARK, or BOTH PSF
+            Defines which PSFs will be detected (``'BRIGHT'``, ``'DARK'``, or ``'BOTH'``).
 
         flag_GUI_: bool
-            only is used when GUI calls this function
+            Only is used when GUI calls this function.
 
         optional_1:
             These parameters are used when ``'dog'``, ``'log'``, ``'doh'`` are defined as function.
@@ -493,8 +517,6 @@ class PSFsExtraction():
 
             * `max_radial`: int
                 integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
-
-            * `radial_step`: ()
 
             * `alpha`: str
                 Strictness of symmetry transform (higher=more strict; 2 is good place to start)
@@ -548,7 +570,7 @@ class PSFsExtraction():
         Returns
         -------
         df_PSF: pandas dataframe
-            The dataframe for PSFs that contains the ['x', 'y', 'frame number', 'sigma'] for each PSF
+            The dataframe for PSFs that contains the ['x', 'y', 'frame number', 'sigma'] for each PSF.
         """
 
         self.min_sigma = min_sigma
@@ -609,7 +631,7 @@ class PSFsExtraction():
                                 imgSizex=5, imgSizey=5, IntSlider_width='500px', title=''):
 
         """
-        This function is a wrapper to call different methods for PSFs localization.
+        This function is a preview wrapper for calling various PSF localization methods.
 
         Parameters
         ----------
@@ -617,10 +639,10 @@ class PSFsExtraction():
             PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf``')
 
         mode: str
-            Detecting ``'BRIGHT'``, ``'DARK'``, or ``'BOTH'`` PSF
+            Defines which PSFs will be detected (``'BRIGHT'``, ``'DARK'``, or ``'BOTH'``).
 
         frame_number: int
-            selecting frame number that PSFs detection should apply on it.
+            Selecting frame number that PSFs detection should apply on it.
 
         optional_1:
             These parameters are used when ``'dog'``, ``'log'``, ``'doh'`` are defined as function.
@@ -653,8 +675,6 @@ class PSFsExtraction():
 
             * `max_radial`: int
                 integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
-
-            * `radial_step`:
 
             * `alpha`: str
                 Strictness of symmetry transform (higher=more strict; 2 is good place to start)

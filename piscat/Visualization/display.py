@@ -35,7 +35,7 @@ class DisplaySubplot():
     def __init__(self, list_videos, numRows, numColumns, step=0, median_filter_flag=False, color='gray'):
 
         """
-        This class can sub-display several video.
+        This class shows several videos (with the same number of frames) at once.
 
         Parameters
         ----------
@@ -133,7 +133,7 @@ class Display():
         Parameters
         ----------
         video:(NDArray)
-            Input video
+            Input video.
 
         median_filter_flag: bool
             In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
@@ -209,7 +209,7 @@ class DisplayPSFs_subplotLocalizationDisplay():
     def __init__(self, list_videos, list_df_PSFs, list_titles, numRows, numColumns, color='gray',
                  median_filter_flag=False, imgSizex=5, imgSizey=5, time_delay=0.1):
         """
-        This class can sub-display several video while highlight PSFs.
+        This class shows several videos (with the same number of frames) at once while highlight localize PSFs.
 
         Parameters
         ----------

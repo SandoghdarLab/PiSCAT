@@ -10,24 +10,29 @@ class CPUConfigurations():
 
     def __init__(self, n_jobs=-1, backend='multiprocessing', verbose=0, parallel_active=True, threshold_for_parallel_run=None):
         """
-        This class creates the JSON file based on the user prefer parallel loop setting on the CPU. Other functions and
-        methods used this JSON to set hyperparameters in a parallel loop. PiSCAT used Joblib for parallelization.
-        So, the following parameters define based on Joblib library.
+        This class generates a JSON file based on the parallel loop setting on the CPU that the user prefers.
+        This JSON was used by other functions and methods to set hyperparameters in a parallel loop.
+        For parallelization, PiSCAT used Joblib.
 
         | [1]. https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html.
 
         Parameters
         ----------
         n_jobs: int
-            The maximum number of concurrently running jobs. If -1 all CPU cores can be used.
+            The maximum number of workers that can work at the same time.
+            If -1, all CPU cores are available for use.
+
         backend: str
-            Specify the parallelization backend implementation. Supported backends are:
+            Specify the implementation of the parallelization backend.
+            The following backends are supported:
 
             * `“loky”`:
                 It can induce some communication and Memory overhead when exchanging
                 input and output data with the worker Python processes.
+
             * `“multiprocessing”`:
                 It previous process-based backend based on multiprocessing.Pool. Less robust than loky.
+
             * `“threading”`:
                 It is a very low-overhead backend but it suffers from the Python Global Interpreter.
                 Lock if the called function relies a lot on Python objects. “threading” is mostly useful when
@@ -37,8 +42,10 @@ class CPUConfigurations():
         verbose: int, optional
             The verbosity level, if non zero, progress messages are printed. Above 50, the output is sent to stdout.
             The frequency of the messages increases with the verbosity level. If it more than 10, all iterations are reported.
+
         parallel_active: bool
-            If it is True, functions can run the parallel implementation.
+            Functions will run the parallel implementation if it is True.
+
         threshold_for_parallel_run: float
             It reserved for next generation of PiSCAT.
         """

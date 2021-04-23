@@ -26,17 +26,16 @@ class Filters():
 
     def __init__(self, video, inter_flag_parallel_active=True):
         """
-        This class creates a list of filters on video/image. Some of them have a parallel implementation in order to
-        improve performance on the large video (with many frames)
+       This class generates a list of video/image filters.
+       To improve performance on large video files, some of them have a parallel implementation.
 
         Parameters
         ----------
         video: NDArray
-            Numpy 3D video array.
+            The video is 3D-numpy (number of frames, width, height).
 
         inter_flag_parallel_active: bool
-            In case the user wants to active general parallel tasks in CPU configuration,
-            the user can only active or deactivate this method by this flag.
+            If the user wants to enable general parallel tasks in the CPU configuration, he or she can only use this flag to enable or disable this process.
         """
         self.cpu = CPUConfigurations()
         self.inter_flag_parallel_active = inter_flag_parallel_active
@@ -46,12 +45,12 @@ class Filters():
 
     def temporal_median(self):
         """
-        This method corrects the video background by finding the temporal median of each pixel and remove from all pixels.
+        By extracting the temporal median from pixels, the background is corrected.
 
         Returns
         -------
         @returns: NDArray
-            This function returns the background corrected video as 3D-numpy
+            The background corrected video as 3D-numpy
         """
         video_med = np.median(self.video, axis=0)
         video_med_ = np.expand_dims(video_med, axis=0)
@@ -69,7 +68,7 @@ class Filters():
         Returns
         -------
         flat_field_video: NDArray
-            This function returns the background corrected video as 3D-numpy
+            The background corrected video as 3D-numpy
 
         """
         blur_video = self.gaussian(sigma)
@@ -88,7 +87,7 @@ class Filters():
         Returns
         -------
         self.blur_video: NDArray
-            This function returns the filter video as 3D-numpy
+            The filter video as 3D-numpy.
 
         """
         if self.cpu.parallel_active is True and self.inter_flag_parallel_active is True:
@@ -122,7 +121,7 @@ class Filters():
         Returns
         -------
         self.blur_video: NDArray
-            This function returns the filter video as 3D-numpy.
+            The filter video as 3D-numpy.
 
         """
 
@@ -156,7 +155,7 @@ class FFT2D(QRunnable):
         Parameters
         ----------
         video: NDArray
-           Numpy 3D video array.
+            The video is 3D-numpy (number of frames, width, height).
         """
         super(FFT2D, self).__init__()
         self.signals = WorkerSignals()
@@ -442,11 +441,12 @@ class RadialVarianceTransform():
     def rvt_video(self, video, rmin, rmax, kind="basic", highpass_size=None, upsample=1, rweights=None, coarse_factor=1,
                 coarse_mode="add", pad_mode="constant"):
         """
+        This is an RVT wrapper that allows you to get video in parallel.
 
         Parameters
         ----------
         video: NDArray
-            source video (3D numpy array)
+             The video is 3D-numpy (number of frames, width, height).
 
         rmin:
             minimal radius (inclusive)
@@ -487,7 +487,7 @@ class RadialVarianceTransform():
 
         Returns
         -------
-            Returns transform source video
+            Returns transform source video.
         """
         self.video = video
 

@@ -8,14 +8,15 @@ import cv2
 
 def video_reader(file_name, type='binary', img_width=128, img_height=128, image_type=np.dtype('<f8'), s_frame=0, e_frame=-1):
     """
-    This is a wrapper for calling different video/image reader.
+    This is a wrapper that can be used to call various video/image readers.
 
     Parameters
     ----------
     file_name: str
         Path of video and file name, e.g. test.jpg.
+
     type: str
-        Define the video/image format we want to load:
+        Define the video/image format to be loaded.
 
             * 'binary': use this flag to load binary
             * 'tif': use this flag to load tif
@@ -26,18 +27,23 @@ def video_reader(file_name, type='binary', img_width=128, img_height=128, image_
         These parameters are used when video 'bin_type' define as binary.
 
         img_width: int
-             width video size
+             For binary images, it specifies the image width.
+
         img_height: int
-            height video size
+            For binary images, it specifies the image height.
+
         image_type: str
-            numpy.dtype('<u2') --> video with uint16 pixels data type
+            Numpy.dtype('<u2') --> video with uint16 pixels data type
+
             * "i"  (signed) integer, "u" unsigned integer, "f" floating-point
             * "<" active little-endian
             * "1" 8-bit, "2" 16-bit, "4" 32-bit, "8" 64-bit
+
         s_frame: int
-            Video reads from this frame. This is used for Cropping a video.
+            Video reads from this frame. This is used for cropping a video.
+
         e_frame: int
-            Video reads until this frame. This is used for Cropping a video.
+            Video reads until this frame. This is used for cropping a video.
 
     Returns
     -------
@@ -65,10 +71,10 @@ def read_binary(file_name, img_width=128, img_height=128, image_type=np.dtype('<
         Path and name of binary video.
 
     img_width: int
-         width video size
+         It specifies the image width.
 
     img_height: int
-        height video size
+        It specifies the image height.
 
     image_type: str
 
@@ -77,15 +83,15 @@ def read_binary(file_name, img_width=128, img_height=128, image_type=np.dtype('<
         * "1" 8-bit, "2" 16-bit, "4" 32-bit, "8" 64-bit
 
     s_frame: int
-        Video reads from this frame. This is used for Cropping a video.
+        Video reads from this frame. This is used for cropping a video.
 
     e_frame: int
-        Video reads until this frame. This is used for Cropping a video.
+        Video reads until this frame. This is used for cropping a video.
 
     Returns
     -------
     @returns: NDArray
-        The video as 3D-numpy with the following shape (number of frames, width, height)
+        The video is 3D-numpy (number of frames, width, height).
     """
     if e_frame == -1:
         num_selected_frames = -1
@@ -110,7 +116,7 @@ def read_tif(filename):
     Returns
     -------
     @returns: NDArray
-        The video as 3D-numpy with the following shape (number of frames, width, height)
+        The video is 3D-numpy (number of frames, width, height).
 
     """
     return io.imread(filename)
@@ -128,7 +134,7 @@ def read_avi(filename):
     Returns
     -------
     video: NDArray
-        The video as 3D-numpy with the following shape (number of frames, width, height)
+        The video is 3D-numpy (number of frames, width, height).
     """
 
     cap = cv2.VideoCapture(filename)
@@ -158,7 +164,7 @@ def read_png(filename):
     Returns
     -------
     @returns: NDArray
-        The video as 3D-numpy with the following shape (number of frames, width, height)
+        The video is 2D-numpy (width, height).
     """
 
     return io.imread(filename)
@@ -168,16 +174,16 @@ class DirectoryType:
 
     def __init__(self, dirName, type_file):
         """
-        This class creates dataframe contains 'Directory', 'Folder' and 'File' from all files below the define directory
-        based on the  type_file definition.
+        Based on the type file description, this class generates a dataframe
+        containing 'Directory,' 'Folder,' and 'File' from all files below the define directory.
 
         Parameters
         ----------
         dirName: str
-            A directory that uses for searching the file with a specific type_file.
+            A directory that is used to look for files of a particular type file.
 
         type_file: str
-            Type of files that the user searches for it.
+            The type of files that the user is looking for.
         """
         self.dirName = dirName
         self.type = type_file
@@ -197,12 +203,12 @@ class DirectoryType:
 
     def return_df(self):
         """
-        This function returns the pandas data frame that contains 'Directory', 'Folder' and 'File' from all files below the define directory
-        based on the type_file definition.
+        Based on the type file specification, this function returns a pandas data frame containing
+        'Directory,"Folder,' and 'File' from all files below the define directory.
 
         Returns
         -------
-            the data frame contains ('Directory', 'Folder', 'File')
+            The data frame contains ('Directory', 'Folder', 'File')
         """
         return self.df
 

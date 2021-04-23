@@ -8,34 +8,40 @@ class ContrastAdjustment():
 
     def __init__(self, video):
         """
-        This class is used in GUI to adjust the brightness and contrast of visualization
+        This class is used in the GUI to change the visualization's brightness and contrast.
 
         Parameters
         ----------
         video: NDArray
-         Input video
+            Input video.
         """
         self.video = video
 
     def pixel_transforms(self, image, alpha, beta, min_intensity, max_intensity):
         """
-        Adjust the brightness and contrast of the current image based on the value of hyperparameters.
+        Using the value of the hyperparameters, adjust the brightness and contrast of the current image.
 
         Parameters
         ----------
         image: NDArray
+            Input image (2D-Numpy).
 
         alpha: float
+            Scale factor.
 
         beta: float
+            Delta added to the scaled values.
 
         min_intensity: float
+            Min intensity values of output image.
 
         max_intensity: float
+            Max intensity values of output image.
 
         Returns
         -------
         image_: NDArray
+            Output image (2D-Numpy)
         """
         video_rescale = exposure.rescale_intensity(image, out_range=(min_intensity, max_intensity))
         image_ = cv.convertScaleAbs(video_rescale, alpha=alpha, beta=beta)
@@ -48,18 +54,24 @@ class ContrastAdjustment():
         Parameters
         ----------
         image: NDArray
+            Input image (2D-Numpy).
 
         alpha: float
+            Scale factor.
 
         beta: float
+            Delta added to the scaled values.
 
         min_intensity: float
+            Min intensity values of output image.
 
         max_intensity: float
+            Max intensity values of output image.
 
         Returns
         -------
-        @return NDArray
+        image_: NDArray
+            Output image (2D-Numpy)
         """
         min_intensity = image.min()
         max_intensity = image.max()

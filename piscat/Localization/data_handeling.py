@@ -41,20 +41,20 @@ def feature2df(feature_position, videos):
 
 def list2dataframe(feature_position, video):
     """
-    This function converts the output of particle_localization.PSFsExtraction method (2D) from list to data frame.
+    This function converts the output of ``particle_localization.PSFsExtraction`` method from list to data frame.
 
     Parameters
     ----------
     feature_position: list
-        list of position of PSFs (x, y, frame, sigma)
+        List of position of PSFs (x, y, frame, sigma)
 
     video: NDArray
-        video as numpy nd array
+        The video is 3D-numpy (number of frames, width, height).
 
     Returns
     -------
     df_features: pandas dataframe
-        The data frame contains PSFs locations( 'y', 'x', 'frame', 'center_intensity', 'sigma', 'Sigma_ratio', ...).
+        PSF positions are stored in the data frame. ( 'y', 'x', 'frame', 'center_intensity', 'sigma', 'Sigma_ratio', ...).
     """
     if feature_position is not None:
         if type(feature_position) is list:

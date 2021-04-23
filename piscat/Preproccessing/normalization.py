@@ -61,20 +61,20 @@ class Normalization(QRunnable):
 
     def normalized_image_global(self, new_max=1, new_min=0):
         """
-        This function normalize all pixels in the video between new_min and new_max based on global min and max in the video.
+        Based on the global min and max in the video, this method normalizes all pixels in the video between``new_min`` and ``new_max``.
 
         Parameters
         ----------
         new_max: float
-            New global maximum of video.
+            Video's new global maximum pixel intensity.
 
         new_min: float
-            New global minimum of video.
+            Video's new global minimum pixel intensity.
 
         Returns
         -------
-            img2: NDArray
-                Numpy 3D normalize video array.
+        img2: NDArray
+            Normalize video (3D-Numpy array).
         """
         mins = self.video.min(axis=(0, 1, 2), keepdims=True)
         maxs = self.video.max(axis=(0, 1, 2), keepdims=True)
@@ -83,21 +83,20 @@ class Normalization(QRunnable):
 
     def normalized_image_specific(self, scale=255, format='uint8'):
         """
-        This function normalize all pixels in the image between 0 and 1 based on image min and max.
-        The output result is multiplied to scale and convert to the format that the defined.
+        This approach normalizes all pixels in the image between 0 and 1 based on the image min and max in the video frame.
 
         Parameters
         ----------
         scale: float
-            New global maximum of video.
+            Video's new global maximum pixel intensity.
 
         format: str
-            Data bin_type of each pixels in numpy array.
+            It describes how the bytes in the fixed-size block of memory corresponding to an array item should be interpreted.
 
         Returns
         -------
         n_video: NDArray
-            Numpy 3D normalize video array.
+            Normalize video (3D-Numpy array).
         """
         if len(self.video.shape) == 3:
             print('\nconverting video bin_type to ' + format + '--->', end=" ")
@@ -143,7 +142,7 @@ class Normalization(QRunnable):
         Returns
         -------
         n_video: NDArray
-            Numpy 3D normalize video array.
+            Normalize video (3D-Numpy array).
         """
         mins = self.video.min()
         maxs = self.video.max()
@@ -158,13 +157,12 @@ class Normalization(QRunnable):
         Parameters
         ----------
         inter_flag_parallel_active: bool
-            In case the user wants to active general parallel tasks in CPU configuration,
-            the user can only active or deactivate this method by this flag.
+            Internal flag for activating parallel computation. Default is False!
 
         Returns
         -------
         normalized_power: NDArray
-            Numpy 3D normalize video array.
+            Normalize video (3D-Numpy array).
 
         power_fluctuation_percentage: NDArray
             Temporal fluctuations of all pixels after power normalization.

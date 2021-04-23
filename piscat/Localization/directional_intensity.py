@@ -15,8 +15,9 @@ class DirectionalIntensity():
         Uses Xiaolin Wu's line algorithm to interpolate all of the pixels along a
         straight line, given two points (x0, y0) and (x1, y1)
 
-        Wikipedia article containing pseudo code that function was based off of:
-            http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
+        References
+        ----------
+        [1] Wikipedia article containing pseudo code that function was based off of: http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
         """
         pixels = []
         steep = abs(y1 - y0) > abs(x1 - x0)
@@ -93,9 +94,11 @@ class DirectionalIntensity():
         return dists, mean_data
 
     def plot_directional_intensity(self, data, origin=None):
-        """Makes a cicular histogram showing average intensity binned by direction
+        """
+        Makes a cicular histogram showing average intensity binned by direction
         from "origin" for each band in "data" (a 3D numpy array). "origin" defaults
-        to the center of the image."""
+        to the center of the image.
+        """
 
         def intensity_rose(theta, band, color):
             theta, band = theta.flatten(), band.flatten()

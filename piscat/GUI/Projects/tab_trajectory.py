@@ -245,7 +245,7 @@ class Tracking_GUI(QtWidgets.QWidget):
             else:
                 label = False
 
-            plot.plot2df(self.link_df_PSFS, pixel_size=self.pixel_size, scale=self.axisScale, title='', falg_label=label)
+            plot.plot2df(self.link_df_PSFS, pixel_size=self.pixel_size, scale=self.axisScale, title='', flag_label=label)
 
     def get_values_1(self):
         try:

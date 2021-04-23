@@ -14,7 +14,7 @@ class Image2Video():
 
     def __init__(self, path, file_format, width_size, height_size, image_type, reader_type):
         """
-        This class reads images with a specific type in one folder and concatenate them as one NumPy array.
+        This class reads images of a particular kind from a folder and concatenates them into a single NumPy array.
 
         Parameters
         ----------
@@ -25,19 +25,19 @@ class Image2Video():
             Postfix of image names.
 
         width_size: int
-            It defines the image width for binary images.
+            For binary images, it specifies the image width.
 
         height_size: int
-            It defines the image height for binary images.
+            For binary images, it specifies the image height.
 
         image_type: str
 
-            * "i"  (signed) integer, "u" unsigned integer, "f" floating-point
-            * "<" active little-endian
-            * "1" 8-bit, "2" 16-bit, "4" 32-bit, "8" 64-bit
+            * "i"  (signed) integer, "u" unsigned integer, "f" floating-point.
+            * "<" active little-endian.
+            * "1" 8-bit, "2" 16-bit, "4" 32-bit, "8" 64-bit.
 
         reader_type: str
-            Define the video/image format we want to load.
+            Specify the video/image format to be loaded.
 
             * `'binary'`: use this flag to load binary
             * `'tif'`: use this flag to load tif

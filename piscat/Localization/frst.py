@@ -164,11 +164,58 @@ def _prune_blobs(blobs_array, overlap):
 
 def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0, alpha=2, beta=1e-3, stdFactor=4,
               mode='BOTH', overlap=.5, *, exclude_border=False):
+    """
+    This function uses scikit-image's local maximum function to localize the PSFs using a ``frst``.
+
+    Parameters
+    ----------
+    img: NDArray
+       Input_video image, grayscale.
+
+    alpha: float
+       Strictness of symmetry transform (higher=more strict; 2 is good place to start)
+
+    beta: float
+        Gradient threshold parameter, float in [0,1]
+
+    stdFactor: float
+       Standard deviation factor for gaussian kernel
+
+    mode: str
+       BRIGHT, DARK, or BOTH
+
+    min_radial: int
+       integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+
+    max_radial: int
+       integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+
+    threshold: float
+        The absolute lower bound for scale space maxima. Local maxima smaller than thresh are ignored. Reduce this
+        to detect blobs with less intensities.
+
+    overlap: float
+        A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold, smaller blobs are eliminated.
+
+    exclude_border: int, tuple of ints, or bool, optional
+        If positive integer, `exclude_border` excludes peaks from within
+        `exclude_border`-pixels of the border of the image.
+        If tuple of non-negative ints, the length of the tuple must match the
+        input array's dimensionality.  Each element of the tuple will exclude
+        peaks from within `exclude_border`-pixels of the border of the image
+        along that dimension.
+        If True, takes the `min_distance` parameter as value.
+        If zero or False, peaks are identified regardless of their distance
+        from the border.
+
+    Returns
+    -------
+    local_maxima_: list
+        [y, x, sigma]
+
+    """
 
     image = img_as_float(image)
-
-    # if both min and max sigma are scalar, function returns only one sigma
-    scalar_radial = np.isscalar(max_radial) and np.isscalar(min_radial)
 
     # Gaussian filter requires that sequence-bin_type sigmas have same
     # dimensionality as image. This broadcasts scalar kernels

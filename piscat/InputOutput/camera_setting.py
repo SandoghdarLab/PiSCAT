@@ -10,28 +10,28 @@ class CameraParameters:
 
     def __init__(self, name, quantum_efficiency=0.3, electron_well_depth=180e3, max_electron_well_depth=200e3, bit_depth=12, pixelSize=0.66):
         """
-        This class creates the JSON file based on the camera features. Other functions and methods used this JSON to
-            initialize some parameters like pixel size.
+        Based on the camera features, this class generates a JSON file.
+        This JSON was used by other functions and methods to set certain parameters, such as pixel size.
 
         Parameters
         ----------
         name: str
-            name of camera
+            Name of camera.
 
         quantum_efficiency: float
-            quantum efficiency of camera
+            Quantum efficiency of camera.
 
         electron_well_depth: float
-            quantum efficiency of camera
+             Electron well depth of camera.
 
         max_electron_well_depth: float
-            maximum electron well depth of camera
+            Maximum electron well depth of camera
 
         bit_depth: float
-            maximum electron well depth of camera
+            Bit depth of the camera.
 
         pixelSize: float
-            pixel size of camera
+            Pixel size of camera.
         """
         try:
             self.read_camera_setting(name=name)

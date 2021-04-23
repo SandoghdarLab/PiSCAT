@@ -12,13 +12,16 @@ def write_binary(dir_path, file_name, data, type='original'):
     Parameters
     ----------
     dir_path: str
-        path of the directory that video save on it.
+        Path of the directory that video save on it.
+
     file_name: str
-       name of the save file
+       Name of the save file.
+
     data: NDArray
-        video with numpy format.
-    type: str or bin_type you want convert video to it
-        'original' does not change the video bin_type while the user can convert it (e.g. float --> int16)
+        Video with numpy format.
+
+    type: str or bin_type
+        The video bin type is not changed by 'original,' but the user can convert it (e.g. float --> int16).
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     try:
@@ -47,13 +50,16 @@ def write_MP4(dir_path, file_name, data, fps=10):
     Parameters
     ----------
     dir_path: str
-        path of the directory that video save on it.
+        Path of the directory that video save on it.
+
     file_name: str
-       name of the save file
+       Name of the save file.
+
     data: NDArray
-        video with numpy format.
+        Video with numpy format.
+
     fps: int
-        number of frame per seconds
+        Number of frame per seconds.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     try:
@@ -80,15 +86,19 @@ def write_GIF(dir_path, file_name, data, jump=0, fps=10):
     Parameters
     ----------
     dir_path: str
-        path of the directory that video save on it.
+        Path of the directory that video save on it.
+
     file_name: str
-       name of the save file
+       Name of the save file
+
     data: NDArray
-        video with numpy format.
+        Video with numpy format.
+
     jump: int
-        define stride between frames
+        Define stride between frames
+
     fps: int
-        number of frame per seconds
+        Number of frame per seconds
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     try:

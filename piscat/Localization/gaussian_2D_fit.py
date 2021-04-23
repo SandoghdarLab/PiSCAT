@@ -23,12 +23,12 @@ def gaussian_2d(xy_mesh, amp, xc, yc, sigma_x, sigma_y, b):
 
 def fit_2D_Gaussian_varAmp(image, sigma_x, sigma_y, display_flag=False):
     """
-    This function uses non-linear squares to fit a function to 2D Gaussian fit.
+    This function uses non-linear squares to fit 2D Gaussian.
 
     Parameters
     ----------
     image: NDArray
-        2D numpy array, image
+        2D numpy array, image.
 
     sigma_x: float
         It is initial value for sigma X.
@@ -41,7 +41,7 @@ def fit_2D_Gaussian_varAmp(image, sigma_x, sigma_y, display_flag=False):
 
     Returns
     -------
-        @return: (list)
+    @return: (list)
             [sigma_ratio, fit_params, fit_errors]
     """
     x = np.linspace(0, image.shape[0] - 1, image.shape[0], dtype=np.int)

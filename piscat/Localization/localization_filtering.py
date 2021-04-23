@@ -9,6 +9,12 @@ from tqdm.autonotebook import tqdm
 class SpatialFilter():
 
     def __init__(self):
+        """
+        We have a `SpatialFilter` class in PiSCAT that allows users to filter `outlier_frames`
+        that have a strong vibration or a particle flying by, `dense_PSFs`, and non-symmetric PSFs that
+        may not properly resemble the iPSF expected from the experimental setup.
+        The threshold parameter in each of these filters determines the filter's sensitivity.
+        """
         self.cpu = CPUConfigurations()
 
     def list_frames(self, df_PSFs):
@@ -19,21 +25,21 @@ class SpatialFilter():
 
     def outlier_frames(self, df_PSFs, threshold=20):
         """
-        This function removes all detected PSFs in the frame more than the threshold number.
-        This method reduces PSFs that was detected in unstable frames
+        This function eliminates all detected PSFs in the frame that are greater than the threshold value.
+        PSFs that were detected in unstable frames are reduced using this method.
 
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            the data frame contains PSFs locations( x, y, frame, sigma)
+            The data frame contains PSFs locations( x, y, frame, sigma)
 
         threshold: int
-            maximum number of PSFs in one frame
+            Maximum number of PSFs in one frame.
 
         Returns
         -------
         filter_df_PSFs: pandas dataframe
-            the data frame contains PSFs locations( x, y, frame, sigma)
+            The filter data frame contains PSFs locations( x, y, frame, sigma)
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError('---data frames is empty!---')
@@ -48,6 +54,23 @@ class SpatialFilter():
         return filter_df_PSFs
 
     def remove_overlay_particles(self, df_PSFs, filter_thr=0):
+        """
+        This function clears PSFs that have been overlaid.
+
+        Parameters
+        ----------
+        df_PSFs: pandas dataframe
+            The data frame contains PSFs locations( x, y, frame, sigma)
+
+        filter_thr: float
+            It specifies the portion of the overlay that two PSFs must have to remove from the list.
+
+        Returns
+        -------
+        filter_df_PSFs: pandas dataframe
+            The filter data frame contains PSFs locations( x, y, frame, sigma)
+
+        """
 
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError('---data frames is empty!---')
@@ -110,14 +133,15 @@ class SpatialFilter():
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            the data frame contains PSFs locations( x, y, frame, sigma)
+            The data frame contains PSFs locations( x, y, frame, sigma)
 
         threshold: float
-            the minimum acceptable range that two
+            It specifies the portion of the overlay that two PSFs must have to remove from the list.
 
         Returns
         -------
-
+        filter_df_PSFs: pandas dataframe
+                    The filter data frame contains PSFs locations( x, y, frame, sigma)
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError('---data frames is empty!---')
@@ -177,7 +201,7 @@ class SpatialFilter():
 
     def symmetric_PSFs(self, df_PSFs, threshold=0.7):
         """
-        Filter for remove PSFs that suffer from astigmatism.
+        Remove astigmatism-affected PSFs with this filter.
 
         Parameters
         ----------
@@ -185,12 +209,12 @@ class SpatialFilter():
             The data frame contains PSFs locations( x, y, frame, sigma)
 
         threshold: float
-            The minimum of sigma ratio (sigma_max/sigma_min)
+            The smallest sigma ratio that is acceptable (sigma max/sigma min).
 
         Returns
         -------
         df_PSF_thr: pandas dataframe
-            the data frame contains PSFs locations( x, y, frame, sigma)
+            The filter data frame contains PSFs locations( x, y, frame, sigma)
 
         """
 

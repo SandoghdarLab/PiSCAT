@@ -20,8 +20,7 @@ class Linking():
 
     def __init__(self):
         """
-        We employ the algorithm developed by Trackpy packages to extract the temporal behavior of
-           each iPSF.
+        To obtain the temporal activity of each iPSF, we use the Trackpy packages' algorithm.
 
        References
        ----------
@@ -32,13 +31,15 @@ class Linking():
 
     def create_link(self, psf_position, search_range=50, memory=1):
         """
+        Each iPSF temporal activity is obtained.
+
         Parameters
         ----------
-        psf_position: pandas dataframe
+        psf_position: pandas data frame
             The data frame contains PSFs locations( x, y, frame, sigma, ...)
 
         search_range: float or tuple
-            The maximum distance features can move between frames, optionally per dimension
+            The maximum distance features can move between frames, optionally per dimension.
 
         memory: int
             The maximum number of frames during which a feature can vanish, then reappear nearby, and be considered the same particle. 0 by default.
@@ -46,7 +47,7 @@ class Linking():
         Returns
         -------
         df_PSF: pandas dataframe
-            Append 'particle' ID column to input data frame ( x, y, frame, sigma, particle,...) and
+            To the input data frame, append the 'particle' ID column. ( x, y, frame, sigma, particle, ...).
 
         """
         df_PSF = tp.link_df(psf_position, search_range=search_range, memory=memory)
@@ -55,7 +56,7 @@ class Linking():
 
     def sorting_linking(self, df_PSFs):
         """
-        This function sorts particles in dataframe based on trajectory lengths.
+        This function uses trajectory lengths to sort particles in a dataframe.
 
         Parameters
         ----------

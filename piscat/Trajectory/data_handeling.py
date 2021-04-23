@@ -3,6 +3,18 @@ import sys
 import numpy as np
 
 def fixed_length(in_list):
+    """
+    This function create the list with same length for all sub list.
+
+    Parameters
+    ----------
+    in_list: list
+        List contains some sublist.
+
+    Returns
+    -------
+    tmp: list
+    """
     tmp = np.empty([len(in_list), len(max(in_list, key=lambda x: len(x)))])
     for i, j in enumerate(in_list):
         tmp[i][0:len(j)] = j
@@ -10,7 +22,7 @@ def fixed_length(in_list):
 
 def protein_trajectories_list2dic(v_shape_list):
     """
-    The function converts the list to dictionary format from out put of TemporalFilter.v_trajectory
+    From the output of ``TemporalFilter.v_trajectory``, this function converts the list to dictionary format.
 
     Parameters
     ----------

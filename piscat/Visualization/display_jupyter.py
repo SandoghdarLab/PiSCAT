@@ -317,7 +317,7 @@ class JupyterPSFs_subplotLocalizationDisplay():
     def __init__(self, list_videos, list_df_PSFs, numRows, numColumns, list_titles=None,
                  median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1, value=0):
         """
-        This class can sub-display several video in the Jupyter notebook interactively while highlight PSFs.
+        This class shows several videos (with the same number of frames) at once in the Jupyter notebook interactively while highlight localize PSFs.
 
         Parameters
         ----------
@@ -515,7 +515,7 @@ class JupyterSelectedPSFs_localizationDisplay():
     def __init__(self, video, particles, particles_num='#0', frame_extend=0, median_filter_flag=False, flag_fit2D=False,
                  color='gray', imgSizex=10, imgSizey=10, IntSlider_width='500px', step=1):
         """
-        This class displays video in the Jupyter notebook interactively while highlighting selected PSF.
+        This class interactively shows video in a Jupyter notebook while highlighting PSFs based on ID.
 
         Parameters
         ----------
@@ -677,7 +677,7 @@ class JupyterSubplotDisplay():
                  median_filter_flag=False, color='gray', step=1):
 
         """
-        This class can sub-display several video in the Jupyter notebook interactively.
+        This class interactively displays several videos (with the same number of frames) in a Jupyter notebook.
 
         Parameters
         ----------

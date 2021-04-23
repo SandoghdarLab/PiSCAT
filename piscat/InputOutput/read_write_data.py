@@ -19,13 +19,13 @@ def save_mat(data, path, name=''):
     Parameters
     ----------
     data: list
-        list or array.
+        List or array.
 
     path: str
-        path of the directory that data saves on it.
+        Path of the directory that data saves on it.
 
     name: str
-        name of the save file
+        Name of the save file.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = name + '_' + timestr + '.mat'
@@ -40,10 +40,10 @@ def read_mat(path, name=''):
     Parameters
     ----------
     path: str
-       path of the directory that data reads from it.
+       Path of the directory that data reads from it.
 
     name: str
-       name of the file
+       Name of the file.
     """
     filepath = os.path.join(path, name)
     particles = scipy.io.loadmat(filepath)
@@ -62,13 +62,13 @@ def save_dic_to_hdf5(dic_data, path, name):
     Parameters
     ----------
     data: dic
-        dictionary data.
+        Dictionary data.
 
     path: str
-        path of the directory that data saves on it.
+        Path of the directory that data saves on it.
 
     name: str
-        name of the save file
+        Name of the save file
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = name + '_' + timestr + '.h5'
@@ -79,18 +79,18 @@ def save_dic_to_hdf5(dic_data, path, name):
 
 def save_list_to_hdf5(list_data, path, name):
     """
-    This function writes the list data as hdf5 format..
+    This function writes the list data as hdf5 format.
 
     Parameters
     ----------
     data: list
-       list data.
+       List data.
 
     path: str
-       path of the directory that data saves on it.
+       Path of the directory that data saves on it.
 
     name: str
-       name of the save file
+       Name of the save file.
     """
     dic_data = protein_trajectories_list2dic(list_data)
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -101,7 +101,6 @@ def save_list_to_hdf5(list_data, path, name):
 
 
 def recursively_save_dict_contents_to_group(h5file, path, dic_):
-    a = 1
     for key, item in dic_.items():
         if isinstance(item, (np.ndarray, np.int64, np.float64, str, bytes)):
             h5file[path + key] = item
@@ -118,7 +117,7 @@ def load_dict_from_hdf5(filename):
     Parameters
     ----------
     filename: str
-       path and name of the hdf5 file.
+       Path and name of the hdf5 file.
     """
 
     with h5py.File(filename, 'r') as h5file:
@@ -143,13 +142,13 @@ def save_df2csv(df, path, name=''):
     Parameters
     ----------
     data: data frame
-        panda data frame.
+        Panda data frame.
 
     path: str
-        path of the directory that data save on it.
+        Path of the directory that data save on it.
 
     name: str
-        name of the save file
+        Name of the save file
    """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = name + '_' + timestr + '.csv'
@@ -164,13 +163,13 @@ def save_dic2json(data_dictionary, path, name=''):
     Parameters
     ----------
     data: dic
-        dictionary data.
+        Dictionary data.
 
     path: str
-        path of the directory that data save on it.
+        Path of the directory that data save on it.
 
     name: str
-        name of the save file
+        Name of the save file.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = name + '_' + timestr + '.json'
@@ -186,10 +185,10 @@ def read_json2dic(path, name=''):
     Parameters
     ----------
     path: str
-        path of the directory that data load from it.
+        Path of the directory that data load from it.
         
     name: str
-        name of the JSON file
+        Name of the JSON file.
     """
     filepath = os.path.join(path, name)
     if os.path.exists(filepath):

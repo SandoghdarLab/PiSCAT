@@ -42,15 +42,15 @@ class DifferentialRollingAverage(QRunnable):
 
     def __init__(self, video=None, batchSize=500, flag_GUI=False, object_update_progressBar=None):
         """
-        Differential Rolling Average (DRA)
+        Differential Rolling Average (DRA).
 
         Parameters
         ----------
         video: NDArray
-            `Video` is a Numpy array with the following order (number of frame, width, height).
+            The video is 3D-numpy (number of frames, width, height).
 
         batchSize: int
-            The number of frames in each batch to obtain DRA.
+            The number of frames in each batch.
 
         optional_1: GUI
             These flags are used when GUI calls this method.
@@ -96,7 +96,8 @@ class DifferentialRollingAverage(QRunnable):
 
     def differential_rolling(self, FFT_flag=False):
         """
-        To apply DRA, a method named "differential_rolling" should be called. This method is feeded by four inputs as follows:
+        To use DRA, you'll need to call the "differential rolling" process.
+        This system is fed by the following four inputs:
 
         Parameters
         ----------

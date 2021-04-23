@@ -7,15 +7,15 @@ class TemporalFilter:
 
     def __init__(self, video, batchSize):
         """
-        Class containing filters to be applied on the temporal features.
+        Filters to be applied to temporal features are included in this class.
 
         Parameters
         ----------
         video: NDArray
-            Input video
+            Input video.
 
         batchSize: int
-            Batch size that is used for DRA
+            Batch size that is used for DRA.
 
         """
         self.video = video
@@ -28,7 +28,7 @@ class TemporalFilter:
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            The data frame contains PSFs locations (x, y, frame, sigma, particle, ...)
+            The data frame contains PSFs locations and ID (x, y, frame, sigma, particle, ...)
 
         threshold: int
             The minimum acceptable temporal length of one particle.
@@ -36,7 +36,7 @@ class TemporalFilter:
         Returns
         -------
         particles: pandas dataframe
-            returns the clean data frame (x, y, frame, sigma, particle, ...)
+            The filter data frame (x, y, frame, sigma, particle, ...)
 
         his_all_particles: list
             List that shows the statistics of particles length.
@@ -53,12 +53,12 @@ class TemporalFilter:
 
     def v_trajectory(self, df_PSFs, threshold):
         """
-        This function extract v-shape of the particle from data frames that have a temporal length bigger than threshold values.
+        This function extract v-shape of the particle that have a temporal length bigger than threshold values.
 
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            The data frame contains PSFs locations (x, y, frame, sigma, particle, ...)
+            The data frame contains PSFs locations and ID (x, y, frame, sigma, particle, ...).
 
         threshold: int
             The minimum acceptable temporal length of one particle.
@@ -74,10 +74,10 @@ class TemporalFilter:
                 fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error, fit_Bias_error)]
 
         particles: pandas dataframe
-             Returns the clean data frame (x, y, frame, sigma, particle, ...)
+             The dataframe after using temporal filter (x, y, frame, sigma, particle, ...)
 
         his_all_particles: list
-            List that shows the statistics of particles length
+            List that shows the statistics of particles length.
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError('---data frames is empty!---')
@@ -88,12 +88,12 @@ class TemporalFilter:
 
     def v_profile(self, df_PSFs, window_size=2000):
         """
-        The V Shape trajectories and extended version are calculated.
+        The V-Shape trajectories and extended version are calculated.
 
         Parameters
         ----------
         window_size: int
-            The maximum number of the frames that follow the V Shape contrast from both sides
+            The maximum number of the frames that follow the V-Shape contrast from both sides.
 
         Returns
         -------

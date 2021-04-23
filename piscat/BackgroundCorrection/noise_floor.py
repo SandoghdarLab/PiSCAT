@@ -9,19 +9,20 @@ from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from piscat.Visualization.print_colors import PrintColors
 from piscat.Preproccessing.filtering import Filters
 
+
 class NoiseFloor(CPUConfigurations, PrintColors):
 
     def __init__(self, video, list_range, n_jobs=None, inter_flag_parallel_active=True):
         """
-        This class calculates the noise floor for the different batch sizes on DRA.
+        This class measures the noise floor for various batch sizes.
 
         Parameters
         ----------
         video: NDArray
-            Video should be Numpy array with the following shape (number of frame, width, height).
+            The video is 3D-numpy (number of frames, width, height).
 
         list_range: list
-            list os all batch size that DRA should be calculated for them.
+            A list of all batch sizes for which DRA should be measured.
         """
 
         CPUConfigurations.__init__(self)
@@ -52,7 +53,7 @@ class NoiseFloor(CPUConfigurations, PrintColors):
 
     def plot_result(self):
         """
-        By calling this function the result of the noise floor is plotted.
+        The result of the noise floor is plotted when this function is called.
         """
         fig, ax = plt.subplots()
         ax.plot(self.list_range, self.mean, '--r', label='Experimental result')
