@@ -61,7 +61,7 @@ video_pn, _ = normalization.Normalization(video=video_remove_status).power_norma
 ## Frame averaging to boost SNR of imaged proteins, followed by visualization of their signal via differential imaging
 The illumination profile and imaged speckles from the coverglass are among static features in iSCAT videos that can be removed by subtracting two subsequent frames to obtain a differential image which will only include dynamic features. As illustrated in the figure below, these features are new relative to the reference image, which is itself being rolled forward. In the calculation of the differential image, each image is the mean frame of a batch of **L** number of camera frames. In order to apply Differential Rolling Average (DRA), an object of the class [Differential_Rolling_Average](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage) is instantiated and deployed.
 
-![png](../Fig/DRA.png)
+![](../Fig/DRA.png)
 
 
 ```python
@@ -83,7 +83,7 @@ JupyterDisplay(RVideo_PN, median_filter_flag=False, color='gray', imgSizex=5, im
 ```
 
 
-![png](../Fig/tu2_vid1.png)
+![](../Fig/tu2_vid1.png)
 
 
 ## The effect of power normalization on the detection limit 
@@ -111,7 +111,7 @@ plt.show()
 ```
 
 
-![png](../Fig/tu2_noise_floor.png)
+![](../Fig/tu2_noise_floor.png)
     
 
 We see about 10% improvement in our detection limit with performing power normalization on top of the differential rolling averaging with the best results obtained when the batch size corresponds to 120 frames.

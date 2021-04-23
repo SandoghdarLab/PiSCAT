@@ -121,7 +121,7 @@ JupyterDisplay_StatusLine(video, median_filter_flag=False, color='gray', imgSize
 ```
 
 
-![png](../Fig/tu1_vid1.png)
+![](../Fig/tu1_vid1.png)
 
 
 ## Examining the status line & removing it
@@ -145,7 +145,7 @@ JupyterDisplay(video_remove_status, median_filter_flag=False, color='gray', imgS
 ```
 
 
-![png](../Fig/tu1_vid2.png)
+![](../Fig/tu1_vid2.png)
 
 
 ## Normalization of the power in the frames of a video
@@ -176,7 +176,7 @@ plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 ```
 
 
-![png](output_10_1.png)
+![](output_10_1.png)
     
 
 ## Save a video

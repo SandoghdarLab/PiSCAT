@@ -94,7 +94,7 @@ JupyterSubplotDisplay(list_videos=[video_remove_status, video_remove_status_dc,
 ```
 
 
-![png](../Fig/tu4_vid1.png)
+![](../Fig/tu4_vid1.png)
 
 
 Next, we perform 
@@ -137,7 +137,7 @@ PSFs = PSF_l.psf_detection_preview(function='dog',
 ```
 
 
-![png](../Fig/tu4_vid2.png)
+![](../Fig/tu4_vid2.png)
 
 
 Once we get to a working set of parameters for our localization algorithm we run the detection algorithm for all the frames of the video. 
@@ -333,7 +333,7 @@ PSFs_RVT = PSF_l.psf_detection(function='RVT',
 ```
 
 
-![png](../Fig/tu4_vid3_1.png)
+![](../Fig/tu4_vid3_1.png)
 
 
 ### Deploying several 2D localization algorithms
@@ -432,8 +432,8 @@ plt.show()
 ```
 
 
-![png](output_20_1.png)
-    
+![](output_20_1.png)
+
 
 Spatial filtering of PSFs and temporal filtering of linked trajectories are done and the resultant data structure is printed below. 
 
@@ -516,7 +516,7 @@ JupyterPSFs_subplotLocalizationDisplay(list_videos=[RVideo_PN, RVideo_PN], list_
 ```
 
 
-![png](../Fig/tu4_vid4.png)
+![](../Fig/tu4_vid4.png)
 
 
 ## Saving analysis results
@@ -566,7 +566,7 @@ his_.plot_contrast_extraction(particles=all_trajectories, batch_size=batchSize, 
 ```
 
 
-![png](output_30_0.png)
+![](output_30_0.png)
     
 
 ```python
@@ -581,7 +581,7 @@ JupyterSelectedPSFs_localizationDisplay(video=RVideo_PN, particles=all_trajector
 ```
 
 
-![png](../Fig/tu4_vid5.png)
+![](../Fig/tu4_vid5.png)
 
 
 ## Histogram of the protein contrasts
@@ -603,7 +603,7 @@ his_.plot_histogram(bins=6, upper_limitation=6e-3, lower_limitation=-6e-3, step_
 ```
 
 
-![png](output_33_0.png)
+![](output_33_0.png)
     
 
 ### Bibliography 
