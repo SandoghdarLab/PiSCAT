@@ -19,6 +19,8 @@ Houman can be reached at houman.mirzaalian-dastjerdi@mpl.mpg.de.
 
 2. **Reza Gholami Mahmoodabadi**: Reza contributed in the design and development of the following modules: Analysis, Background Correction, InputOutput, Localization, Preprocessing and trajectory. He can be reached at reza.gholami@mpl.mpg.de.
 
+3. **iSCAT team**: Over the years, many people in our group have contributed to progress in iSCAT science. We are particularly thankful to the group members that have actively helped in the  development of PiSCAT, either through experiments, analysis development or comments: M. Dahmardeh, A. Gemeinhardt, A. Kashkanova, K. König, R. Gholami Mahmoodabadi, H. Mazal and H. Mirzaalian Dastjerdi.
+
 
 ## Installation
 
