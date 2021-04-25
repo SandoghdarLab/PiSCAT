@@ -222,6 +222,12 @@ class download_tutorial_data():
         save_path = os.path.join(save_path, 'Tutorials')
 
         try:
+            os.mkdir(save_path)
+            print("\nDirectory ", save_path, " Created ")
+        except FileExistsError:
+            print("\nDirectory ", save_path, " already exists")
+
+        try:
             name_mkdir_1 = 'Demo data'
             dr_mk = os.path.join(save_path, name_mkdir_1)
             os.mkdir(dr_mk)
