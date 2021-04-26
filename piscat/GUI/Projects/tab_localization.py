@@ -186,16 +186,16 @@ class Localization_GUI(QtWidgets.QWidget):
             self.line_asymmetry_PSF_Thr.setPlaceholderText(tmp_str + "_x" + "/" + tmp_str + "_y")
             self.line_asymmetry_PSF_Thr_label = QtWidgets.QLabel("Symmetry threshold:")
 
-            self.grid_filters.addWidget(self.line_asymmetry_PSF_label, 3, 1)
-            self.grid_filters.addWidget(self.line_asymmetry_PSF, 3, 2)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF_label, 2, 1)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF, 2, 2)
 
-            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr_label, 3, 3)
-            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr, 3, 4)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr_label, 2, 3)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr, 2, 4)
 
         if not self.checkbox_filter_asymmetry_PSF.isChecked():
 
             for i_ in range(1, 5, 1):
-                layout = self.grid_filters.itemAtPosition(3, i_)
+                layout = self.grid_filters.itemAtPosition(2, i_)
                 if layout is not None:
                     layout.widget().deleteLater()
                     self.grid_filters.removeItem(layout)
@@ -206,13 +206,13 @@ class Localization_GUI(QtWidgets.QWidget):
             self.line_2DFitting.setPlaceholderText('Scale based on sigma size')
             self.line_2DFitting_label = QtWidgets.QLabel("Scale win_size:")
 
-            self.grid_filters.addWidget(self.line_2DFitting_label, 4, 1)
-            self.grid_filters.addWidget(self.line_2DFitting, 4, 2)
+            self.grid_filters.addWidget(self.line_2DFitting_label, 3, 1)
+            self.grid_filters.addWidget(self.line_2DFitting, 3, 2)
 
         if not self.checkbox_2DFitting.isChecked():
 
             for i_ in range(1, 5, 1):
-                layout = self.grid_filters.itemAtPosition(4, i_)
+                layout = self.grid_filters.itemAtPosition(3, i_)
                 if layout is not None:
                     layout.widget().deleteLater()
                     self.grid_filters.removeItem(layout)
