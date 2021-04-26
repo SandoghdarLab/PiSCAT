@@ -97,7 +97,6 @@ class DifferentialRollingAverage(QRunnable):
     def differential_rolling(self, FFT_flag=False):
         """
         To use DRA, you'll need to call the "differential rolling" process.
-        This system is fed by the following four inputs:
 
         Parameters
         ----------
