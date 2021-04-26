@@ -14,8 +14,7 @@ The outputs from most of the PiSCAT localization and tracking methods are of [Pa
 
 ## Core Contributors
 
-1. **Houman Mirzaalian Dastjerdi**: The main contributor and developer of this package (including GUI) is Houman Mirzaalian Dastjerdi. PiSCAT is part of his Ph.D. thesis in collaboration between the Sandoghdar group at Max Planck Institute for the science of light and the Chair for Computer Science 10 (LSS).
-Houman can be reached at houman.mirzaalian-dastjerdi@mpl.mpg.de.
+1. **Houman Mirzaalian Dastjerdi**: The main contributor and developer of this package (including GUI) is Houman Mirzaalian Dastjerdi. PiSCAT is part of his Ph.D. thesis in collaboration between the Sandoghdar group at Max Planck Institute for the science of light and the Chair for Computer Science 10 (LSS). Houman can be reached at houman.mirzaalian-dastjerdi@mpl.mpg.de.
 
 2. **Reza Gholami Mahmoodabadi**: Reza contributed in the design and development of the following modules: Analysis, Background Correction, InputOutput, Localization, Preprocessing and trajectory. He can be reached at reza.gholami@mpl.mpg.de.
 
