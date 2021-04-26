@@ -137,7 +137,6 @@ class Localization_GUI(QtWidgets.QWidget):
         self.checkbox_filter_double_PSF = QtWidgets.QCheckBox("Filter dense PSFs", self)
         self.checkbox_filter_asymmetry_PSF = QtWidgets.QCheckBox("Filter asymmetry PSFs", self)
         self.checkbox_2DFitting = QtWidgets.QCheckBox("2D Gaussian Fitting", self)
-        self.checkbox_remove_overlay = QtWidgets.QCheckBox("Remove PSFs with overlay", self)
         self.checkbox_crappy_frames = QtWidgets.QCheckBox("Filter outlier frames", self)
 
         self.checkbox_filter_asymmetry_PSF.toggled.connect(lambda: self.add_line_asymmetry_PSF())
@@ -151,10 +150,9 @@ class Localization_GUI(QtWidgets.QWidget):
         self.grid_filters = QtWidgets.QGridLayout()
         self.grid_filters.addWidget(self.checkbox_crappy_frames, 0, 0)
         self.grid_filters.addWidget(self.checkbox_filter_double_PSF, 1, 0)
-        self.grid_filters.addWidget(self.checkbox_remove_overlay, 2, 0)
-        self.grid_filters.addWidget(self.checkbox_filter_asymmetry_PSF, 3, 0)
-        self.grid_filters.addWidget(self.checkbox_2DFitting, 4, 0)
-        self.grid_filters.addWidget(self.btn_filtering, 5, 0)
+        self.grid_filters.addWidget(self.checkbox_filter_asymmetry_PSF, 2, 0)
+        self.grid_filters.addWidget(self.checkbox_2DFitting, 3, 0)
+        self.grid_filters.addWidget(self.btn_filtering, 4, 0)
 
         self.groupBox_filters.setLayout(self.grid_filters)
 
@@ -779,10 +777,6 @@ class Localization_GUI(QtWidgets.QWidget):
                     self.setting_localization['asymmetry_PSFs_filtering_scale'] = self.scale
                     self.PSFs_Particels_num['#PSFs_after_asymmetry_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
                     self.empty_value_box_flag = False
-
-            if self.checkbox_remove_overlay.isChecked():
-                self.df_PSFs_s_filter = s_filters.remove_overlay_particles(df_PSFs=self.df_PSFs_s_filter, filter_thr=0)
-                self.setting_localization['remove_overlay_PSFs'] = True
 
             self.update_localization.emit(self.df_PSFs_s_filter)
             self.output_setting_Tab_Localization.emit(self.setting_localization)

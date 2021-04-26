@@ -56,18 +56,6 @@ class ContrastAdjustment():
         image: NDArray
             Input image (2D-Numpy).
 
-        alpha: float
-            Scale factor.
-
-        beta: float
-            Delta added to the scaled values.
-
-        min_intensity: float
-            Min intensity values of output image.
-
-        max_intensity: float
-            Max intensity values of output image.
-
         Returns
         -------
         image_: NDArray

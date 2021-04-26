@@ -53,81 +53,6 @@ class SpatialFilter():
         print('Done!')
         return filter_df_PSFs
 
-    def remove_overlay_particles(self, df_PSFs, filter_thr=0):
-        """
-        This function clears PSFs that have been overlaid.
-
-        Parameters
-        ----------
-        df_PSFs: pandas dataframe
-            The data frame contains PSFs locations( x, y, frame, sigma)
-
-        filter_thr: float
-            It specifies the portion of the overlay that two PSFs must have to remove from the list.
-
-        Returns
-        -------
-        filter_df_PSFs: pandas dataframe
-            The filter data frame contains PSFs locations( x, y, frame, sigma)
-
-        """
-
-        if df_PSFs.shape[0] == 0 or df_PSFs is None:
-            raise ValueError('---data frames is empty!---')
-
-        if type(df_PSFs) is pd.core.frame.DataFrame:
-            df_PSFs = df_PSFs
-        else:
-            raise ValueError('Input does not have correct bin_type! This function needs panda data frames.')
-
-        list_frames = self.list_frames(df_PSFs)
-
-        particles_after_closeFilter = df_PSFs
-        num_particles = particles_after_closeFilter.shape[0]
-
-        print('\n---Cleaning the overlaying  without parallel loop---')
-        point_1 = np.zeros((1, 2), dtype=np.float64)
-        point_2 = np.zeros((1, 2), dtype=np.float64)
-        remove_list_close = []
-
-        for frame_num in tqdm(list_frames):
-            particle = particles_after_closeFilter.loc[particles_after_closeFilter['frame'] == frame_num]
-            index_list = [index for index in particle.index]
-            particle_X = particle['x'].tolist()
-            particle_Y = particle['y'].tolist()
-            particle_sigma = particle['sigma'].tolist()
-            if len(index_list) != 1:
-                for i_ in range(len(particle_X)):
-                    point_1[0, 0] = particle_X[i_]
-                    point_1[0, 1] = particle_Y[i_]
-                    sigma_1 = particle_sigma[i_]
-
-                    count_ = i_ + 1
-                    while count_ <= (len(particle_X) - 1):
-                        point_2[0, 0] = particle_X[count_]
-                        point_2[0, 1] = particle_Y[count_]
-                        sigma_2 = particle_sigma[i_]
-
-                        distance = math.sqrt(((point_1[0, 0] - point_2[0, 0]) ** 2) + (
-                                (point_1[0, 1] - point_2[0, 1]) ** 2))
-                        tmp = (math.sqrt(2) * (sigma_1 + sigma_2))
-
-                        if distance <= ((math.sqrt(2) * (sigma_1 + sigma_2)) - (filter_thr * tmp)):
-                            if sigma_1 > sigma_2:
-                                remove_list_close.append(index_list[i_])
-                            else:
-                                remove_list_close.append(index_list[count_])
-
-                        count_ = count_ + 1
-
-        remove_list = list(set(remove_list_close))
-        particles_after_closeFilter = particles_after_closeFilter.drop(remove_list, axis=0, errors='ignore')
-
-        print("\nNumber of PSFs before filters = {}".format(num_particles))
-        print("\nNumber of PSFs after filters = {}".format(particles_after_closeFilter.shape[0]))
-
-        return particles_after_closeFilter.reset_index(drop=True)
-
     def dense_PSFs(self, df_PSFs, threshold=0):
         """
         Parameters
@@ -149,7 +74,7 @@ class SpatialFilter():
         if type(df_PSFs) is pd.core.frame.DataFrame:
             df_PSFs = df_PSFs
         else:
-            raise ValueError('Input does not have correct bin_type! This function needs panda data frames.')
+            raise ValueError('Input does not have correct type! This function needs panda data frames.')
 
         list_frames = self.list_frames(df_PSFs)
 
