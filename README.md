@@ -12,14 +12,6 @@ The documentation webpage of PiSCAT modules can be found
 
 The outputs from most of the PiSCAT localization and tracking methods are of [Panda data frame type](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html). This data structure has the ability to be easily appended/extended with more information based on different levels of analysis. The data structures containing the results of localization and tracking routines can be saved as csv, mat and HDF5 files. This helps users to work with the analyzed information using different softwares namely, MATLAB and Microsoft Excel. HDF5 is a well-known format that is readable in different programming languages and supports large, complex, heterogeneous data. HDF5 uses a "file directory" like structure that allows users to organize data within the file in structured ways and to embed metadata as well, making it self-describing. 
 
-## Core Contributors
-
-1. **Houman Mirzaalian Dastjerdi**: The main contributor and developer of this package (including GUI) is Houman Mirzaalian Dastjerdi. PiSCAT is part of his Ph.D. thesis in collaboration between the Sandoghdar group at Max Planck Institute for the science of light and the Chair for Computer Science 10 (LSS). Houman can be reached at houman.mirzaalian-dastjerdi@mpl.mpg.de.
-
-2. **Reza Gholami Mahmoodabadi**: Reza contributed in the design and development of the following modules: Analysis, Background Correction, InputOutput, Localization, Preprocessing and trajectory. He can be reached at reza.gholami@mpl.mpg.de.
-
-3. **iSCAT team**: Over the years, many people in our group have contributed to progress in iSCAT science. We are particularly thankful to the group members that have actively helped in the  development of PiSCAT, either through experiments, analysis development or comments: M. Dahmardeh, A. Gemeinhardt, A. Kashkanova, K. König, R. Gholami Mahmoodabadi, H. Mazal and H. Mirzaalian Dastjerdi.
-
 
 ## Installation
 
