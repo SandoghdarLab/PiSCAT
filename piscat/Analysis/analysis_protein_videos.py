@@ -146,7 +146,7 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
 
                 t_filters = temporal_filtering.TemporalFilter(video=RVideo_PN,
                                                               batchSize=hyperparameters['batch_size'])
-                all_trajectories, df_PSFs_t_filter = t_filters.v_trajectory(df_PSFs=df_PSFs_link,
+                all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=df_PSFs_link,
                                                                             threshold=hyperparameters[
                                                                                 'min_V_shape_width'])
                 PSFs_Particels_num['#Particles_after_V_shapeFilter'] = linking_.trajectory_counter(df_PSFs_t_filter)
