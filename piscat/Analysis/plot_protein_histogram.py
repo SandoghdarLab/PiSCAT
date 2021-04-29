@@ -837,6 +837,7 @@ class PlotProteinHistogram(PrintColors):
                     density = np.sum(np.array(pdfs), axis=0)
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=True)
+                    ax.axis(xmin=0, xmax=upper_limitation * 1e1)
                     ax.plot(x.ravel(), density.ravel())
                     ax.set_ylabel('Density')
                     ax.set_title(title[p_index])
@@ -848,6 +849,7 @@ class PlotProteinHistogram(PrintColors):
 
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
+                    ax.axis(xmin=0, xmax=upper_limitation * 1e1)
                     ax.set_ylabel('#Counts')
                     ax.set_title(title[p_index])
                     ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
@@ -858,6 +860,7 @@ class PlotProteinHistogram(PrintColors):
 
                 ax = plt.Subplot(fig, inner[p_index])
                 ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
+                ax.axis(xmin=0, xmax=upper_limitation * 1e1)
                 ax.set_ylabel('#Counts')
                 ax.set_title(title[p_index])
                 ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))

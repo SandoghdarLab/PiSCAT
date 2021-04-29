@@ -761,3 +761,135 @@ class JupyterSubplotDisplay():
 
         plt.show()
 
+
+class JupyterPSFs_2_modality_subplotLocalizationDisplay():
+
+    def __init__(self, list_videos, list_df_PSFs_1, list_df_PSFs_2, numRows, numColumns, list_titles=None,
+                 median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1, value=0,
+                 edgecolor_1='r', edgecolor_2='g'):
+        """
+        This class will interactively sub-display multiple videos in a Jupyter notebook while highlighting PSFs determined in two modalities.
+
+        Parameters
+        ----------
+        list_videos: list of NDArray
+          List of videos.
+
+        list_df_PSFs_1: list
+            list of all data Frames that contains the location of PSFs in first modality.
+
+        list_df_PSFs_2: list
+            list of all data Frames that contains the location of PSFs in second modality.
+
+        numRows: int
+            It defines number of rows in sub-display.
+
+        numColumns: int
+            It defines number of columns in sub-display.
+
+        list_titles: list str
+            List of titles for each sub plot.
+
+        median_filter_flag: bool
+          In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+
+        color: str
+          It defines the colormap for visualization.
+
+        imgSizex: int
+          Image length size.
+
+        imgSizey: int
+          Image width size.
+
+        IntSlider_width: str
+          Size of slider
+
+        step: int
+          Stride between visualization frames.
+
+        value: int
+            Initial frame value for visualization
+
+        edgecolor_1: str
+            The color of the circle that annotates the first modality on the display.
+
+        edgecolor_2: str
+            The color of the circle that annotates the second modality on the display.
+
+        """
+        self.list_video = list_videos
+        self.numVideos = len(list_videos)
+        self.imgSizex = imgSizex
+        self.imgSizey = imgSizey
+        self.list_df_PSFs_1 = list_df_PSFs_1
+        self.list_df_PSFs_2 = list_df_PSFs_2
+        self.edgecolor_1 = edgecolor_1
+        self.edgecolor_2 = edgecolor_2
+        self.median_filter_flag = median_filter_flag
+        self.color = color
+        self.numRows = numRows
+        self.numColumns = numColumns
+
+        if list_titles is None:
+            self.list_titles = [None for _ in range(self.numVideos)]
+        else:
+            self.list_titles = list_titles
+
+        max_numberFrames = np.max([vid_.shape[0] for vid_ in list_videos])
+        interact(self.show_psf, frame_number=widgets.IntSlider(min=0, max=max_numberFrames, step=step, value=value,
+                                                               readout_format='1', continuous_update=False, layout=Layout(width=IntSlider_width),
+                                                               description='Frame:'))
+
+    def show_psf(self, frame_number):
+        fig = plt.figure(figsize=(self.imgSizex, self.imgSizey))
+        grid = plt.GridSpec(self.numRows, self.numColumns, hspace=0.3, wspace=0.3)
+
+        imgGrid_list = []
+        for i in range(self.numRows):
+            for j in range(self.numColumns):
+                imgGrid_list.append(fig.add_subplot(grid[i, j]))
+
+        for img_, tit_, img_grid_, df_PSFs_1,  df_PSFs_2 in zip(self.list_video, self.list_titles, imgGrid_list, self.list_df_PSFs_1, self.list_df_PSFs_2):
+
+            if self.median_filter_flag:
+
+                frame_v = median_filter(img_[int(frame_number), :, :], 3)
+            else:
+                frame_v = img_[int(frame_number), :, :]
+
+            divider = make_axes_locatable(img_grid_)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            myplot = img_grid_.imshow(frame_v, cmap=self.color)
+            img_grid_.axis('off')
+            plt.colorbar(myplot, cax=cax)
+            if tit_ is not None:
+                img_grid_.set_title(tit_)
+
+            particle_1 = df_PSFs_1.loc[df_PSFs_1['frame'] == frame_number]
+            particle_X_1 = particle_1['x'].tolist()
+            particle_Y_1 = particle_1['y'].tolist()
+            particle_sigma_1 = particle_1['sigma'].tolist()
+
+            particle_2 = df_PSFs_2.loc[df_PSFs_2['frame'] == frame_number]
+            particle_X_2 = particle_2['x'].tolist()
+            particle_Y_2 = particle_2['y'].tolist()
+            particle_sigma_2 = particle_2['sigma'].tolist()
+
+            for j_ in range(len(particle_X_1)):
+                y = int(particle_Y_1[j_])
+                x = int(particle_X_1[j_])
+                sigma = particle_sigma_1[j_]
+                img_grid_.add_patch(Circle((x, y), radius=np.sqrt(2) * sigma, edgecolor=self.edgecolor_1, facecolor='none',
+                                    linewidth=2))
+
+            for j_ in range(len(particle_X_2)):
+                y = int(particle_Y_2[j_])
+                x = int(particle_X_2[j_])
+                sigma = particle_sigma_2[j_]
+                img_grid_.add_patch(Circle((x, y), radius=np.sqrt(2) * sigma, edgecolor=self.edgecolor_2, facecolor='none',
+                                    linewidth=2))
+
+        plt.show()
+
+
