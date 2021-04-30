@@ -255,7 +255,7 @@ class download_tutorial_data():
                 print("Directory ", name_mkdir_2, " already exists!")
             else:
                 dr_ = os.path.join(save_path, name_mkdir_1)
-                self.run_download(url='https://owncloud.gwdg.de/index.php/s/Cq5vU8qIAFIWwEh/download', save_path=dr_)
+                self.run_download(url='https://owncloud.gwdg.de/index.php/s/KkGs00yZ7Xyx8pX/download', save_path=dr_)
 
             dr_mk = os.path.join(save_path, name_mkdir_1, name_mkdir_3)
 
