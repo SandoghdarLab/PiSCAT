@@ -1,5 +1,5 @@
 # Detection & contrast estimation of the proteins in iSCAT videos 
-The static version of tutorial documents are presented here. Once the installation of PiSCAT on your local computer is completed, the dynamic version of the tutorial files can be found in the local PiSCAT directory located at ".\Tutorials\JupyterFiles\".
+The static version of tutorial documents are presented here. Once the installation of PiSCAT on your local computer is completed, the dynamic version of the tutorial files can be found in the local PiSCAT directory located at `"./Tutorials/JupyterFiles/"`.
 ## Previously on PiSCAT tutorials...
 Previously, we demonstrated how to use PiSCAT's APIs for 
 [setting up the PiSCAT modules and downloading a demo iSCAT video](
