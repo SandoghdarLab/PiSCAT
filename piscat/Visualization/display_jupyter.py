@@ -728,7 +728,7 @@ class JupyterSubplotDisplay():
 
         max_numberFrames = np.max([vid_.shape[0] for vid_ in list_videos])
 
-        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames, step=step, value=0, layout=Layout(width=IntSlider_width),
+        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames-1, step=step, value=0, layout=Layout(width=IntSlider_width),
                                                        readout_format='100', continuous_update=False, description='Frame:'))
 
     def display(self, frame):
@@ -837,7 +837,7 @@ class JupyterPSFs_2_modality_subplotLocalizationDisplay():
             self.list_titles = list_titles
 
         max_numberFrames = np.max([vid_.shape[0] for vid_ in list_videos])
-        interact(self.show_psf, frame_number=widgets.IntSlider(min=0, max=max_numberFrames, step=step, value=value,
+        interact(self.show_psf, frame_number=widgets.IntSlider(min=0, max=max_numberFrames-1, step=step, value=value,
                                                                readout_format='1', continuous_update=False, layout=Layout(width=IntSlider_width),
                                                                description='Frame:'))
 

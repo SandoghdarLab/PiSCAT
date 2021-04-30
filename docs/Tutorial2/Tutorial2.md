@@ -1,5 +1,5 @@
 # Differential imaging of averaged iSCAT frames    
-
+The static version of tutorial documents are presented here. Once the installation of PiSCAT on your local computer is completed, the dynamic version of the tutorial files can be found in the local PiSCAT directory located at ".\Tutorials\JupyterFiles\".
 ## Previously on PiSCAT tutorials...
 In the last tutorial, we [set up the PiSCAT modules and downloaded a demo iSCAT video](
 https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 

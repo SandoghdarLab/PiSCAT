@@ -1,5 +1,5 @@
 # Detection & contrast estimation of the proteins in iSCAT videos 
-
+The static version of tutorial documents are presented here. Once the installation of PiSCAT on your local computer is completed, the dynamic version of the tutorial files can be found in the local PiSCAT directory located at ".\Tutorials\JupyterFiles\".
 ## Previously on PiSCAT tutorials...
 Previously, we demonstrated how to use PiSCAT's APIs for 
 [setting up the PiSCAT modules and downloading a demo iSCAT video](
@@ -24,7 +24,7 @@ if module_path not in sys.path:
      
 # Downloading a measurement video for this tutorial 
 from piscat.InputOutput import download_tutorial_data
-download_tutorial_data('Tutorial4_video')
+download_tutorial_data('Tutorial3_video')
 
 # Examining the status line in a loaded/downloaded video and removing the line
 from piscat.InputOutput import reading_videos
@@ -34,7 +34,7 @@ from piscat.Preproccessing import normalization
 from piscat.BackgroundCorrection import DifferentialRollingAverage
 import numpy as np
 
-data_path = os.path.join(dir_path, 'Tutorials', 'Demo data', 'Tutorial4', 'Tutorial4_1')#The path to the measurement data
+data_path = os.path.join(dir_path, 'Tutorials', 'Demo data', 'Tutorial3', 'Tutorial3_1')#The path to the measurement data
 df_video = reading_videos.DirectoryType(data_path, type_file='raw').return_df()
 paths = df_video['Directory'].tolist()
 video_names = df_video['File'].tolist()
@@ -48,7 +48,7 @@ video_remove_status, status_information  = status_.find_status_line()#Examining 
 
 ```lang-none 
     The directory with the name  Demo data  already exists in the following path: PiSCAT\Tutorials
-    Directory  Tutorial4  already exists!
+    Directory  Tutorial3  already exists!
     
     Directory  Histogram  already exists
     ---Status line detected in column---
@@ -62,7 +62,7 @@ an absolute sense which is independent of the acquisition parameters. In the fol
 
 
 ```python
-data_path = os.path.join(dir_path, 'Tutorials', 'Demo data', 'Tutorial4', 'Tutorial4_2')#The path to the dark video data
+data_path = os.path.join(dir_path, 'Tutorials', 'Demo data', 'Tutorial3', 'Tutorial3_2')#The path to the dark video data
 df_video = reading_videos.DirectoryType(data_path, type_file='raw').return_df()
 paths = df_video['Directory'].tolist()
 video_names = df_video['File'].tolist()
@@ -104,7 +104,7 @@ https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#normalization-o
 
 
 ```python
-#From previuos tutorials: power normalization, DRA
+#From previous tutorials: power normalization, DRA
 video_pn, _ = normalization.Normalization(video=video_remove_status_dc).power_normalized()
 video_pn = video_remove_status_dc
 batchSize = 500
@@ -534,7 +534,7 @@ read_write_data.save_list_to_hdf5(all_trajectories, path=saving_directory, name=
 ```
 
 ## Loading results
-In the following cell, we provide an example for loading previuosly saved results of data type of hdf5.
+In the following cell, we provide an example for loading previously saved results of data type of hdf5.
 
 
 ```python
@@ -586,7 +586,7 @@ JupyterSelectedPSFs_localizationDisplay(video=RVideo_PN, particles=all_trajector
 
 ## Histogram of the protein contrasts
 In the following cell, the distribution of the contrasts of the proteins 
-(dark, bright and total) which were previuosly estimated using 
+(dark, bright and total) which were previously estimated using 
 [three different methods of fitting, peak and prominence](https://piscat.readthedocs.io/en/latest/Tutorial3/Tutorial3.html#estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[2]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
 
 

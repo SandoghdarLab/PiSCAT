@@ -245,9 +245,9 @@ class download_tutorial_data():
                 dr_ = os.path.join(save_path, name_mkdir_1)
                 self.run_download(url='https://owncloud.gwdg.de/index.php/s/tzRZ7ytBd1weNDl/download', save_path=dr_)
 
-        elif tutorial_id == 'Tutorial4_video':
+        elif tutorial_id == 'Tutorial3_video':
             name_mkdir_1 = 'Demo data'
-            name_mkdir_2 = 'Tutorial4'
+            name_mkdir_2 = 'Tutorial3'
             name_mkdir_3 = 'Histogram'
 
             dr_ = os.path.join(save_path, name_mkdir_1, name_mkdir_2)
