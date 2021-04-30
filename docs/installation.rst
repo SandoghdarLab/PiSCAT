@@ -24,6 +24,13 @@ console:
 ``python -m piscat``
 
 
+Running PiSCAT Tutorials
+------------------------
+Once the installation is done and the python environment is activated, enter the following command in the console:
+
+``python -m piscat.Tutorials``
+
+
 Testing
 -------
 To run the tests, please activate the PiSCAT virtual environment. In the project directory,
