@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 # This file was created automatically
-longversion = '0.1.0-34-g82c7258'
+longversion = '0.1.0-36-gbb51198'

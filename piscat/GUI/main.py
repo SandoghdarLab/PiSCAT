@@ -39,7 +39,6 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.original_video = None
         self.dra_video = None
 
-        # self.processor_setting = CPU_setting()
         self.FFT2D_GUI_wrapper = FFT2D_GUI_wrapper()
 
         self.initUI()
@@ -48,7 +47,8 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
 
         # defining the main window.
         window_icon = pkg_resources.resource_filename('piscat.GUI.icons', 'mpl.png')
-        self.setWindowIcon(QtGui.QIcon(window_icon))
+        main_icon = QtGui.QIcon(window_icon)
+        self.setWindowIcon(main_icon)
         self.setWindowTitle("PiSCAT")
         self.setStyleSheet('QMainWindow{background-color: darkgray;}')
         self.setGeometry(90, 90, 400, 1000)
@@ -60,7 +60,15 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.main_frame_layout = QtWidgets.QVBoxLayout()
         self.main_frame.setLayout(self.main_frame_layout)
 
+
         # ------------------------- Adding the main Logo ---------------------------------------------
+        label_logo = QtWidgets.QLabel(self)
+        logo_piscat_path = pkg_resources.resource_filename('piscat.GUI.icons', 'PiSCAT_logo_bg.png')
+        loader_logo = QtGui.QPixmap(logo_piscat_path)
+        loader_logo = loader_logo.scaled(320, 100)
+        label_logo.setPixmap(loader_logo)
+        self.main_frame_layout.addWidget(label_logo)
+
         label = QtWidgets.QLabel(self)
         movie_path = pkg_resources.resource_filename('piscat.GUI.icons', 'movie.gif')
         loader_gif = QtGui.QMovie(movie_path)
