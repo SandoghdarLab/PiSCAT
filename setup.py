@@ -54,7 +54,8 @@ setup(
                         "requests",
                         "wget",
                         "versioned-hdf5",
-                        "h5py"
+                        "h5py",
+                        "imageio-ffmpeg"
                       ],
     # not to be confused with definitions in pyproject.toml [build-system]
     setup_requires=["pytest-runner"],

@@ -284,16 +284,24 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             self.dra_video = data_in[0]
             self.batch_size = data_in[3]
             self.list_available_video['DRA_video'] = True
+            status_line_info = None
         else:
+            status_line_info = data_in[3]
             self.original_video = data_in[0]
             self.list_available_video['original_video'] = True
         title = data_in[1]
         file_name = data_in[2]
 
+
         self.video_in_memory_flag[label] = True
         self.set_new_text('**** ' + str(datetime.datetime.now()) + ' ****')
         self.set_new_text(file_name)
         self.set_new_text(label + ' ' + title + " shape:" + str(self.original_video.shape))
+
+        if status_line_info is not None and status_line_info['status_line_position'] != '':
+            self.set_new_text('---Status line detected in ' + status_line_info['status_line_position'] + '---')
+        elif status_line_info is not None and status_line_info['status_line_position'] == '':
+            self.set_new_text('---Status line does not detect---')
 
     def video_display(self, data_in):
         if 'original_video' == data_in:

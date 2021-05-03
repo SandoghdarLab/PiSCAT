@@ -6,6 +6,8 @@ from PySide2.QtCore import *
 from piscat.InputOutput import write_video
 from piscat.Preproccessing.normalization import Normalization
 from piscat.Visualization.display import Display, DisplayPSFs_subplotLocalizationDisplay
+from piscat.Visualization.display_html import HTML_PSFs_subplotLocalizationDisplay
+
 from piscat.GUI.Visualization.contrast_adjustment_GUI import Contrast_adjustment_GUI
 from piscat.GUI.Visualization import slice_view
 from piscat.GUI.InputOutput import save_GUI
@@ -101,7 +103,6 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         # annotation
         self.annotation = QtWidgets.QPushButton("Live annotation")
-        # self.annotation.setAutoDefault(False)
         self.annotation.setCheckable(True)
         self.annotation.clicked.connect(self.annotationFun)
         self.annotation.setFixedWidth(130)
@@ -279,7 +280,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
             while self.flag_update_normalization:
                 QtCore.QCoreApplication.processEvents()
             file_name = str(self.original_video.shape[0]) + '_' + str(self.original_video.shape[1]) + '_' + \
-                        str(self.original_video.shape[2]) + '_' + str(self.original_video.dtype) + '.mp4'
+                        str(self.original_video.shape[2]) + '_' + str(self.original_video.dtype) + '.gif'
 
             write_video.write_GIF(dir_path=self.file_path, file_name=file_name, data=self.save_video, jump=self.frame_strides, fps=self.fps)
 

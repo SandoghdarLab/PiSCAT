@@ -13,7 +13,7 @@ import numpy as np
 
 def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
     """
-    This function analysis several videos based on the setting that the user defines in the ``hyperparameters`` and ``flags``.
+    This function analyses several videos based on the setting that the user defines in the ``hyperparameters`` and ``flags``.
 
     Parameters
     ----------
