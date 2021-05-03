@@ -60,7 +60,6 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.main_frame_layout = QtWidgets.QVBoxLayout()
         self.main_frame.setLayout(self.main_frame_layout)
 
-
         # ------------------------- Adding the main Logo ---------------------------------------------
         label_logo = QtWidgets.QLabel(self)
         logo_piscat_path = pkg_resources.resource_filename('piscat.GUI.icons', 'PiSCAT_logo_bg.png')
