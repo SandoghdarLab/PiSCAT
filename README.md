@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./piscat/GUI/icons/PiSCAT_logo_bg.png?raw=true" />
+  <img src="https://github.com/SandoghdarLab/PiSCAT/blob/28eafb06ea4f6b468dde70e33fa970d1699974cf/docs/Fig/PiSCAT_logo_bg.png" />
 </p>
 
 # PiSCAT: An open source package in Python for interferometric Scattering Microscopy  
