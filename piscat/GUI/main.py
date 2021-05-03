@@ -16,7 +16,7 @@ from piscat.GUI.Projects.Protein import ProteinTabs
 from piscat.GUI.Projects.Protein import Noise_Floor
 from piscat.GUI.Memory.video_in_memory import VideoInMemory
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-from piscat._version import version
+from piscat import version
 
 from PySide2 import QtGui
 from PySide2 import QtCore

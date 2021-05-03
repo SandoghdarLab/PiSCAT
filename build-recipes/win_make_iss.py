@@ -4,15 +4,15 @@ import os.path as op
 import platform
 import sys
 
-import bmicro
-
 # make library available
+import piscat
+
 cdir = op.dirname(op.abspath(__file__))
 pdir = op.dirname(cdir)
 sys.path.insert(0, pdir)
 
 # get version
-version = piscat.__version__
+version = piscat.version
 
 # read dummy
 with io.open(op.join(cdir, "win_piscat.iss_dummy"), 'r') as dummy:

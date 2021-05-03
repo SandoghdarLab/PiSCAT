@@ -2,7 +2,7 @@
 from os.path import exists
 import warnings
 
-from piscat._version import version
+from piscat import version
 
 NAME = "piscat"
 
