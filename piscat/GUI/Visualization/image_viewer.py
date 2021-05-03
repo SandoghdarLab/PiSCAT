@@ -270,7 +270,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
                 QtCore.QCoreApplication.processEvents()
             file_name = str(self.original_video.shape[0]) + '_' + str(self.original_video.shape[1]) + '_' + \
                         str(self.original_video.shape[2]) + '_' + str(self.original_video.dtype) + '.mp4'
-            write_video.write_MP4(dir_path=self.file_path, file_name=file_name, data=self.save_video, fps=self.fps)
+            write_video.write_MP4(dir_path=self.file_path, file_name=file_name, data=self.save_video, jump=self.frame_strides, fps=self.fps)
 
         elif self.info_image_save.video_type == "GIF":
             self.flag_update_normalization = True

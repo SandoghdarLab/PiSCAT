@@ -43,7 +43,7 @@ def write_binary(dir_path, file_name, data, type='original'):
         outfile.write(data)
 
 
-def write_MP4(dir_path, file_name, data, fps=10):
+def write_MP4(dir_path, file_name, data, jump=0, fps=10):
     """
     This function writes video as a MP4.
 
@@ -58,6 +58,9 @@ def write_MP4(dir_path, file_name, data, fps=10):
     data: NDArray
         Video with numpy format.
 
+    jump: int
+            Define stride between frames
+
     fps: int
         Number of frame per seconds.
     """
@@ -71,12 +74,11 @@ def write_MP4(dir_path, file_name, data, fps=10):
 
     save_path = os.path.join(dir_path, timestr, file_name)
     data = data.copy(order='C')
-    out = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (data.shape[1], data.shape[2]), False)
+    image_ = []
+    for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
+        image_.append(data[frame_number, ...])
 
-    for fr_ in tqdm(range(data.shape[0])):
-        frame = data[fr_, ...]
-        out.write(frame)
-    out.release()
+    imageio.mimsave(save_path, image_, format='MP4', fps=fps)
 
 
 def write_GIF(dir_path, file_name, data, jump=0, fps=10):
@@ -114,4 +116,4 @@ def write_GIF(dir_path, file_name, data, jump=0, fps=10):
     for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
         image_.append(data[frame_number, ...])
 
-    imageio.mimsave(save_path, image_, 'GIF', fps=fps)
+    imageio.mimsave(save_path, image_, format='GIF', fps=fps)
