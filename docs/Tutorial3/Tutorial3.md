@@ -57,7 +57,7 @@ video_remove_status, status_information  = status_.find_status_line()#Examining 
 
 ## Dark frame correction
 The gray values of an iSCAT image can be directly used to quantitatively estimate the mass of the detected proteins.
- The read-out digital value of a pixel, however, is not entirely built from the collected photons. Part of the recorded signal stems from an extra offset voltage that exists even in imaging under no light condition. We, therefore, need to perform an additional preprocessing step on iSCAT videos to subtract a calibrating dark frame from every recorded frame. The dark count in the read-out value of a pixel is a function of acquisition parameters such as exposure time, frame rate and etc. The dark frame correction of iSCAT videos would allow us to obtain the accurate contrasts of the proteins i.e. the true contrast value in
+ The read-out digital value of a pixel, however, is not entirely built from the collected photons. Part of the recorded signal stems from an extra offset voltage that exists even in imaging under no light condition. It might be helpful to perform an additional preprocessing step on iSCAT videos to subtract a calibrating dark frame from every recorded frame. The dark count in the read-out value of a pixel is a function of acquisition parameters such as exposure time, frame rate and etc. The dark frame correction of iSCAT videos would allow us to obtain the accurate contrasts of the proteins i.e. the true contrast value in
 an absolute sense which is independent of the acquisition parameters. In the following cell, we first compute the pixel-wise average of a calibrating dark video to form the mean dark frame and then subtract this frame from the protein measurement videos. 
 
 
@@ -71,7 +71,10 @@ video_darkFrames = reading_videos.video_reader(file_name=demo_video_path, type='
                                     image_type=np.dtype('<u2'), s_frame=0, e_frame=-1)#Loading the video
 status_ = read_status_line.StatusLine(video_darkFrames)#Reading the status line
 video_darkFrames_remove_status, status_information  = status_.find_status_line()#Examining the status line & removing it
-mean_dark_frame = np.mean(video_darkFrames_remove_status, axis=0)#Computing the mean of the video
+#Computing the mean frame of the dark video
+mean_dark_frame = np.mean(video_darkFrames_remove_status, axis=0)
+#Alternatively, the mean dark count could also be a good measure of the global offset due to dark counts, given as below,
+#mean_dark_frame = np.mean(video_darkFrames_remove_status)
 video_remove_status_dc = np.subtract(video_remove_status, mean_dark_frame)#Subtracting the mean dark frame from the measurement 
 
 #Visualization of iSCAT frames before and after correction of dark counts
