@@ -26,7 +26,7 @@ class PlotProteinHistogram(PrintColors):
         ----------
         intersection_display_flag: bool
             This flag can be used when we want to see the result of intersection on
-            top of v-shaped (Please read tutorials 4).
+            top of v-shaped (Please read tutorials 3).
 
         imgSizex: int
             The width of the histogram figure.

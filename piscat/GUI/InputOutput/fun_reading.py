@@ -68,13 +68,13 @@ class Reading(QtWidgets.QMainWindow):
                     else:
                         self.original_video = video
 
-                    self.original_video = self.status_line_remove(self.original_video)
+                    self.original_video, status_line_info = self.status_line_remove(self.original_video)
 
                     if self.info_image.flag_display is True:
                         self.visualization_ = Visulization_localization()
                         self.visualization_.new_display(self.original_video, self.original_video, object=None, title='Raw video')
 
-                    self.update_output.emit([self.original_video, title, self.filename])
+                    self.update_output.emit([self.original_video, title, self.filename, status_line_info])
                 except:
                     self.msg_box = QtWidgets.QMessageBox()
                     self.msg_box.setWindowTitle("Warning!")
@@ -88,7 +88,7 @@ class Reading(QtWidgets.QMainWindow):
                 self.visualization_ = Visulization_localization(self.filename)
                 self.visualization_.new_display(self.original_video, self.original_video, object=None, title='PNG')
 
-                self.update_output.emit([self.original_video, title, self.filename])
+                self.update_output.emit([self.original_video, title, self.filename, None])
 
             elif title == "AVI":
                 avi_video = reading_videos.read_avi(self.filename)
@@ -118,7 +118,7 @@ class Reading(QtWidgets.QMainWindow):
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(self.original_video, self.original_video, object=None, title='AVI')
 
-                self.update_output.emit([self.original_video, title, self.filename])
+                self.update_output.emit([self.original_video, title, self.filename, None])
 
             elif title == "TIF":
                 tif_video = reading_videos.read_tif(self.filename)
@@ -147,7 +147,7 @@ class Reading(QtWidgets.QMainWindow):
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
 
-                self.update_output.emit([self.original_video, title, self.filename])
+                self.update_output.emit([self.original_video, title, self.filename, None])
 
             else:
                 self.msg_box = QtWidgets.QMessageBox()
@@ -179,7 +179,7 @@ class Reading(QtWidgets.QMainWindow):
                                                     reader_type=self.info_image.video_reader_type)
                 video = im2vid()
 
-                video = self.status_line_remove(video)
+                video, status_line_info = self.status_line_remove(video)
 
                 self.original_video = video
 
@@ -187,7 +187,7 @@ class Reading(QtWidgets.QMainWindow):
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(self.original_video, self.original_video, object=None, title='im2video')
 
-                self.update_output.emit([self.original_video, title, self.folder])
+                self.update_output.emit([self.original_video, title, self.folder, status_line_info])
             else:
                 self.msg_box = QtWidgets.QMessageBox()
                 self.msg_box.setWindowTitle("Warning!")
@@ -222,7 +222,7 @@ class Reading(QtWidgets.QMainWindow):
             self.msg_box.setText("status line remove" + "\nold shape:" + str(video.shape) + "\nnew shape:" + str(cut_frames.shape))
             self.msg_box.exec_()
 
-        return cut_frames
+        return cut_frames, axis_status_line
 
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()

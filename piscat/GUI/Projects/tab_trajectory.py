@@ -214,32 +214,34 @@ class Tracking_GUI(QtWidgets.QWidget):
                 self.msg_box3.exec_()
 
     def do_plot2D(self):
-        try:
-            self.pixel_size = int(self.line_pixel_size.text())
-        except:
-            self.msg_box3 = QtWidgets.QMessageBox()
-            self.msg_box3.setWindowTitle("Warning!")
-            self.msg_box3.setText("Pixel size set as default (1 nm)!")
-            self.msg_box3.exec_()
-
-            self.pixel_size = 1
-
-        try:
-            self.axisScale = str(self.line_axis_scale.text())
-        except:
-            self.msg_box3 = QtWidgets.QMessageBox()
-            self.msg_box3.setWindowTitle("Warning!")
-            self.msg_box3.setText("axis scale set as default (nm)!")
-            self.msg_box3.exec_()
-
-            self.axisScale = '(nm)'
 
         if self.link_df_PSFS is None:
             self.msg_box3 = QtWidgets.QMessageBox()
             self.msg_box3.setWindowTitle("Warning!")
-            self.msg_box3.setText("No Particles found!")
+            self.msg_box3.setText("Please update the linking section!")
             self.msg_box3.exec_()
         else:
+
+            try:
+                self.pixel_size = int(self.line_pixel_size.text())
+            except:
+                self.msg_box3 = QtWidgets.QMessageBox()
+                self.msg_box3.setWindowTitle("Warning!")
+                self.msg_box3.setText("Pixel size set as default (1 nm)!")
+                self.msg_box3.exec_()
+
+                self.pixel_size = 1
+
+            try:
+                self.axisScale = str(self.line_axis_scale.text())
+            except:
+                self.msg_box3 = QtWidgets.QMessageBox()
+                self.msg_box3.setWindowTitle("Warning!")
+                self.msg_box3.setText("axis scale set as default (nm)!")
+                self.msg_box3.exec_()
+
+                self.axisScale = '(nm)'
+
             if self.checkbox_display_label.isChecked():
                 label = True
             else:
