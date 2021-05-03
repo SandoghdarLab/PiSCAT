@@ -1,3 +1,4 @@
+![](./docs/Fig/PiSCAT_logo_bg.png)
 # PiSCAT: An open source package in Python for interferometric Scattering Microscopy  
 
 iSCAT microscopy was introduced about two decades ago ([1](https://link.aps.org/doi/10.1103/PhysRevLett.93.037401)) and demonstrated to be the method of choice for label-free imaging and tracking of matter at nanometric scale ([2](https://doi.org/10.1021/acs.nanolett.9b01822)), with a wide range of applications such as detection of gold nanoparticles, single dye molecules, viruses, and small proteins ([3](https://en.wikipedia.org/wiki/Interferometric_scattering_microscopy)).
