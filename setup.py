@@ -17,7 +17,7 @@ year = "2021"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
 try:
-    from _version import version
+    from piscat import version
 except BaseException:
     version = "unknown"
 

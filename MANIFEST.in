@@ -1,1 +1,3 @@
 include piscat/GUI/icons/*
+include piscat/Tutorials/JupyterFiles/*
+include piscat/Tutorials/JupyterFiles/Fig/*
