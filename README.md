@@ -1,4 +1,4 @@
-![](https://github.com/SandoghdarLab/PiSCAT/blob/28eafb06ea4f6b468dde70e33fa970d1699974cf/docs/Fig/PiSCAT_logo_bg.png)
+.. image:: https://github.com/SandoghdarLab/PiSCAT/blob/28eafb06ea4f6b468dde70e33fa970d1699974cf/docs/Fig/PiSCAT_logo_bg.png
 
 # PiSCAT: An open source package in Python for interferometric Scattering Microscopy  
 
