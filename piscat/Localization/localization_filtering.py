@@ -69,7 +69,8 @@ class SpatialFilter():
                     The filter data frame contains PSFs locations( x, y, frame, sigma)
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
-            raise ValueError('---data frames is empty!---')
+            print('---data frames is empty!---')
+            return df_PSFs
 
         if type(df_PSFs) is pd.core.frame.DataFrame:
             df_PSFs = df_PSFs
