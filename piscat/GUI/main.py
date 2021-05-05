@@ -208,7 +208,7 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
     def __del__(self):
         print('Destructor called, Employee deleted.')
 
-    def closeEvent(self, **kwargs):
+    def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()
         print("closing PlaySetting")
 
@@ -291,7 +291,6 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             self.list_available_video['original_video'] = True
         title = data_in[1]
         file_name = data_in[2]
-
 
         self.video_in_memory_flag[label] = True
         self.set_new_text('**** ' + str(datetime.datetime.now()) + ' ****')
