@@ -118,7 +118,7 @@ class ReadProteinAnalysis(CameraParameters):
              This dictionary defines a histogram plotting setting. In the following you can see the example for it:
 
                 | his_setting = {'bins': None, 'lower_limitation': -7e-4, 'upper_limitation': 7e-4,
-                                   'Flag_GMM_fit': True, 'max_n_components': 3, 'step_range': 1e-6, 'face': 'g', 'edge': 'k', }
+                                   'Flag_GMM_fit': True, 'max_n_components': 3, 'step_range': 1e-6, 'face': 'g', 'edge': 'k', 'scale': 1e1}
         """
         self.his_.plot_histogram(bins=his_setting['bins'], upper_limitation=his_setting['upper_limitation'],
                                 lower_limitation=his_setting['lower_limitation'], step_range=his_setting['step_range'],
