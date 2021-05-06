@@ -73,6 +73,16 @@ class PlotProteinHistogram(PrintColors):
         self.t_iPSFCentroidSigmas_fit_x = []
         self.t_iPSFCentroidSigmas_fit_y = []
 
+        self.t_mean_x_center_bright = []
+        self.t_std_x_center_bright = []
+        self.t_mean_y_center_bright = []
+        self.t_std_y_center_bright = []
+
+        self.t_mean_x_center_dark = []
+        self.t_std_x_center_dark = []
+        self.t_mean_y_center_dark = []
+        self.t_std_y_center_dark = []
+
     def __call__(self, folder_name, particles, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence,
                  pixel_size=0.66):
         """
@@ -147,6 +157,8 @@ class PlotProteinHistogram(PrintColors):
                     fit_X_sigma = None
                     fit_Y_sigma = None
 
+                self.localization(x_center, y_center, center_int)
+
                 self.data_handling(center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
                                    fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
                                    MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
@@ -211,9 +223,23 @@ class PlotProteinHistogram(PrintColors):
                     fit_X_sigma = None
                     fit_Y_sigma = None
 
+                self.localization(x_center, y_center, center_int)
+
                 self.data_handling(center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
                                    fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
                                    MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
+
+    def localization(self, x_center, y_center, center_int):
+        if np.mean(center_int) >= 0:
+            self.t_mean_x_center_bright.append(np.mean(x_center))
+            self.t_std_x_center_bright.append(np.std(x_center))
+            self.t_mean_y_center_bright.append(np.mean(y_center))
+            self.t_std_y_center_bright.append(np.std(y_center))
+        elif np.mean(center_int) < 0:
+            self.t_mean_x_center_dark.append(np.mean(x_center))
+            self.t_std_x_center_dark.append(np.std(x_center))
+            self.t_mean_y_center_dark.append(np.mean(y_center))
+            self.t_std_y_center_dark.append(np.std(y_center))
 
     def data_handling(self, center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
                       fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence):
@@ -754,7 +780,7 @@ class PlotProteinHistogram(PrintColors):
 
     def plot_histogram(self, bins=None, upper_limitation=1, lower_limitation=-1,
                        step_range=1e-7, face='g', edge='y', Flag_GMM_fit=True, max_n_components=3, imgSizex=20,
-                       imgSizey=20, font_size=12):
+                       imgSizey=20, font_size=12, scale=1e1):
         """
         This method plots histograms for different contrast extraction methods for black PSFs, white PSFs and all together.
 
@@ -793,6 +819,8 @@ class PlotProteinHistogram(PrintColors):
         font_size: float
             The font size of the text in the table information.
 
+        scale: float
+            This value multiplies the full range for x-axis plotting.
         """
 
         df, list_data, title = self.extract_hist_information(con_intersections=self.t_contrast_intersection,
@@ -837,7 +865,7 @@ class PlotProteinHistogram(PrintColors):
                     density = np.sum(np.array(pdfs), axis=0)
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=True)
-                    ax.axis(xmin=0, xmax=upper_limitation * 1e1)
+                    ax.axis(xmin=0, xmax=upper_limitation * scale)
                     ax.plot(x.ravel(), density.ravel())
                     ax.set_ylabel('Density')
                     ax.set_title(title[p_index])
@@ -849,7 +877,7 @@ class PlotProteinHistogram(PrintColors):
 
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
-                    ax.axis(xmin=0, xmax=upper_limitation * 1e1)
+                    ax.axis(xmin=0, xmax=upper_limitation * scale)
                     ax.set_ylabel('#Counts')
                     ax.set_title(title[p_index])
                     ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
@@ -860,7 +888,7 @@ class PlotProteinHistogram(PrintColors):
 
                 ax = plt.Subplot(fig, inner[p_index])
                 ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
-                ax.axis(xmin=0, xmax=upper_limitation * 1e1)
+                ax.axis(xmin=0, xmax=upper_limitation * scale)
                 ax.set_ylabel('#Counts')
                 ax.set_title(title[p_index])
                 ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
@@ -1009,6 +1037,55 @@ class PlotProteinHistogram(PrintColors):
         plt.ylabel('#Counts')
         plt.legend('Fitted sigma_x', 'Fitted sigma_y')
         plt.title('Ratio mean of Sigma_Max/Sigma_Min=' + str(ratio_sigma))
+        plt.show()
+
+
+    def plot_localization_heatmap(self, pixel_size):
+        """
+        This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
+
+        Parameters
+        ----------
+        pixel_size: float
+            camera pixel size
+        """
+        bubble_size_bright_ = pixel_size * np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
+        bubble_size_dark_ = pixel_size * np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
+
+        bubble_size_bright = []
+        for s_b in bubble_size_bright_:
+            if s_b == 0:
+                bubble_size_bright.append(s_b + 1e-6)
+            else:
+                bubble_size_bright.append(s_b)
+
+        bubble_size_dark = []
+        for s_d in bubble_size_dark_:
+
+            if s_d == 0:
+                bubble_size_dark.append(s_d + 1e-6)
+            else:
+                bubble_size_dark.append(s_d)
+
+        dic_dark = {'list_Dark_iPSFx': self.t_mean_x_center_dark, 'list_Dark_iPSFy': self.t_mean_y_center_dark, 'bubble_size': bubble_size_dark}
+        df_dark = pd.DataFrame.from_dict(dic_dark)
+        dic_bright = {'list_Bright_iPSFx': self.t_mean_x_center_bright, 'list_Bright_iPSFy': self.t_mean_y_center_bright, 'bubble_size': bubble_size_bright}
+        df_bright = pd.DataFrame.from_dict(dic_bright)
+
+        plt.figure()
+        plt.scatter('list_Dark_iPSFx', 'list_Dark_iPSFy',
+                    s='bubble_size',
+                    alpha=0.5,
+                    data=df_dark, label='Dark')
+
+        plt.scatter('list_Bright_iPSFx', 'list_Bright_iPSFy',
+                    s='bubble_size',
+                    alpha=0.5,
+                    data=df_bright, label='Bright')
+
+        plt.xlabel("X", size=20)
+        plt.ylabel("y", size=20)
+        plt.legend()
         plt.show()
 
     def save_hist_data(self, dirName, name, upper_limitation=1, lower_limitation=-1, Flag_GMM_fit=True, max_n_components=3):

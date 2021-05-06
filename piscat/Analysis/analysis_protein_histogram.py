@@ -59,6 +59,7 @@ class ReadProteinAnalysis(CameraParameters):
         for p_, n_ in zip(paths, file_names):
 
             if name_dir in p_:
+                print(p_)
                 hyperparameters = None
                 PSFs_Particels_num = None
                 df_json = reading_videos.DirectoryType(p_, type_file='.json').return_df()
@@ -92,6 +93,19 @@ class ReadProteinAnalysis(CameraParameters):
 
         print('{} folders was read'.format(folder_cnt_))
         print('{} df_PSFs should find in histogram '.format(num_particles))
+
+    def plot_localization_heatmap(self, pixelSize=None):
+        """
+        This method plots heatmap of particle localization. The size of each disk depicts the movment of each particles during tracking.
+
+        Parameters
+        ----------
+        pixelSize: float
+            camera pixel size
+        """
+        if pixelSize is not None:
+            self.pixelSize = pixelSize
+        self.his_.plot_localization_heatmap(self.pixelSize)
 
 
     def plot_hist(self, his_setting):
