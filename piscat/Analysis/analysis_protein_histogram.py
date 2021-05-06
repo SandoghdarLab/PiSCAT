@@ -123,7 +123,7 @@ class ReadProteinAnalysis(CameraParameters):
         self.his_.plot_histogram(bins=his_setting['bins'], upper_limitation=his_setting['upper_limitation'],
                                 lower_limitation=his_setting['lower_limitation'], step_range=his_setting['step_range'],
                                 face=his_setting['face'], edge=his_setting['edge'], Flag_GMM_fit=his_setting['Flag_GMM_fit'],
-                                max_n_components=his_setting['max_n_components'])
+                                max_n_components=his_setting['max_n_components'], scale=his_setting['scale'])
 
     def plot_hist_2Dfit(self, his_setting):
         """
