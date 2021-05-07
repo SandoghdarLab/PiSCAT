@@ -94,7 +94,7 @@ class ReadProteinAnalysis(CameraParameters):
         print('{} folders was read'.format(folder_cnt_))
         print('{} df_PSFs should find in histogram '.format(num_particles))
 
-    def plot_localization_heatmap(self, pixelSize=None):
+    def plot_localization_heatmap(self, pixelSize=None, unit='um'):
         """
         This method plots heatmap of particle localization. The size of each disk depicts the movment of each particles during tracking.
 
@@ -102,10 +102,12 @@ class ReadProteinAnalysis(CameraParameters):
         ----------
         pixelSize: float
             camera pixel size
+        unit: str
+            unit of axises
         """
         if pixelSize is not None:
             self.pixelSize = pixelSize
-        self.his_.plot_localization_heatmap(self.pixelSize)
+        self.his_.plot_localization_heatmap(self.pixelSize, unit=unit)
 
 
     def plot_hist(self, his_setting):

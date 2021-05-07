@@ -604,7 +604,9 @@ class PlotProteinHistogram(PrintColors):
                     list_keys.append(key)
                     list_num_GMM.append(None)
 
-            max_num_gmm_mean = np.max(list_num_GMM)
+            list_num_GMM_temp = [x for x in list_num_GMM if x is not None]
+            max_num_gmm_mean = np.max(list_num_GMM_temp)
+
             for means, stdevs, weights, key in zip(list_means, list_stds, list_weights, list_keys):
                 if means is not None:
                     if len(means) == max_num_gmm_mean:
@@ -690,7 +692,7 @@ class PlotProteinHistogram(PrintColors):
             return means, stdevs, weights, AIC, BIC
         except:
             print('---Data is not enough for GMM!---')
-            return np.nan, np.nan, np.nan
+            return np.nan, np.nan, np.nan, np.nan, np.nan
 
     def frameNumber_longerProfile_2_Vshape(self, batch_size, video_shape_0, particle_frame_number, V_smooth_follow):
         BS2 = 2 * batch_size
@@ -881,7 +883,8 @@ class PlotProteinHistogram(PrintColors):
                         ax.plot(x.ravel(), density.ravel())
                     else:
                         for j_ in range(len(weights)):
-                            ax.plot(x.ravel(), float(weights[j_]) * stats.norm.pdf(x.ravel(), float(means[j_]), float(stdevs[j_])).ravel())
+                            if weights[j_] is not None:
+                                ax.plot(x.ravel(), float(weights[j_]) * stats.norm.pdf(x.ravel(), float(means[j_]), float(stdevs[j_])).ravel())
 
                     ax.set_ylabel('Density')
                     ax.set_title(title[p_index])
@@ -922,45 +925,51 @@ class PlotProteinHistogram(PrintColors):
         plt.show()
 
     def plot_fit_histogram(self, bins=None, upper_limitation=1, lower_limitation=-1, step_range=1e-7, face='g',
-                           edge='y',
-                           Flag_GMM_fit=True, max_n_components=3, imgSizex=20, imgSizey=20, font_size=12):
+                           edge='y', Flag_GMM_fit=True, max_n_components=3, imgSizex=20, imgSizey=20, font_size=12,
+                           scale=1e1, external_GMM=False):
         """
         This method plots histograms for 2D Gaussian fitting contrast for black PSFs, white PSFs and all together.
 
-       Parameters
-       ----------
-       bins: int
+        Parameters
+        ----------
+        bins: int
            Number of histogram bins.
 
-       upper_limitation: float
+        upper_limitation: float
            The upper limit for trimming histogram.
 
-       lower_limitation: float
+        lower_limitation: float
            The lower limit for trimming histogram.
 
-       step_range: float
+        step_range: float
            The resolution that is used for GMM plotting.
 
-       face: str
+        face: str
            Face color of the histogram.
 
-       edge: str
+        edge: str
            Edge color of the histogram.
 
-       Flag_GMM_fit: bool
+        Flag_GMM_fit: bool
            Activate/Deactivate GMM.
 
-       max_n_components: int
+        max_n_components: int
            The maximum number of components that GMM used for AIC and BIC tests. This helps to find an optimum number of the mixture.
 
-       imgSizex: int
+        imgSizex: int
            The width of the histogram figure.
 
-       imgSizey: int
+        imgSizey: int
            The height of the histogram figure.
 
-       font_size: float
+        font_size: float
            The font size of the text in the table information.
+
+        scale: float
+                   This value multiplies the full range for x-axis plotting.
+
+        external_GMM: bool
+           This flag modifies GMM's visualization. Only the external border is visible if it is set to True.
 
         """
 
@@ -975,56 +984,71 @@ class PlotProteinHistogram(PrintColors):
         fig = plt.figure(figsize=(imgSizex, imgSizey))
         outer = gridspec.GridSpec(2, 1, wspace=0.3, hspace=0.2)
 
-        inner = gridspec.GridSpecFromSubplotSpec(3, 3, subplot_spec=outer[0], wspace=0.3, hspace=0.7)
+        inner = gridspec.GridSpecFromSubplotSpec(3, 3,
+                                                 subplot_spec=outer[0], wspace=0.3, hspace=0.7)
 
         for p_index in range(len(list_data)):
             if Flag_GMM_fit:
-                key = title[p_index]
-                means = df[key]['GMM_Means']
-                stdevs = df[key]['GMM_Stds']
-                weights = df[key]['GMM_Weights']
-                if means is None or stdevs is None or weights is None:
-                    d_ = np.abs(list_data[p_index])
-                    nan_array = np.isnan(d_)
-                    not_nan_array = ~ nan_array
-                    d_ = d_[not_nan_array]
+                try:
+                    key = title[p_index]
+                    index_ = df.index.to_list()
+                    pdfs = []
+                    means = []
+                    stdevs = []
+                    weights = []
+                    for idx_ in index_:
+                        if 'GMM_mean' in idx_:
+                            means.append(df[key][idx_])
+                        elif 'GMM_std' in idx_:
+                            stdevs.append(df[key][idx_])
+                        elif 'GMM_weight' in idx_:
+                            weights.append(df[key][idx_])
 
-                    min_data = np.nanmin(d_)
-                    max_data = np.nanmax(d_)
+                    d_ = np.abs(list_data[p_index])
+                    min_data = np.min(d_) - 0.5 * np.min(d_)
+                    max_data = np.max(d_) + 0.5 * np.max(d_)
 
                     x = np.arange(min_data, max_data, step_range)
-                    pdfs = [p * ss.norm.pdf(x, mu, sd) for mu, sd, p in zip(means, stdevs, weights)]
+
+                    pdfs = [float(p) * ss.norm.pdf(x, float(mu), float(sd)) for mu, sd, p in zip(means, stdevs, weights)
+                            if mu is not None and sd is not None and p is not None]
                     density = np.sum(np.array(pdfs), axis=0)
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=True)
-                    ax.plot(x.ravel(), density.ravel())
-                    ax.xlim(lower_limitation, upper_limitation)
+                    ax.axis(xmin=0, xmax=upper_limitation * scale)
+                    if external_GMM:
+                        ax.plot(x.ravel(), density.ravel())
+                    else:
+                        for j_ in range(len(weights)):
+                            if weights[j_] is not None:
+                                ax.plot(x.ravel(), float(weights[j_]) * stats.norm.pdf(x.ravel(), float(means[j_]),
+                                                                                       float(stdevs[j_])).ravel())
+
                     ax.set_ylabel('Density')
                     ax.set_title(title[p_index])
+                    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
                     fig.add_subplot(ax)
 
-                else:
+                except:
                     d_ = np.abs(list_data[p_index])
-                    nan_array = np.isnan(d_)
-                    not_nan_array = ~ nan_array
-                    d_ = d_[not_nan_array]
 
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
+                    ax.axis(xmin=0, xmax=upper_limitation * scale)
                     ax.set_ylabel('#Counts')
                     ax.set_title(title[p_index])
+                    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
                     fig.add_subplot(ax)
 
             else:
-                d_ = list_data[p_index]
-                nan_array = np.isnan(d_)
-                not_nan_array = ~ nan_array
-                d_ = d_[not_nan_array]
+                d_ = np.abs(list_data[p_index])
 
                 ax = plt.Subplot(fig, inner[p_index])
                 ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
+                ax.axis(xmin=0, xmax=upper_limitation * scale)
                 ax.set_ylabel('#Counts')
                 ax.set_title(title[p_index])
+                ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
                 fig.add_subplot(ax)
 
         ax2 = plt.Subplot(fig, outer[1])
@@ -1055,8 +1079,7 @@ class PlotProteinHistogram(PrintColors):
         plt.title('Ratio mean of Sigma_Max/Sigma_Min=' + str(ratio_sigma))
         plt.show()
 
-
-    def plot_localization_heatmap(self, pixel_size):
+    def plot_localization_heatmap(self, pixel_size, unit):
         """
         This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
 
@@ -1064,9 +1087,15 @@ class PlotProteinHistogram(PrintColors):
         ----------
         pixel_size: float
             camera pixel size
+
+        unit: str
+            unit of axises
         """
-        bubble_size_bright_ = pixel_size * np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
-        bubble_size_dark_ = pixel_size * np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
+        bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
+        bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
+
+        print('Number of dark particles {}'.format(bubble_size_bright_.shape[0]))
+        print('Number of bright particles {}'.format(bubble_size_dark_.shape[0]))
 
         bubble_size_bright = []
         for s_b in bubble_size_bright_:
@@ -1083,9 +1112,16 @@ class PlotProteinHistogram(PrintColors):
             else:
                 bubble_size_dark.append(s_d)
 
-        dic_dark = {'list_Dark_iPSFx': self.t_mean_x_center_dark, 'list_Dark_iPSFy': self.t_mean_y_center_dark, 'bubble_size': bubble_size_dark}
+        dic_dark = {'list_Dark_iPSFx': np.multiply(pixel_size, self.t_mean_x_center_dark),
+                    'list_Dark_iPSFy': np.multiply(pixel_size, self.t_mean_y_center_dark),
+                    'bubble_size': np.multiply(pixel_size, bubble_size_dark)}
+
         df_dark = pd.DataFrame.from_dict(dic_dark)
-        dic_bright = {'list_Bright_iPSFx': self.t_mean_x_center_bright, 'list_Bright_iPSFy': self.t_mean_y_center_bright, 'bubble_size': bubble_size_bright}
+
+        dic_bright = {'list_Bright_iPSFx': np.multiply(pixel_size, self.t_mean_x_center_bright),
+                      'list_Bright_iPSFy': np.multiply(pixel_size, self.t_mean_y_center_bright),
+                      'bubble_size': np.multiply(pixel_size, bubble_size_bright)}
+
         df_bright = pd.DataFrame.from_dict(dic_bright)
 
         plt.figure()
@@ -1099,8 +1135,8 @@ class PlotProteinHistogram(PrintColors):
                     alpha=0.5,
                     data=df_bright, label='Bright')
 
-        plt.xlabel("X", size=20)
-        plt.ylabel("y", size=20)
+        plt.xlabel("X(" + unit + ")", size=20)
+        plt.ylabel("Y(" + unit + ")", size=20)
         plt.legend()
         plt.show()
 
