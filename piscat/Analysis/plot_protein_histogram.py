@@ -4,6 +4,7 @@ import numpy as np
 import math
 import pandas as pd
 import scipy.stats as ss
+import scipy.stats as stats
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
@@ -579,13 +580,17 @@ class PlotProteinHistogram(PrintColors):
         list_weights = []
         list_keys = []
         list_num_GMM = []
+        list_AIC = []
+        list_BIC = []
         if Flag_GMM_fit:
             for data, key in zip(list_data, title):
                 try:
-                    means, stdevs, weights = self.GMM(np.abs(data), max_n_components)
+                    means, stdevs, weights, AIC, BIC = self.GMM(np.abs(data), max_n_components)
                     list_means.append(means)
                     list_stds.append(stdevs)
                     list_weights.append(weights)
+                    list_AIC.append(AIC)
+                    list_BIC.append(BIC)
                     list_keys.append(key)
                     list_num_GMM.append(len(means))
 
@@ -594,6 +599,8 @@ class PlotProteinHistogram(PrintColors):
                     list_means.append(None)
                     list_stds.append(None)
                     list_weights.append(None)
+                    list_AIC.append(None)
+                    list_BIC.append(None)
                     list_keys.append(key)
                     list_num_GMM.append(None)
 
@@ -664,7 +671,8 @@ class PlotProteinHistogram(PrintColors):
         BIC = [m.bic(data) for m in models if m is not None]
 
         try:
-            M_best = models[np.nanargmin(AIC)]
+            num_mixture = np.min([np.nanargmin(AIC), np.nanargmin(BIC)])
+            M_best = models[num_mixture]
 
             means = M_best.means_
             stdevs = np.sqrt(M_best.covariances_)
@@ -679,10 +687,10 @@ class PlotProteinHistogram(PrintColors):
             stdevs = [sci_num(s_[0][0]) for s_ in stdevs_]
             weights = [sci_num(w_) for w_ in weights_]
 
-            return means, stdevs, weights
+            return means, stdevs, weights, AIC, BIC
         except:
-            return np.nan, np.nan, np.nan
             print('---Data is not enough for GMM!---')
+            return np.nan, np.nan, np.nan
 
     def frameNumber_longerProfile_2_Vshape(self, batch_size, video_shape_0, particle_frame_number, V_smooth_follow):
         BS2 = 2 * batch_size
@@ -780,7 +788,7 @@ class PlotProteinHistogram(PrintColors):
 
     def plot_histogram(self, bins=None, upper_limitation=1, lower_limitation=-1,
                        step_range=1e-7, face='g', edge='y', Flag_GMM_fit=True, max_n_components=3, imgSizex=20,
-                       imgSizey=20, font_size=12, scale=1e1):
+                       imgSizey=20, font_size=12, scale=1e1, external_GMM=False):
         """
         This method plots histograms for different contrast extraction methods for black PSFs, white PSFs and all together.
 
@@ -821,6 +829,9 @@ class PlotProteinHistogram(PrintColors):
 
         scale: float
             This value multiplies the full range for x-axis plotting.
+
+        external_GMM: bool
+            This flag modifies GMM's visualization. Only the external border is visible if it is set to True.
         """
 
         df, list_data, title = self.extract_hist_information(con_intersections=self.t_contrast_intersection,
@@ -866,7 +877,12 @@ class PlotProteinHistogram(PrintColors):
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=True)
                     ax.axis(xmin=0, xmax=upper_limitation * scale)
-                    ax.plot(x.ravel(), density.ravel())
+                    if external_GMM:
+                        ax.plot(x.ravel(), density.ravel())
+                    else:
+                        for j_ in range(len(weights)):
+                            ax.plot(x.ravel(), float(weights[j_]) * stats.norm.pdf(x.ravel(), float(means[j_]), float(stdevs[j_])).ravel())
+
                     ax.set_ylabel('Density')
                     ax.set_title(title[p_index])
                     ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
@@ -1126,14 +1142,6 @@ class PlotProteinHistogram(PrintColors):
             dic_data[t_] = d_
 
         read_write_data.save_dic_to_hdf5(dic_data=dic_data, path=dirName, name=name)
-
-
-
-
-
-
-
-
 
 
 
