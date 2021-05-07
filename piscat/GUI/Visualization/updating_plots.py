@@ -1,5 +1,5 @@
 import matplotlib
-from PyQt5 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -21,8 +21,9 @@ class UpdatingPlots(QtWidgets.QMainWindow):
         self.setCentralWidget(self.canvas)
 
     def update_plot(self, ydata):
-        self.canvas.axes.cla()  # Clear the canvas.
-        self.canvas.axes.plot(ydata, 'r-')
+        self.canvas.axes.clear()  # Clear the canvas.
+        self.canvas.axes.plot(ydata, 'r.')
+        self.canvas.axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
         self.canvas.axes.grid()
         self.canvas.axes.set_ylabel('Pixel intensity')
         self.canvas.draw()

@@ -31,7 +31,6 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
 
     def __init__(self, input_video, video_original, stride=1, mask=False, *args, **kwargs):
         self.scene = QtWidgets.QGraphicsScene()
-        # self.scene = SubQGraphicsScene()
         super(SliceView, self).__init__(self.scene, *args, **kwargs)
 
         self.RAW_Video = video_original
@@ -275,9 +274,10 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         pen = QPen(Qt.red)
         pen.setCosmetic(True)
         pen.setWidth(1)
+
         try:
             self.scene.removeItem(self.Line)
-        except:
+        except AttributeError:
             pass
 
         self.Line = self.scene.addLine(self.x0, self.y0, self.x1, self.y1, pen)
@@ -300,10 +300,6 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
             self.updatePlot.show()
         except:
             pass
-
-
-
-
 
 
 

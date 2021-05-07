@@ -252,7 +252,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         if self.info_image_save.video_type == "RAW":
             if self.info_image_save.bin_type is not None:
-                type = self.original_video.astype(self.info_image_save.bin_type)
+                type = self.info_image_save.bin_type
             else:
                 type = 'original'
 
@@ -293,6 +293,8 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         if self.save.clicked:
             try:
                 self.info_image_save = save_GUI.SaveVideo()
+                self.info_image_save.window.show()
+
                 self.info_image_save.signal_save_Done.connect(self.call_save)
                 self.file_path = self.askdir()
 

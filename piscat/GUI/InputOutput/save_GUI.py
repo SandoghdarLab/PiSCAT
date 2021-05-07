@@ -69,7 +69,6 @@ class SaveVideo(QtWidgets.QMainWindow):
         self.setWindowTitle("Saving video")
         self.setStyleSheet('QMainWindow{background-color: darkgray;}')
         self.window.setLayout(self.grid)
-        self.window.show()
 
     def createFirstExclusiveGroup(self):
         self.groupBox_cropping = QtWidgets.QGroupBox("Cast to a specified bin_type")
