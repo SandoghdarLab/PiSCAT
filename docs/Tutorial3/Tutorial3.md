@@ -580,7 +580,7 @@ from piscat.Visualization import JupyterSelectedPSFs_localizationDisplay
 %matplotlib inline
 JupyterSelectedPSFs_localizationDisplay(video=RVideo_PN, particles=all_trajectories, particles_num='#16', 
                                           frame_extend=0, median_filter_flag=True, 
-                                          flag_fit2D=False, color='gray', imgSizex=15, imgSizey=15)
+                                          flag_fit2D=False, color='gray', imgSizex=5, imgSizey=5)
 ```
 
 
@@ -602,7 +602,7 @@ his_ = PlotProteinHistogram(intersection_display_flag=False)
 his_(folder_name='', particles=all_trajectories, batch_size=batchSize, video_frame_num=RVideo_PN.shape[0], 
      MinPeakWidth=200, MinPeakProminence=0, pixel_size=0.66)
 his_.plot_histogram(bins=6, upper_limitation=6e-3, lower_limitation=-6e-3, step_range=1e-6, face='g', 
-                    edge='k', Flag_GMM_fit=True, max_n_components=3)
+                    edge='k', Flag_GMM_fit=True, max_n_components=3, scale=1e1, external_GMM=False)
 ```
 
 

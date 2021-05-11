@@ -579,7 +579,6 @@ class JupyterSelectedPSFs_localizationDisplay():
         self.color = color
         self.flag_fit2D = flag_fit2D
         self.median_filter_flag = median_filter_flag
-        fig = plt.figure(figsize=(self.imgSizex, self.imgSizey))
 
         video_frameNum = video.shape[0]
         max_particle_frame = np.max(self.frame_number_)
@@ -595,7 +594,8 @@ class JupyterSelectedPSFs_localizationDisplay():
                                          description='Frame:'))
 
     def show_psf(self, f_num):
-
+        fig = plt.figure(figsize=(self.imgSizex, self.imgSizey))
+        ax = fig.add_axes([0, 0, 1, 1])
         if self.flag_fit2D:
             fit_params = self.fit_2D_gussian(frame_num=f_num, scale=5)
 
@@ -604,7 +604,6 @@ class JupyterSelectedPSFs_localizationDisplay():
         else:
             frame_v = self.video[int(f_num), :, :]
 
-        ax = plt.gca()
         myplot = ax.imshow(frame_v, cmap=self.color)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
