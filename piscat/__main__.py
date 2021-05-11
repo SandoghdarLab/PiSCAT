@@ -6,6 +6,7 @@ Allows to start GUI from console by calling
 """
 from piscat.GUI.main import main
 
+
 def run():
     main()
 

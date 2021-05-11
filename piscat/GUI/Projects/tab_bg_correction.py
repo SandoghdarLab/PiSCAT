@@ -130,6 +130,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
                     self.setting_bg_correction['median_kernel_size'] = median_size
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
+                    self.output_batchSize_Tab_bgCorrection.emit(0)
                     print("Done!")
                 else:
                     self.massage_filled()
@@ -146,6 +147,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
                     self.setting_bg_correction['gaussian_sigma'] = gaussian_sigma
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
+                    self.output_batchSize_Tab_bgCorrection.emit(0)
                     print("Done!")
                 else:
                     self.massage_filled()
@@ -155,6 +157,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                 blur = Filters(self.input_video)
                 self.output = [blur.temporal_median(), "Background correction temporal median"]
                 self.output_Tab_bgCorrection.emit(self.output)
+                self.output_batchSize_Tab_bgCorrection.emit(0)
                 print("Done!")
 
             elif self.combo_bg_filter.currentText() == "Flat field (Gaussian filter)":
@@ -165,10 +168,9 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     blur = Filters(self.input_video)
                     self.output = [blur.flat_field(sigma=sigma), "Flat field (Gaussian filter)"]
                     self.output_Tab_bgCorrection.emit(self.output)
-
                     self.setting_bg_correction['Flat_field_sigma'] = sigma
-
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
+                    self.output_batchSize_Tab_bgCorrection.emit(0)
                     print("Done!")
                 else:
                     self.massage_filled()
@@ -182,6 +184,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
                         self.output = np.divide(self.input_video, np.mean(self.original_video_bg, axis=0))
                         self.output_Tab_bgCorrection.emit([self.output, "Flat field (mean background subtraction)"])
+                        self.output_batchSize_Tab_bgCorrection.emit(0)
                         print("Done!")
 
                     else:

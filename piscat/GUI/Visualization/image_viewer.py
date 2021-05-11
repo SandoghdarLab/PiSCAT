@@ -257,7 +257,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
                 type = 'original'
 
             file_name = str(self.original_video.shape[0]) + '_' + str(self.original_video.shape[1]) +'_' + \
-                        str(self.original_video.shape[2]) + '_' + str(self.original_video.dtype) + '.raw'
+                        str(self.original_video.shape[2]) + '_' + str(type) + '.raw'
             write_video.write_binary(dir_path=self.file_path, file_name=file_name, data=self.original_video, type=type)
 
         elif self.info_image_save.video_type == "MP4":
