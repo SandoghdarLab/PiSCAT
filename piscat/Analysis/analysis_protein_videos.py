@@ -115,7 +115,10 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
                                       threshold=hyperparameters['PSF_detection_thr'],
                                       overlap=hyperparameters['overlap'], mode=hyperparameters['Mode_PSF_Segmentation'])
 
-        PSFs_Particels_num['#Totall_PSFs'] = df_PSFs.shape[0]
+        if df_PSFs is not None:
+            PSFs_Particels_num['#Totall_PSFs'] = df_PSFs.shape[0]
+        else:
+            PSFs_Particels_num['#Totall_PSFs'] = 0
 
         if PSFs_Particels_num['#Totall_PSFs'] > 1:
             s_filters = localization_filtering.SpatialFilter()
