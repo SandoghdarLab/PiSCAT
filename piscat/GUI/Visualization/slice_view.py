@@ -11,7 +11,7 @@ import numpy as np
 from piscat.Localization.directional_intensity import DirectionalIntensity
 from piscat.Preproccessing.normalization import Normalization
 from piscat.Visualization.contrast_adjustment import ContrastAdjustment
-from piscat.GUI.Visualization.updating_plots import UpdatingPlots
+from piscat.GUI.Visualization.updating_plots import UpdatingPlotsPyqtGraph
 
 
 class SliceView(QtWidgets.QGraphicsView, QRunnable):
@@ -33,6 +33,8 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.scene = QtWidgets.QGraphicsScene()
         super(SliceView, self).__init__(self.scene, *args, **kwargs)
 
+        self.updatePlot = UpdatingPlotsPyqtGraph()
+
         self.RAW_Video = video_original
         self.video_width = video_original.shape[1]
         self.video_height = video_original.shape[2]
@@ -45,7 +47,6 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.mask_is_set = False
         self.livePaint_Flag = False
         self.medianFilterFlag = False
-        self.updatePlot = UpdatingPlots()
         self.ori_X0 = 0
         self.ori_Y0 = 0
         self.ori_X1 = 0
@@ -296,7 +297,8 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
             for idx_ in radial_index:
                 pixels_.append(frame[int(idx_[1]), int(idx_[0])])
 
-            self.updatePlot.update_plot(pixels_)
+            x = list(range(0, len(pixels_)))
+            self.updatePlot.data_line.setData(x, pixels_)  # Update the data.
             self.updatePlot.show()
         except:
             pass

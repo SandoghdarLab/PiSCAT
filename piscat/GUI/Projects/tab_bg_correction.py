@@ -204,6 +204,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                 self.msg_box.exec_()
                 self.output = self.input_video
                 self.output_Tab_bgCorrection.emit([self.output, 'RAW'])
+                self.output_batchSize_Tab_bgCorrection.emit(0)
 
             self.update_tab_index.emit(1)
 

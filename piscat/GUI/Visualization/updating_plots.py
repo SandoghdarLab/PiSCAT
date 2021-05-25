@@ -1,4 +1,8 @@
 from PyQt5 import QtCore, QtWidgets
+
+from pyqtgraph import PlotWidget, plot
+import pyqtgraph as pg
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -26,3 +30,20 @@ class UpdatingPlots(QtWidgets.QMainWindow):
         self.canvas.axes.grid()
         self.canvas.axes.set_ylabel('Pixel intensity')
         self.canvas.draw()
+
+
+class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
+    def __init__(self):
+        super(UpdatingPlotsPyqtGraph, self).__init__()
+        self.layout = QtWidgets.QVBoxLayout(self)
+
+        self.graphWidget = pg.PlotWidget()
+        self.graphWidget.setBackground('w')
+        self.graphWidget.showGrid(x=True, y=True)
+        styles = {"color": "#f00", "font-size": "20px"}
+        self.graphWidget.setLabel("left", "Pixel intensity", **styles)
+
+        self.layout.addWidget(self.graphWidget)
+
+        pen = pg.mkPen(color=(255, 102, 0))
+        self.data_line = self.graphWidget.plot([1], [1], pen=pen)

@@ -42,6 +42,7 @@ setup(
                         "pandas",
                         "PyQt5",
                         "Pyside2",
+                        "pyqtgraph",
                         "scikit_learn",
                         "scikit-image",
                         "tqdm",
