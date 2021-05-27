@@ -2,10 +2,10 @@
 The static version of tutorial documents are presented here. Once the installation of PiSCAT on your local computer is completed, the dynamic version of the tutorial files can be found in the local PiSCAT directory located at `"./Tutorials/JupyterFiles/"`.  Based on the number of available CPU cores for parallel processing, this tutorial needs 5-7 GB of computer memory (RAM) to run.
 ## Previously on PiSCAT tutorials...
 In the last tutorial, we [set up the PiSCAT modules and downloaded a demo iSCAT video](
-https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 
-[did some basic checks on the acquisition process](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#examining-the-status-line-removing-it), 
-[suppressed the temporal instability of the laser light](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#normalization-of-the-power-in-the-frames-of-a-video) 
-and used some of the [basic data visualization](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#display-and-inspect-a-loaded-video) tools provided in PiSCAT for inspection of the iSCAT videos.  
+https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 
+[did some basic checks on the acquisition process](https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#examining-the-status-line-removing-it), 
+[suppressed the temporal instability of the laser light](https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#normalization-of-the-power-in-the-frames-of-a-video) 
+and used some of the [basic data visualization](https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#display-and-inspect-a-loaded-video) tools provided in PiSCAT for inspection of the iSCAT videos.  
 
 
 ```python
@@ -59,7 +59,7 @@ video_pn, _ = normalization.Normalization(video=video_remove_status).power_norma
 
 
 ## Frame averaging to boost SNR of imaged proteins, followed by visualization of their signal via differential imaging
-The illumination profile and imaged speckles from the coverglass are among static features in iSCAT videos that can be removed by subtracting two subsequent frames to obtain a differential image which will only include dynamic features. As illustrated in the figure below, these features are new relative to the reference image, which is itself being rolled forward. In the calculation of the differential image, each image is the mean frame of a batch of **L** number of camera frames. In order to apply Differential Rolling Average (DRA), an object of the class [Differential_Rolling_Average](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage) is instantiated and deployed.
+The illumination profile and imaged speckles from the coverglass are among static features in iSCAT videos that can be removed by subtracting two subsequent frames to obtain a differential image which will only include dynamic features. As illustrated in the figure below, these features are new relative to the reference image, which is itself being rolled forward. In the calculation of the differential image, each image is the mean frame of a batch of **L** number of camera frames. In order to apply Differential Rolling Average (DRA), an object of the class [Differential_Rolling_Average](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage) is instantiated and deployed.
 
 ![](../Fig/DRA.png)
 
@@ -87,7 +87,7 @@ JupyterDisplay(RVideo_PN, median_filter_flag=False, color='gray', imgSizex=5, im
 
 
 ## The effect of power normalization on the detection limit 
-Here, we perform a quantitative analysis of the influence of the laser power fluctuations on the sensitivity limit of our scheme using [noise_floor class](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.BackgroundCorrection.NoiseFloor) to analyze the noise floor trend as a function of the batch size.
+Here, we perform a quantitative analysis of the influence of the laser power fluctuations on the sensitivity limit of our scheme using [noise_floor class](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.NoiseFloor) to analyze the noise floor trend as a function of the batch size.
 
 
 ```python

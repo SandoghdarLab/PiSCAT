@@ -3,9 +3,9 @@ The static version of tutorial documents are presented here. Once the installati
 ## Previously on PiSCAT tutorials...
 Previously, we demonstrated how to use PiSCAT's APIs for 
 [setting up the PiSCAT modules and downloading a demo iSCAT video](
-https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 
-[performing basic checks on the acquisition process](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#examining-the-status-line-removing-it) and 
-[basic data visualization](https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#display-and-inspect-a-loaded-video).
+https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#setting-up-the-piscat-modules-and-downloading-a-demo-iscat-video), 
+[performing basic checks on the acquisition process](https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#examining-the-status-line-removing-it) and 
+[basic data visualization](https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#display-and-inspect-a-loaded-video).
 
 
 ```python
@@ -102,8 +102,8 @@ JupyterSubplotDisplay(list_videos=[video_remove_status, video_remove_status_dc,
 
 Next, we perform 
 [power normalization to suppress the temporal instability of the laser light](
-https://piscat.readthedocs.io/en/latest/Tutorial1/Tutorial1.html#normalization-of-the-power-in-the-frames-of-a-video) and 
-[DRA](https://piscat.readthedocs.io/en/latest/Tutorial2/Tutorial2.html#frame-averaging-to-boost-snr-of-imaged-proteins-followed-by-visualization-of-their-signal-via-differential-imaging) with a batch size of 500 frames.  
+https://piscat.readthedocs.io/Tutorial1/Tutorial1.html#normalization-of-the-power-in-the-frames-of-a-video) and 
+[DRA](https://piscat.readthedocs.io/Tutorial2/Tutorial2.html#frame-averaging-to-boost-snr-of-imaged-proteins-followed-by-visualization-of-their-signal-via-differential-imaging) with a batch size of 500 frames.  
 
 
 ```python
@@ -125,7 +125,7 @@ RVideo_PN = DRA_PN.differential_rolling(FFT_flag=False)
 
 
 ## Localization of proteins:
-In this section, we directly work with the dynamic features that are remained in the DRA videos. As mentioned earlier the system response of a wide-field microscope for weakly scattering objects can be well approximated with a 2D Gaussian function. There exist a variety of localization algorithms available in the localization toolbox of PiSCAT. Difference of Gaussian ([DoG](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Localization.PSFsExtraction.psf_detection)) algorithm, for example, is suitable to perform a very efficient localization of proteins with pixel precision particle localization.
+In this section, we directly work with the dynamic features that are remained in the DRA videos. As mentioned earlier the system response of a wide-field microscope for weakly scattering objects can be well approximated with a 2D Gaussian function. There exist a variety of localization algorithms available in the localization toolbox of PiSCAT. Difference of Gaussian ([DoG](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.PSFsExtraction.psf_detection)) algorithm, for example, is suitable to perform a very efficient localization of proteins with pixel precision particle localization.
 
 In the following cell, a DRA video is being processed with a suitable set of parameters. The minima and maxima of the sigma values for the DoG kernels are lower and upper limits of the PSF size (in pixels) that one expects once the microscope response function is approximated with a 2D Gaussian function. The sigma ratio and the threshold values in this cell are set with respect to the contrast of the particles we are seeking to detect. We begin this analysis by presenting an interactive PiSCAT class that enables us to tune the DoG detection parameter and visualizes the localized particles dynamically.   
 
@@ -291,7 +291,7 @@ PSFs_dog
 Further filtering of DRA frames would facilitate even more robust localization of particles.
 This could be, for example, a simple image conditioning routine such as a high-pass Fourier filter which can easily remove large features in the image due to lateral instability of the illumination profile.
 In some other cases, while imaging relatively large proteins (bigger than 120KDa), we would have prominent sidelobes in the recorded PSFs. Such proteins have a very strong radially symmetric signature 
-that can be exploited in order to tell the particles apart from the other features in the image. In the following cell, we demonstrate the application of [Radial Variance Treansform (RVT) filtering functionality](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Preproccessing.RadialVarianceTransform) on the iSCAT images together with the DoG particle localizer.
+that can be exploited in order to tell the particles apart from the other features in the image. In the following cell, we demonstrate the application of [Radial Variance Treansform (RVT) filtering functionality](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.RadialVarianceTransform) on the iSCAT images together with the DoG particle localizer.
 As demonstrated in the following cell, with the application of such filters to the images one would need to re-tune the DoG localization parameters.  
 
 
@@ -340,7 +340,7 @@ PSFs_RVT = PSF_l.psf_detection(function='RVT',
 
 
 ### Deploying several 2D localization algorithms
-Often times it is beneficial to localize the proteins with several localization algorithms as each have their own advantageous. Here is an example where we improve the PSF localization accuracy to sub-pixel level by using the [2D Gaussian fitting](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Localization.PSFsExtraction.fit_Gaussian2D_wrapper) method and append the estimated Gaussian parameters to the previous data structure. Such nonlinear fitting routines are much slower than localization kernels such as DoG but instead, they provide more information on the lateral shape of the PSFs of the proteins.
+Often times it is beneficial to localize the proteins with several localization algorithms as each have their own advantageous. Here is an example where we improve the PSF localization accuracy to sub-pixel level by using the [2D Gaussian fitting](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.PSFsExtraction.fit_Gaussian2D_wrapper) method and append the estimated Gaussian parameters to the previous data structure. Such nonlinear fitting routines are much slower than localization kernels such as DoG but instead, they provide more information on the lateral shape of the PSFs of the proteins.
 
 
 ```python
@@ -382,7 +382,7 @@ PSFs.info()
 
 
 ## Tracking proteins
-Since we perform rolling average analysis before forming differential images, a landing event of a protein would span over multiple frames. So far the proteins are individually localized per frame. In this step, the localization events will be linked together in order to obtain protein trajectories by employing the particle linking routines from [trackpy](http://soft-matter.github.io/trackpy/v0.4.2/index.html). [Linking](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Trajectory.Linking) between the localized proteins is formed when two PSFs are not further than 2 pixels apart (`search_range`) and not more than 10 frames distant temporally (`Memory`).
+Since we perform rolling average analysis before forming differential images, a landing event of a protein would span over multiple frames. So far the proteins are individually localized per frame. In this step, the localization events will be linked together in order to obtain protein trajectories by employing the particle linking routines from [trackpy](http://soft-matter.github.io/trackpy/v0.4.2/index.html). [Linking](https://piscat.readthedocs.io/code_reference.html#piscat.Trajectory.Linking) between the localized proteins is formed when two PSFs are not further than 2 pixels apart (`search_range`) and not more than 10 frames distant temporally (`Memory`).
 
 
 ```python
@@ -404,9 +404,9 @@ print("Number of Particles {}".format(linking_.trajectory_counter(linked_PSFs)))
 ## Spatio-temporal filtering
 Transient perturbations in the experimental setup may lead to a quasi-speckle like background fluctuation in DRA videos. Some of the features from these vibrations could be wrongly identified to be proteins. To identify the true particles and keep track of them reliably, we need to have a closer look at the spatial and temporal behaviour of each of the protein trajectory candidates.
 
-**Spatial filtering**: In PiSCAT we have a [SpatialFilter](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Localization.SpatialFilter) class that enables users to filter [outlier_frames](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Localization.SpatialFilter.outlier_frames) which suffer from a sudden strong vibration or particle flying by, [dense_PSFs ](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Localization.SpatialFilter.dense_PSFs) and [non-symmetric_PSFs](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Localization.SpatialFilter.symmetric_PSFs) that may not properly resemble the iPSF that one expects from the experimental setup. All of these filters have the threshold parameter that defines the sensitivity of each filter.
+**Spatial filtering**: In PiSCAT we have a [SpatialFilter](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter) class that enables users to filter [outlier_frames](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter.outlier_frames) which suffer from a sudden strong vibration or particle flying by, [dense_PSFs ](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter.dense_PSFs) and [non-symmetric_PSFs](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter.symmetric_PSFs) that may not properly resemble the iPSF that one expects from the experimental setup. All of these filters have the threshold parameter that defines the sensitivity of each filter.
 
-**Temporal filtering**:  Since for the detection of very small proteins (ones with few tens of KDa mass), we perform DRA with certain batch size, the signal of the particle is smeared over the frames in which averaging has been done.  In other words, a candidate protein trajectory should have a length comparable to the length of the batches in DRA. In the following, we plot the histogram of protein trajectory lengths in the first cell. We also calculate the median of the trajectory length in order to find out the correct temporal length to be used as the thresholding value in the second cell where we deploy functionalities from the [TemporalFilter](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Trajectory.TemporalFilter) class. 
+**Temporal filtering**:  Since for the detection of very small proteins (ones with few tens of KDa mass), we perform DRA with certain batch size, the signal of the particle is smeared over the frames in which averaging has been done.  In other words, a candidate protein trajectory should have a length comparable to the length of the batches in DRA. In the following, we plot the histogram of protein trajectory lengths in the first cell. We also calculate the median of the trajectory length in order to find out the correct temporal length to be used as the thresholding value in the second cell where we deploy functionalities from the [TemporalFilter](https://piscat.readthedocs.io/code_reference.html#piscat.Trajectory.TemporalFilter) class. 
 
 
 ```python
@@ -557,7 +557,7 @@ all_trajectories = read_write_data.load_dict_from_hdf5(hist_data_path)
 ## Estimation of the protein contrast
 Once the trajectory of a protein landing or take-off event is built from the individual localization events, the central intensity value of the protein signal in each frame of the DRA video is extracted. This temporal trace can be used to estimate the contrast of the proteins. In the following, we provide two cells to demonstrate this analysis. The contrast estimation of a protein is illustrated in the first cell using the temporal intensity trace of the protein. The same protein is marked and visualized in the second cell where this overlay is done on the DRA videos. 
 
-In the [contrast estimation class](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Analysis.PlotProteinHistogram), we first extend the trace from the detected region (sandwiched between two vertical dashed lines) to grow to twice the batch size if possible. This extended trace is then smoothed using a windowing average which corresponds to 5% of the length of the trace. The mean of the signal at the detected region is computed. A positive mean value would mean the extremum is a maximum and vice versa. We then make sure that the extremum is always a peak from which we separate left and right arms of the signal. Each side of the arms is then separately fitted with a line. The intersection point of these lines can be used to read off the contrast value of the protein in addition to simply reading the peak value of the signal. In case the baseline of the intensity profiles are not symmetric or not zero-valued, one can take Prominence of the extrema as a measure of the contrast which is shown here with a vertical orange line.
+In the [contrast estimation class](https://piscat.readthedocs.io/code_reference.html#piscat.Analysis.PlotProteinHistogram), we first extend the trace from the detected region (sandwiched between two vertical dashed lines) to grow to twice the batch size if possible. This extended trace is then smoothed using a windowing average which corresponds to 5% of the length of the trace. The mean of the signal at the detected region is computed. A positive mean value would mean the extremum is a maximum and vice versa. We then make sure that the extremum is always a peak from which we separate left and right arms of the signal. Each side of the arms is then separately fitted with a line. The intersection point of these lines can be used to read off the contrast value of the protein in addition to simply reading the peak value of the signal. In case the baseline of the intensity profiles are not symmetric or not zero-valued, one can take Prominence of the extrema as a measure of the contrast which is shown here with a vertical orange line.
 
 
 ```python
@@ -590,7 +590,7 @@ JupyterSelectedPSFs_localizationDisplay(video=RVideo_PN, particles=all_trajector
 ## Histogram of the protein contrasts
 In the following cell, the distribution of the contrasts of the proteins 
 (dark, bright and total) which were previously estimated using 
-[three different methods of fitting, peak and prominence](https://piscat.readthedocs.io/en/latest/Tutorial3/Tutorial3.html#estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[2]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
+[three different methods of fitting, peak and prominence](https://piscat.readthedocs.io/Tutorial3/Tutorial3.html#estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[2]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
 
 
 ```python

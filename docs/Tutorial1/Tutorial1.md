@@ -1,5 +1,5 @@
 # Suppression of the laser light fluctuations in a wide-field iSCAT measurement 
-In this tutorial, we normalize the recorded power in each video frame in order to suppress the temporal instability of the laser light. By doing so we also touch upon the usage of some of the very basic PiSCAT packages such as the  [InputOutput module](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat-inputoutput) which provides functionalities for loading iSCAT videos and performing some basic checks on the acquisition process through the recorded meta-data. The [Visualization module](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat-visualization) provides a variety of data visualization tools for inspecting iSCAT videos and presentating the analysis results. The normalization of laser light fluctuations is one of the early-stage analysis tools that are in the [Preprocessing module](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat-preproccessing).
+In this tutorial, we normalize the recorded power in each video frame in order to suppress the temporal instability of the laser light. By doing so we also touch upon the usage of some of the very basic PiSCAT packages such as the  [InputOutput module](https://piscat.readthedocs.io/code_reference.html#piscat-inputoutput) which provides functionalities for loading iSCAT videos and performing some basic checks on the acquisition process through the recorded meta-data. The [Visualization module](https://piscat.readthedocs.io/code_reference.html#piscat-visualization) provides a variety of data visualization tools for inspecting iSCAT videos and presentating the analysis results. The normalization of laser light fluctuations is one of the early-stage analysis tools that are in the [Preprocessing module](https://piscat.readthedocs.io/code_reference.html#piscat-preproccessing).
 The static version of tutorial documents are presented here. Once the installation of PiSCAT on your local computer is completed, the dynamic version of the tutorial files can be found in the local PiSCAT directory located at `"./Tutorials/JupyterFiles/"`. Based on the number of available CPU cores for parallel processing, this tutorial needs 2-3 GB of computer memory (RAM) to run.
 
 ## Setting up the PiSCAT modules and downloading a demo iSCAT video
@@ -105,7 +105,7 @@ help(reading_videos.video_reader)#Calling help on an imported module/class to kn
     
 
 ## Display and inspect a loaded video
-As mentioned earlier, the [Visualization module](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat-visualization) consists of several classes which provide display functionalities. Some of these classes may have the word `jupyter` in their name, for example, `display_jupyter`. The reason behind this is that such a class has functionalities similar to its twin class namely `display`, but adjusted to be used in Jupyter notebooks. The median filter flag passed as an argument to the display classes can be used to achieve a proper visualization of a video albeit having hot or dead pixels. In order to scroll left/right through the video frames, you can use the mouse wheel as well as the keyboard arrows button. The last line in these images is the meta-data of the measurement that the PhotonFocus camera records in each frame as the status-line.  
+As mentioned earlier, the [Visualization module](https://piscat.readthedocs.io/code_reference.html#piscat-visualization) consists of several classes which provide display functionalities. Some of these classes may have the word `jupyter` in their name, for example, `display_jupyter`. The reason behind this is that such a class has functionalities similar to its twin class namely `display`, but adjusted to be used in Jupyter notebooks. The median filter flag passed as an argument to the display classes can be used to achieve a proper visualization of a video albeit having hot or dead pixels. In order to scroll left/right through the video frames, you can use the mouse wheel as well as the keyboard arrows button. The last line in these images is the meta-data of the measurement that the PhotonFocus camera records in each frame as the status-line.  
 
 
 ```python
@@ -150,7 +150,7 @@ JupyterDisplay(video_remove_status, median_filter_flag=False, color='gray', imgS
 
 
 ## Normalization of the power in the frames of a video
-The [Preprocessing module](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat-preproccessing) provides 
+The [Preprocessing module](https://piscat.readthedocs.io/code_reference.html#piscat-preproccessing) provides 
 several normalization techniques. In the following step, we correct for the fluctuations in the laser light 
 intensity. The summation of all the pixels in an image is the recorded power **P** in that frame which 
 is then used to form the average frame power in a video through **P̅**. The corresponding normalization subroutine 
@@ -181,7 +181,7 @@ plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
     
 
 ## Save a video
-Finally, we save an analyzed video again as a binary file in order to demonstrate video writing functionalities of the [InputOutput module](https://piscat.readthedocs.io/en/latest/code_reference.html#piscat-inputoutput).  
+Finally, we save an analyzed video again as a binary file in order to demonstrate video writing functionalities of the [InputOutput module](https://piscat.readthedocs.io/code_reference.html#piscat-inputoutput).  
 
 
 ```python

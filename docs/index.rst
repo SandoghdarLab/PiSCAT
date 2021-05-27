@@ -22,7 +22,7 @@ PiSCAT aims to facilitate high-performance quantitative analysis of big data and
 to enable and speed up the research in iSCAT and related communities. To facilitate the use of PiSCAT, we offer tutorials
 with live-code features in which we present state-of-the-art algorithms for iSCAT microscopy. These cover important educative materials
 in `jupyter notebooks <https://jupyter.org/>`_, supported with a web-based
-`documentation page <https://piscat.readthedocs.io/en/latest/index.html>`_.
+`documentation page <https://piscat.readthedocs.io>`_.
 
 In this first release, we provide analysis tools for the sensitive detection of single unlabelled proteins via .
 wide-field iSCAT microscopy. Proteins are only a few nanometers in size with a molecular weight of a few to several hundred
@@ -36,7 +36,7 @@ Documentation
 -------------
 
 The documentation webpage of PiSCAT modules can be found
-`here <https://piscat.readthedocs.io/en/latest/#>`_.
+`here <https://piscat.readthedocs.io>`_.
 
 The outputs from most of the PiSCAT localization and tracking methods are of `Panda data frame type <https://pandas.pydata.org/pandas-docs/stable/reference/frame.html>`_.
 This data structure has the ability to be easily appended/extended with more information based on different levels of analysis.
