@@ -57,6 +57,7 @@ PiSCAT:
    installation
    tutorials
    code_reference
+   appendix
    bibliography
 
 
