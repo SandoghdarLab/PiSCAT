@@ -608,7 +608,7 @@ class FastRadialSymmetryTransform():
         return np.vstack( (np.zeros((1, cols)), (img[2:, :] - img[:-2, :])/2.0, np.zeros((1, cols))) )
 
 
-    def frst(self, img, radii, alpha, beta, stdFactor, mode='BOTH'):
+    def _frst(self, img, radii, alpha, beta, stdFactor, mode='BOTH'):
         """
         Performs fast radial symmetry transform
 

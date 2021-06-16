@@ -141,7 +141,7 @@ class PSFsExtraction():
 
     def frst(self, image):
         """
-        PSF localization using frst.
+        PSF localization using _frst.
 
         Parameters
         ----------
@@ -477,7 +477,7 @@ class PSFsExtraction():
         Parameters
         ----------
         function: str
-            PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``,
+            PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'_frst'``,
             ``'frst_one_psf'``, ``'RVT'``)
 
         mode: str
@@ -510,7 +510,7 @@ class PSFsExtraction():
                 A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold, smaller blobs are eliminated.
 
         optional_2:
-            These parameters are used when ``'frst'`` is defined as function.
+            These parameters are used when ``'_frst'`` is defined as function.
 
             * `min_radial`: int
                 integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
@@ -636,7 +636,7 @@ class PSFsExtraction():
         Parameters
         ----------
         function: str
-            PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf``')
+            PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'_frst'``, ``'frst_one_psf``')
 
         mode: str
             Defines which PSFs will be detected (``'BRIGHT'``, ``'DARK'``, or ``'BOTH'``).
@@ -668,7 +668,7 @@ class PSFsExtraction():
                 A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold, smaller blobs are eliminated.
 
         optional_2:
-            These parameters are used when ``'frst'`` is defined as function.
+            These parameters are used when ``'_frst'`` is defined as function.
 
             * `min_radial`: int
                 integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
@@ -851,7 +851,7 @@ class PSFsExtraction():
                     negative_psf = self.log(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'frst':
+            elif self.function == '_frst':
                 b_psf = self.frst(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
@@ -903,7 +903,7 @@ class PSFsExtraction():
                     negative_psf = self.log(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'frst':
+            elif self.function == '_frst':
                 b_psf = self.frst(self.video)
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 

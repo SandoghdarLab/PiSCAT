@@ -165,7 +165,7 @@ def _prune_blobs(blobs_array, overlap):
 def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0, alpha=2, beta=1e-3, stdFactor=4,
               mode='BOTH', overlap=.5, *, exclude_border=False):
     """
-    This function uses scikit-image's local maximum function to localize the PSFs using a ``frst``.
+    This function uses scikit-image's local maximum function to localize the PSFs using a ``_frst``.
 
     Parameters
     ----------
@@ -231,8 +231,8 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
     # a geometric progression of standard deviations for gaussian kernels
     radial_list = np.array([radial for radial in range(int(min_radial[0]), int(max_radial[0] + 1), int(radial_step))])
 
-    frst = FastRadialSymmetryTransform()
-    frst_images = [frst.frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode) for r in radial_list]
+    frst_ = FastRadialSymmetryTransform()
+    frst_images = [frst_._frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode) for r in radial_list]
 
     image_cube = np.stack(frst_images, axis=-1)
     image_cube = np.power(image_cube, 2)
