@@ -166,7 +166,7 @@ class SpatialFilter():
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            The data frame contains PSFs locations( x, y, frame, sigma)
+            The data frame contains PSFs locations( x, y, frame, sigma, center_intensity)
 
         threshold: float
             It specifies the portion of the overlay that two PSFs must have to remove from the list.
@@ -174,7 +174,7 @@ class SpatialFilter():
         Returns
         -------
         filter_df_PSFs: pandas dataframe
-            The filter data frame contains PSFs locations( x, y, frame, sigma)
+            The filter data frame contains PSFs locations( x, y, frame, sigma, center_intensity)
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             print('---data frames is empty!---')
