@@ -63,7 +63,7 @@ python setup.py test
 
 ## Installation of PiSCAT virtual environment in the PyCharm IDE:
 
-1.	Follow the hyper links and the install [ Python 3.7](https://www.python.org/downloads/) and [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows).
+1.	Follow the hyper links and the install [ Python 3.8](https://www.python.org/downloads/) and [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows).
 2.	Create a virtual environment based on the instructions provided [here](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html).
 3.  Follow [this link](https://www.jetbrains.com/help/pycharm/creating-and-running-setup-py.html) to select PiSCAT venv as the interpreter, to install the setup.py file and then to run a setup.py task. 
 

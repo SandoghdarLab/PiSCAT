@@ -57,9 +57,9 @@ class Histogram_GUI(QtWidgets.QWidget):
         print('Destructor called, Employee deleted.')
 
     def createFirstExclusiveGroup(self):
-        self.checkbox_GMM_FIT = QtWidgets.QCheckBox("Histogram and GMM", self)
+        self.checkbox_GMM_FIT = QtWidgets.QCheckBox("Histogram and Gaussian mixture models (GMM)", self)
 
-        self.groupBox_hist = QtWidgets.QGroupBox("Histogram and GMM")
+        self.groupBox_hist = QtWidgets.QGroupBox("Histogram and Gaussian mixture models (GMM)")
 
         self.grid3 = QtWidgets.QGridLayout()
         self.grid3.addWidget(self.min_peak_width_label, 0, 0)

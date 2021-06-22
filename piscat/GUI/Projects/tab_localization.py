@@ -135,6 +135,7 @@ class Localization_GUI(QtWidgets.QWidget):
     def createFourthExclusiveGroup(self):
 
         self.checkbox_filter_double_PSF = QtWidgets.QCheckBox("Filter dense PSFs", self)
+        self.checkbox_filter_side_lobes_PSF = QtWidgets.QCheckBox("Filter side lobes outlier PSFs", self)
         self.checkbox_filter_asymmetry_PSF = QtWidgets.QCheckBox("Filter asymmetry PSFs", self)
         self.checkbox_2DFitting = QtWidgets.QCheckBox("2D Gaussian Fitting", self)
         self.checkbox_crappy_frames = QtWidgets.QCheckBox("Filter outlier frames", self)
@@ -150,9 +151,10 @@ class Localization_GUI(QtWidgets.QWidget):
         self.grid_filters = QtWidgets.QGridLayout()
         self.grid_filters.addWidget(self.checkbox_crappy_frames, 0, 0)
         self.grid_filters.addWidget(self.checkbox_filter_double_PSF, 1, 0)
-        self.grid_filters.addWidget(self.checkbox_filter_asymmetry_PSF, 2, 0)
-        self.grid_filters.addWidget(self.checkbox_2DFitting, 3, 0)
-        self.grid_filters.addWidget(self.btn_filtering, 4, 0)
+        self.grid_filters.addWidget(self.checkbox_filter_side_lobes_PSF, 2, 0)
+        self.grid_filters.addWidget(self.checkbox_filter_asymmetry_PSF, 3, 0)
+        self.grid_filters.addWidget(self.checkbox_2DFitting, 4, 0)
+        self.grid_filters.addWidget(self.btn_filtering, 5, 0)
 
         self.groupBox_filters.setLayout(self.grid_filters)
 
@@ -186,16 +188,16 @@ class Localization_GUI(QtWidgets.QWidget):
             self.line_asymmetry_PSF_Thr.setPlaceholderText(tmp_str + "_x" + "/" + tmp_str + "_y")
             self.line_asymmetry_PSF_Thr_label = QtWidgets.QLabel("Symmetry threshold:")
 
-            self.grid_filters.addWidget(self.line_asymmetry_PSF_label, 2, 1)
-            self.grid_filters.addWidget(self.line_asymmetry_PSF, 2, 2)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF_label, 3, 1)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF, 3, 2)
 
-            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr_label, 2, 3)
-            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr, 2, 4)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr_label, 3, 3)
+            self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr, 3, 4)
 
         if not self.checkbox_filter_asymmetry_PSF.isChecked():
 
             for i_ in range(1, 5, 1):
-                layout = self.grid_filters.itemAtPosition(2, i_)
+                layout = self.grid_filters.itemAtPosition(3, i_)
                 if layout is not None:
                     layout.widget().deleteLater()
                     self.grid_filters.removeItem(layout)
@@ -291,8 +293,8 @@ class Localization_GUI(QtWidgets.QWidget):
         self.le_2_label = QtWidgets.QLabel("Max Sigma (px): ")
 
         self.le_3 = QtWidgets.QLineEdit()
-        self.le_3.setPlaceholderText("Sigma Ration/Num Sigma")
-        self.le_3_label = QtWidgets.QLabel("Sigma Ration/Num Sigma: ")
+        self.le_3.setPlaceholderText("Sigma Ratio/Num Sigma")
+        self.le_3_label = QtWidgets.QLabel("Sigma Ratio/Num Sigma: ")
 
         self.le_4 = QtWidgets.QLineEdit()
         self.le_4.setPlaceholderText("Threshold")
@@ -751,6 +753,11 @@ class Localization_GUI(QtWidgets.QWidget):
                 self.df_PSFs_s_filter = s_filters.dense_PSFs(self.df_PSFs_s_filter, threshold=0)
                 self.setting_localization['dense_PSFs_filtering'] = True
                 self.PSFs_Particels_num['#PSFs_after_dense_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
+
+            if self.checkbox_filter_side_lobes_PSF.isChecked():
+                self.df_PSFs_s_filter = s_filters.remove_side_lobes_artifact(self.df_PSFs_s_filter, threshold=0)
+                self.setting_localization['side_lobes_PSFs_filtering'] = True
+                self.PSFs_Particels_num['#PSFs_after_side_lobes_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
 
             if self.checkbox_2DFitting.isChecked() and self.checkbox_filter_asymmetry_PSF.isChecked():
                  pass

@@ -152,10 +152,15 @@ class RawImage(QtWidgets.QMainWindow):
                     self.height_size_s = 0
                     self.height_size_e = self.height_size
 
-                if self.frame_s != '' and self.frame_e != '' and self.frame_jump != '':
-                    self.frame_s = int(self.frame_s)
-                    self.frame_e = int(self.frame_e)
-                    self.frame_jump = int(self.frame_jump)
+                if self.frame_s != '' and self.frame_e != '':
+                    if self.frame_jump != '':
+                        self.frame_s = int(self.frame_s)
+                        self.frame_e = int(self.frame_e)
+                        self.frame_jump = int(self.frame_jump)
+                    else:
+                        self.frame_s = int(self.frame_s)
+                        self.frame_e = int(self.frame_e)
+                        self.frame_jump = 1
 
                 else:
                     self.msg_box = QtWidgets.QMessageBox()
@@ -219,10 +224,15 @@ class RawImage(QtWidgets.QMainWindow):
                         self.height_size_s = 0
                         self.height_size_e = self.height_size
 
-                    if self.frame_s != '' and self.frame_e != '' and self.frame_jump != '':
-                        self.frame_s = int(self.frame_s)
-                        self.frame_e = int(self.frame_e)
-                        self.frame_jump = int(self.frame_jump)
+                    if self.frame_s != '' and self.frame_e != '':
+                        if self.frame_jump != '':
+                            self.frame_s = int(self.frame_s)
+                            self.frame_e = int(self.frame_e)
+                            self.frame_jump = int(self.frame_jump)
+                        else:
+                            self.frame_s = int(self.frame_s)
+                            self.frame_e = int(self.frame_e)
+                            self.frame_jump = 1
 
                     else:
                         self.msg_box = QtWidgets.QMessageBox()
@@ -236,7 +246,6 @@ class RawImage(QtWidgets.QMainWindow):
                     self.frame_s = int(0)
                     self.frame_e = int(-1)
                     self.frame_jump = 1
-
 
                 self.raw_data_update_flag = False
                 self.window.close()

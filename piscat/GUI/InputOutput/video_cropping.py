@@ -87,11 +87,15 @@ class Cropping(QtWidgets.QMainWindow):
                     self.height_size_s = 0
                     self.height_size_e = self.height_size
 
-                if self.frame_s != '' and self.frame_e != '' and self.frame_jump != '':
-                    self.frame_s = int(self.frame_s)
-                    self.frame_e = int(self.frame_e)
-                    self.frame_jump = int(self.frame_jump)
-
+                if self.frame_s != '' and self.frame_e != '' :
+                    if self.frame_jump != '':
+                        self.frame_s = int(self.frame_s)
+                        self.frame_e = int(self.frame_e)
+                        self.frame_jump = int(self.frame_jump)
+                    else:
+                        self.frame_s = int(self.frame_s)
+                        self.frame_e = int(self.frame_e)
+                        self.frame_jump = 1
                 else:
                     self.msg_box = QtWidgets.QMessageBox()
                     self.msg_box.setWindowTitle("Warning!")

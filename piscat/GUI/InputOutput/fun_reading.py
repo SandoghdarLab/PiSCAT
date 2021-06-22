@@ -61,7 +61,7 @@ class Reading(QtWidgets.QMainWindow):
                     if self.info_image.groupBox_cropping.isChecked():
 
                         self.original_video = video[
-                                         0:-1:self.info_image.frame_jump,
+                                         ::self.info_image.frame_jump,
                                          self.info_image.width_size_s:self.info_image.width_size_e,
                                          self.info_image.height_size_s:self.info_image.height_size_e]
 

@@ -42,7 +42,7 @@ in the console, enter the following command:
 Installation of PiSCAT virtual environment in the PyCharm IDE:
 --------------------------------------------------------------
 
-1.	Follow the hyper links and the install `Python 3.7 <https://www.python.org/downloads/>`_
+1.	Follow the hyper links and the install `Python 3.8 <https://www.python.org/downloads/>`_
 and `PyCharm <https://www.jetbrains.com/pycharm/download/#section=windows>`_.
 
 2.	Create a virtual environment based on the instructions provided

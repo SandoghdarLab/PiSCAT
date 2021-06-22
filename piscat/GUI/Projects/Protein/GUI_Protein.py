@@ -11,6 +11,7 @@ from functools import partial
 import pandas as pd
 import numpy as np
 import os
+import time
 
 
 class ProteinTabs(QtWidgets.QMainWindow):
@@ -195,6 +196,18 @@ class ProteinTabs(QtWidgets.QMainWindow):
     def save_data(self):
         self.file_path = False
         self.file_path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder', os.path.expanduser("~"), QtWidgets.QFileDialog.ShowDirsOnly)
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        name_mkdir = timestr
+        try:
+            dr_mk = os.path.join(self.file_path, name_mkdir)
+            os.mkdir(dr_mk)
+            print("Directory ", name_mkdir, " Created ")
+        except FileExistsError:
+            dr_mk = os.path.join(self.file_path, name_mkdir)
+            print("Directory ", name_mkdir, " already exists")
+
+        self.file_path = dr_mk
+
         if self.file_path:
             if self.df_PSFs is not None:
                 read_write_data.save_df2csv(self.df_PSFs, path=self.file_path, name='df_PSFs')
