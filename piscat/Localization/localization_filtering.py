@@ -161,6 +161,8 @@ class SpatialFilter():
 
     def remove_side_lobes_artifact(self, df_PSFs, threshold=0):
         """
+        This filter removes false detections on side lobes of PSFs caused by the localization algorithm by comparing center intensity contrast.
+
         Parameters
         ----------
         df_PSFs: pandas dataframe
@@ -201,6 +203,7 @@ class SpatialFilter():
             particle_X = particle['x'].tolist()
             particle_Y = particle['y'].tolist()
             particle_sigma = particle['sigma'].tolist()
+            particle_center_intensity = particle['center_intensity'].tolist()
 
             if len(index_list) != 1:
                 for i_ in range(len(particle_X)):
@@ -219,12 +222,16 @@ class SpatialFilter():
                                 (self.point_1[0, 1] - self.point_2[0, 1]) ** 2))
                         tmp = (math.sqrt(2) * (sigma_1 + sigma_2))
                         if distance <= ((math.sqrt(2) * (sigma_1 + sigma_2)) - (threshold * tmp)):
-                            if sigma_1 == sigma_2:
+
+                            intesity_1 = particle_center_intensity[i_]
+                            intesity_2 = particle_center_intensity[count_]
+
+                            if intesity_1 == intesity_2:
                                 self.remove_list_close.append(index_list[i_])
                                 self.remove_list_close.append(index_list[count_])
-                            if sigma_1 > sigma_2:
+                            if intesity_1 > intesity_2:
                                 self.remove_list_close.append(index_list[count_])
-                            if sigma_1 < sigma_2:
+                            if intesity_1 < intesity_2:
                                 self.remove_list_close.append(index_list[i_])
                         count_ = count_ + 1
 
