@@ -192,7 +192,7 @@ class SpatialFilter():
 
         num_particles = self.particles_after_closeFilter.shape[0]
 
-        print('\n---Cleaning the df_PSFs that have drift without parallel loop---')
+        print('\n---Cleaning the df_PSFs that have side lobs without parallel loop---')
         self.point_1 = np.zeros((1, 2), dtype=np.float64)
         self.point_2 = np.zeros((1, 2), dtype=np.float64)
         self.remove_list_close = []
