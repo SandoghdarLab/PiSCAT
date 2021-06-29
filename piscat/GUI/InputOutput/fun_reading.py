@@ -54,16 +54,15 @@ class Reading(QtWidgets.QMainWindow):
                     QtWidgets.QApplication.processEvents()
                 try:
                     video = reading_videos.read_binary(self.filename, img_width=self.info_image.width_size,
-                                                        img_height=self.info_image.height_size,
-                                                        image_type=self.info_image.set_bit_order + self.info_image.type,
-                                                        s_frame=self.info_image.frame_s, e_frame=self.info_image.frame_e)
+                                                       img_height=self.info_image.height_size,
+                                                       image_type=self.info_image.set_bit_order + self.info_image.type)
 
                     if self.info_image.groupBox_cropping.isChecked():
 
                         self.original_video = video[
-                                         ::self.info_image.frame_jump,
-                                         self.info_image.width_size_s:self.info_image.width_size_e,
-                                         self.info_image.height_size_s:self.info_image.height_size_e]
+                                            self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
+                                            self.info_image.width_size_s:self.info_image.width_size_e,
+                                            self.info_image.height_size_s:self.info_image.height_size_e]
 
                     else:
                         self.original_video = video

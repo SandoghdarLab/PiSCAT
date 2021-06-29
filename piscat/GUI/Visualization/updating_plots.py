@@ -33,6 +33,7 @@ class UpdatingPlots(QtWidgets.QMainWindow):
 
 
 class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
+
     def __init__(self):
         super(UpdatingPlotsPyqtGraph, self).__init__()
         self.layout = QtWidgets.QVBoxLayout(self)
@@ -47,3 +48,7 @@ class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
 
         pen = pg.mkPen(color=(255, 102, 0))
         self.data_line = self.graphWidget.plot([1], [1], pen=pen)
+
+    def closeEvent(self, event):
+        QtCore.QCoreApplication.instance().quit()
+        print("closing plot")
