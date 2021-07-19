@@ -14,13 +14,14 @@ from piscat.Preproccessing import normalization
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from piscat.Localization import data_handeling, frst
 from piscat.Localization import gaussian_2D_fit
-from piscat.Preproccessing.filtering import RadialVarianceTransform
+from piscat.Visualization import display_jupyter
+from piscat.Preproccessing import filtering
 from piscat.Localization import radial_symmetry_centering
 from piscat.Visualization.display_jupyter import JupyterPSFs_localizationPreviewDisplay
 from piscat.Localization.difference_of_gaussian import dog_preview
 
 
-class PSFsExtraction():
+class PSFsExtraction:
 
     def __init__(self, video, flag_transform=False, flag_GUI=False, **kwargs):
 
@@ -165,7 +166,7 @@ class PSFsExtraction():
                              stdFactor=self.stdFactor, mode=self.mode)
         return tmp
 
-    def rvt(self, image):
+    def _rvt(self, image):
         """
         PSF localization using RVT.
 
@@ -182,7 +183,7 @@ class PSFsExtraction():
         if self.flag_transform:
             tr_img = image
         else:
-            rvt_ = RadialVarianceTransform()
+            rvt_ = filtering.RadialVarianceTransform()
             tr_img = rvt_.rvt(img=image, rmin=self.min_radial, rmax=self.max_radial, kind=self.rvt_kind, highpass_size=self.highpass_size,
                         upsample=self.upsample, rweights=self.rweights, coarse_factor=self.coarse_factor, coarse_mode=self.coarse_mode,
                         pad_mode=self.pad_mode)
@@ -761,7 +762,8 @@ class PSFsExtraction():
         self.IntSlider_width = IntSlider_width
 
         if "JPY_PARENT_PID" in os.environ:
-            display_ = JupyterPSFs_localizationPreviewDisplay(video=self.video, df_PSFs=None,
+
+            display_ = display_jupyter.JupyterPSFs_localizationPreviewDisplay(video=self.video, df_PSFs=None,
                                                               frame_num=self.frame_number, title=self.title,
                                                                median_filter_flag=self.median_filter_flag,
                                                                color=self.color, imgSizex=self.imgSizex,
@@ -851,7 +853,7 @@ class PSFsExtraction():
                     negative_psf = self.log(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == '_frst':
+            elif self.function == 'frst':
                 b_psf = self.frst(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
@@ -861,7 +863,7 @@ class PSFsExtraction():
                 temp2 = np.expand_dims(temp2, axis=0)
 
             elif self.function == 'RVT':
-                b_psf = self.rvt(self.video[i_, :, :])
+                b_psf = self._rvt(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
         else:
@@ -903,7 +905,7 @@ class PSFsExtraction():
                     negative_psf = self.log(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == '_frst':
+            elif self.function == 'frst':
                 b_psf = self.frst(self.video)
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
@@ -913,7 +915,7 @@ class PSFsExtraction():
                 temp2 = np.expand_dims(temp2, axis=0)
 
             elif self.function == 'RVT':
-                b_psf = self.rvt(self.video)
+                b_psf = self._rvt(self.video)
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
                 temp2 = np.expand_dims(temp2, axis=0)
 

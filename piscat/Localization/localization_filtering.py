@@ -226,10 +226,10 @@ class SpatialFilter():
                             intesity_1 = particle_center_intensity[i_]
                             intesity_2 = particle_center_intensity[count_]
 
-                            if intesity_1 == intesity_2:
+                            if np.abs(intesity_1) == np.abs(intesity_2):
                                 self.remove_list_close.append(index_list[i_])
                                 self.remove_list_close.append(index_list[count_])
-                            if intesity_1 > intesity_2:
+                            if np.abs(intesity_1) > np.abs(intesity_2):
                                 self.remove_list_close.append(index_list[count_])
                             if intesity_1 < intesity_2:
                                 self.remove_list_close.append(index_list[i_])

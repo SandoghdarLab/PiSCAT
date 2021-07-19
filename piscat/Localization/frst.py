@@ -6,7 +6,7 @@ from math import sqrt
 from scipy import spatial
 from skimage.feature import peak_local_max
 from skimage import img_as_float
-from piscat.Preproccessing.filtering import FastRadialSymmetryTransform
+import matplotlib.pyplot as plt
 
 
 def _compute_disk_overlap(d, r1, r2):
@@ -76,7 +76,6 @@ def _compute_sphere_overlap(d, r1, r2):
     vol = (math.pi / (12 * d) * (r1 + r2 - d) ** 2 *
            (d ** 2 + 2 * d * (r1 + r2) - 3 * (r1 ** 2 + r2 ** 2) + 6 * r1 * r2))
     return vol / (4. / 3 * math.pi * min(r1, r2) ** 3)
-
 
 def _blob_overlap(blob1, blob2):
     """Finds the overlapping area fraction between two blobs.
@@ -231,8 +230,7 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
     # a geometric progression of standard deviations for gaussian kernels
     radial_list = np.array([radial for radial in range(int(min_radial[0]), int(max_radial[0] + 1), int(radial_step))])
 
-    frst_ = FastRadialSymmetryTransform()
-    frst_images = [frst_._frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode) for r in radial_list]
+    frst_images = [frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode) for r in radial_list]
 
     image_cube = np.stack(frst_images, axis=-1)
     image_cube = np.power(image_cube, 2)

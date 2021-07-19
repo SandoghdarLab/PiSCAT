@@ -60,7 +60,7 @@ setup(
                       ],
     # not to be confused with definitions in pyproject.toml [build-system]
     setup_requires=["pytest-runner"],
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     tests_require=["pytest", "pytest-mock"],
     keywords=[],
     classifiers=['Operating System :: OS Independent',
