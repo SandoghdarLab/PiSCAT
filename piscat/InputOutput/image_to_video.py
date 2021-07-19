@@ -66,9 +66,9 @@ class Image2Video():
         tmp = video_reader(file_name=x, type=self.reader_type,
                             img_width=self.width_size, img_height=self.height_size,
                             image_type=self.type, s_frame=0, e_frame=-1)
-        if len(tmp.shape) == 3:
+        if tmp.ndim == 3:
             return tmp[0]
-        elif len(tmp.shape) == 0:
+        elif tmp.ndim == 2:
             return tmp
         else:
             raise ValueError('The shape {} does not correct'.format(tmp.shape))

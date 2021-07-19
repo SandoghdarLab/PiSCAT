@@ -50,5 +50,5 @@ class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
         self.data_line = self.graphWidget.plot([1], [1], pen=pen)
 
     def closeEvent(self, event):
-        QtCore.QCoreApplication.instance().quit()
+        # QtCore.QCoreApplication.instance().quit()
         print("closing plot")

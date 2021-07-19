@@ -1,5 +1,6 @@
 from __future__ import print_function
 from skimage import io
+from skimage.color import rgb2gray
 import os
 import pandas as pd
 import numpy as np
@@ -166,8 +167,9 @@ def read_png(filename):
     @returns: NDArray
         The video is 2D-numpy (width, height).
     """
-
-    return io.imread(filename)
+    img = io.imread(filename)
+    grayscale = rgb2gray(img)
+    return grayscale
 
 
 class DirectoryType:

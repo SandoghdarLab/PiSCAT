@@ -80,7 +80,7 @@ class Image2Video(QtWidgets.QMainWindow):
 
         self.le_imType = QtWidgets.QLineEdit()
         self.le_imType.setPlaceholderText('image_type')
-        self.le_imType_label = QtWidgets.QLabel("image_type(\*.---):")
+        self.le_imType_label = QtWidgets.QLabel("image_type(*.---):")
         self.le_imType.setFixedWidth(50)
 
         self.checkbox_0 = QtWidgets.QRadioButton("little-endian byte order")

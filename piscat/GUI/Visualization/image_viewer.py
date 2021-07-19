@@ -43,8 +43,12 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.image_series = input_image_series
         self.original_video = original_video
         self.df_PSFs = list_psf
-        self.sizeX = self.image_series.shape[1]
-        self.sizeY = self.image_series.shape[2]
+        if self.image_series.ndim == 3:
+            self.sizeX = self.image_series.shape[1]
+            self.sizeY = self.image_series.shape[2]
+        elif self.image_series.ndim == 2:
+            self.sizeX = self.image_series.shape[0]
+            self.sizeY = self.image_series.shape[1]
         self.frame_num = None
         self.current_frame = 0
         self.title = name
@@ -228,7 +232,10 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.viewer.annotation.emit()
 
     def closeEvent(self, event):
-        self.stop_video()
+        try:
+            self.stop_video()
+        except:
+            pass
         print("closed")
 
     @QtCore.Slot()

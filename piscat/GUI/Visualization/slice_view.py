@@ -36,8 +36,13 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.updatePlot = UpdatingPlotsPyqtGraph()
 
         self.RAW_Video = video_original
-        self.video_width = video_original.shape[1]
-        self.video_height = video_original.shape[2]
+
+        if video_original.ndim == 3:
+            self.video_width = video_original.shape[1]
+            self.video_height = video_original.shape[2]
+        elif video_original.ndim == 2:
+            self.video_width = video_original.shape[0]
+            self.video_height = video_original.shape[1]
 
         self.input_video = input_video
         self.con_adj = ContrastAdjustment(input_video)
@@ -160,17 +165,21 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         return self.current_mask_pixmap
 
     def create_pixmap(self, input_file):
-        input_file = Normalization(video=input_file).normalized_image_specific()
-        self.input_file = input_file
-        if self.parent().parent().alpha is None:
-            input_file = self.con_adj.auto_pixelTransforms(input_file)
-        else:
+        if isinstance(input_file, str):
+            self.input_file = input_file
 
-            alpha = self.parent().parent().alpha
-            beta = self.parent().parent().beta
-            min_intensity = self.parent().parent().min_intensity
-            max_intensity = self.parent().parent().max_intensity
-            input_file = self.con_adj.pixel_transforms(input_file, alpha, beta, min_intensity, max_intensity)
+        else:
+            input_file = Normalization(video=input_file).normalized_image_specific()
+            if self.parent().parent().alpha is None:
+                input_file = self.con_adj.auto_pixelTransforms(input_file)
+            else:
+
+                alpha = self.parent().parent().alpha
+                beta = self.parent().parent().beta
+                min_intensity = self.parent().parent().min_intensity
+                max_intensity = self.parent().parent().max_intensity
+                input_file = self.con_adj.pixel_transforms(input_file, alpha, beta, min_intensity, max_intensity)
+                self.input_file = input_file
 
         if self.medianFilterFlag:
             input_file = median_filter(input_file, 3)
@@ -251,12 +260,13 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
                 for step in range(1, abs(steps) + 1):
 
                     self.slice_num -= vector
-                    self.parent().parent().slice_slider.setValue(self.slice_num)
-                    self.current_pixmap = self.create_pixmap(self.input_video[self.slice_num, :, :])
-                    self.update_slice(self.current_pixmap)
-                    if self.mask_is_set is True:
-                        self.current_mask_pixmap = self.create_mask_pixmap(self.maskArray[self.slice_num, :, :])
-                        self.update_overlay(self.current_mask_pixmap)
+                    if self.slice_num >= 0 and self.slice_num <= self.input_video.shape[0]:
+                        self.parent().parent().slice_slider.setValue(self.slice_num)
+                        self.current_pixmap = self.create_pixmap(self.input_video[self.slice_num, :, :])
+                        self.update_slice(self.current_pixmap)
+                        if self.mask_is_set is True:
+                            self.current_mask_pixmap = self.create_mask_pixmap(self.maskArray[self.slice_num, :, :])
+                            self.update_overlay(self.current_mask_pixmap)
 
     @QtCore.Slot()
     def active_LivePaint(self):
