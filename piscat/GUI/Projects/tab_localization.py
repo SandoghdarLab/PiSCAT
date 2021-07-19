@@ -106,8 +106,8 @@ class Localization_GUI(QtWidgets.QWidget):
     def createSecondExclusiveGroup(self):
 
         self.le_win_size = QtWidgets.QLineEdit()
-        self.le_win_size.setPlaceholderText("win size")
-        self.le_win_size_label = QtWidgets.QLabel("Neighborhood size(px)")
+        self.le_win_size.setPlaceholderText("win_size")
+        self.le_win_size_label = QtWidgets.QLabel("Neighborhood size (px):")
 
         self.groupBox_fine_localization = QtWidgets.QGroupBox("Fine localization:")
         self.groupBox_fine_localization.setCheckable(True)
@@ -135,7 +135,7 @@ class Localization_GUI(QtWidgets.QWidget):
     def createFourthExclusiveGroup(self):
 
         self.checkbox_filter_double_PSF = QtWidgets.QCheckBox("Filter dense PSFs", self)
-        self.checkbox_filter_side_lobes_PSF = QtWidgets.QCheckBox("Filter side lobes outlier PSFs", self)
+        self.checkbox_filter_side_lobes_PSF = QtWidgets.QCheckBox("Filter side lobes PSFs", self)
         self.checkbox_filter_asymmetry_PSF = QtWidgets.QCheckBox("Filter asymmetry PSFs", self)
         self.checkbox_2DFitting = QtWidgets.QCheckBox("2D Gaussian Fitting", self)
         self.checkbox_crappy_frames = QtWidgets.QCheckBox("Filter outlier frames", self)
@@ -163,8 +163,8 @@ class Localization_GUI(QtWidgets.QWidget):
     def add_line_crappy_frames(self):
         if self.checkbox_crappy_frames.isChecked():
             self.line_edit_crappy = QtWidgets.QLineEdit(self)
-            self.line_edit_crappy.setPlaceholderText('Max. number PSFs')
-            self.line_edit_crappy_label = QtWidgets.QLabel("Max #PSFs:")
+            self.line_edit_crappy.setPlaceholderText('Max number PSFs')
+            self.line_edit_crappy_label = QtWidgets.QLabel("Max number PSFs:")
 
             self.grid_filters.addWidget(self.line_edit_crappy_label, 0, 1)
             self.grid_filters.addWidget(self.line_edit_crappy, 0, 2)
@@ -181,12 +181,12 @@ class Localization_GUI(QtWidgets.QWidget):
         if self.checkbox_filter_asymmetry_PSF.isChecked():
             self.line_asymmetry_PSF = QtWidgets.QLineEdit(self)
             self.line_asymmetry_PSF.setPlaceholderText('Scale based on sigma size')
-            self.line_asymmetry_PSF_label = QtWidgets.QLabel("Scale win_size:")
+            self.line_asymmetry_PSF_label = QtWidgets.QLabel("Win_size (px):")
 
             self.line_asymmetry_PSF_Thr = QtWidgets.QLineEdit(self)
             tmp_str = "\u03C3"
             self.line_asymmetry_PSF_Thr.setPlaceholderText(tmp_str + "_x" + "/" + tmp_str + "_y")
-            self.line_asymmetry_PSF_Thr_label = QtWidgets.QLabel("Symmetry threshold:")
+            self.line_asymmetry_PSF_Thr_label = QtWidgets.QLabel("Asymmetry threshold:")
 
             self.grid_filters.addWidget(self.line_asymmetry_PSF_label, 3, 1)
             self.grid_filters.addWidget(self.line_asymmetry_PSF, 3, 2)
@@ -206,15 +206,15 @@ class Localization_GUI(QtWidgets.QWidget):
         if self.checkbox_2DFitting.isChecked():
             self.line_2DFitting = QtWidgets.QLineEdit(self)
             self.line_2DFitting.setPlaceholderText('Scale based on sigma size')
-            self.line_2DFitting_label = QtWidgets.QLabel("Scale win_size:")
+            self.line_2DFitting_label = QtWidgets.QLabel("Win_size (px):")
 
-            self.grid_filters.addWidget(self.line_2DFitting_label, 3, 1)
-            self.grid_filters.addWidget(self.line_2DFitting, 3, 2)
+            self.grid_filters.addWidget(self.line_2DFitting_label, 4, 1)
+            self.grid_filters.addWidget(self.line_2DFitting, 4, 2)
 
         if not self.checkbox_2DFitting.isChecked():
 
             for i_ in range(1, 5, 1):
-                layout = self.grid_filters.itemAtPosition(3, i_)
+                layout = self.grid_filters.itemAtPosition(4, i_)
                 if layout is not None:
                     layout.widget().deleteLater()
                     self.grid_filters.removeItem(layout)
@@ -606,20 +606,20 @@ class Localization_GUI(QtWidgets.QWidget):
                                                                                   scale=self.win_size, flag_preview=True)
 
                     self.setting_localization['function'] = self.combo_item
+                    self.setting_localization['mode'] = self.mode
                     self.setting_localization['min_sigma'] = self.min_sigma
                     self.setting_localization['max_sigma'] = self.max_sigma
                     self.setting_localization['sigma_ratio'] = self.sigma_ratio
                     self.setting_localization['threshold'] = self.threshold
                     self.setting_localization['overlap'] = self.overlap
-                    self.setting_localization['mode'] = self.mode
-                    self.setting_localization['min_radial'] = self.min_radial
-                    self.setting_localization['max_radial'] = self.max_radial
+                    self.setting_localization['min_radius'] = self.min_radial
+                    self.setting_localization['max_radius'] = self.max_radial
                     self.setting_localization['highpass_size'] = self.highpass_size
                     self.setting_localization['upsample'] = self.upsample
                     self.setting_localization['rweights'] = self.rweights
                     self.setting_localization['coarse_factor'] = self.coarse_factor
-                    self.setting_localization['coarse_mode'] = self.coarse_mode
                     self.setting_localization['pad_mode'] = self.pad_mode
+                    self.setting_localization['coarse_mode'] = self.coarse_mode
                     self.setting_localization['rvt_kind'] = self.rvt_kind
 
                     self.preview_localization.emit(self.df_PSFs_preview)
@@ -671,20 +671,20 @@ class Localization_GUI(QtWidgets.QWidget):
                     self.PSFs_Particels_num['Total_number_PSFs'] = self.df_PSFs.shape[0]
 
                     self.setting_localization['function'] = self.combo_item
+                    self.setting_localization['mode'] = self.mode
                     self.setting_localization['min_sigma'] = self.min_sigma
                     self.setting_localization['max_sigma'] = self.max_sigma
                     self.setting_localization['sigma_ratio'] = self.sigma_ratio
                     self.setting_localization['threshold'] = self.threshold
                     self.setting_localization['overlap'] = self.overlap
-                    self.setting_localization['mode'] = self.mode
-                    self.setting_localization['min_radial'] = self.min_radial
-                    self.setting_localization['max_radial'] = self.max_radial
+                    self.setting_localization['min_radius'] = self.min_radial
+                    self.setting_localization['max_radius'] = self.max_radial
                     self.setting_localization['highpass_size'] = self.highpass_size
                     self.setting_localization['upsample'] = self.upsample
                     self.setting_localization['rweights'] = self.rweights
                     self.setting_localization['coarse_factor'] = self.coarse_factor
-                    self.setting_localization['coarse_mode'] = self.coarse_mode
                     self.setting_localization['pad_mode'] = self.pad_mode
+                    self.setting_localization['coarse_mode'] = self.coarse_mode
                     self.setting_localization['rvt_kind'] = self.rvt_kind
 
                     self.update_localization.emit(self.df_PSFs)
@@ -701,8 +701,8 @@ class Localization_GUI(QtWidgets.QWidget):
                     psf = particle_localization.PSFsExtraction(video=self.input_video, flag_GUI=True)
                     self.df_PSFs = psf.improve_localization_with_frst(df_PSFs=self.df_PSFs, scale=self.win_size,
                                                                       flag_preview=False)
-                    self.setting_localization['fine_localization'] = True
-                    self.setting_localization['fine_localization_winSize'] = self.win_size
+                    self.setting_localization['Flag_fine_localization'] = True
+                    self.setting_localization['Fine_localization_neighborhood_size (px)'] = self.win_size
 
                     self.update_localization.emit(self.df_PSFs)
                     self.output_setting_Tab_Localization.emit(self.setting_localization)
@@ -741,8 +741,8 @@ class Localization_GUI(QtWidgets.QWidget):
                 self.get_values_crappy_frames()
                 if self.empty_value_box_flag:
                     self.df_PSFs_s_filter = s_filters.outlier_frames(self.df_PSFs, threshold=self.crappy_thr)
-                    self.setting_localization['outlier_frames_filtering'] = True
-                    self.setting_localization['outlier_frames_filtering_threshold'] = self.crappy_thr
+                    self.setting_localization['Flag_filter_outlier_frames'] = True
+                    self.setting_localization['Outlier_frames_filter_max_number_PSFs'] = self.crappy_thr
                     self.PSFs_Particels_num['#PSFs_after_outlier_frames_filtering'] = self.df_PSFs_s_filter.shape[0]
                     self.empty_value_box_flag = False
 
@@ -751,12 +751,12 @@ class Localization_GUI(QtWidgets.QWidget):
 
             if self.checkbox_filter_double_PSF.isChecked():
                 self.df_PSFs_s_filter = s_filters.dense_PSFs(self.df_PSFs_s_filter, threshold=0)
-                self.setting_localization['dense_PSFs_filtering'] = True
+                self.setting_localization['Flag_filter_dense_PSFs'] = True
                 self.PSFs_Particels_num['#PSFs_after_dense_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
 
             if self.checkbox_filter_side_lobes_PSF.isChecked():
                 self.df_PSFs_s_filter = s_filters.remove_side_lobes_artifact(self.df_PSFs_s_filter, threshold=0)
-                self.setting_localization['side_lobes_PSFs_filtering'] = True
+                self.setting_localization['Flag_filter_side_lobes_PSFs'] = True
                 self.PSFs_Particels_num['#PSFs_after_side_lobes_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
 
             if self.checkbox_2DFitting.isChecked() and self.checkbox_filter_asymmetry_PSF.isChecked():
@@ -770,8 +770,8 @@ class Localization_GUI(QtWidgets.QWidget):
                                                                                     scale=self.win_size_Fitting,
                                                                                     internal_parallel_flag=True)
 
-                    self.setting_localization['fit_2DGaussian'] = True
-                    self.setting_localization['fit_2DGaussian_winSize_scale'] = self.scale
+                    self.setting_localization['Flag_fit_2DGaussian'] = True
+                    self.setting_localization['Fit_2DGaussian_win_size (px) '] = self.scale
                     self.empty_value_box_flag = False
 
             if self.checkbox_filter_asymmetry_PSF.isChecked() and self.checkbox_2DFitting.isChecked():
@@ -779,9 +779,9 @@ class Localization_GUI(QtWidgets.QWidget):
                 if self.empty_value_box_flag:
                     self.df_PSFs_s_filter = s_filters.symmetric_PSFs(self.df_PSFs_s_filter, threshold=self.thr_sigma)
 
-                    self.setting_localization['asymmetry_PSFs_filtering'] = True
-                    self.setting_localization['asymmetry_PSFs_filtering_threshold'] = self.thr_sigma
-                    self.setting_localization['asymmetry_PSFs_filtering_scale'] = self.scale
+                    self.setting_localization['Flag_filter_asymmetry_PSFs'] = True
+                    self.setting_localization['Asymmetry_PSFs_filtering_threshold'] = self.thr_sigma
+                    self.setting_localization['Asymmetry_PSFs_filtering_win_size (px)'] = self.scale
                     self.PSFs_Particels_num['#PSFs_after_asymmetry_PSFs_filtering'] = self.df_PSFs_s_filter.shape[0]
                     self.empty_value_box_flag = False
 

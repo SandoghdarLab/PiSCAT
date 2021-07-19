@@ -36,7 +36,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
         self.object_update_progressBar = object_update_progressBar
 
         self.history = {'Type_bg_correction': None, 'bg_setting': None,
-                        'Localization_setting': None, 'Tracking_setting': None}
+                        'PSFs_Localization_setting': None, 'PSFs_Tracking_setting': None}
 
         self.PSFs_Particels_num = {'#PSFs': None, '#Particles': None}
 
@@ -65,7 +65,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
 
         self.all_tabs["PSFs_Localization"].preview_localization.connect(partial(self.Update_tab_localization, flag_preview=True))
         self.all_tabs["PSFs_Localization"].update_localization.connect(partial(self.Update_tab_localization, flag_preview=False))
-        self.all_tabs["PSFs_Localization"].output_setting_Tab_Localization.connect(partial(self.history_update, key='Localization_setting'))
+        self.all_tabs["PSFs_Localization"].output_setting_Tab_Localization.connect(partial(self.history_update, key='PSFs_Localization_setting'))
         self.all_tabs["PSFs_Localization"].output_number_PSFs_tracking.connect(partial(self.number_PSFs, key='#PSFs'))
         self.all_tabs["PSFs_Localization"].update_tab_index.connect(self.update_tab)
 
@@ -73,7 +73,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
 
         self.all_tabs["PSFs_Tracking"].update_tracking.connect(self.Update_tab_localization)
         self.all_tabs["PSFs_Tracking"].update_trajectories.connect(self.Update_tab_trajectories)
-        self.all_tabs["PSFs_Tracking"].output_setting_Tab_tracking.connect(partial(self.history_update, key='Tracking_setting'))
+        self.all_tabs["PSFs_Tracking"].output_setting_Tab_tracking.connect(partial(self.history_update, key='PSFs_Tracking_setting'))
         self.all_tabs["PSFs_Tracking"].output_number_Particels_tracking.connect(partial(self.number_PSFs, key='#Particles'))
         self.new_update_df_PSFs.connect(self.all_tabs["PSFs_Tracking"].update_in_data)
 

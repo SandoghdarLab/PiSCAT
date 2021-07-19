@@ -1,7 +1,7 @@
 from piscat.InputOutput import read_status_line, reading_videos
 from piscat.InputOutput import read_write_data
 from piscat.BackgroundCorrection import DRA
-from piscat.Preproccessing import normalization
+from piscat.Preproccessing import normalization, filtering
 from piscat.Localization import localization_filtering
 from piscat.Localization import particle_localization
 from piscat.Trajectory import particle_linking
@@ -104,7 +104,12 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
 
         DRA_ = DRA.DifferentialRollingAverage(video=video_pn, batchSize=hyperparameters['batch_size'])
 
-        RVideo_PN = DRA_.differential_rolling(FFT_flag=flags['FFT_flag'])
+        RVideo_PN_ = DRA_.differential_rolling(FFT_flag=flags['FFT_flag'])
+
+        if flags['filter_hotPixels']:
+            RVideo_PN = filtering.Filters(RVideo_PN_).median(3)
+        else:
+            RVideo_PN = RVideo_PN_
 
         PSFs_Particels_num['#Totall_frame_num_DRA'] = RVideo_PN.shape[0]
 

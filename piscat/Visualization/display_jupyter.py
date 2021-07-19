@@ -653,8 +653,8 @@ class JupyterSelectedPSFs_localizationDisplay():
                                    int(p_x - window_size_temp) + 1:int(p_x + window_size_temp)]
                     w_s = window_size_temp
 
-                fit_params_ = gaussian_2D_fit.fit_2D_Gaussian_varAmp(window_frame, sigma_0=start_sigma,
-                                                                     sigma_1=start_sigma,
+                fit_params_ = gaussian_2D_fit.fit_2D_Gaussian_varAmp(window_frame, sigma_x=start_sigma,
+                                                                     sigma_y=start_sigma,
                                                                      display_flag=False)
                 fit_params = fit_params_[1]
                 fit_errors = fit_params_[2]

@@ -107,7 +107,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     self.output = [dra_video, "DRA"]
                     self.output_Tab_bgCorrection.emit(self.output)
 
-                    self.setting_bg_correction['batch_size'] = self.batch_size
+                    self.setting_bg_correction['Batch_size (frames)'] = self.batch_size
                     self.setting_bg_correction['Power_Normalization'] = self.flag_power_normalization
 
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
@@ -128,7 +128,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     self.output = [blur_video, 'Spatial median Filter']
                     self.output_Tab_bgCorrection.emit(self.output)
 
-                    self.setting_bg_correction['median_kernel_size'] = median_size
+                    self.setting_bg_correction['Spatial_median_kernel_size'] = median_size
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                     self.output_batchSize_Tab_bgCorrection.emit(0)
                     print("Done!")
@@ -145,7 +145,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     self.output = [blur_video, "Spatial gaussian Filter"]
                     self.output_Tab_bgCorrection.emit(self.output)
 
-                    self.setting_bg_correction['gaussian_sigma'] = gaussian_sigma
+                    self.setting_bg_correction['Spatial_gaussian_sigma'] = gaussian_sigma
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                     self.output_batchSize_Tab_bgCorrection.emit(0)
                     print("Done!")
@@ -221,7 +221,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
             self.le_batchSize = QtWidgets.QLineEdit()
             self.le_batchSize.setPlaceholderText('radius')
-            self.le_batchSize_label = QtWidgets.QLabel("Batch size (#frames):")
+            self.le_batchSize_label = QtWidgets.QLabel("Batch size (frames):")
             self.le_batchSize.setFixedWidth(50)
 
             self.checkbox_power_normalization = QtWidgets.QCheckBox("Laser power normalization", self)
@@ -242,7 +242,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.flag_remove_box = True
 
             self.line_edit1 = QtWidgets.QLineEdit(self)
-            self.line_edit1_label = QtWidgets.QLabel("Neighborhood size(px):")
+            self.line_edit1_label = QtWidgets.QLabel("Neighborhood size (px):")
             self.line_edit1.setFixedWidth(50)
 
             self.grid1.addWidget(self.line_edit1_label, 2, 0)
@@ -256,7 +256,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.flag_remove_box = True
 
             self.line_edit2 = QtWidgets.QLineEdit(self)
-            self.line_edit2_label = QtWidgets.QLabel("Sigma(px):")
+            self.line_edit2_label = QtWidgets.QLabel("Sigma (px):")
             self.line_edit2.setFixedWidth(50)
 
             self.grid1.addWidget(self.line_edit2_label, 2, 0)
@@ -277,7 +277,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.flag_remove_box = True
 
             self.line_edit5 = QtWidgets.QLineEdit(self)
-            self.line_edit5_label = QtWidgets.QLabel("Sigma(px):")
+            self.line_edit5_label = QtWidgets.QLabel("Sigma (px):")
             self.line_edit5.setFixedWidth(50)
 
             self.grid1.addWidget(self.line_edit5_label, 2, 0)

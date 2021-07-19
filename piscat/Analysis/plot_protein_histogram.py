@@ -466,7 +466,8 @@ class PlotProteinHistogram(PrintColors):
             mean_ = 0
         return mean_, std_
 
-    def extract_hist_information(self, con_intersections, con_peaks, con_proms, upper_limitation=1, lower_limitation=-1, max_n_components=3, Flag_GMM_fit=True):
+    def extract_hist_information(self, con_intersections, con_peaks, con_proms, upper_limitation=1, lower_limitation=-1,
+                                 max_n_components=3, Flag_GMM_fit=True):
         t_contrast_intersection = np.asarray(con_intersections)
         t_contrast_intersection = t_contrast_intersection[~np.isnan(t_contrast_intersection)]
 

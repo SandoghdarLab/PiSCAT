@@ -58,15 +58,15 @@ class Tracking_GUI(QtWidgets.QWidget):
 
         self.line_memory = QtWidgets.QLineEdit()
         self.line_memory.setPlaceholderText("Memory")
-        self.line_memory_label = QtWidgets.QLabel("Memory (#frames):")
+        self.line_memory_label = QtWidgets.QLabel("Memory (frame):")
 
         self.line_search_range = QtWidgets.QLineEdit()
         self.line_search_range.setPlaceholderText("Move")
         self.line_searchRange_label = QtWidgets.QLabel("Neighborhood size(px):")
 
         self.line_min_V_shape = QtWidgets.QLineEdit()
-        self.line_min_V_shape.setPlaceholderText("V_shape_width")
-        self.line_min_V_shape_label = QtWidgets.QLabel("V_shape_width (#frames):")
+        self.line_min_V_shape.setPlaceholderText("Minimum_temporal_length (frame)")
+        self.line_min_V_shape_label = QtWidgets.QLabel("Minimum_temporal_length (frame):")
 
         self.grid = QtWidgets.QGridLayout()
         self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
@@ -192,16 +192,16 @@ class Tracking_GUI(QtWidgets.QWidget):
                                                                                                    threshold=self.temporal_length)
 
                     linking_ = particle_linking.Linking()
-                    self.PSFs_Particels_num['#Particles_after_V_shapeFilter'] = linking_.trajectory_counter(df_PSFs_t_filter)
+                    self.PSFs_Particels_num['#Particles_after_temporal_filter'] = linking_.trajectory_counter(df_PSFs_t_filter)
 
                     if self.checkbox_sorting_based_lenght.isChecked():
                         df_PSFs_t_filter = linking_.sorting_linking(df_PSFs=df_PSFs_t_filter)
 
                     self.link_df_PSFS = df_PSFs_t_filter
 
-                    self.setting_tracking['search_range'] = self.search_range
-                    self.setting_tracking['Memory'] = self.memory
-                    self.setting_tracking['minimum_temporal_length'] = self.temporal_length
+                    self.setting_tracking['Memory (frame)'] = self.memory
+                    self.setting_tracking['Neighborhood_size (px)'] = self.search_range
+                    self.setting_tracking['Minimum_temporal_length (frame)'] = self.temporal_length
 
                     self.update_tracking.emit(self.link_df_PSFS)
                     self.update_trajectories.emit(all_trajectories)
