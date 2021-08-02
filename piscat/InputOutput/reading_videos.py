@@ -120,7 +120,17 @@ def read_tif(filename):
         The video is 3D-numpy (number of frames, width, height).
 
     """
-    return io.imread(filename)
+    vid_ = io.imread(filename)
+    if vid_.ndim == 4:
+        frames_list = []
+        for i_ in range(vid_.shape[0]):
+            gray = cv2.cvtColor(vid_[i_, ...], cv2.COLOR_BGR2GRAY)
+            frames_list.append(gray)
+    else:
+        frames_list = vid_
+
+    frames_list = np.asarray(frames_list)
+    return frames_list
 
 
 def read_avi(filename):
