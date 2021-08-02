@@ -27,6 +27,11 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.checkbox_save = QtWidgets.QCheckBox("Saving as CSV", self)
         self.checkbox_save.toggled.connect(lambda: self.save_active())
 
+
+        self.checkbox_loglog_scale = QtWidgets.QRadioButton("log scale")
+        self.checkbox_loglog_scale.setChecked(True)
+        self.checkbox_normal_scale = QtWidgets.QRadioButton("normal scale")
+
         self.ok = QtWidgets.QPushButton("Ok")
         self.ok.setAutoDefault(False)
         self.ok.clicked.connect(self.do_update)
@@ -42,8 +47,10 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.grid.addWidget(self.createSecondExclusiveGroup(), 1, 0)
         self.grid.addWidget(self.checkbox_power_normalization, 5, 0)
         self.grid.addWidget(self.checkbox_save, 6, 0)
-        self.grid.addWidget(self.ok, 7, 0)
-        self.grid.addWidget(self.plot, 8, 0)
+        self.grid.addWidget(self.checkbox_loglog_scale, 7, 0)
+        self.grid.addWidget(self.checkbox_normal_scale, 8, 0)
+        self.grid.addWidget(self.ok, 9, 0)
+        self.grid.addWidget(self.plot, 10, 0)
 
         self.setWindowTitle("Noise Floor")
         self.window.setLayout(self.grid)
@@ -133,7 +140,10 @@ class Noise_Floor(QtWidgets.QMainWindow):
             try:
                 self.noise_floor_ = NoiseFloor(self.original_video, list_range=self.radius_list, n_jobs=None,
                                                inter_flag_parallel_active=inter_flag_parallel_active)
-                self.noise_floor_.plot_result()
+                if self.checkbox_loglog_scale.isChecked():
+                    self.noise_floor_.plot_result(flag_log=True)
+                else:
+                    self.noise_floor_.plot_result(flag_log=False)
 
                 if self.checkbox_save.isChecked() and self.file_path is not None:
 
@@ -159,7 +169,10 @@ class Noise_Floor(QtWidgets.QMainWindow):
 
     def do_plot(self):
         try:
-            self.noise_floor_.plot_result()
+            if self.checkbox_loglog_scale.isChecked():
+                self.noise_floor_.plot_result(flag_log=True)
+            else:
+                self.noise_floor_.plot_result(flag_log=False)
         except:
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")

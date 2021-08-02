@@ -30,7 +30,6 @@ class NoiseFloor(CPUConfigurations, PrintColors):
 
         self.video = video
         self.inter_flag_parallel_active = inter_flag_parallel_active
-        self.thr_shot_noise = None
         self.list_range = list_range
         if self.parallel_active and self.inter_flag_parallel_active:
             if n_jobs is not None:
@@ -51,19 +50,32 @@ class NoiseFloor(CPUConfigurations, PrintColors):
 
         return np.mean(np.std(video_DRA, axis=0))
 
-    def plot_result(self):
+    def plot_result(self, flag_log=True):
         """
         The result of the noise floor is plotted when this function is called.
+
+        Parameters
+        ----------
+        flag_log: bool
+            The log-log plot style is enabled by this parameter.
         """
-        fig, ax = plt.subplots()
-        ax.plot(self.list_range, self.mean, '--r', label='Experimental result')
-        ax.plot(self.list_range, self.mean, 'ro')
+        shot_noise_ = np.divide(self.mean[0], np.sqrt(self.list_range))
+        if flag_log is False:
+            fig, ax = plt.subplots()
+            ax.plot(self.list_range, self.mean, 'ro', label='Experimental result')
+            ax.plot(self.list_range, shot_noise_, 'b-', label='shot noise')
 
-        if self.thr_shot_noise is not None:
-            ax.plot(self.list_range, self.thr_shot_noise, '--g', label='Theoretical result')
-            ax.plot(self.list_range, self.thr_shot_noise, 'go')
+            ax.set_xlabel("Batch size")
+            ax.set_ylabel("Noise floor")
+            ax.legend()
+            plt.show()
 
-        ax.set_xlabel("Batch size")
-        ax.set_ylabel("Noise floor")
-        ax.legend()
-        plt.show()
+        if flag_log is True:
+            fig, ax = plt.subplots()
+            ax.loglog(self.list_range, self.mean, 'ro', label='Experimental result')
+            ax.loglog(self.list_range, shot_noise_, 'b-', label='shot noise')
+
+            ax.set_xlabel("Batch size")
+            ax.set_ylabel("Noise floor")
+            ax.legend()
+            plt.show()
