@@ -7,6 +7,7 @@ import time
 import pkg_resources
 
 from piscat.GUI.InputOutput import Reading
+from piscat.GUI.InputOutput.help import Help
 from piscat.GUI.CPU_Configurations import CPU_setting_wrapper
 from piscat.GUI.Proccessing import FFT2D_GUI_wrapper
 from piscat.GUI.VideoAnalysis import Analysis
@@ -22,7 +23,7 @@ from PySide2 import QtGui
 from PySide2 import QtCore
 from PySide2 import QtWidgets
 from PySide2.QtCore import *
-from PySide2.QtWidgets import QMenuBar
+from PySide2.QtWebEngineWidgets import *
 from functools import partial
 
 warnings.filterwarnings('ignore')
@@ -171,6 +172,24 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         analyze_menu.addAction(protein_track)
         # --------Analyze.--------
 
+        # --------Help-----------
+        help_menu = menubar.addMenu('&Help')
+
+        help = QtWidgets.QAction('Help', self)
+        # open_file.setShortcut('Ctrl+R')
+        help.setStatusTip('Help.')
+        self.connect(help, QtCore.SIGNAL('triggered()'), self.help)
+
+        about = QtWidgets.QAction('About', self)
+        # open_file.setShortcut('Ctrl+R')
+        about.setStatusTip('About.')
+        self.connect(about, QtCore.SIGNAL('triggered()'), self.about)
+
+        help_menu.addAction(help)
+        help_menu.addAction(about)
+
+        # --------About-----------
+
         # --------Information Box--------
         save_txt = QtWidgets.QAction('Report', self)
         # save_txt.setShortcut('Ctrl+Q')
@@ -311,6 +330,16 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             self.visualization_ = Visulization_localization()
             self.visualization_.new_display(self.dra_video, self.dra_video, object=None,
                                             title='DRA', mask_status=False)
+
+    def about(self):
+
+        self.msg_box = QtWidgets.QMessageBox()
+        self.msg_box.setWindowTitle("About PiSCAT")
+        self.msg_box.setText('PiSCAT version %s' % version)
+        self.msg_box.exec_()
+
+    def help(self):
+        self.help_windows = Help()
 
 
 def main():

@@ -21,12 +21,13 @@ class Cropping(QtWidgets.QMainWindow):
         self.type = None
 
         self.flag_display = False
-
+        self.flag_RGB2GRAY = False
         self.raw_data_update_flag = True
 
         self.window = QtWidgets.QWidget()
 
         self.checkbox_display = QtWidgets.QCheckBox("Display", self)
+        self.checkbox_RGB2GRAY = QtWidgets.QCheckBox("RGB2Gray", self)
 
         self.ok = QtWidgets.QPushButton("Ok")
         self.ok.setAutoDefault(False)
@@ -37,6 +38,7 @@ class Cropping(QtWidgets.QMainWindow):
         self.grid.addWidget(self.createSecondExclusiveGroup(), 0, 0)
 
         self.grid.addWidget(self.checkbox_display, 5, 0)
+        self.grid.addWidget(self.checkbox_RGB2GRAY, 5, 1)
         self.grid.addWidget(self.ok, 6, 0)
 
         self.setWindowTitle("Reading video")
@@ -63,6 +65,9 @@ class Cropping(QtWidgets.QMainWindow):
             self.get_values()
             if self.checkbox_display.isChecked():
                 self.flag_display = True
+
+            if self.checkbox_RGB2GRAY.isChecked():
+                self.flag_RGB2GRAY = True
 
             if self.groupBox_cropping.isChecked():
                 if self.width_size_s != '' and self.width_size_e != '':

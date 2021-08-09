@@ -7,6 +7,7 @@ from PySide2 import QtWidgets
 
 import os
 import numpy as np
+import cv2
 
 
 class Reading(QtWidgets.QMainWindow):
@@ -31,8 +32,10 @@ class Reading(QtWidgets.QMainWindow):
             file_extention = os.path.splitext(self.filename)[1]
             if file_extention == ".pf" or file_extention == ".raw" or file_extention == ".bin" or file_extention == ".PF" or file_extention == ".RAW" or file_extention == ".BIN":
                 return "Raw"
-            elif file_extention == ".jpg" or file_extention == ".JPG" or file_extention == ".tiff" or file_extention == ".TIFF" or file_extention == ".png" or file_extention == ".PNG":
+            elif file_extention == ".jpg" or file_extention == ".JPG" or file_extention == ".png" or file_extention == ".PNG":
                 return "PNG"
+            elif file_extention == ".tiff" or file_extention == ".TIFF":
+                return "TIF"
             elif file_extention == ".avi" or file_extention == ".AVI":
                 return "AVI"
             elif file_extention == ".TIF" or file_extention == ".tif":
@@ -125,6 +128,10 @@ class Reading(QtWidgets.QMainWindow):
 
                 while self.info_image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
+
+                if self.info_image.flag_RGB2GRAY:
+                    tif_video = cv2.cvtColor(tif_video, cv2.COLOR_BGR2GRAY)
+                    tif_video = np.expand_dims(tif_video, axis=0)
 
                 if self.info_image.frame_e is not None:
 
