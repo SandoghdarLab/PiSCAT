@@ -38,8 +38,8 @@ class Cropping(QtWidgets.QMainWindow):
         self.grid.addWidget(self.createSecondExclusiveGroup(), 0, 0)
 
         self.grid.addWidget(self.checkbox_display, 5, 0)
-        self.grid.addWidget(self.checkbox_RGB2GRAY, 5, 1)
-        self.grid.addWidget(self.ok, 6, 0)
+        self.grid.addWidget(self.checkbox_RGB2GRAY, 6, 0)
+        self.grid.addWidget(self.ok, 7, 0)
 
         self.setWindowTitle("Reading video")
         self.setStyleSheet('QMainWindow{background-color: darkgray;}')

@@ -130,8 +130,9 @@ class Reading(QtWidgets.QMainWindow):
                     QtWidgets.QApplication.processEvents()
 
                 if self.info_image.flag_RGB2GRAY:
-                    tif_video = cv2.cvtColor(tif_video, cv2.COLOR_BGR2GRAY)
-                    tif_video = np.expand_dims(tif_video, axis=0)
+                    if tif_video.shape[2] == 4:
+                        tif_video = cv2.cvtColor(tif_video, cv2.COLOR_BGR2GRAY)
+                        tif_video = np.expand_dims(tif_video, axis=0)
 
                 if self.info_image.frame_e is not None:
 
