@@ -43,6 +43,7 @@ setup(
                         "PyQt5",
                         "Pyside2",
                         "pyqtgraph",
+                        "PyQtWebEngine",
                         "scikit_learn",
                         "scikit-image",
                         "tqdm",
