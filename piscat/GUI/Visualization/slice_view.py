@@ -172,6 +172,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
             input_file = Normalization(video=input_file).normalized_image_specific()
             if self.parent().parent().alpha is None:
                 input_file = self.con_adj.auto_pixelTransforms(input_file)
+                self.input_file = input_file
             else:
 
                 alpha = self.parent().parent().alpha

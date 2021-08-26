@@ -7,6 +7,7 @@ from piscat.GUI.Visualization.fun_display_localization import Visulization_local
 from piscat.InputOutput.read_write_data import load_dict_from_hdf5
 
 from PySide2 import QtCore, QtWidgets
+from PySide2.QtCore import *
 from functools import partial
 import pandas as pd
 import numpy as np
@@ -114,30 +115,31 @@ class ProteinTabs(QtWidgets.QMainWindow):
         self.layout.addWidget(self.main_tabWidget)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-    @QtCore.Slot()
+    @Slot()
     def update_input(self, video_in):
         self.input_video = video_in
 
     def __del__(self):
         print('Destructor called, Employee deleted.')
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def update_tab(self, idx_):
         self.main_tabWidget.setCurrentIndex(idx_)
 
-    @QtCore.Slot(int)
+    @Slot(int)
     def setProgress(self, val):
         self.progressBar.setValue(val)
 
-    @QtCore.Slot()
+    @Slot()
     def Update_batchSize(self, batchSize):
         self.batch_size = batchSize
         self.all_tabs["PSFs_Tracking"].update_batchSize(batchSize=batchSize)
 
-    @QtCore.Slot()
+    @Slot()
     def Update_tab_bgCorrection(self, data):
         if data[0] is not None:
-            self.bgCorrectedVideo = data[0]
+            self.bgCorrectedVideo = data[0][0]
+            self.type_bgCorrection = data[1]
             self.history['Type_bg_correction'] = data[1]
             self.new_update_bg_video.emit(self.bgCorrectedVideo)
 

@@ -22,12 +22,12 @@ class WorkerSignals(QObject):
     progress = Signal(int)
 
 
-class Filters():
+class Filters:
 
     def __init__(self, video, inter_flag_parallel_active=True):
         """
-       This class generates a list of video/image filters.
-       To improve performance on large video files, some of them have a parallel implementation.
+        This class generates a list of video/image filters.
+        To improve performance on large video files, some of them have a parallel implementation.
 
         Parameters
         ----------
@@ -692,6 +692,188 @@ class FastRadialSymmetryTransform():
 
         return S[radii:-radii, radii:-radii]
 
+
+class GuidedFilter:
+
+    def __init__(self, I, radius, eps):
+        """
+        This is a class which builds guided filter
+        according to the channel number of guided Input.
+        The guided input could be gray image, color image,
+        or multi-dimensional feature map.
+
+        Parameters
+        ----------
+        I: NDArray
+            Guided image or guided feature map
+
+        radius: int
+            Radius of filter
+
+        eps: float
+            Value controlling sharpness
+
+        References
+        ----------
+          [1] K.He, J.Sun, and X.Tang. Guided Image Filtering. TPAMI'12.
+        """
+        if len(I.shape) == 2:
+            self._Filter = GrayGuidedFilter(I, radius, eps)
+        else:
+            self._Filter = MultiDimGuidedFilter(I, radius, eps)
+
+    def filter(self, p):
+        """
+        Parameters
+        ----------
+        p: NDArray
+            Filtering input which is 2D or 3D with format
+            HW or HWC
+
+        Returns
+        -------
+        ret: NDArray
+            Filtering output whose shape is same with input
+        """
+        p = np.float32(p)
+        if len(p.shape) == 2:
+            return self._Filter.filter(p)
+        elif len(p.shape) == 3:
+            channels = p.shape[2]
+            ret = np.zeros_like(p, dtype=np.float32)
+            for c in range(channels):
+                ret[:, :, c] = self._Filter.filter(p[:, :, c])
+            return ret
+
+
+class GrayGuidedFilter:
+
+    def __init__(self, I, radius, eps):
+        """
+        Specific guided filter for gray guided image.
+
+        Parameters
+        ----------
+        I: NDArray
+            2D guided image
+
+        radius: int
+            Radius of filter
+
+        eps: float
+            Value controlling sharpness
+        """
+        self.I = np.float32(I)
+        self.radius = radius
+        self.eps = eps
+
+    def filter(self, p):
+        """
+        Parameters
+        ----------
+        p: NDArray
+            Filtering input of 2D
+
+        Returns
+        -------
+        q: NDArray
+            Filtering output of 2D
+        """
+        # step 1
+        meanI  = cv2.boxFilter(src=self.I, ddepth=-1, ksize=self.radius)
+        meanp  = cv2.boxFilter(src=p, ddepth=-1, ksize=self.radius)
+        corrI  = cv2.boxFilter(src=self.I * self.I, ddepth=-1, ksize=self.radius)
+        corrIp = cv2.boxFilter(src=self.I * p, ddepth=-1, ksize=self.radius)
+        # step 2
+        varI = corrI - meanI * meanI
+        covIp = corrIp - meanI * meanp
+        # step 3
+        a = covIp / (varI + self.eps)
+        b = meanp - a * meanI
+        # step 4
+        meana  = cv2.boxFilter(src=a, ddepth=-1, ksize=self.radius)
+        meanb  = cv2.boxFilter(src=b, ddepth=-1, ksize=self.radius)
+        # step 5
+        q = meana * self.I + meanb
+
+        return q
+
+
+class MultiDimGuidedFilter:
+
+    def __init__(self, I, radius, eps):
+        """
+        Specific guided filter for color guided image or multi-dimensional feature map.
+
+        Parameters
+        ----------
+        I: NDArray
+            Image.
+
+        radius: int
+            Radius of filter
+
+        eps: float
+            Value controlling sharpness
+        """
+        self.I = np.float32(I)
+        self.radius = radius
+        self.eps = eps
+
+        self.rows = self.I.shape[0]
+        self.cols = self.I.shape[1]
+        self.chs = self.I.shape[2]
+
+    def filter(self, p):
+        """
+        Parameters
+        ----------
+        p: NDArray
+            Filtering input of 2D
+
+        Returns
+        -------
+        q: NDArray
+            Filtering output of 2D
+        """
+        p_ = np.expand_dims(p, axis=2)
+
+        meanI = cv2.boxFilter(src=self.I, ksize=self.radius) # (H, W, C)
+        meanp = cv2.boxFilter(src=p_, ksize=self.radius) # (H, W, 1)
+        I_ = self.I.reshape((self.rows*self.cols, self.chs, 1)) # (HW, C, 1)
+        meanI_ = meanI.reshape((self.rows*self.cols, self.chs, 1)) # (HW, C, 1)
+
+        corrI_ = np.matmul(I_, I_.transpose(0, 2, 1))  # (HW, C, C)
+        corrI_ = corrI_.reshape((self.rows, self.cols, self.chs*self.chs)) # (H, W, CC)
+        corrI_ = cv2.boxFilter(src=corrI_, ksize=self.radius)
+        corrI = corrI_.reshape((self.rows*self.cols, self.chs, self.chs)) # (HW, C, C)
+
+        U = np.expand_dims(np.eye(self.chs, dtype=np.float32), axis=0)
+        # U = np.tile(U, (self.rows*self.cols, 1, 1)) # (HW, C, C)
+
+        left = np.linalg.inv(corrI + self.eps * U) # (HW, C, C)
+
+        corrIp = cv2.boxFilter(src=self.I*p_, ksize=self.radius) # (H, W, C)
+        covIp = corrIp - meanI * meanp # (H, W, C)
+        right = covIp.reshape((self.rows*self.cols, self.chs, 1)) # (HW, C, 1)
+
+        a = np.matmul(left, right) # (HW, C, 1)
+        axmeanI = np.matmul(a.transpose((0, 2, 1)), meanI_) # (HW, 1, 1)
+        axmeanI = axmeanI.reshape((self.rows, self.cols, 1))
+        b = meanp - axmeanI # (H, W, 1)
+        a = a.reshape((self.rows, self.cols, self.chs))
+
+        meana = cv2.boxFilter(src=a, ksize=self.radius)
+        meanb = cv2.boxFilter(src=b, ksize=self.radius)
+
+        meana = meana.reshape((self.rows*self.cols, 1, self.chs))
+        meanb = meanb.reshape((self.rows*self.cols, 1, 1))
+        I_ = self.I.reshape((self.rows*self.cols, self.chs, 1))
+
+        q = np.matmul(meana, I_) + meanb
+        q = q.reshape((self.rows, self.cols))
+
+        return q
 
 
 

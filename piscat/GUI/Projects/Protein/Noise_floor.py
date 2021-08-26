@@ -45,6 +45,7 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.grid = QtWidgets.QGridLayout()
         self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
         self.grid.addWidget(self.createSecondExclusiveGroup(), 1, 0)
+        self.grid.addWidget(self.createThirdExclusiveGroup(), 2, 0)
         self.grid.addWidget(self.checkbox_power_normalization, 5, 0)
         self.grid.addWidget(self.checkbox_save, 6, 0)
         self.grid.addWidget(self.checkbox_loglog_scale, 7, 0)
@@ -79,6 +80,72 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.groupBox_list .setLayout(self.grid2)
 
         return self.groupBox_list
+
+    def createThirdExclusiveGroup(self):
+        self.groupBox_FPNc = QtWidgets.QGroupBox("FPNc:")
+        self.groupBox_FPNc.setCheckable(True)
+        self.groupBox_FPNc.setChecked(False)
+
+        self.FPN_mode_group = QtWidgets.QButtonGroup()
+        self.radio_wFPN_mode = QtWidgets.QRadioButton("Wavelet FPNc")
+        self.radio_mFPN_mode = QtWidgets.QRadioButton("Median FPNc")
+        self.radio_cpFPN_mode = QtWidgets.QRadioButton("Column projection FPNc")
+        self.radio_fft_FPN_mode = QtWidgets.QRadioButton("FFT2D FPNc")
+
+        self.FPN_mode_group.addButton(self.radio_wFPN_mode)
+        self.FPN_mode_group.addButton(self.radio_mFPN_mode)
+        self.FPN_mode_group.addButton(self.radio_cpFPN_mode)
+        self.FPN_mode_group.addButton(self.radio_fft_FPN_mode)
+
+        self.radio_wFPN_mode.toggled.connect(self.axis_selection)
+        self.radio_mFPN_mode.toggled.connect(self.axis_selection)
+        self.radio_cpFPN_mode.toggled.connect(self.axis_selection)
+        self.radio_fft_FPN_mode.toggled.connect(self.axis_selection)
+
+        self.axis_group = QtWidgets.QButtonGroup()
+        self.radio_axis_1 = QtWidgets.QRadioButton("FPNc in axis 0")
+        self.radio_axis_2 = QtWidgets.QRadioButton("FPNc in axis 1")
+        self.radio_axis_3 = QtWidgets.QRadioButton("FPNc in Both axis")
+        self.radio_axis_2.setChecked(True)
+        self.radio_mFPN_mode.setChecked(True)
+
+        self.axis_group.addButton(self.radio_axis_1)
+        self.axis_group.addButton(self.radio_axis_2)
+        self.axis_group.addButton(self.radio_axis_3)
+
+        grid = QtWidgets.QGridLayout()
+        grid.addWidget(self.radio_mFPN_mode, 1, 0)
+        grid.addWidget(self.radio_cpFPN_mode, 2, 0)
+        grid.addWidget(self.radio_wFPN_mode, 3, 0)
+        grid.addWidget(self.radio_fft_FPN_mode, 4, 0)
+
+        grid.addWidget(self.radio_axis_1, 1, 1)
+        grid.addWidget(self.radio_axis_2, 2, 1)
+        grid.addWidget(self.radio_axis_3, 3, 1)
+
+        self.groupBox_FPNc.setLayout(grid)
+        return self.groupBox_FPNc
+
+    def axis_selection(self):
+        if self.radio_mFPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
+        elif self.radio_wFPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
+        elif self.radio_fft_FPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
+        elif self.radio_cpFPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
 
     @QtCore.Slot()
     def do_update(self):
@@ -132,14 +199,40 @@ class Noise_Floor(QtWidgets.QMainWindow):
         if self.checkbox_power_normalization.isChecked():
             self.original_video, _ = Normalization(video=self.original_video).power_normalized()
 
+        if self.groupBox_FPNc.isChecked():
+            FPN_flag = True
+            if self.radio_axis_1.isChecked():
+                self.axis = 0
+            elif self.radio_axis_2.isChecked():
+                self.axis = 1
+            elif self.radio_axis_3.isChecked():
+                self.axis = 'Both'
+
+            if self.radio_mFPN_mode.isChecked():
+                self.mode_FPN = 'mFPN'
+            elif self.radio_cpFPN_mode.isChecked():
+                self.mode_FPN = 'cpFPN'
+            elif self.radio_wFPN_mode.isChecked():
+                self.mode_FPN = 'wFPN'
+            elif self.radio_fft_FPN_mode.isChecked():
+                self.mode_FPN = 'fFPN'
+
+        else:
+            FPN_flag = False
+            self.axis = None
+            self.mode_FPN = 'mFPN'
+
         result_flag = True
         n_jobs = os.cpu_count()
         inter_flag_parallel_active = True
         flag_first_except = False
         while result_flag:
             try:
-                self.noise_floor_ = NoiseFloor(self.original_video, list_range=self.radius_list, n_jobs=None,
+                self.noise_floor_ = NoiseFloor(self.original_video, list_range=self.radius_list,
+                                               select_correction_axis=self.axis,
+                                               FPN_flag=FPN_flag, mode_FPN=self.mode_FPN, n_jobs=None,
                                                inter_flag_parallel_active=inter_flag_parallel_active)
+
                 if self.checkbox_loglog_scale.isChecked():
                     self.noise_floor_.plot_result(flag_log=True)
                 else:

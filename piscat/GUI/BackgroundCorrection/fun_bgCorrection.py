@@ -83,10 +83,19 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.object_update_progressBar.setProgress(0)
             self.object_update_progressBar.setRange(self.p_max)
 
+            if self.info_DRA.flag_FPN:
+                self.set_new_text.emit("Start DRA + " + self.info_DRA.mode_FPN + '-->')
+                d_arg = {'video': self.original_video, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
+                         'instance': DifferentialRollingAverage, 'FPN_flag': True, 'select_correction_axis': self.info_DRA.axis,
+                         'object_update_progressBar': self.object_update_progressBar, 'mode_FPN': self.info_DRA.mode_FPN}
 
-            self.set_new_text.emit("Start DRA -->")
-            d_arg = {'video': self.original_video, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
-                     'instance': DifferentialRollingAverage, 'object_update_progressBar': self.object_update_progressBar}
+                title = title + self.info_DRA.mode_FPN + '_'
+
+            else:
+                self.set_new_text.emit("Start DRA -->")
+                d_arg = {'video': self.original_video, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
+                             'instance': DifferentialRollingAverage, 'FPN_flag': False, 'select_correction_axis': self.info_DRA.axis,
+                             'object_update_progressBar': self.object_update_progressBar, 'mode_FPN': self.info_DRA.mode_FPN}
 
             self.flag_thread_dra = True
             self.flag_update_dra = True
@@ -123,7 +132,7 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.info_DRA.window.close()
             self.dra_wrapper()
 
-    def run_DRA_from_bgtabs(self, batch_size, flag_power_normalization):
+    def run_DRA_from_bgtabs(self, mode_FPN, batch_size, flag_power_normalization, flag_FPN, axis):
         title = ''
 
         if self.original_video is not None and self.original_video.shape[0] - (2 * batch_size) <= 0:
@@ -153,9 +162,21 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.object_update_progressBar.setProgress(0)
             self.object_update_progressBar.setRange(self.p_max)
 
-            self.set_new_text.emit("Start DRA -->")
-            d_arg = {'video': self.original_video, 'batchSize': batch_size, 'flag_GUI': True,
-                     'instance': DifferentialRollingAverage, 'object_update_progressBar': self.object_update_progressBar}
+            if flag_FPN:
+                self.set_new_text.emit("Start DRA + " + mode_FPN + '-->')
+                d_arg = {'video': self.original_video, 'batchSize': batch_size, 'flag_GUI': True,
+                         'instance': DifferentialRollingAverage, 'FPN_flag_GUI': True,
+                         'gui_select_correction_axis': axis,
+                         'object_update_progressBar': self.object_update_progressBar,
+                         'mode_FPN': mode_FPN}
+
+                title = title + mode_FPN + '_'
+
+            else:
+                self.set_new_text.emit("Start DRA -->")
+                d_arg = {'video': self.original_video, 'batchSize': batch_size, 'flag_GUI': True, 'mode_FPN': mode_FPN,
+                         'instance': DifferentialRollingAverage, 'FPN_flag_GUI': False, 'gui_select_correction_axis': axis,
+                         'object_update_progressBar': self.object_update_progressBar}
 
             self.flag_thread_dra = True
             self.flag_update_dra = True

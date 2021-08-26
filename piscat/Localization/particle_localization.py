@@ -43,7 +43,6 @@ class PSFsExtraction:
 
         flag_GUI: bool
             While the GUI is calling this class, it is true.
-
         """
         super(PSFsExtraction, self).__init__()
         self.cpu = CPUConfigurations()

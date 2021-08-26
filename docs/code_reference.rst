@@ -116,6 +116,24 @@ piscat.Preproccessing
 .. autoclass:: piscat.Preproccessing.FastRadialSymmetryTransform
     :members:
 
+.. autoclass:: piscat.Preproccessing.GuidedFilter
+    :members:
+
+.. autoclass:: piscat.Preproccessing.GrayGuidedFilter
+    :members:
+
+.. autoclass:: piscat.Preproccessing.MultiDimGuidedFilter
+    :members:
+
+.. autoclass:: piscat.Preproccessing.MedianProjectionFPNc
+    :members:
+
+.. autoclass:: piscat.Preproccessing.ColumnProjectionFPNc
+    :members:
+
+.. autoclass:: piscat.Preproccessing.FrequencyFPNc
+    :members:
+
 piscat.Trajectory
 -----------------
 

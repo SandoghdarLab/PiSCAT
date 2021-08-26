@@ -91,6 +91,28 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             if self.combo_bg_filter.currentText() == "Differential rolling average":
                 self.batch_size = self.le_batchSize.text()
 
+                if self.groupBox_FPNc.isChecked():
+                    self.flag_FPN = True
+                    if self.radio_axis_1.isChecked():
+                        self.axis = 0
+                    elif self.radio_axis_2.isChecked():
+                        self.axis = 1
+                    elif self.radio_axis_3.isChecked():
+                        self.axis = 'Both'
+
+                    if self.radio_cpFPN_mode.isChecked():
+                        self.mode_FPN = 'cpFPN'
+                    elif self.radio_wFPN_mode.isChecked():
+                        self.mode_FPN = 'wFPN'
+                    elif self.radio_FFT2D_FPN_mode.isChecked():
+                        self.mode_FPN = 'fFPN'
+                    elif self.radio_median_FPN_mode.isChecked():
+                        self.mode_FPN = 'mFPN'
+                else:
+                    self.flag_FPN = False
+                    self.axis = 0
+                    self.mode_FPN = 'fFPN'
+
                 if self.checkbox_power_normalization.isChecked():
                     self.flag_power_normalization = True
                 else:
@@ -101,14 +123,18 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     self.output_batchSize_Tab_bgCorrection.emit(self.batch_size)
 
                     dra_ = FUN_DRA(video=self.input_video, object_update_progressBar=self.object_update_progressBar)
-                    dra_video = dra_.run_DRA_from_bgtabs(batch_size=self.batch_size,
-                                                         flag_power_normalization=self.flag_power_normalization)
+                    dra_video = dra_.run_DRA_from_bgtabs(mode_FPN=self.mode_FPN, batch_size=self.batch_size,
+                                                         flag_power_normalization=self.flag_power_normalization,
+                                                         flag_FPN=self.flag_FPN, axis=self.axis)
 
                     self.output = [dra_video, "DRA"]
                     self.output_Tab_bgCorrection.emit(self.output)
 
+                    self.setting_bg_correction['mode_FPN'] = self.mode_FPN
                     self.setting_bg_correction['Batch_size (frames)'] = self.batch_size
                     self.setting_bg_correction['Power_Normalization'] = self.flag_power_normalization
+                    self.setting_bg_correction['FPNc'] = self.flag_FPN
+                    self.setting_bg_correction['FPNc_axis'] = self.axis
 
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
 
@@ -212,6 +238,27 @@ class BgCorrection_GUI(QtWidgets.QWidget):
         self.transform_algorithm = self.combo.currentText()
         self.create_como_values()
 
+    def axis_selection(self):
+        if self.radio_cpFPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
+        elif self.radio_wFPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
+        elif self.radio_median_FPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
+        elif self.radio_FFT2D_FPN_mode.isChecked():
+            self.radio_axis_1.setEnabled(True)
+            self.radio_axis_2.setEnabled(True)
+            self.radio_axis_3.setEnabled(True)
+
     def layout_based_on_select_bg(self):
         if self.combo_bg_filter.currentText() == "Differential rolling average":
             while self.flag_remove_box:
@@ -232,7 +279,51 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             grid_batch.addWidget(self.checkbox_power_normalization, 0, 2)
             self.groupBatchSize.setLayout(grid_batch)
 
+            self.groupBox_FPNc = QtWidgets.QGroupBox("FPNc:")
+            self.groupBox_FPNc.setCheckable(True)
+            self.groupBox_FPNc.setChecked(False)
+
+            self.FPN_mode_group = QtWidgets.QButtonGroup()
+            self.radio_wFPN_mode = QtWidgets.QRadioButton("Wavelet FPNc")
+            self.radio_cpFPN_mode = QtWidgets.QRadioButton("Column_projection FPNc")
+            self.radio_median_FPN_mode = QtWidgets.QRadioButton("Median FPNc")
+            self.radio_FFT2D_FPN_mode = QtWidgets.QRadioButton("FFT2D FPNc")
+
+            self.FPN_mode_group.addButton(self.radio_wFPN_mode)
+            self.FPN_mode_group.addButton(self.radio_cpFPN_mode)
+            self.FPN_mode_group.addButton(self.radio_FFT2D_FPN_mode)
+            self.FPN_mode_group.addButton(self.radio_median_FPN_mode)
+
+            self.radio_wFPN_mode.toggled.connect(self.axis_selection)
+            self.radio_cpFPN_mode.toggled.connect(self.axis_selection)
+            self.radio_FFT2D_FPN_mode.toggled.connect(self.axis_selection)
+            self.radio_median_FPN_mode.toggled.connect(self.axis_selection)
+
+            self.axis_group = QtWidgets.QButtonGroup()
+            self.radio_axis_1 = QtWidgets.QRadioButton("FPNc in axis 0")
+            self.radio_axis_2 = QtWidgets.QRadioButton("FPNc in axis 1")
+            self.radio_axis_3 = QtWidgets.QRadioButton("FPNc in Both axis")
+            self.radio_axis_2.setChecked(True)
+            self.radio_cpFPN_mode.setChecked(True)
+
+            self.axis_group.addButton(self.radio_axis_1)
+            self.axis_group.addButton(self.radio_axis_2)
+            self.axis_group.addButton(self.radio_axis_3)
+
+            grid = QtWidgets.QGridLayout()
+            grid.addWidget(self.radio_cpFPN_mode, 0, 0)
+            grid.addWidget(self.radio_median_FPN_mode, 1, 0)
+            grid.addWidget(self.radio_wFPN_mode, 2, 0)
+            grid.addWidget(self.radio_FFT2D_FPN_mode, 3, 0)
+
+            grid.addWidget(self.radio_axis_1, 0, 1)
+            grid.addWidget(self.radio_axis_2, 1, 1)
+            grid.addWidget(self.radio_axis_3, 2, 1)
+
+            self.groupBox_FPNc.setLayout(grid)
+
             self.grid1.addWidget(self.groupBatchSize, 1, 0)
+            self.grid1.addWidget(self.groupBox_FPNc, 2, 0)
 
         elif self.combo_bg_filter.currentText() == "Spatial median Filter":
 

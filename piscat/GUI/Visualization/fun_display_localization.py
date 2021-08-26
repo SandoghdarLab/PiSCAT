@@ -64,7 +64,7 @@ class Visulization_localization(QtWidgets.QMainWindow):
         x = int(y_)
         radius = int(np.sqrt(2) * s_)
         rr, cc = self.create_circle(x, y, radius, self.input_mask[0, :, :].shape)
-        self.input_mask[f_, rr, cc] = True
+        self.maskArray[int(f_), rr.astype(int), cc.astype(int)] = True
 
     def create_circle_apply_toAll_pd(self, input_mask, position_df, parallel_flag):
         if position_df is not None:
@@ -86,7 +86,8 @@ class Visulization_localization(QtWidgets.QMainWindow):
                     x = int(y_)
                     radius = int(np.sqrt(2) * s_)
                     rr, cc = self.create_circle(x, y, radius, input_mask[0, :, :].shape)
-                    input_mask[f_, rr, cc] = True
+                    self.maskArray[int(f_), rr.astype(int), cc.astype(int)] = True
+
             print("-------------------MaskArray is now updated.-------------------")
         else:
             self.msg_box = QtWidgets.QMessageBox()

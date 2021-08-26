@@ -6,7 +6,7 @@ from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from tqdm.autonotebook import tqdm
 
 
-class SpatialFilter():
+class SpatialFilter:
 
     def __init__(self):
         """

@@ -15,7 +15,7 @@ from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
 from piscat.InputOutput import read_status_line
 
 
-class JupyterDisplay():
+class JupyterDisplay:
 
     def __init__(self, video, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1):
         """
@@ -73,7 +73,7 @@ class JupyterDisplay():
         plt.show()
 
 
-class JupyterDisplay_StatusLine():
+class JupyterDisplay_StatusLine:
 
     def __init__(self, video, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1):
         """
@@ -147,7 +147,7 @@ class JupyterDisplay_StatusLine():
         plt.show()
 
 
-class JupyterPSFs_localizationDisplay():
+class JupyterPSFs_localizationDisplay:
 
     def __init__(self, video, df_PSFs, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1,  value=0):
         """
@@ -219,7 +219,7 @@ class JupyterPSFs_localizationDisplay():
         plt.show()
 
 
-class JupyterPSFs_localizationPreviewDisplay():
+class JupyterPSFs_localizationPreviewDisplay:
 
     def __init__(self, video, df_PSFs, title='', frame_num=None, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1):
         """
@@ -312,7 +312,7 @@ class JupyterPSFs_localizationPreviewDisplay():
         self.df_PSFs = new_df
 
 
-class JupyterPSFs_subplotLocalizationDisplay():
+class JupyterPSFs_subplotLocalizationDisplay:
 
     def __init__(self, list_videos, list_df_PSFs, numRows, numColumns, list_titles=None,
                  median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1, value=0):
@@ -416,7 +416,7 @@ class JupyterPSFs_subplotLocalizationDisplay():
         plt.show()
 
 
-class JupyterPSFs_TrackingDisplay():
+class JupyterPSFs_TrackingDisplay:
 
     def __init__(self, video, df_PSFs, median_filter_flag=False, step=1, color='gray', imgSizex=5, imgSizey=5,):
         """
@@ -510,7 +510,7 @@ class JupyterPSFs_TrackingDisplay():
         plt.show()
 
 
-class JupyterSelectedPSFs_localizationDisplay():
+class JupyterSelectedPSFs_localizationDisplay:
 
     def __init__(self, video, particles, particles_num='#0', frame_extend=0, median_filter_flag=False, flag_fit2D=False,
                  color='gray', imgSizex=10, imgSizey=10, IntSlider_width='500px', step=1):
@@ -670,7 +670,7 @@ class JupyterSelectedPSFs_localizationDisplay():
                 return fit_params
 
 
-class JupyterSubplotDisplay():
+class JupyterSubplotDisplay:
 
     def __init__(self, list_videos, numRows, numColumns, list_titles=None, imgSizex=20, imgSizey=20, IntSlider_width='500px',
                  median_filter_flag=False, color='gray', step=1):
@@ -761,7 +761,7 @@ class JupyterSubplotDisplay():
         plt.show()
 
 
-class JupyterPSFs_2_modality_subplotLocalizationDisplay():
+class JupyterPSFs_2_modality_subplotLocalizationDisplay:
 
     def __init__(self, list_videos, list_df_PSFs_1, list_df_PSFs_2, numRows, numColumns, list_titles=None,
                  median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1, value=0,
@@ -888,6 +888,125 @@ class JupyterPSFs_2_modality_subplotLocalizationDisplay():
                 sigma = particle_sigma_2[j_]
                 img_grid_.add_patch(Circle((x, y), radius=np.sqrt(2) * sigma, edgecolor=self.edgecolor_2, facecolor='none',
                                     linewidth=2))
+
+        plt.show()
+
+
+class JupyterFPNcDisplay:
+
+    def __init__(self, list_videos, list_titles=None, correction_axis=0, numRows=1, numColumns=2,
+                 imgSizex=20, imgSizey=20, IntSlider_width='500px',
+                 median_filter_flag=False, color='gray', step=1):
+        """
+        This class can sub-display several FPNc video in the Jupyter notebook interactively while 1D projection on
+        the direction of correction axis illustrates below on each subplot.
+
+        Parameters
+        ----------
+        list_videos: list of NDArray
+          List of videos
+
+        correction_axis: (0/1)
+            selecting the axis that FPNc correction should visualize for it.
+
+        numRows: int
+            It defines number of rows in sub-display.
+
+        numColumns: int
+            It defines number of columns in sub-display.
+
+        list_titles: list str
+            List of titles for each sub plot.
+
+        median_filter_flag: bool
+          In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+
+        color: str
+          It defines the colormap for visualization.
+
+        imgSizex: int
+          Image length size.
+
+        imgSizey: int
+          Image width size.
+
+        IntSlider_width: str
+          Size of slider
+
+        step: int
+          Stride between visualization frames.
+        """
+        self.color = color
+        self.video = list_videos
+        self.median_filter_flag = median_filter_flag
+        self.numRows = numRows
+        self.numColumns = numColumns
+        self.numVideos = len(list_videos)
+        self.imgSizex = imgSizex
+        self.imgSizey = imgSizey
+        self.correction_axis = correction_axis
+
+        if list_titles is None:
+            self.list_titles = [None for _ in range(self.numVideos)]
+        else:
+            self.list_titles = list_titles
+
+        max_numberFrames = np.max([vid_.shape[0] for vid_ in list_videos])
+
+        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames, step=step, value=10, layout=Layout(width=IntSlider_width),
+                                                       readout_format='100', continuous_update=False,
+                                                       description='Frame:'))
+
+    def display(self, frame):
+        self.fig = plt.figure(figsize=(self.imgSizex, self.imgSizey))
+
+        grid = self.fig.add_gridspec(nrows=self.numRows, ncols=self.numColumns, left=0.05, right=0.48, wspace=0.05)
+        axs = grid.subplots(sharex='col', sharey='row')
+
+        for img_, tit_, img_grid_ in zip(self.video, self.list_titles, axs):
+
+            if self.median_filter_flag:
+                frame_v = median_filter(img_[int(frame), :, :], 3)
+            else:
+                frame_v = img_[int(frame), :, :]
+            if self.correction_axis == 0:
+                img_grid_.imshow(frame_v, cmap=self.color)
+            elif self.correction_axis == 1:
+                img_grid_.imshow(np.transpose(frame_v), cmap=self.color)
+            if tit_ is not None:
+                img_grid_.set_title(tit_)
+
+        for ax in axs.flat:
+            ax.label_outer()
+
+        plt.show()
+
+        fig = plt.figure(figsize=(self.imgSizex, self.imgSizey/10))
+        grid = fig.add_gridspec(nrows=self.numRows, ncols=self.numColumns, left=0.05, right=0.48, wspace=0.05)
+        axs = grid.subplots(sharex='col', sharey='row')
+
+        for img_, img_grid_ in zip(self.video, axs):
+            frame_v = img_[int(frame), :, :]
+            gainMap1D_median = np.mean(frame_v, axis=self.correction_axis)
+
+            x_grid = list(range(0, frame_v.shape[1]))
+            y_grid = list(range(0, frame_v.shape[0]))
+
+            x, y = np.meshgrid(x_grid, y_grid)
+            if self.correction_axis == 0:
+                img_grid_.plot(np.ravel(x), np.ravel(frame_v, order='A'), 'b.', linewidth=1, markersize=0.5)
+            elif self.correction_axis == 1:
+                img_grid_.plot(np.ravel(x), np.ravel(frame_v, order='F'), 'b.', linewidth=1, markersize=0.5)
+
+            img_grid_.plot(gainMap1D_median, 'r-', linewidth=1, markersize=0.5)
+            min_y = frame_v.mean() - 4*frame_v.std()
+            max_y = frame_v.mean() + 4*frame_v.std()
+            img_grid_.set_ylim(min_y, max_y)
+            img_grid_.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+
+        # Hide x labels and tick labels for all but bottom plot.
+        for ax in axs.flat:
+            ax.label_outer()
 
         plt.show()
 
