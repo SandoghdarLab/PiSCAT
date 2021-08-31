@@ -11,7 +11,7 @@ from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from piscat.Preproccessing import patch_genrator
 
 
-class RadialCenter():
+class RadialCenter:
 
     def __init__(self):
 

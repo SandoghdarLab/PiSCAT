@@ -14,6 +14,8 @@ from scipy.signal import find_peaks
 from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
 from piscat.InputOutput import read_write_data
 from piscat.Visualization.print_colors import PrintColors
+from piscat.Visualization.plot import plot2df, plot_bright_dark_psf, plot_bright_dark_psf_inTime
+from tqdm.autonotebook import tqdm
 
 
 class PlotProteinHistogram(PrintColors):
@@ -78,11 +80,15 @@ class PlotProteinHistogram(PrintColors):
         self.t_std_x_center_bright = []
         self.t_mean_y_center_bright = []
         self.t_std_y_center_bright = []
+        self.t_particle_ID_bright = []
+        self.t_particle_frame_bright = []
 
         self.t_mean_x_center_dark = []
         self.t_std_x_center_dark = []
         self.t_mean_y_center_dark = []
         self.t_std_y_center_dark = []
+        self.t_particle_ID_dark = []
+        self.t_particle_frame_dark = []
 
     def __call__(self, folder_name, particles, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence,
                  pixel_size=0.66):
@@ -158,9 +164,18 @@ class PlotProteinHistogram(PrintColors):
                     fit_X_sigma = None
                     fit_Y_sigma = None
 
-                self.localization(x_center, y_center, center_int)
+                # self.localization(x_center, y_center, center_int, key, frame_number)
+                center_int_clean = center_int[~np.isnan(center_int)]
+                particle_ID_clean = particle_ID[~np.isnan(center_int)]
+                frame_number_clean = frame_number[~np.isnan(center_int)]
+                x_center_clean = x_center[~np.isnan(center_int)]
+                y_center_clean = y_center[~np.isnan(center_int)]
+                center_int_flow_clean = center_int_flow[~np.isnan(center_int_flow)]
+                sigma_clean = sigma[~np.isnan(center_int)]
 
-                self.data_handling(center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
+                self.localization(x_center_clean, y_center_clean, center_int_clean, particle_ID_clean, frame_number_clean)
+
+                self.data_handling(center_int_clean, center_int_flow_clean, folder_name, sigma_clean, num_parameters, fit_intensity,
                                    fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
                                    MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
 
@@ -224,27 +239,44 @@ class PlotProteinHistogram(PrintColors):
                     fit_X_sigma = None
                     fit_Y_sigma = None
 
-                self.localization(x_center, y_center, center_int)
+                # self.localization(x_center, y_center, center_int, key, frame_number)
+                center_int_clean = center_int[~np.isnan(center_int)]
+                particle_ID_clean = particle_ID[~np.isnan(center_int)]
+                frame_number_clean = frame_number[~np.isnan(center_int)]
+                x_center_clean = x_center[~np.isnan(center_int)]
+                y_center_clean = y_center[~np.isnan(center_int)]
+                center_int_flow_clean = center_int_flow[~np.isnan(center_int_flow)]
+                sigma_clean = sigma[~np.isnan(center_int)]
 
-                self.data_handling(center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
+                self.localization(x_center_clean, y_center_clean, center_int_clean, particle_ID_clean,
+                                  frame_number_clean)
+
+                self.data_handling(center_int_clean, center_int_flow_clean, folder_name, sigma_clean, num_parameters,
+                                   fit_intensity,
                                    fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
                                    MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
 
-    def localization(self, x_center, y_center, center_int):
+    def localization(self, x_center, y_center, center_int, particle_ID, frame_number):
         if np.mean(center_int) >= 0:
             self.t_mean_x_center_bright.append(np.mean(x_center))
             self.t_std_x_center_bright.append(np.std(x_center))
             self.t_mean_y_center_bright.append(np.mean(y_center))
             self.t_std_y_center_bright.append(np.std(y_center))
+            self.t_particle_ID_bright.append(particle_ID)
+            self.t_particle_frame_bright.append(int(np.median(frame_number)))
+
         elif np.mean(center_int) < 0:
             self.t_mean_x_center_dark.append(np.mean(x_center))
             self.t_std_x_center_dark.append(np.std(x_center))
             self.t_mean_y_center_dark.append(np.mean(y_center))
             self.t_std_y_center_dark.append(np.std(y_center))
+            self.t_particle_ID_dark.append(particle_ID)
+            self.t_particle_frame_dark.append(int(np.median(frame_number)))
 
     def data_handling(self, center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
                       fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence):
-        if len(center_int) != 0:
+
+        if len(center_int) != 0 and ~np.isnan(center_int).all():
             win_size = self.determine_windows_size(center_int)
             if win_size > 3:
                 V_smooth = savgol_filter(center_int, win_size, 3)
@@ -466,8 +498,7 @@ class PlotProteinHistogram(PrintColors):
             mean_ = 0
         return mean_, std_
 
-    def extract_hist_information(self, con_intersections, con_peaks, con_proms, upper_limitation=1, lower_limitation=-1,
-                                 max_n_components=3, Flag_GMM_fit=True):
+    def extract_hist_information(self, con_intersections, con_peaks, con_proms, upper_limitation=1, lower_limitation=-1, max_n_components=3, Flag_GMM_fit=True):
         t_contrast_intersection = np.asarray(con_intersections)
         t_contrast_intersection = t_contrast_intersection[~np.isnan(t_contrast_intersection)]
 
@@ -610,22 +641,31 @@ class PlotProteinHistogram(PrintColors):
 
             for means, stdevs, weights, key in zip(list_means, list_stds, list_weights, list_keys):
                 if means is not None:
-                    if len(means) == max_num_gmm_mean:
-                        for m_, s_, w_ in zip(means, stdevs, weights):
-                            dic[key].append(m_)
-                            dic[key].append(s_)
-                            dic[key].append(w_)
+                    if isinstance(means, list):
+                        if len(means) == max_num_gmm_mean:
+                            for m_, s_, w_ in zip(means, stdevs, weights):
+                                dic[key].append(m_)
+                                dic[key].append(s_)
+                                dic[key].append(w_)
+                        else:
+                            diff_ = max_num_gmm_mean - len(means)
+                            for m_, s_, w_ in zip(means, stdevs, weights):
+                                dic[key].append(m_)
+                                dic[key].append(s_)
+                                dic[key].append(w_)
+
+                            for i_ in range(diff_):
+                                dic[key].append(None)
+                                dic[key].append(None)
+                                dic[key].append(None)
                     else:
-                        diff_ = max_num_gmm_mean - len(means)
-                        for m_, s_, w_ in zip(means, stdevs, weights):
-                            dic[key].append(m_)
-                            dic[key].append(s_)
-                            dic[key].append(w_)
+                        diff_ = max_num_gmm_mean
 
                         for i_ in range(diff_):
                             dic[key].append(None)
                             dic[key].append(None)
                             dic[key].append(None)
+
                 else:
                     for i_ in range(max_num_gmm_mean):
                         dic[key].append(None)
@@ -716,7 +756,7 @@ class PlotProteinHistogram(PrintColors):
         return tprofile_frameNo_DRA_longer, start_FN_earlyV, end_FN_earlyV
 
     def plot_contrast_extraction(self, particles, batch_size, video_frame_num, MinPeakWidth,
-                                 MinPeakProminence, pixel_size, particles_num='#0'):
+                                 MinPeakProminence, pixel_size, particles_num='#0', save_path=None):
 
         if type(particles) is list:
             particles = protein_trajectories_list2dic(particles)
@@ -785,6 +825,10 @@ class PlotProteinHistogram(PrintColors):
                         handles = [handles[2], handles[0], handles[1], handles[3], handles[4]]
                         labels = [labels[2], labels[0], labels[1], labels[3], labels[4]]
                         self.axs.legend(handles, labels)
+                        if save_path is not None:
+                            print('plot saved!')
+                            self.fig.savefig(save_path, dpi=500)
+
                         plt.show()
                     else:
                         raise Exception('---Data can not extract!---')
@@ -1080,7 +1124,7 @@ class PlotProteinHistogram(PrintColors):
         plt.title('Ratio mean of Sigma_Max/Sigma_Min=' + str(ratio_sigma))
         plt.show()
 
-    def plot_localization_heatmap(self, pixel_size, unit):
+    def plot_localization_heatmap(self, pixel_size, unit='nm', flag_in_time=False, time_delay=0.1, dir_name=None):
         """
         This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
 
@@ -1090,13 +1134,22 @@ class PlotProteinHistogram(PrintColors):
             camera pixel size
 
         unit: str
-            unit of axises
+            The axis unit.
+
+        flag_in_time: bool
+            In the case of True, show binding and unbinding events in time.
+
+        time_delay: float
+            Define the time delay between binding and unbinding events frames. This only works when `flag_in_time` is set to True.
+
+        dir_name: str
+            You can save time slap frames if you specify a save path.
         """
         bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
         bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
 
-        print('Number of dark particles {}'.format(bubble_size_bright_.shape[0]))
-        print('Number of bright particles {}'.format(bubble_size_dark_.shape[0]))
+        print('Number of bright particles {}'.format(bubble_size_bright_.shape[0]))
+        print('Number of dark particles {}'.format(bubble_size_dark_.shape[0]))
 
         bubble_size_bright = []
         for s_b in bubble_size_bright_:
@@ -1113,33 +1166,34 @@ class PlotProteinHistogram(PrintColors):
             else:
                 bubble_size_dark.append(s_d)
 
-        dic_dark = {'list_Dark_iPSFx': np.multiply(pixel_size, self.t_mean_x_center_dark),
-                    'list_Dark_iPSFy': np.multiply(pixel_size, self.t_mean_y_center_dark),
-                    'bubble_size': np.multiply(pixel_size, bubble_size_dark)}
+        dic_dark = {'x': np.multiply(pixel_size, self.t_mean_x_center_dark),
+                    'y': np.multiply(pixel_size, self.t_mean_y_center_dark),
+                    'bubble_size': np.multiply(pixel_size, bubble_size_dark),
+                    'particle': np.asarray(self.t_particle_ID_dark),
+                    'frame': self.t_particle_frame_dark
+                    }
 
         df_dark = pd.DataFrame.from_dict(dic_dark)
 
-        dic_bright = {'list_Bright_iPSFx': np.multiply(pixel_size, self.t_mean_x_center_bright),
-                      'list_Bright_iPSFy': np.multiply(pixel_size, self.t_mean_y_center_bright),
-                      'bubble_size': np.multiply(pixel_size, bubble_size_bright)}
+        dic_bright = {'x': np.multiply(pixel_size, self.t_mean_x_center_bright),
+                      'y': np.multiply(pixel_size, self.t_mean_y_center_bright),
+                      'bubble_size': np.multiply(pixel_size, bubble_size_bright),
+                      'particle': np.asarray(self.t_particle_ID_bright),
+                      'frame': self.t_particle_frame_bright
+                      }
+
 
         df_bright = pd.DataFrame.from_dict(dic_bright)
 
-        plt.figure()
-        plt.scatter('list_Dark_iPSFx', 'list_Dark_iPSFy',
-                    s='bubble_size',
-                    alpha=0.5,
-                    data=df_dark, label='Dark')
+        df_bright_sort = df_bright.sort_values('frame')
+        df_dark_sort = df_dark.sort_values('frame')
+        df_bright_sort = df_bright_sort.reset_index()
+        df_bright_sort.particle = df_bright_sort.index
 
-        plt.scatter('list_Bright_iPSFx', 'list_Bright_iPSFy',
-                    s='bubble_size',
-                    alpha=0.5,
-                    data=df_bright, label='Bright')
-
-        plt.xlabel("X(" + unit + ")", size=20)
-        plt.ylabel("Y(" + unit + ")", size=20)
-        plt.legend()
-        plt.show()
+        if flag_in_time:
+            plot_bright_dark_psf_inTime(df_bright_sort, df_dark_sort, time_delay, dir_name)
+        else:
+            plot_bright_dark_psf(df_bright_sort, df_dark_sort, unit=unit)
 
     def save_hist_data(self, dirName, name, upper_limitation=1, lower_limitation=-1, Flag_GMM_fit=True, max_n_components=3):
         """

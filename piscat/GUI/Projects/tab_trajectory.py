@@ -1,5 +1,6 @@
 from piscat.Trajectory import particle_linking, temporal_filtering
 from piscat.Visualization import plot, plot_histogram
+from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
 
 from PySide2 import QtGui, QtCore, QtWidgets
 
@@ -198,6 +199,7 @@ class Tracking_GUI(QtWidgets.QWidget):
                         df_PSFs_t_filter = linking_.sorting_linking(df_PSFs=df_PSFs_t_filter)
 
                     self.link_df_PSFS = df_PSFs_t_filter
+                    self.all_trajectories = all_trajectories
 
                     self.setting_tracking['Memory (frame)'] = self.memory
                     self.setting_tracking['Neighborhood_size (px)'] = self.search_range
@@ -247,7 +249,14 @@ class Tracking_GUI(QtWidgets.QWidget):
             else:
                 label = False
 
-            plot.plot2df(self.link_df_PSFS, pixel_size=self.pixel_size, scale=self.axisScale, title='', flag_label=label)
+            # plot.plot2df(self.link_df_PSFS, pixel_size=self.pixel_size, scale=self.axisScale, title='', flag_label=label)
+
+            his_ = PlotProteinHistogram(intersection_display_flag=False)
+            his_(folder_name='', particles=self.all_trajectories, batch_size=self.batch_size,
+                 video_frame_num=self.input_video.shape[0], MinPeakWidth=0,
+                 MinPeakProminence=0)
+
+            his_.plot_localization_heatmap(pixel_size=self.pixel_size, unit=self.axisScale)
 
     def get_values_1(self):
         try:

@@ -55,7 +55,6 @@ setup(
                         "numba",
                         "requests",
                         "wget",
-                        "versioned-hdf5",
                         "h5py",
                         "imageio-ffmpeg"
                       ],

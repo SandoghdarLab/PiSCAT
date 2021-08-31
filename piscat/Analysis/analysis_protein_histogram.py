@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
 from piscat.InputOutput import reading_videos
 from piscat.InputOutput import read_write_data
@@ -52,6 +53,7 @@ class ReadProteinAnalysis(CameraParameters):
         file_names = df_histogram['File'].tolist()
 
         self.his_ = PlotProteinHistogram(intersection_display_flag=False)
+        self.dic_video_num_particle = {'Folder_name': [], 'num_particles': []}
 
         num_particles = 0
         folder_cnt_ = 0
@@ -63,6 +65,7 @@ class ReadProteinAnalysis(CameraParameters):
                 hyperparameters = None
                 PSFs_Particels_num = None
                 df_json = reading_videos.DirectoryType(p_, type_file='.json').return_df()
+                df_json['num_particles'] = None
                 paths_json = df_json['Directory'].tolist()
                 names_json = df_json['File'].tolist()
                 for p_json, n_json in zip(paths_json, names_json):
@@ -75,6 +78,9 @@ class ReadProteinAnalysis(CameraParameters):
                     elif 'PSFs_Particels_num' in n_json:
                         PSFs_Particels_num = read_write_data.read_json2dic(path=p_json, name=n_json)
                         num_particles = num_particles + PSFs_Particels_num['#Particles_after_V_shapeFilter']
+                        self.dic_video_num_particle['Folder_name'].append(p_)
+                        self.dic_video_num_particle['num_particles'].append(PSFs_Particels_num['#Particles_after_V_shapeFilter'])
+
 
                 if hyperparameters is not None:
                     filename = os.path.join(p_, n_)
@@ -94,21 +100,30 @@ class ReadProteinAnalysis(CameraParameters):
         print('{} folders was read'.format(folder_cnt_))
         print('{} df_PSFs should find in histogram '.format(num_particles))
 
-    def plot_localization_heatmap(self, pixelSize=None, unit='um'):
+    def plot_localization_heatmap(self, pixelSize=None, unit='um', flag_in_time=False, time_delay=0.1, dir_name=None):
         """
         This method plots heatmap of particle localization. The size of each disk depicts the movment of each particles during tracking.
 
         Parameters
         ----------
         pixelSize: float
-            camera pixel size
+            Camera pixel size.
+
         unit: str
-            unit of axises
+            The axis unit.
+
+        flag_in_time: bool
+            In the case of True, show binding and unbinding events in time.
+
+        time_delay: float
+            Define the time delay between binding and unbinding events frames. This only works when `flag_in_time` is set to True.
+
+        dir_name: str
+            You can save time slap frames if you specify a save path.
         """
         if pixelSize is not None:
             self.pixelSize = pixelSize
-        self.his_.plot_localization_heatmap(self.pixelSize, unit=unit)
-
+        self.his_.plot_localization_heatmap(self.pixelSize, unit=unit, flag_in_time=flag_in_time, time_delay=time_delay, dir_name=dir_name)
 
     def plot_hist(self, his_setting):
         """
@@ -167,4 +182,8 @@ class ReadProteinAnalysis(CameraParameters):
         self.his_.save_hist_data(dirName=dirName, name=name_dir, upper_limitation=his_setting['upper_limitation'],
                                  lower_limitation=his_setting['lower_limitation'],
                                  Flag_GMM_fit=his_setting['Flag_GMM_fit'], max_n_components=his_setting['max_n_components'])
+        df_num = pd.DataFrame.from_dict(self.dic_video_num_particle)
+        read_write_data.save_df2csv(df=df_num, path=dirName, name='list_video_num_particles')
+
+
 
