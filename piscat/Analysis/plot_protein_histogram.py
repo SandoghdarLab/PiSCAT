@@ -618,16 +618,16 @@ class PlotProteinHistogram(PrintColors):
             for data, key in zip(list_data, title):
                 try:
                     means, stdevs, weights, AIC, BIC = self.GMM(np.abs(data), max_n_components)
+                    list_num_GMM.append(len(means))
                     list_means.append(means)
                     list_stds.append(stdevs)
                     list_weights.append(weights)
                     list_AIC.append(AIC)
                     list_BIC.append(BIC)
                     list_keys.append(key)
-                    list_num_GMM.append(len(means))
 
                 except:
-                    print('---GMM did not extract for' + key, '---')
+                    print('---GMM did not extract for ' + key, '---')
                     list_means.append(None)
                     list_stds.append(None)
                     list_weights.append(None)

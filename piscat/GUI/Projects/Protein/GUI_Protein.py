@@ -138,7 +138,10 @@ class ProteinTabs(QtWidgets.QMainWindow):
     @Slot()
     def Update_tab_bgCorrection(self, data):
         if data[0] is not None:
-            self.bgCorrectedVideo = data[0][0]
+            if len(data[0]) == 2:
+                self.bgCorrectedVideo = data[0][0]
+            else:
+                self.bgCorrectedVideo = data[0]
             self.type_bgCorrection = data[1]
             self.history['Type_bg_correction'] = data[1]
             self.new_update_bg_video.emit(self.bgCorrectedVideo)
