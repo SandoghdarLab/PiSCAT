@@ -78,6 +78,7 @@ def start_server(root, jupyter):
 
     """
     os.chdir(root)
+    subprocess.run('jupyter nbextension enable --py widgetsnbextension', shell=True)
     subprocess.run(jupyter, shell=True)
 
 
