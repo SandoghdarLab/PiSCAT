@@ -278,22 +278,35 @@ class PSFsExtraction:
             window_size = scale * np.sqrt(2) * sigma_0
             start_sigma = sigma_0
 
-            if p_x > window_size and p_y > window_size:
+            img_size_x = self.video.shape[2]
+            img_size_y = self.video.shape[1]
 
-                window_frame = self.video[int(frame_num), int(p_y - window_size) + 1:int(p_y + window_size),
-                               int(p_x - window_size) + 1:int(p_x + window_size)]
-                w_s = window_size
+            start_y = np.max([0, p_y - window_size])
+            start_x = np.max([0, p_x - window_size])
+
+            end_y = np.min([img_size_y-1, p_y + window_size])
+            end_x = np.min([img_size_x-1, p_x + window_size])
+
+            w_s_x_1 = round(abs(p_x - start_x))
+            w_s_y_1 = round(abs(p_y - start_y))
+
+            w_s_x_2 = round(abs(p_y - end_y))
+            w_s_y_2 = round(abs(p_x - end_x))
+
+            w_s = np.min([w_s_x_1, w_s_y_1, w_s_x_2, w_s_y_2])
+
+            start_y = p_y - w_s
+            start_x = p_x - w_s
+
+            end_y = p_y + w_s
+            end_x = p_x + w_s
+
+            if start_y >= 0 and start_x >= 0 and end_y <= img_size_y and end_x <= img_size_x:
+
+                window_frame = self.video[int(frame_num), int(start_y):int(end_y),
+                               int(start_x):int(end_x)]
             else:
-                window_size_temp = window_size
-
-                while p_x < window_size_temp or p_y < window_size_temp:
-                    window_size_temp = window_size_temp - 2
-
-                window_frame = self.video[int(frame_num),
-                               int(p_y - window_size_temp) + 1:int(p_y + window_size_temp),
-                               int(p_x - window_size_temp) + 1:int(p_x + window_size_temp)]
-
-                w_s = window_size_temp
+                raise ValueError('Cropping size is not accurate!')
 
             fit_params = gaussian_2D_fit.fit_2D_Gaussian_varAmp(window_frame, sigma_x=start_sigma,
                                                                 sigma_y=start_sigma,

@@ -73,7 +73,11 @@ class Histogram_GUI(QtWidgets.QWidget):
         self.grid3.addWidget(self.checkbox_GMM_FIT, 3, 2)
         self.grid3.addWidget(self.le_hist_bin_label, 4, 0)
         self.grid3.addWidget(self.le_hist_bin, 4, 1)
-        self.grid3.addWidget(self.plot_hist, 5, 0)
+        
+        self.grid3.addWidget(self.le_axis_limit, 5, 0)
+        self.grid3.addWidget(self.axis_limit, 5, 1)
+        
+        self.grid3.addWidget(self.plot_hist, 6, 0)
 
         self.groupBox_hist.setLayout(self.grid3)
         return self.groupBox_hist

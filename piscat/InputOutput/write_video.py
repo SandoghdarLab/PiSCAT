@@ -22,6 +22,10 @@ def write_binary(dir_path, file_name, data, type='original'):
 
     type: str or bin_type
         The video bin type is not changed by 'original,' but the user can convert it (e.g. float --> int16).
+
+    Returns
+    -------
+    The path to the new folder that was created to save the video is returned.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     try:
@@ -32,6 +36,7 @@ def write_binary(dir_path, file_name, data, type='original'):
         print("Directory ", timestr, " already exists")
 
     save_path = os.path.join(dir_path, timestr, file_name)
+    save_path_ = os.path.join(dir_path, timestr)
 
     if type == 'original':
         data = data
@@ -41,6 +46,8 @@ def write_binary(dir_path, file_name, data, type='original'):
     data = data.copy(order='C')
     with open(save_path, 'wb') as outfile:
         outfile.write(data)
+
+    return save_path_
 
 
 def write_MP4(dir_path, file_name, data, jump=0, fps=10):
@@ -59,10 +66,14 @@ def write_MP4(dir_path, file_name, data, jump=0, fps=10):
         Video with numpy format.
 
     jump: int
-            Define stride between frames
+        Define stride between frames.
 
     fps: int
         Number of frame per seconds.
+
+    Returns
+    -------
+    The path to the new folder that was created to save the video is returned.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     try:
@@ -73,12 +84,16 @@ def write_MP4(dir_path, file_name, data, jump=0, fps=10):
         print("Directory ", timestr, " already exists")
 
     save_path = os.path.join(dir_path, timestr, file_name)
+    save_path_ = os.path.join(dir_path, timestr)
+
     data = data.copy(order='C')
     image_ = []
     for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
         image_.append(data[frame_number, ...])
 
     imageio.mimsave(save_path, image_, format='MP4', fps=fps)
+
+    return save_path_
 
 
 def write_GIF(dir_path, file_name, data, jump=0, fps=10):
@@ -97,10 +112,14 @@ def write_GIF(dir_path, file_name, data, jump=0, fps=10):
         Video with numpy format.
 
     jump: int
-        Define stride between frames
+        Define stride between frames.
 
     fps: int
-        Number of frame per seconds
+        Number of frame per seconds.
+
+    Returns
+    -------
+    The path to the new folder that was created to save the video is returned.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
     try:
@@ -111,9 +130,12 @@ def write_GIF(dir_path, file_name, data, jump=0, fps=10):
         print("Directory ", timestr, " already exists")
 
     save_path = os.path.join(dir_path, timestr, file_name)
+    save_path_ = os.path.join(dir_path, timestr)
+
     data = data.copy(order='C')
     image_ = []
     for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
         image_.append(data[frame_number, ...])
 
     imageio.mimsave(save_path, image_, format='GIF', fps=fps)
+    return save_path_
