@@ -17,7 +17,8 @@ from piscat.InputOutput import read_status_line
 
 class JupyterDisplay:
 
-    def __init__(self, video, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1):
+    def __init__(self, video, median_filter_flag=False, color='gray', title=None, xlabel=None, ylabel=None,
+                 imgSizex=5, imgSizey=5, extent=None, IntSlider_width='500px', step=1):
         """
         This class displays the video in jupyter notebook.
 
@@ -32,11 +33,24 @@ class JupyterDisplay:
         color: str
             It defines the colormap for visualization.
 
+        title: list
+            A list of string titles with a length equal to the number of frames in the video.
+
+        xlabel: str
+            The label text for x-axis.
+
+        ylabel: str
+            The label text for y-axis.
+
         imgSizex: int
             Image length size.
 
         imgSizey: int
             Image width size.
+
+        extent:
+            The extent kwarg determines the bounding box in data coordinates that the image will fill, which is
+            specified in data coordinates as (left, right, bottom, top).
 
         IntSlider_width: str
             Size of slider
@@ -49,7 +63,13 @@ class JupyterDisplay:
         self.video = video
         self.imgSizex = imgSizex
         self.imgSizey = imgSizey
+        self.title = title
+        self.extent = extent
+
         self.median_filter_flag = median_filter_flag
+
+        self.xlabel = xlabel
+        self.ylabel = ylabel
 
         interact(self.display, frame=widgets.IntSlider(min=0, max=self.video.shape[0] - 1, step=step, value=10,
                                                        layout=Layout(width=IntSlider_width),
@@ -65,10 +85,23 @@ class JupyterDisplay:
         else:
             frame_v = self.video[int(frame), :, :]
 
-        myplot = ax.imshow(frame_v, cmap=self.color)
+        if self.extent is not None:
+            myplot = ax.imshow(frame_v, cmap=self.color, extent=self.extent)
+        else:
+            myplot = ax.imshow(frame_v, cmap=self.color)
+
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         plt.colorbar(myplot, cax=cax)
+
+        if self.xlabel is not None:
+            ax.set_xlabel(self.xlabel)
+
+        if self.ylabel is not None:
+            ax.set_ylabel(self.ylabel)
+
+        if self.title is not None:
+            ax.set_title(self.title[int(frame)])
 
         plt.show()
 
