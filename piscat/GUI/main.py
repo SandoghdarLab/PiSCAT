@@ -5,6 +5,7 @@ import warnings
 import datetime
 import time
 import pkg_resources
+import subprocess
 
 from piscat.GUI.InputOutput import Reading
 from piscat.GUI.InputOutput.help import Help
@@ -15,6 +16,7 @@ from piscat.GUI.VideoAnalysis import AnalysisConstant
 from piscat.GUI.ProgressBar.fun_progressBar import ProgressBar
 from piscat.GUI.Projects.Protein import ProteinTabs
 from piscat.GUI.Projects.Protein import Noise_Floor
+from piscat.GUI.Projects.iPSF.iPSF_model import GUI_iPSF
 from piscat.GUI.Memory.video_in_memory import VideoInMemory
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 from piscat import version
@@ -168,8 +170,14 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         protein_track.setStatusTip("iSCAT Protein")
         self.connect(protein_track, QtCore.SIGNAL('triggered()'), self.protein_projects)
 
+        iPSF_model = QtWidgets.QAction("iPSF model", self)
+        iPSF_model.setStatusTip("iPSF model")
+        self.connect(iPSF_model, QtCore.SIGNAL('triggered()'), self.iPSF_projects)
+
         analyze_menu.addAction(noise_floor)
         analyze_menu.addAction(protein_track)
+        analyze_menu.addAction(iPSF_model)
+
         # --------Analyze.--------
 
         # --------Help-----------
@@ -180,12 +188,18 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         help.setStatusTip('Help.')
         self.connect(help, QtCore.SIGNAL('triggered()'), self.help)
 
+        tutorials = QtWidgets.QAction('tutorials', self)
+        # open_file.setShortcut('Ctrl+R')
+        tutorials.setStatusTip('tutorials.')
+        self.connect(tutorials, QtCore.SIGNAL('triggered()'), self.tutorials)
+
         about = QtWidgets.QAction('About', self)
         # open_file.setShortcut('Ctrl+R')
         about.setStatusTip('About.')
         self.connect(about, QtCore.SIGNAL('triggered()'), self.about)
 
         help_menu.addAction(help)
+        # help_menu.addAction(tutorials)
         help_menu.addAction(about)
 
         # --------About-----------
@@ -297,6 +311,11 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.protein_gui.new_update_DRA_video.connect(partial(self.updata_input_video, label='DRA', flag_DRA=True))
         self.protein_gui.show()
 
+    def iPSF_projects(self):
+        self.iPSF_gui = GUI_iPSF()
+        self.iPSF_gui.display_trigger.connect(self.video_display)
+        self.iPSF_gui.show()
+
     def updata_input_video(self, data_in, label, flag_DRA=False):
 
         if flag_DRA:
@@ -330,9 +349,15 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             self.visualization_ = Visulization_localization()
             self.visualization_.new_display(self.dra_video, self.dra_video, object=None,
                                             title='DRA', mask_status=False)
+        elif 'iPSF_Model' == data_in[0]:
+            self.visualization_ = Visulization_localization()
+            self.visualization_.new_display(data_in[1], data_in[1],
+                                            object=self.iPSF_gui, title='iPSF Model', mask_status=False)
+
+    def tutorials(self):
+        subprocess.run('python -m piscat.Tutorials', shell=True)
 
     def about(self):
-
         self.msg_box = QtWidgets.QMessageBox()
         self.msg_box.setWindowTitle("About PiSCAT")
         self.msg_box.setText('PiSCAT version %s' % version)

@@ -1,0 +1,358 @@
+from PySide2 import QtGui, QtCore, QtWidgets
+from piscat.iPSF_model.ScatteredFieldDifferentialPhase import ScatteredFieldDifferentialPhase
+from piscat.iPSF_model import ImagingSetupParameters
+from piscat.GUI.Visualization.updating_plots import UpdatingPlots_Image
+import matplotlib.pylab as plt
+
+import math
+import numpy as np
+
+
+class GUI_iPSF(QtWidgets.QWidget):
+    display_trigger = QtCore.Signal(list)
+
+    def __init__(self, parent=None):
+        super(GUI_iPSF, self).__init__(parent)
+
+        self.empty_value_ImagingBox_flag = True
+        self.empty_value_ModelBox_flag = True
+
+        self.wavelength = QtWidgets.QLineEdit()
+        self.wavelength.setPlaceholderText("Wavelength in meters")
+        self.wavelength_label = QtWidgets.QLabel("wavelength:")
+        self.wavelength.setFixedWidth(150)
+
+        self.NA = QtWidgets.QLineEdit()
+        self.NA.setPlaceholderText("objective lens")
+        self.NA_label = QtWidgets.QLabel("Numerical Aperture (NA):")
+        self.NA.setFixedWidth(150)
+
+        self.ti0 = QtWidgets.QLineEdit()
+        self.ti0.setPlaceholderText("nominal value in meters")
+        self.ti0_label = QtWidgets.QLabel("Thickness of the immersion oil:")
+        self.ti0.setFixedWidth(150)
+
+        self.ni0 = QtWidgets.QLineEdit()
+        self.ni0.setPlaceholderText("nominal value")
+        self.ni0_label = QtWidgets.QLabel("Refractive index of the immersion oil:")
+        self.ni0.setFixedWidth(150)
+
+        self.ni = QtWidgets.QLineEdit()
+        self.ni.setPlaceholderText("experimental value")
+        self.ni_label = QtWidgets.QLabel("Refractive index of the immersion oil:")
+        self.ni.setFixedWidth(150)
+
+        self.tg0 = QtWidgets.QLineEdit()
+        self.tg0.setPlaceholderText("nominal value in meters")
+        self.tg0_label = QtWidgets.QLabel("Thickness of the coverglass:")
+        self.tg0.setFixedWidth(150)
+
+        self.tg = QtWidgets.QLineEdit()
+        self.tg.setPlaceholderText("experimental value in meters")
+        self.tg_label = QtWidgets.QLabel("Thickness of the coverglass:")
+        self.tg.setFixedWidth(150)
+
+        self.ng0 = QtWidgets.QLineEdit()
+        self.ng0.setPlaceholderText("nominal value")
+        self.ng0_label = QtWidgets.QLabel("Refractive index of the coverglass:")
+        self.ng0.setFixedWidth(150)
+
+        self.ng = QtWidgets.QLineEdit()
+        self.ng.setPlaceholderText("experimental value")
+        self.ng_label = QtWidgets.QLabel("Refractive index of the coverglass:")
+        self.ng.setFixedWidth(150)
+
+        self.ns = QtWidgets.QLineEdit()
+        self.ns.setPlaceholderText("sample/medium")
+        self.ns_label = QtWidgets.QLabel("Refractive index of the sample/medium:")
+        self.ns.setFixedWidth(150)
+
+        self.pixel_size_physical = QtWidgets.QLineEdit()
+        self.pixel_size_physical.setPlaceholderText("camera pixel in meters")
+        self.pixel_size_physical_label = QtWidgets.QLabel("Physical size of the camera pixel:")
+        self.pixel_size_physical.setFixedWidth(150)
+
+        self.pixel_size = QtWidgets.QLineEdit()
+        self.pixel_size.setPlaceholderText("pixel size through the magnification of the setup")
+        self.pixel_size_label = QtWidgets.QLabel("Imaging pixel size:")
+        self.pixel_size.setFixedWidth(150)
+
+        self.s_range = QtWidgets.QLineEdit()
+        self.s_range.setPlaceholderText("focus start point in meter")
+        self.s_range_label = QtWidgets.QLabel("focus is swept start point:")
+        self.s_range.setFixedWidth(150)
+
+        self.e_range = QtWidgets.QLineEdit()
+        self.e_range.setPlaceholderText("focus end point in meter")
+        self.e_range_label = QtWidgets.QLabel("focus is swept end point:")
+        self.e_range.setFixedWidth(150)
+
+        self.step_range = QtWidgets.QLineEdit()
+        self.step_range.setPlaceholderText("step in meter")
+        self.step_range_label = QtWidgets.QLabel("focus is swept step:")
+        self.step_range.setFixedWidth(150)
+
+        self.position_particle3D = QtWidgets.QLineEdit()
+        self.position_particle3D.setPlaceholderText("[x, y, z]")
+        self.position_particle3D_label = QtWidgets.QLabel("The 3D position of the nanoparticle:")
+        self.position_particle3D.setFixedWidth(150)
+
+        self.nx = QtWidgets.QLineEdit()
+        self.nx.setPlaceholderText("pixels")
+        self.nx_label = QtWidgets.QLabel("Number of lateral pixels over which the image is calculated :")
+        self.nx.setFixedWidth(150)
+
+        self.r_ = QtWidgets.QLineEdit()
+        self.r_.setPlaceholderText("pixels")
+        self.r_label = QtWidgets.QLabel("Number of lateral pixels over which the calculated image is cropped:")
+        self.r_.setFixedWidth(150)
+
+        self.generate_model = QtWidgets.QPushButton("Generate model")
+        self.generate_model.clicked.connect(self.do_model)
+        self.generate_model.setFixedWidth(150)
+
+        self.display = QtWidgets.QPushButton("Display")
+        self.display.clicked.connect(self.do_display)
+        self.display.setFixedWidth(150)
+
+        self.Initialization = QtWidgets.QPushButton("Initialization")
+        self.Initialization.clicked.connect(self.do_Initialization)
+        self.Initialization.setFixedWidth(150)
+
+        self.grid = QtWidgets.QGridLayout()
+        self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
+        self.grid.addWidget(self.createSecondExclusiveGroup(), 1, 0)
+        self.grid.addWidget(self.createForthExclusiveGroup(), 2, 0)
+
+        self.setLayout(self.grid)
+
+    def __del__(self):
+        print('Destructor called, Employee deleted.')
+
+    def createFirstExclusiveGroup(self):
+        self.groupBox_Parameters = QtWidgets.QGroupBox("Imaging setup parameters")
+
+        self.grid1 = QtWidgets.QGridLayout()
+
+        self.grid1.addWidget(self.wavelength_label, 0, 0)
+        self.grid1.addWidget(self.wavelength, 1, 0)
+        self.grid1.addWidget(self.NA_label, 0, 1)
+        self.grid1.addWidget(self.NA, 1, 1)
+        self.grid1.addWidget(self.ti0_label, 2, 0)
+        self.grid1.addWidget(self.ti0, 3, 0)
+        self.grid1.addWidget(self.ni0_label, 2, 1)
+        self.grid1.addWidget(self.ni0, 3, 1)
+        self.grid1.addWidget(self.ni_label, 4, 0)
+        self.grid1.addWidget(self.ni, 5, 0)
+
+        self.grid1.addWidget(self.tg0_label, 4, 1)
+        self.grid1.addWidget(self.tg0, 5, 1)
+        self.grid1.addWidget(self.tg_label, 0, 2)
+        self.grid1.addWidget(self.tg, 1, 2)
+
+        self.grid1.addWidget(self.ng0_label, 2, 2)
+        self.grid1.addWidget(self.ng0, 3, 2)
+        self.grid1.addWidget(self.ng_label, 4, 2)
+        self.grid1.addWidget(self.ng, 5, 2)
+        self.grid1.addWidget(self.ns_label, 0, 3)
+        self.grid1.addWidget(self.ns, 1, 3)
+        self.grid1.addWidget(self.pixel_size_physical_label, 2, 3)
+        self.grid1.addWidget(self.pixel_size_physical, 3, 3)
+        self.grid1.addWidget(self.pixel_size_label, 4, 3)
+        self.grid1.addWidget(self.pixel_size, 5, 3)
+
+        self.groupBox_Parameters.setLayout(self.grid1)
+        return self.groupBox_Parameters
+
+    def createSecondExclusiveGroup(self):
+        self.groupBox_iPSF_model = QtWidgets.QGroupBox("Modelling iPSF images ")
+
+        self.grid2 = QtWidgets.QGridLayout()
+
+        self.grid2.addWidget(self.s_range_label, 0, 0)
+        self.grid2.addWidget(self.s_range, 1, 0)
+        self.grid2.addWidget(self.e_range_label, 0, 1)
+        self.grid2.addWidget(self.e_range, 1, 1)
+        self.grid2.addWidget(self.step_range_label, 2, 0)
+        self.grid2.addWidget(self.step_range, 3, 0)
+        self.grid2.addWidget(self.position_particle3D_label, 2, 1)
+        self.grid2.addWidget(self.position_particle3D, 3, 1)
+        self.grid2.addWidget(self.nx_label, 4, 0)
+        self.grid2.addWidget(self.nx, 5, 0)
+        self.grid2.addWidget(self.r_label, 4, 1)
+        self.grid2.addWidget(self.r_, 5, 1)
+
+        self.groupBox_iPSF_model.setLayout(self.grid2)
+        return self.groupBox_iPSF_model
+
+    def createThirdExclusiveGroup(self):
+        self.groupBox_Parameters = QtWidgets.QGroupBox("Imaging setup parameters")
+
+        self.grid1 = QtWidgets.QGridLayout()
+
+        self.grid1.addWidget(self.wavelength_label, 0, 0)
+
+
+
+        self.groupBox_Parameters.setLayout(self.grid1)
+        return self.groupBox_Parameters
+
+    def createForthExclusiveGroup(self):
+        self.groupBox_PushButton = QtWidgets.QGroupBox("")
+
+        self.grid4 = QtWidgets.QGridLayout()
+
+        self.grid4.addWidget(self.generate_model, 0, 0)
+        self.grid4.addWidget(self.Initialization, 0, 1)
+        self.grid4.addWidget(self.display, 0, 2)
+
+        self.groupBox_PushButton.setLayout(self.grid4)
+        return self.groupBox_PushButton
+
+    def get_values_Imaging(self):
+
+        try:
+            self.wavelength_var = float(self.wavelength.text())
+            self.NA_var = float(self.NA.text())
+            self.ti0_var = float(self.ti0.text())
+            self.ni0_var = float(self.ni0.text())
+            self.ni_var = float(self.ni.text())
+            self.tg0_var = float(self.tg0.text())
+            self.tg_var = float(self.tg.text())
+            self.ng0_var = float(self.ng0.text())
+            self.ng_var = float(self.ng.text())
+            self.ns_var = float(self.ns.text())
+            self.pixel_size_physical_var = float(self.pixel_size_physical.text())
+            self.pixel_size_var = float(self.pixel_size.text())
+
+            self.empty_value_ImagingBox_flag = True
+        except:
+            self.msg_box3 = QtWidgets.QMessageBox()
+            self.msg_box3.setWindowTitle("Warning!")
+            self.msg_box3.setText("Please filled all setup parameters!")
+            self.msg_box3.exec_()
+
+            self.empty_value_ImagingBox_flag = False
+
+    def get_values_model(self):
+
+        try:
+            self.s_range_var = float(self.s_range.text())
+            self.e_range_var = float(self.e_range.text())
+            self.step_range_var = float(self.step_range.text())
+            self.position_particle3D_var = eval(self.position_particle3D.text())
+            self.nx_var = int(self.nx.text())
+            self.r_var = int(self.r_.text())
+
+            self.empty_value_ModelBox_flag = True
+        except:
+            self.msg_box3 = QtWidgets.QMessageBox()
+            self.msg_box3.setWindowTitle("Warning!")
+            self.msg_box3.setText("Please filled all Modelling iPSF!")
+            self.msg_box3.exec_()
+
+            self.empty_value_ModelBox_flag = False
+
+    def initial_values_Imaging(self):
+
+        self.wavelength.setText('540e-9')
+        self.NA.setText('1.4')
+        self.ti0.setText('180e-6')
+        self.ni0.setText('1.5')
+        self.ni.setText('1.5')
+        self.tg0.setText('170e-6')
+        self.tg.setText('160e-6')
+        self.ng0.setText('1.5')
+        self.ng.setText('1.505')
+        self.ns.setText('1.33')
+        self.pixel_size_physical.setText('5.8e-6')
+        self.pixel_size.setText('38e-9')
+
+    def initial_values_model(self):
+
+        self.s_range.setText('0')
+        self.e_range.setText('10')
+        self.step_range.setText('1e-1')
+        self.position_particle3D.setText('[0, 0, 3e-6]')
+        self.nx.setText('513')
+        self.r_.setText('50')
+
+    def do_Initialization(self):
+        self.initial_values_Imaging()
+        self.initial_values_model()
+
+    def do_model(self):
+        if self.generate_model.clicked:
+            self.get_values_Imaging()
+            self.get_values_model()
+            if self.empty_value_ModelBox_flag and self.empty_value_ImagingBox_flag:
+                p = ImagingSetupParameters
+
+                # Wavelength of the light source in meters
+                p.wavelength = self.wavelength_var
+                # Numerical Aperture (NA) of the objective lens
+                p.NA = self.NA_var
+                # Thickness of the immersion oil, nominal value in meters
+                p.ti0 = self.ti0_var
+                # Refractive index of the immersion oil, nominal value
+                p.ni0 = self.ni0_var
+                # Refractive index of the immersion oil, experimental value
+                p.ni = self.ni_var
+                # Thickness of the coverglass, nominal value in meters
+                p.tg0 = self.tg0_var
+                # Thickness of the coverglass, experimental value in meters
+                p.tg = self.tg_var
+                # Refractive index of the coverglass, nominal value
+                p.ng0 = self.ng0_var
+                # Refractive index of the coverglass, experimental value
+                p.ng = self.ng_var
+                # Refractive index of the sample/medium
+                p.ns = self.ns_var
+                # Physical size of the camera pixel in meters
+                p.pixel_size_physical = self.pixel_size_physical_var
+                # Imaging pixel size in meters, related to the physical pixel size through the magnification of the setup
+                pixel_size =self.pixel_size_var
+                # Magnification of the imaging system
+                p.M = self.pixel_size_physical_var / self.pixel_size_var
+
+                p.k0 = 2 * math.pi / self.wavelength_var  # Wavevector
+                p.alpha = math.asin(self.NA_var / self.ni_var)  # Largest angle collected by our Objective lens
+                z_focus_array = np.arange(self.s_range_var, self.e_range_var, self.step_range_var) * 1e-6
+                nz = np.size(z_focus_array)
+
+                scattered_field = ScatteredFieldDifferentialPhase(p, self.position_particle3D_var, z_focus_array, nz, self.nx_var)
+                scatteredFieldAmplitude_focalStack, scatteredFieldPhase_focalStack = scattered_field.calculate(self.r_var)
+                iPSFs_focalStack = np.multiply(scatteredFieldAmplitude_focalStack, np.cos(scatteredFieldPhase_focalStack))
+                self.iPSFs_focalStack = iPSFs_focalStack / np.max(np.abs(iPSFs_focalStack[...]))
+
+                list_titles = z_focus_array.tolist()
+                self.list_titles = ["defocusing positions=" + str(z_ * 1e6) + ' um' for z_ in list_titles]
+
+                self.iPSFs_focalStack_meirdonal = iPSFs_focalStack[:, 1 + self.r_var, :]
+                self.scatteredFieldAmplitude_focalStack_meirdonal = scatteredFieldAmplitude_focalStack[:, 1 + self.r_var, :]
+                self.scatteredFieldPhase_focalStack_meirdonal = scatteredFieldPhase_focalStack[:, 1 + self.r_var, :]
+
+    def do_display(self):
+        if self.iPSFs_focalStack is not None:
+            self.display_trigger.emit(['iPSF_Model', self.iPSFs_focalStack])
+            self.pg = UpdatingPlots_Image(list_img=[self.iPSFs_focalStack_meirdonal,
+                                                    self.scatteredFieldAmplitude_focalStack_meirdonal,
+                                                    self.scatteredFieldPhase_focalStack_meirdonal],
+                                          list_titles=['Focal stack: iPSFs,', 'Scattered field amplitude,', 'Scattered field phase'],
+                                          x_axis_labels=['x-axis (x' + str(self.pixel_size_var*1e9) + ' nm)',
+                                                         'x-axis (x' + str(self.pixel_size_var*1e9) + ' nm)',
+                                                         'x-axis (x' + str(self.pixel_size_var*1e9) + ' nm)'],
+                                          y_axis_labels=['Focal stack: iPSFs,',
+                                                          'Defocus axis (x' + str(1e2) + ' nm)',
+                                                          'Defocus axis (x' + str(1e2) + ' nm)'])
+
+    @QtCore.Slot(int)
+    def get_sliceNumber(self, frame_number):
+        self.frame_num = frame_number
+        x = list(range(0, self.iPSFs_focalStack_meirdonal.shape[0]))
+        y = [frame_number for _ in range(len(x))]
+        self.pg.update_plot(x, y)
+        self.pg.show()
+
+        print(self.list_titles[self.frame_num])
+
