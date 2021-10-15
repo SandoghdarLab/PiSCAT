@@ -115,7 +115,6 @@ DRA_PN = DifferentialRollingAverage(video=video_pn, batchSize=batchSize)
 RVideo_PN = DRA_PN.differential_rolling(FFT_flag=False)
 ```
 
-
  ```lang-none    
     start power_normalized without parallel loop---> Done
     
@@ -123,9 +122,13 @@ RVideo_PN = DRA_PN.differential_rolling(FFT_flag=False)
     100%|#########| 18999/18999 [00:00<?, ?it/s]
 ```
 
-
-## Localization of proteins:
-In this section, we directly work with the dynamic features that are remained in the DRA videos. As mentioned earlier the system response of a wide-field microscope for weakly scattering objects can be well approximated with a 2D Gaussian function. There exist a variety of localization algorithms available in the localization toolbox of PiSCAT. Difference of Gaussian ([DoG](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.PSFsExtraction.psf_detection)) algorithm, for example, is suitable to perform a very efficient localization of proteins with pixel precision particle localization.
+## Localization of proteins [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)]:
+In this section, we directly work with the dynamic features that are remained in the DRA videos. As mentioned earlier 
+the system response of a wide-field microscope for weakly scattering objects can be well approximated with a 2D Gaussian 
+function. There exist a variety of localization algorithms available in the localization toolbox of PiSCAT. 
+Difference of Gaussian ([DoG](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.PSFsExtraction.psf_detection)) 
+algorithm, for example, is suitable to perform a very efficient localization of proteins with pixel precision particle 
+localization. [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)]
 
 In the following cell, a DRA video is being processed with a suitable set of parameters. The minima and maxima of the sigma values for the DoG kernels are lower and upper limits of the PSF size (in pixels) that one expects once the microscope response function is approximated with a 2D Gaussian function. The sigma ratio and the threshold values in this cell are set with respect to the contrast of the particles we are seeking to detect. We begin this analysis by presenting an interactive PiSCAT class that enables us to tune the DoG detection parameter and visualizes the localized particles dynamically.   
 
@@ -287,7 +290,7 @@ PSFs_dog
 </div>
 
 
-### Filtering of DRA frames prior to the localization of particles with band-pass filters and/or Radial Variance Treansform ([1](https://doi.org/10.1364/OE.420670))
+### Filtering of DRA frames prior to the localization of particles with band-pass filters and/or Radial Variance Treansform ([2](https://doi.org/10.1364/OE.420670))
 Further filtering of DRA frames would facilitate even more robust localization of particles.
 This could be, for example, a simple image conditioning routine such as a high-pass Fourier filter which can easily remove large features in the image due to lateral instability of the illumination profile.
 In some other cases, while imaging relatively large proteins (bigger than 120KDa), we would have prominent sidelobes in the recorded PSFs. Such proteins have a very strong radially symmetric signature 
@@ -401,8 +404,11 @@ print("Number of Particles {}".format(linking_.trajectory_counter(linked_PSFs)))
 ```
     
 
-## Spatio-temporal filtering
-Transient perturbations in the experimental setup may lead to a quasi-speckle like background fluctuation in DRA videos. Some of the features from these vibrations could be wrongly identified to be proteins. To identify the true particles and keep track of them reliably, we need to have a closer look at the spatial and temporal behaviour of each of the protein trajectory candidates.
+## Spatio-temporal filtering [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)]
+Transient perturbations in the experimental setup may lead to a quasi-speckle like background fluctuation in 
+DRA videos. Some of the features from these vibrations could be wrongly identified to be proteins. To identify the 
+true particles and keep track of them reliably, we need to have a closer look at the spatial and temporal behaviour of 
+each of the protein trajectory candidates.
 
 **Spatial filtering**: In PiSCAT we have a [SpatialFilter](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter) class that enables users to filter [outlier_frames](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter.outlier_frames) which suffer from a sudden strong vibration or particle flying by, [dense_PSFs ](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter.dense_PSFs) and [non-symmetric_PSFs](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.SpatialFilter.symmetric_PSFs) that may not properly resemble the iPSF that one expects from the experimental setup. All of these filters have the threshold parameter that defines the sensitivity of each filter.
 
@@ -554,7 +560,7 @@ all_trajectories = read_write_data.load_dict_from_hdf5(hist_data_path)
 ```
 
 
-## Estimation of the protein contrast
+## Estimation of the protein contrast [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)]
 Once the trajectory of a protein landing or take-off event is built from the individual localization events, the central intensity value of the protein signal in each frame of the DRA video is extracted. This temporal trace can be used to estimate the contrast of the proteins. In the following, we provide two cells to demonstrate this analysis. The contrast estimation of a protein is illustrated in the first cell using the temporal intensity trace of the protein. The same protein is marked and visualized in the second cell where this overlay is done on the DRA videos. 
 
 In the [contrast estimation class](https://piscat.readthedocs.io/code_reference.html#piscat.Analysis.PlotProteinHistogram), we first extend the trace from the detected region (sandwiched between two vertical dashed lines) to grow to twice the batch size if possible. This extended trace is then smoothed using a windowing average which corresponds to 5% of the length of the trace. The mean of the signal at the detected region is computed. A positive mean value would mean the extremum is a maximum and vice versa. We then make sure that the extremum is always a peak from which we separate left and right arms of the signal. Each side of the arms is then separately fitted with a line. The intersection point of these lines can be used to read off the contrast value of the protein in addition to simply reading the peak value of the signal. In case the baseline of the intensity profiles are not symmetric or not zero-valued, one can take Prominence of the extrema as a measure of the contrast which is shown here with a vertical orange line.
@@ -587,10 +593,10 @@ JupyterSelectedPSFs_localizationDisplay(video=RVideo_PN, particles=all_trajector
 ![](../Fig/tu4_vid5.png)
 
 
-## Histogram of the protein contrasts
+## Histogram of the protein contrasts [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)]
 In the following cell, the distribution of the contrasts of the proteins 
 (dark, bright and total) which were previously estimated using 
-[three different methods of fitting, peak and prominence](https://piscat.readthedocs.io/Tutorial3/Tutorial3.html#estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[2]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
+[three different methods of fitting, peak and prominence](https://piscat.readthedocs.io/Tutorial3/Tutorial3.html#estimation-of-the-protein-contrast) are visualized in the histograms using the ([PlotProteinHistogram](https://piscat.readthedocs.io/code_reference.html#piscat.Analysis.PlotProteinHistogram)) module. Here, we employ the Gaussian Mixture Model (GMM) as a well-established method for identifying the modes or components in a population as well as their features [[3]](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325).
 
 
 ```python
@@ -610,5 +616,6 @@ his_.plot_histogram(bins=6, upper_limitation=6e-3, lower_limitation=-6e-3, step_
     
 
 ### Bibliography 
-1. Kashkanova, Anna D., et al. “Precision single-particle localization using radial variance transform.” Optics Express 29.7 (2021): 11070-11083.
-2. McLachlan, Geoffrey J., Sharon X. Lee, and Suren I. Rathnayake. "Finite mixture models." Annual review of statistics and its application 6 (2019): 355-378.
+1. [Mirzaalian Dastjerdi, Houman, et al. "Optimized analysis for sensitive detection and analysis of single proteins via interferometric scattering microscopy." Journal of Physics D: Applied Physics (2021).](http://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)
+2. [Kashkanova, Anna D., et al. “Precision single-particle localization using radial variance transform.” Optics Express 29.7 (2021): 11070-11083.](https://www.osapublishing.org/oe/fulltext.cfm?uri=oe-29-7-11070&id=449504)
+3. [McLachlan, Geoffrey J., Sharon X. Lee, and Suren I. Rathnayake. "Finite mixture models." Annual review of statistics and its application 6 (2019): 355-378.](https://www.annualreviews.org/doi/abs/10.1146/annurev-statistics-031017-100325)
