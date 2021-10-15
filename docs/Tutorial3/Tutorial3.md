@@ -68,7 +68,6 @@ To optimize the computational performance, FPNc algorithms and [DifferentialRoll
 
 ![](../Fig/mFPN.png)
 
-
 ```python
 DRA_PN_mFPNc = DifferentialRollingAverage(video=video_pn, batchSize=120, mode_FPN='mFPN')
 RVideo_PN_mFPNc, gainMap1D_mFPN = DRA_PN_mFPNc.differential_rolling(FPN_flag=True, 
@@ -108,7 +107,7 @@ plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
 ```
 
-![png](output_7_0.png)
+![](output_7_0.png)
 
 ### Column Projection FPN Correction (cpFPNc)
 
