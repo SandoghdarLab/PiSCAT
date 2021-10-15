@@ -318,7 +318,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
             grid.addWidget(self.radio_axis_1, 0, 1)
             grid.addWidget(self.radio_axis_2, 1, 1)
-            grid.addWidget(self.radio_axis_3, 2, 1)
+            # grid.addWidget(self.radio_axis_3, 2, 1)
 
             self.groupBox_FPNc.setLayout(grid)
 

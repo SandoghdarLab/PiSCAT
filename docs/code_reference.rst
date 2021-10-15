@@ -188,6 +188,9 @@ piscat.Visualization
 .. autoclass:: piscat.Visualization.JupyterPSFs_2_modality_subplotLocalizationDisplay
     :members:
 
+.. autoclass:: piscat.Visualization.JupyterFPNcDisplay
+    :members:
+
 .. autofunction:: piscat.Visualization.plot2df
 
 .. autofunction:: piscat.Visualization.plot3

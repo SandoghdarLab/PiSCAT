@@ -28,6 +28,12 @@ class MedianProjectionFPNc(QRunnable):
         """
         This class uses a heuristic procedure called Median Projection FPN (mFPN) to reduce fixed pattern noise (FPN).
 
+         References
+        ----------
+        [1] Mirzaalian Dastjerdi, Houman, et al. "Optimized analysis for sensitive detection and analysis of single
+        proteins via interferometric scattering microscopy." Journal of Physics D: Applied Physics (2021).
+        (http://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)
+
         Parameters
         ----------
         video: NDArray
