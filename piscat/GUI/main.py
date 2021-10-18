@@ -349,7 +349,7 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             self.visualization_ = Visulization_localization()
             self.visualization_.new_display(self.dra_video, self.dra_video, object=None,
                                             title='DRA', mask_status=False)
-        elif 'iPSF_Model' == data_in[0]:
+        elif 'iPSF_Model_I' == data_in[0] or 'iPSF_Model_II' == data_in[0]:
             self.visualization_ = Visulization_localization()
             self.visualization_.new_display(data_in[1], data_in[1],
                                             object=self.iPSF_gui, title='iPSF Model', mask_status=False)

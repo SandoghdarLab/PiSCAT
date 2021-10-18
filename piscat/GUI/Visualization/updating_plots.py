@@ -71,7 +71,7 @@ class UpdatingPlots_Image(QtWidgets.QMainWindow):
         self.x_axis_labels = x_axis_labels
         self.y_axis_labels = y_axis_labels
 
-        self.canvas = MplCanvas(self, width=6, height=6, dpi=100, numRows=1, numColumns=3)
+        self.canvas = MplCanvas(self, width=9, height=4, dpi=100, numRows=1, numColumns=3)
         self.setCentralWidget(self.canvas)
 
     def update_plot(self, xdata, ydata):
