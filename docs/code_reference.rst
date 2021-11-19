@@ -66,6 +66,8 @@ piscat.InputOutput
 
 .. autofunction:: piscat.InputOutput.read_png
 
+.. autofunction:: piscat.InputOutput.read_fits
+
 .. autoclass:: piscat.InputOutput.DirectoryType
     :members:
 

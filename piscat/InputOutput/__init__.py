@@ -16,6 +16,7 @@ from .reading_videos import read_binary
 from .reading_videos import read_tif
 from .reading_videos import read_avi
 from .reading_videos import read_png
+from .reading_videos import read_fits
 from .reading_videos import DirectoryType
 from .write_video import write_binary
 from .write_video import write_MP4

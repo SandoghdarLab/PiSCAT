@@ -40,6 +40,8 @@ class Reading(QtWidgets.QMainWindow):
                 return "AVI"
             elif file_extention == ".TIF" or file_extention == ".tif":
                 return "TIF"
+            elif file_extention == ".fits" or file_extention == ".fits":
+                return "Fits"
             elif file_extention == ".py" or file_extention == ".PY":
                 return "Python"
 
@@ -154,12 +156,41 @@ class Reading(QtWidgets.QMainWindow):
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
 
-                self.update_output.emit([self.original_video, title, self.filename, None])
+                self.update_output.emit([self.original_video, title, self.filename])
+
+            elif title == "Fits":
+                fits_video = reading_videos.read_fits(self.filename)
+                self.info_image = video_cropping.Cropping(self)
+
+                while self.info_image.raw_data_update_flag:
+                    QtWidgets.QApplication.processEvents()
+
+                if self.info_image.frame_e is not None:
+
+                    if self.info_image.frame_e != -1:
+                        self.original_video = fits_video[
+                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
+                                              self.info_image.width_size_s:self.info_image.width_size_e,
+                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                    elif self.info_image.frame_e == -1:
+                        self.original_video = fits_video[self.info_image.frame_s::self.info_image.frame_jump,
+                                              self.info_image.width_size_s:self.info_image.width_size_e,
+                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                else:
+                    self.original_video = fits_video
+
+                self.original_video = self.original_video.copy(order='C')
+
+                if self.info_image.flag_display is True:
+                    self.visualization_ = Visulization_localization()
+                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
+
+                self.update_output.emit([self.original_video, title, self.filename])
 
             else:
                 self.msg_box = QtWidgets.QMessageBox()
                 self.msg_box.setWindowTitle("Warning!")
-                self.msg_box.setText("The video bin_type is not defined!")
+                self.msg_box.setText("The video type is not defined!")
                 self.msg_box.exec_()
 
         elif self.filename is False:

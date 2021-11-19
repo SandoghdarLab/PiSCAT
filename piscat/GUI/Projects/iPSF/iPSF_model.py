@@ -411,6 +411,10 @@ class GUI_iPSF(QtWidgets.QWidget):
                     self.scatteredFieldAmplitude_focalStack_meirdonal = scatteredFieldAmplitude_focalStack[:, 1 + self.r_var, :]
                     self.scatteredFieldPhase_focalStack_meirdonal = scatteredFieldPhase_focalStack[:, 1 + self.r_var, :]
 
+                    self.iPSFs_focalStack_meirdonal = self.iPSFs_focalStack_meirdonal/self.iPSFs_focalStack_meirdonal.max()
+                    self.scatteredFieldAmplitude_focalStack_meirdonal = self.scatteredFieldAmplitude_focalStack_meirdonal/self.scatteredFieldAmplitude_focalStack_meirdonal.max()
+                    self.scatteredFieldPhase_focalStack_meirdonal = self.scatteredFieldPhase_focalStack_meirdonal/self.scatteredFieldPhase_focalStack_meirdonal.max()
+
                 elif self.groupBox_iPSF_model_2.isChecked():
                     nz = np.size(self.z_focus_var)
                     z_particle_array = (np.arange(self.s_range_var, self.e_range_var, self.step_range_var) * 1e-6)
@@ -431,6 +435,10 @@ class GUI_iPSF(QtWidgets.QWidget):
                     self.iPSFs_AxialStack_meirdonal = iPSFs_AxialStack[:, 1 + self.r_var, :]
                     self.scatteredFieldAmplitude_AxialStack_meirdonal = self.scatteredFieldAmplitude_AxialStack[:, 1 + self.r_var, :]
                     self.scatteredFieldPhase_AxialStack_meirdonal = self.scatteredFieldPhase_AxialStack[:, 1 + self.r_var, :]
+
+                    self.iPSFs_AxialStack_meirdonal = self.iPSFs_AxialStack_meirdonal/self.iPSFs_AxialStack_meirdonal.max()
+                    self.scatteredFieldAmplitude_AxialStack_meirdonal = self.scatteredFieldAmplitude_AxialStack_meirdonal/self.scatteredFieldAmplitude_AxialStack_meirdonal.max()
+                    self.scatteredFieldPhase_AxialStack_meirdonal = self.scatteredFieldPhase_AxialStack_meirdonal/self.scatteredFieldPhase_AxialStack_meirdonal.max()
 
                     a = 1
 

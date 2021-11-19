@@ -1,6 +1,7 @@
 from __future__ import print_function
 from skimage import io
 from skimage.color import rgb2gray
+from astropy.io import fits
 import os
 import pandas as pd
 import numpy as np
@@ -23,6 +24,7 @@ def video_reader(file_name, type='binary', img_width=128, img_height=128, image_
             * 'tif': use this flag to load tif
             * 'avi': use this flag to load avi
             * 'png': use this flag to load png
+            * 'fits': use this flag to load fits
 
     optional_parameters:
         These parameters are used when video 'bin_type' define as binary.
@@ -59,6 +61,8 @@ def video_reader(file_name, type='binary', img_width=128, img_height=128, image_
         video = read_avi(file_name)
     elif type == 'png':
         video = read_png(file_name)
+    elif type == 'fits':
+        video = read_fits(file_name)
     return video
 
 
@@ -180,6 +184,24 @@ def read_png(filename):
     img = io.imread(filename)
     grayscale = rgb2gray(img)
     return grayscale
+
+def read_fits(filename):
+    """
+    Reading image/video with fits format.
+
+    Parameters
+    ----------
+    file_name: str
+        Path and name of fits image/video.
+
+    Returns
+    -------
+    @returns: NDArray
+        The video as 3D-numpy with the following shape (number of frames, width, height)
+
+    """
+    hdul = fits.open(filename)
+    return hdul[0].data
 
 
 class DirectoryType:
