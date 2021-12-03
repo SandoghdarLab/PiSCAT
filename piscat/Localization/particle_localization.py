@@ -607,6 +607,9 @@ class PSFsExtraction:
         self.coarse_mode = coarse_mode
         self.pad_mode = pad_mode
 
+        if self.video.ndim != 3 and self.video.ndim == 2:
+            self.video = np.expand_dims(self.video, axis=0)
+
         if self.cpu.parallel_active:
             self.function = function
 
@@ -772,6 +775,9 @@ class PSFsExtraction:
         self.imgSizex = imgSizex
         self.imgSizey = imgSizey
         self.IntSlider_width = IntSlider_width
+
+        if self.video.ndim != 3 and self.video.ndim == 2:
+            self.video = np.expand_dims(self.video, axis=0)
 
         if "JPY_PARENT_PID" in os.environ:
 
