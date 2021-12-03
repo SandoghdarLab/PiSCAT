@@ -110,6 +110,9 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
 
         load_python_script = imp.addAction("Run Python script")
         self.connect(load_python_script, QtCore.SIGNAL('triggered()'), Reading().run_py_script)
+
+        batch_script = imp.addAction("Run Batch analysis")
+        self.connect(batch_script, QtCore.SIGNAL('triggered()'), self.open_dialog_box)
         # --------File------
 
         # --------Setting--------
@@ -365,6 +368,14 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
 
     def help(self):
         self.help_windows = Help()
+
+    def open_dialog_box(self):
+        full_path, _ = QtWidgets.QFileDialog.getOpenFileNames(self, "Select Multi File", os.getcwd())
+
+        # Store files in list
+        self.file_list = []
+        [self.file_list.append(path) for path in full_path]
+
 
 
 def main():
