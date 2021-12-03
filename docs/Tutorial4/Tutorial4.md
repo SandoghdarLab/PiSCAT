@@ -290,7 +290,7 @@ PSFs_dog
 </div>
 
 
-### Filtering of DRA frames prior to the localization of particles with band-pass filters and/or Radial Variance Treansform ([2](https://doi.org/10.1364/OE.420670))
+### Filtering of DRA frames prior to the localization of particles with band-pass filters and/or Radial Variance Transform ([2](https://doi.org/10.1364/OE.420670))
 Further filtering of DRA frames would facilitate even more robust localization of particles.
 This could be, for example, a simple image conditioning routine such as a high-pass Fourier filter which can easily remove large features in the image due to lateral instability of the illumination profile.
 In some other cases, while imaging relatively large proteins (bigger than 120KDa), we would have prominent sidelobes in the recorded PSFs. Such proteins have a very strong radially symmetric signature 

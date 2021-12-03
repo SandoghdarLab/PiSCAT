@@ -25,10 +25,11 @@ class WorkerSignals(QObject):
 class MedianProjectionFPNc(QRunnable):
 
     def __init__(self, video, select_correction_axis, flag_GUI=False):
+
         """
         This class uses a heuristic procedure called Median Projection FPN (mFPN) to reduce fixed pattern noise (FPN).
 
-         References
+        References
         ----------
         [1] Mirzaalian Dastjerdi, Houman, et al. "Optimized analysis for sensitive detection and analysis of single
         proteins via interferometric scattering microscopy." Journal of Physics D: Applied Physics (2021).
@@ -43,6 +44,7 @@ class MedianProjectionFPNc(QRunnable):
             * `0`: FPN will be applied row-wise.
             * `1`: FPN will be applied column-wise.
         """
+
         super(MedianProjectionFPNc, self).__init__()
         self.cpu = CPUConfigurations()
         self.video = video

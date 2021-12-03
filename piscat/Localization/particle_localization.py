@@ -30,7 +30,7 @@ class PSFsExtraction:
 
         It returns a list containing the following details:
 
-        |[[frame number, center y, center x, sigma], [frame number, center y, center x, sigma], ...]
+        [[frame number, center y, center x, sigma], [frame number, center y, center x, sigma], ...]
 
         Parameters
         ----------
