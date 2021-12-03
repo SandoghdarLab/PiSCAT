@@ -20,6 +20,7 @@ psutil
 ipywidgets
 networkx
 numba
+astropy
 requests
 wget
 versioned-hdf5
