@@ -46,6 +46,8 @@ the higher signal makes it possible to localize a nano-object with much better s
 sensitivity of iSCAT, however, also brings about the drawback that one obtains a rich speckle-like background 
 from other nano-objects in the field of view.
 
+# Statement of need
+
 The aim of this project is to explore the potential of powerful image processing tools (such as machine learning, 
 deep learning, computer vision, and object tracking) to address challenges in analysis of iSCAT images. The use of 
 existing libraries and packages turns out not to be satisfactory. Here, we present a software platform implemented 
