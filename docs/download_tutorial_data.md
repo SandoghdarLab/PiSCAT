@@ -1,6 +1,6 @@
 # Sample data information
 
-You can download the sample video below to use in PiSCAT to test different classes and functions.
+For testing different classes and functions in PiSCAT, you can download the following sample video.
 
 Name | size      | shape             | type | subject                      | link
 ----|-----------|-------------------|------|------------------------------|----
