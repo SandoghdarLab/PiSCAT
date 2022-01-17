@@ -51,7 +51,9 @@ extensions = [
                 'sphinx.ext.napoleon',
                 'nbsphinx',
                 'recommonmark',
+                'sphinx_markdown_tables',
                 'sphinxcontrib.bibtex',
+
 ]
 # The html index document.
 bibtex_bibfiles = ['references.bib']

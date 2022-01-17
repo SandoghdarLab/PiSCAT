@@ -16,6 +16,7 @@ from piscat.GUI.VideoAnalysis import AnalysisConstant
 from piscat.GUI.ProgressBar.fun_progressBar import ProgressBar
 from piscat.GUI.Projects.Protein import ProteinTabs
 from piscat.GUI.Projects.Protein import Noise_Floor
+from piscat.GUI.BatchAnalysis.batch_data import BatchAnalysis
 from piscat.GUI.Projects.iPSF.iPSF_model import GUI_iPSF
 from piscat.GUI.Memory.video_in_memory import VideoInMemory
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
@@ -111,8 +112,8 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         load_python_script = imp.addAction("Run Python script")
         self.connect(load_python_script, QtCore.SIGNAL('triggered()'), Reading().run_py_script)
 
-        batch_script = imp.addAction("Run Batch analysis")
-        self.connect(batch_script, QtCore.SIGNAL('triggered()'), self.open_dialog_box)
+        Batch_analysis = imp.addAction("Run Batch analysis")
+        self.connect(Batch_analysis, QtCore.SIGNAL('triggered()'), self.batch_analysis)
         # --------File------
 
         # --------Setting--------
@@ -376,6 +377,9 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.file_list = []
         [self.file_list.append(path) for path in full_path]
 
+    def batch_analysis(self):
+        self.batch_analysis_gui = BatchAnalysis(object_update_progressBar=self.update_progressBar)
+        self.batch_analysis_gui.show()
 
 
 def main():

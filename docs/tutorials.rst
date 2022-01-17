@@ -25,6 +25,7 @@ Tutorials
 .. toctree::
     :maxdepth: 1
 
+    download_tutorial_data.md
     Tutorial1/Tutorial1.md
     Tutorial2/Tutorial2.md
     Tutorial3/Tutorial3.md

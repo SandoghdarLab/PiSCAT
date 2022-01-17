@@ -29,13 +29,13 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
             | hyperparameters = {'function': 'dog', 'batch_size': 3000, 'min_V_shape_width': 1500,
                                     'search_range': 2, 'memory': 20, 'min_sigma': 1.3, 'max_sigma': 3, 'sigma_ratio': 1.1,
                                     'PSF_detection_thr': 4e-5, 'overlap': 0, 'outlier_frames_thr': 20, 'Mode_PSF_Segmentation': 'BOTH',
-                                    'symmetric_PSFs_thr': 0.6, 'im_size_x': 72,
+                                    'symmetric_PSFs_thr': 0.6, 'mode_FPN': name_mkdir, 'select_correction_axis': 1, 'im_size_x': 72,
                                     'im_size_y': 72, 'image_format': '<u2'}
 
     flags: dic
          The dictionary is used to active/deactivate different parts in analyzing pipelines. In the following you can see the example of this dictionary:
 
-            | flags = {'PN': True, 'outlier_frames_filter': True, 'Dense_Filter': True, 'symmetric_PSFs_Filter': True, 'FFT_flag': True}
+            | flags = {'PN': True, 'FPNc': True, 'outlier_frames_filter': True, 'Dense_Filter': True, 'symmetric_PSFs_Filter': True, 'FFT_flag': True}
 
     name_mkdir: str
         It defines the name of the folder that automatically creates next to each video to save the results of the analysis and setting history.
@@ -92,8 +92,14 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
         read_write_data.save_dic2json(data_dictionary=hyperparameters, path=s_dir_, name='hyperparameters')
         read_write_data.save_dic2json(data_dictionary=flags, path=s_dir_, name='flags')
 
-        video = reading_videos.read_binary(file_name=p_ + '/' + n_, img_width=hyperparameters['im_size_x'], img_height=hyperparameters['im_size_y'],
+        video = reading_videos.read_binary(file_name=p_ + '/' + n_,
+                                           img_width=hyperparameters['im_size_x'],
+                                           img_height=hyperparameters['im_size_y'],
                                            image_type=np.dtype(hyperparameters['image_format']))
+
+        if isinstance(hyperparameters['start_fr'], int) and isinstance(hyperparameters['end_fr'], int):
+            video = video[hyperparameters['start_fr']:hyperparameters['end_fr'], :, :]
+
         status_ = read_status_line.StatusLine(video)
         video, status_info = status_.find_status_line()
 
@@ -102,18 +108,21 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
         else:
             video_pn = video
 
-        DRA_ = DRA.DifferentialRollingAverage(video=video_pn, batchSize=hyperparameters['batch_size'])
+        DRA_ = DRA.DifferentialRollingAverage(video=video_pn, batchSize=hyperparameters['batch_size'],
+                                              mode_FPN=hyperparameters['mode_FPN'])
 
-        RVideo_PN_ = DRA_.differential_rolling(FFT_flag=flags['FFT_flag'])
+        RVideo_PN_FPN_, _ = DRA_.differential_rolling(FPN_flag=flags['FPNc'],
+                                                     select_correction_axis=hyperparameters['select_correction_axis'],
+                                                     FFT_flag=flags['FFT_flag'], inter_flag_parallel_active=True)
 
         if flags['filter_hotPixels']:
-            RVideo_PN = filtering.Filters(RVideo_PN_).median(3)
+            RVideo_PN_FPN = filtering.Filters(RVideo_PN_FPN_).median(3)
         else:
-            RVideo_PN = RVideo_PN_
+            RVideo_PN_FPN = RVideo_PN_FPN_
 
-        PSFs_Particels_num['#Totall_frame_num_DRA'] = RVideo_PN.shape[0]
+        PSFs_Particels_num['#Totall_frame_num_DRA'] = RVideo_PN_FPN.shape[0]
 
-        PSF_l = particle_localization.PSFsExtraction(video=RVideo_PN)
+        PSF_l = particle_localization.PSFsExtraction(video=RVideo_PN_FPN)
         df_PSFs = PSF_l.psf_detection(function=hyperparameters['function'],  # function='log', 'doh', 'dog'
                                       min_sigma=hyperparameters['min_sigma'], max_sigma=hyperparameters['max_sigma'],
                                       sigma_ratio=hyperparameters['sigma_ratio'],
@@ -152,7 +161,7 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
                                                     memory=hyperparameters['memory'])
                 PSFs_Particels_num['#Totall_Particles'] = linking_.trajectory_counter(df_PSFs_link)
 
-                t_filters = temporal_filtering.TemporalFilter(video=RVideo_PN,
+                t_filters = temporal_filtering.TemporalFilter(video=RVideo_PN_FPN,
                                                               batchSize=hyperparameters['batch_size'])
                 all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=df_PSFs_link,
                                                                             threshold=hyperparameters[

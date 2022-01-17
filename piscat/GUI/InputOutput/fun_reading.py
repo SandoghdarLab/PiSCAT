@@ -199,6 +199,40 @@ class Reading(QtWidgets.QMainWindow):
             self.msg_box.setText("Filename is not valid.!")
             self.msg_box.exec_()
 
+    def load_batch_data(self):
+        data_setting = {}
+        self.filename = self.askdir()
+        self.info_image = import_RAW.RawImage(self.filename)
+        while self.info_image.raw_data_update_flag:
+            QtWidgets.QApplication.processEvents()
+        try:
+            data_setting['path'] = self.filename
+            data_setting['title'] = "Raw"
+            data_setting['img_width'] = self.info_image.width_size
+            data_setting['img_height'] = self.info_image.height_size
+            data_setting['image_type'] = self.info_image.set_bit_order + self.info_image.type
+            data_setting['s_frame'] = self.info_image.frame_s
+            data_setting['e_frame'] = self.info_image.frame_e
+
+            if self.info_image.groupBox_cropping.isChecked():
+                data_setting['frame_stride'] = self.info_image.frame_jump
+                data_setting['width_size_s'] = self.info_image.width_size_s
+                data_setting['width_size_e'] = self.info_image.width_size_e
+                data_setting['height_size_s'] = self.info_image.height_size_s
+                data_setting['height_size_e'] = self.info_image.height_size_e
+            else:
+                data_setting['frame_stride'] = 1
+                data_setting['width_size_s'] = 0
+                data_setting['width_size_e'] = -1
+                data_setting['height_size_s'] = 0
+                data_setting['height_size_e'] = -1
+            self.update_output.emit([data_setting])
+        except:
+            self.msg_box = QtWidgets.QMessageBox()
+            self.msg_box.setWindowTitle("Warning!")
+            self.msg_box.setText("Selected parameters are not correct!")
+            self.msg_box.exec_()
+
     def im2video(self):
 
         title = 'image2video'
