@@ -105,6 +105,7 @@ that improves the distinction of the signal of interest from the background, 2) 
 To achieve this, we need the combination of different computer vision and machine learning algorithms with physical 
 models such as the iSCAT point-spread function (iPSF) model (see \autoref{fig:piscat}b-(I-IV)) [@gholami2020iPSF]. 
 \autoref{fig:piscat_structure} depicts the structure of the PiSCAT package. 
+PiSCAT uses a set of dependencies that assist us in achieving various goals. The PiSCAT repository contains this list.
 
 ![Diagram of the PiSCAT structure: There are nine main modules in the PiSCAT package (blue boxes). Green and yellow 
 represent classes and python scripts (functions), respectively. 
