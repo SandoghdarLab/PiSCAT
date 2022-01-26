@@ -48,16 +48,15 @@ from other nano-objects in the field of view.
 
 # Statement of need
 
-The aim of this project is to explore the potential of powerful image processing tools (such as machine learning, 
-deep learning, computer vision, and object tracking) to address challenges in analysis of iSCAT images. The use of 
+The aim of this project is to explore the potential of powerful image processing tools <font color="blue">(such as computer vision, 
+background correction, and object tracking)</font> to address challenges in the analysis of iSCAT images. The use of 
 existing libraries and packages turns out not to be satisfactory. Here, we present a software platform implemented 
 in Python for processing the iSCAT images, named PiSCAT. In order to make this framework accessible to a wide range 
 of applications, we have developed a GUI (Graphical User Interface), which enables the users to conduct the analysis 
 of interest, regardless of their programming skills. Reading different image 
 or video formats, background correction (e.g removing fixed pattern noise (FPN), differential rolling average (DRA)), 
 point spread function (PSF) detection, linking and extraction of trajectories of target PSFs are amongst the 
-key features of PiSCAT. PiSCAT is also optimized for parallel coding to decrease the analysis time.
-
+key features of PiSCAT. PiSCAT is also optimized for parallel coding to decrease the analysis time. 
 
 
 # Concept and Structure of PiSCAT
@@ -105,7 +104,8 @@ that improves the distinction of the signal of interest from the background, 2) 
 To achieve this, we need the combination of different computer vision and machine learning algorithms with physical 
 models such as the iSCAT point-spread function (iPSF) model (see \autoref{fig:piscat}b-(I-IV)) [@gholami2020iPSF]. 
 \autoref{fig:piscat_structure} depicts the structure of the PiSCAT package. 
-PiSCAT uses a set of dependencies that assist us in achieving various goals. The PiSCAT repository contains this list.
+<font color="blue">PiSCAT uses a set of dependencies that assist us in achieving various goals. The PiSCAT 
+repository contains this list.</font>
 
 ![Diagram of the PiSCAT structure: There are nine main modules in the PiSCAT package (blue boxes). Green and yellow 
 represent classes and python scripts (functions), respectively. 
@@ -117,7 +117,7 @@ and camera parameters. \label{fig:piscat_structure}](Fig2.png){ width=100% }
 # Ongoing Research and Dissemination
 
 Our future work aims to add GPU kernels by using code generation technologies. This kind of design helps us to add 
-real-time processing and different deep neural networks (DNN) to this package in order to facilitate feature extraction 
+real-time processing and different deep neural networks (DNN) <font color="blue">and machine learning</font> to this package in order to facilitate feature extraction 
 and distinguish target signals from the noisy background even at low SNR.
 
 
