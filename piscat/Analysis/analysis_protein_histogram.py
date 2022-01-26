@@ -7,6 +7,8 @@ from piscat.InputOutput.read_write_data import load_dict_from_hdf5
 from piscat.InputOutput.camera_setting import CameraParameters
 
 
+
+
 class ReadProteinAnalysis(CameraParameters):
 
     def __init__(self, camera_Name='Photonfocus.json'):
