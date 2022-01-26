@@ -6,7 +6,7 @@ tags:
   - interferometric microscopy
 authors:
   - name: Houman Mirzaalian Dastjerdi
-    orcid: 0000-0003-0872-7098
+    orcid: 0000-0002-0724-3158
     affiliation: "1, 2, 3"
   - name: Reza Gholami Mahmoodabadi 
     affiliation: "1, 2" 
@@ -48,8 +48,8 @@ from other nano-objects in the field of view.
 
 # Statement of need
 
-The aim of this project is to explore the potential of powerful image processing tools (such as computer vision, 
-background correction, and object tracking) to address challenges in the analysis of iSCAT images. The use of 
+The aim of this project is to explore the potential of powerful computer vision tools (such as background correction, 
+segmentation, and object tracking) to address challenges in the analysis of iSCAT images. The use of 
 existing libraries and packages turns out not to be satisfactory. Here, we present a software platform implemented 
 in Python for processing the iSCAT images, named PiSCAT. In order to make this framework accessible to a wide range 
 of applications, we have developed a GUI (Graphical User Interface), which enables the users to conduct the analysis 
