@@ -48,8 +48,8 @@ from other nano-objects in the field of view.
 
 # Statement of need
 
-The aim of this project is to explore the potential of powerful image processing tools <font color="blue">(such as computer vision, 
-background correction, and object tracking)</font> to address challenges in the analysis of iSCAT images. The use of 
+The aim of this project is to explore the potential of powerful image processing tools <span style="color: blue;">(such as computer vision, 
+background correction, and object tracking)</span> to address challenges in the analysis of iSCAT images. The use of 
 existing libraries and packages turns out not to be satisfactory. Here, we present a software platform implemented 
 in Python for processing the iSCAT images, named PiSCAT. In order to make this framework accessible to a wide range 
 of applications, we have developed a GUI (Graphical User Interface), which enables the users to conduct the analysis 
