@@ -36,11 +36,12 @@ Ready to contribute? Here is how to set up `PiSCAT` for local development.
 2. Clone your fork locally:
 ```bash
     $ git clone https://github.com/USERNAME/PiSCAT.git
+    $ cd PiSCAT
 ```
-3. Install your local copy into a virtualenv. It is also recommended to use anaconda or miniconda to manage the python environments.
+3. Install your local copy into a virtualenv.
 ```bash
-    $ conda create -n PiSCAT python=3.9
-    $ conda activate PiSCAT
+    $ pip install virtualenvwrapper-win (windows)/ pip install virtualenvwrapper (linux)
+    $ mkvirtualenv PiSCAT
     $ pip install -e .
 ```
 4. Create a branch for local development:
@@ -49,20 +50,15 @@ Ready to contribute? Here is how to set up `PiSCAT` for local development.
 ```
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass the tests
-```bash
-    $ python setup.py test" .
-```
-
    To get all packages needed for development, a requirements list can be found [here](https://github.com/SandoghdarLab/PiSCAT/blob/main/setup.py).
 
-6. Commit your changes and push your branch to GitHub::
+5. Commit your changes and push your branch to GitHub::
 ```bash
     $ git add .
     $ git commit -m "Your detailed description of your changes."
     $ git push origin name-of-your-bugfix-or-feature
 ```
-7. Submit a Merge Request on Github.
+6. Submit a Merge Request on Github.
 
 ## Merge Request Guidelines
 
@@ -72,9 +68,3 @@ Before you submit a Merge Request, check that it meets these guidelines:
 2. If the Merge Request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring.
 3. If you have a maintainer status for `PiSCAT`, you can merge Merge Requests to the master branch. However, every Merge Request needs to be reviewed by another developer. Thus it is not allowed to merge a Merge Request, which is submitted by oneself.
 
-## Tips
-
-To run a subset of tests:
-```bash
-$ python setup.py test
-```
