@@ -44,6 +44,12 @@ Ready to contribute? Here is how to set up `PiSCAT` for local development.
     $ mkvirtualenv PiSCAT
     $ pip install -e .
 ```
+
+By following the comments, you can also install all dependencies with the specific versions that we tested for Python 3.9.7:
+```bash
+    $ pip install -r requirements.txt
+```
+
 4. Create a branch for local development:
 ```bash
     $ git checkout -b name-of-your-bugfix-or-feature
