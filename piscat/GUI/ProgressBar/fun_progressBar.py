@@ -1,5 +1,5 @@
 # from GUI_RUN.Main import PiSCAT_GUI
-from PySide2 import QtCore
+from PySide6 import QtCore
 
 class ProgressBar():
 

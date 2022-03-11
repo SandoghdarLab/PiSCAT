@@ -1,5 +1,5 @@
 from piscat.GUI.InputOutput import Reading
-from PySide2 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 
 class BgCorrection_GUI(QtWidgets.QWidget):

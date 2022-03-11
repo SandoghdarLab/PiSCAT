@@ -1,7 +1,7 @@
-from PySide2 import QtCore
-from PySide2 import QtWidgets
-from PySide2 import QtGui
-from PySide2.QtCore import *
+from PySide6 import QtCore
+from PySide6 import QtWidgets
+from PySide6 import QtGui
+from PySide6.QtCore import *
 
 from piscat.InputOutput import write_video
 from piscat.Preproccessing.normalization import Normalization
@@ -168,7 +168,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
             self.progressChanged.connect(self.setProgress)
 
         # Create
-        self.connect(QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), self), QtCore.SIGNAL('activated()'), self.histogram)
+        self.connect(QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), self), QtCore.SIGNAL('activated()'), self.histogram)
 
         if self.title != "PNG":
             self.slice_slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
@@ -195,7 +195,6 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         if self.mask is True:
             self.grid_diplay.addWidget(self.Display_mask, 1, 0)
-            # self.grid_diplay.addWidget(self.mp4, 1, 1)
 
         self.grid_diplay.addWidget(self.save, 1, 2)
         self.groupBox_displayBtn.setLayout(self.grid_diplay)

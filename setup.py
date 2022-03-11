@@ -25,7 +25,11 @@ setup(
     name=name,
     author=author,
     author_email='houman.mirzaalian-dastjerdi@mpl.mpg.de',
-    url='https://github.com/SandoghdarLab/PiSCAT',
+    project_urls={
+    'Documentation': 'https://piscat.readthedocs.io/',
+    'Source': 'https://github.com/SandoghdarLab/PiSCAT/',
+    'Tracker': 'https://github.com/SandoghdarLab/PiSCAT/issues'
+    },
     version=version,
     packages=find_packages(),
     package_dir={name: name},
@@ -41,7 +45,7 @@ setup(
                         "opencv-python",
                         "pandas",
                         "PyQt5",
-                        "Pyside2",
+                        "Pyside6",
                         "pyqtgraph",
                         "PyQtWebEngine",
                         "scikit_learn",

@@ -1,6 +1,6 @@
 from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
 
-from PySide2 import QtGui, QtCore, QtWidgets
+from PySide6 import QtGui, QtCore, QtWidgets
 
 
 class Histogram_GUI(QtWidgets.QWidget):

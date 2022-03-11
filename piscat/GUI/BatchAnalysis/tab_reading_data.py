@@ -1,9 +1,8 @@
 from piscat.GUI.InputOutput import Reading
 from functools import partial
 
-
-from PySide2 import QtCore
-from PySide2 import QtWidgets
+from PySide6 import QtCore
+from PySide6 import QtWidgets
 
 import os
 import numpy as np

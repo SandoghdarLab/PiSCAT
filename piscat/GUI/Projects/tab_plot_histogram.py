@@ -1,6 +1,5 @@
 from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
-
-from PySide2 import QtGui, QtCore, QtWidgets
+from PySide6 import QtGui, QtCore, QtWidgets
 
 
 class Histogram_GUI(QtWidgets.QWidget):
@@ -115,7 +114,7 @@ class Histogram_GUI(QtWidgets.QWidget):
 
         self.get_values_histogram_plot()
         if self.empty_value_box_flag:
-            if self.checkbox_GMM_FIT.isChecked():
+            if self.groupBox_gmm.isChecked():
                 his_ = PlotProteinHistogram(intersection_display_flag=False)
                 his_(folder_name='', particles=self.input_data, batch_size=self.batch_size,
                           video_frame_num=self.number_frames, MinPeakWidth=self.minPeak_width,
@@ -141,8 +140,12 @@ class Histogram_GUI(QtWidgets.QWidget):
             self.minPeak_width = float(self.min_peak_width.text())
             self.lower_limit = float(self.le_lower_contrast_trim.text())
             self.upper_limit = float(self.le_upper_contrast_trim.text())
-            self.max_n_components = int(self.le_MaxGMM_mode.text())
             self.n_bins = int(self.le_hist_bin.text())
+
+            try:
+                self.max_n_components = int(self.le_MaxGMM_mode.text())
+            except:
+                pass
 
             self.empty_value_box_flag = True
 

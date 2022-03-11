@@ -5,8 +5,8 @@ from piscat.InputOutput import reading_videos
 from piscat.Analysis.analysis_protein_videos import protein_analysis
 
 
-from PySide2 import QtCore
-from PySide2 import QtWidgets
+from PySide6 import QtCore
+from PySide6 import QtWidgets
 
 import os
 import numpy as np

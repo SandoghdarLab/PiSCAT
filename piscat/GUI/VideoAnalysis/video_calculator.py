@@ -1,7 +1,7 @@
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 from piscat.GUI.InputOutput import Reading
 
-from PySide2 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 from functools import partial
 import numpy as np
 

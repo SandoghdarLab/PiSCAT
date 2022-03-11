@@ -1,9 +1,9 @@
 from piscat.Visualization.contrast_adjustment import ContrastAdjustment
 
-from PySide2 import QtGui, QtCore, QtWidgets
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide6 import QtGui, QtCore, QtWidgets
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
 class Contrast_adjustment_GUI(QtWidgets.QMainWindow):

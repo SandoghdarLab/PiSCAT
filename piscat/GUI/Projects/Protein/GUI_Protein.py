@@ -6,8 +6,8 @@ from piscat.GUI.Projects.tab_plot_histogram import Histogram_GUI
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 from piscat.InputOutput.read_write_data import load_dict_from_hdf5
 
-from PySide2 import QtCore, QtWidgets
-from PySide2.QtCore import *
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import *
 from functools import partial
 import pandas as pd
 import numpy as np

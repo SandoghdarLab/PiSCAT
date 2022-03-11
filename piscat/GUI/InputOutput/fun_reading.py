@@ -2,8 +2,8 @@ from piscat.GUI.InputOutput import import_im2vid, import_RAW, video_cropping
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 from piscat.InputOutput import reading_videos, image_to_video, read_status_line
 
-from PySide2 import QtCore
-from PySide2 import QtWidgets
+from PySide6 import QtCore
+from PySide6 import QtWidgets
 
 import os
 import numpy as np

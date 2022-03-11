@@ -7,10 +7,10 @@ from __future__ import print_function
 import numpy as np
 import matplotlib.ticker as ticker
 import pylab as pl
-from PySide2 import QtGui
-from PySide2 import QtCore
-from PySide2 import QtWidgets
-from PySide2.QtCore import *
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6 import QtWidgets
+from PySide6.QtCore import *
 from scipy.ndimage import median_filter
 from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable

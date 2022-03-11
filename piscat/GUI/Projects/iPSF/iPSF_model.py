@@ -1,4 +1,4 @@
-from PySide2 import QtGui, QtCore, QtWidgets
+from PySide6 import QtGui, QtCore, QtWidgets
 from piscat.iPSF_model.ScatteredFieldDifferentialPhase import ScatteredFieldDifferentialPhase
 from piscat.iPSF_model import ImagingSetupParameters
 from piscat.GUI.Visualization.updating_plots import UpdatingPlots_Image
@@ -454,7 +454,8 @@ class GUI_iPSF(QtWidgets.QWidget):
                                                          'x-axis (x' + str(self.pixel_size_var*1e9) + ' nm)'],
                                           y_axis_labels=['Focal stack: iPSFs,',
                                                           'Defocus axis (x' + str(1e2) + ' nm)',
-                                                          'Defocus axis (x' + str(1e2) + ' nm)'])
+                                                          'Defocus axis (x' + str(1e2) + ' nm)'],
+                                          title='iPSF_Model_I')
         elif self.groupBox_iPSF_model_2.isChecked() and self.iPSFs_AxialStack is not None:
 
             self.display_trigger.emit(['iPSF_Model_II', self.iPSFs_AxialStack])
@@ -468,7 +469,8 @@ class GUI_iPSF(QtWidgets.QWidget):
                                                          'x-axis (x' + str(self.pixel_size_var * 1e9) + ' nm)'],
                                           y_axis_labels=['Focal stack: iPSFs,',
                                                          'Defocus axis (x' + str(1e2) + ' nm)',
-                                                         'Defocus axis (x' + str(1e2) + ' nm)'])
+                                                         'Defocus axis (x' + str(1e2) + ' nm)'],
+                                          title='iPSF_Model_II')
 
     @QtCore.Slot(int)
     def get_sliceNumber(self, frame_number):

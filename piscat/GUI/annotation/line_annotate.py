@@ -1,6 +1,6 @@
-from PySide2.QtWidgets import QWidget, QApplication, QLabel
-from PySide2.QtCore import QRect, Qt, QLine
-from PySide2.QtGui import QImage, QPixmap, QPainter, QPen, QGuiApplication
+from PySide6.QtWidgets import QWidget, QApplication, QLabel
+from PySide6.QtCore import QRect, Qt, QLine
+from PySide6.QtGui import QImage, QPixmap, QPainter, QPen, QGuiApplication
 
 from piscat.Localization.directional_intensity import DirectionalIntensity
 

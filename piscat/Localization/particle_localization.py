@@ -2,7 +2,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import os
-from PySide2.QtCore import Slot
+from PySide6.QtCore import Slot
 from joblib import Parallel, delayed
 from skimage import feature
 from tqdm.autonotebook import tqdm

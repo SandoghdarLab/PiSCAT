@@ -1,6 +1,6 @@
 from __future__ import print_function
-from PySide2 import QtCore
-from PySide2.QtCore import *
+from PySide6 import QtCore
+from PySide6.QtCore import *
 
 import imageio
 import numpy as np

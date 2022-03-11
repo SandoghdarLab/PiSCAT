@@ -6,7 +6,7 @@ import scipy.signal
 import scipy.ndimage
 import scipy.fftpack
 
-from PySide2.QtCore import *
+from PySide6.QtCore import *
 from tqdm.autonotebook import tqdm
 from skimage import filters
 from scipy.ndimage.filters import median_filter

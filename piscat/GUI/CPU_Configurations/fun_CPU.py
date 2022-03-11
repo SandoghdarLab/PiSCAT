@@ -1,7 +1,7 @@
 from piscat.GUI.CPU_Configurations import Import_configuration
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from PySide2 import QtWidgets
-from PySide2 import QtCore
+from PySide6 import QtWidgets
+from PySide6 import QtCore
 
 
 class CPU_setting_wrapper(QtWidgets.QMainWindow):

@@ -1,11 +1,14 @@
-from PyQt5 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets, QtGui
 
-from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtGui
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Qt5Agg')
 
 
 class MplCanvas(FigureCanvas):
@@ -62,28 +65,73 @@ class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
         print("closing plot")
 
 
-class UpdatingPlots_Image(QtWidgets.QMainWindow):
+# class UpdatingPlots_Image(QtWidgets.QMainWindow):
+#
+#     def __init__(self, list_img, list_titles, x_axis_labels, y_axis_labels, *args, **kwargs):
+#         super(UpdatingPlots_Image, self).__init__(*args, **kwargs)
+#         self.list_titles = list_titles
+#         self.list_img = list_img
+#         self.x_axis_labels = x_axis_labels
+#         self.y_axis_labels = y_axis_labels
+#
+#         self.canvas = MplCanvas(self, width=9, height=4, dpi=100, numRows=1, numColumns=3)
+#         self.setCentralWidget(self.canvas)
+#
+#     def update_plot(self, xdata, ydata):
+#         for i_ in range(3):
+#             self.canvas.axes[i_].clear()  # Clear the canvas.
+#             self.canvas.axes[i_].imshow(self.list_img[i_])
+#             self.canvas.axes[i_].plot(xdata, ydata, 'r-', alpha=0.3)
+#             self.canvas.axes[i_].ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+#             self.canvas.axes[i_].set_ylabel(self.x_axis_labels[i_])
+#             self.canvas.axes[i_].set_xlabel(self.y_axis_labels[i_])
+#
+#         self.canvas.draw()
 
-    def __init__(self, list_img, list_titles, x_axis_labels, y_axis_labels, *args, **kwargs):
+
+class UpdatingPlots_Image(QtGui.QMainWindow):
+
+    def __init__(self, list_img, list_titles, x_axis_labels, y_axis_labels, title, *args, **kwargs):
         super(UpdatingPlots_Image, self).__init__(*args, **kwargs)
         self.list_titles = list_titles
         self.list_img = list_img
         self.x_axis_labels = x_axis_labels
         self.y_axis_labels = y_axis_labels
 
-        self.canvas = MplCanvas(self, width=9, height=4, dpi=100, numRows=1, numColumns=3)
-        self.setCentralWidget(self.canvas)
+        self.mainbox = QtGui.QWidget()
+        self.setCentralWidget(self.mainbox)
+
+        self.canvas = pg.GraphicsLayoutWidget(size=(100, 100), title=title)
+        self.label = QtGui.QLabel()
+
+        lay = QtGui.QVBoxLayout(self.mainbox)
+        lay.addWidget(self.canvas)
+        lay.addWidget(self.label)
+
+        pen = pg.mkPen(color=(255, 0, 0), width=2)
+
+        self.img_items = []
+        for i in range(3):
+            view = self.canvas.addPlot(0, i)
+            view.setAspectLocked(False)
+            view.setTitle(self.list_titles[i])
+            view.setLabel(axis='left', text=self.x_axis_labels[i])
+            view.setLabel(axis='bottom', text=self.y_axis_labels[i])
+
+            view.setRange(QtCore.QRectF(0, 0, self.list_img[i].shape[1], self.list_img[i].shape[0]))
+            it = pg.ImageItem(None, border="w")
+            it_line = pg.InfiniteLine(pos=None, angle=0, pen=pen, movable=False)
+            view.addItem(it)
+            view.addItem(it_line)
+            self.img_items.append([it, it_line])
+            self.canvas.nextRow()
 
     def update_plot(self, xdata, ydata):
-        for i_ in range(3):
-            self.canvas.axes[i_].clear()  # Clear the canvas.
-            self.canvas.axes[i_].imshow(self.list_img[i_])
-            self.canvas.axes[i_].plot(xdata, ydata, 'r-', alpha=0.3)
-            self.canvas.axes[i_].ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-            self.canvas.axes[i_].set_ylabel(self.x_axis_labels[i_])
-            self.canvas.axes[i_].set_xlabel(self.y_axis_labels[i_])
+        for i_, item in enumerate(self.img_items):
+            item[0].setImage(np.transpose(self.list_img[i_]))
+            item[1].setValue(ydata[0])
 
-        self.canvas.draw()
+
 
 
 

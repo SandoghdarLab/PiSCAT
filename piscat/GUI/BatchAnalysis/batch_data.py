@@ -9,7 +9,7 @@ from piscat.GUI.BatchAnalysis.tab_analysis_protein import ProteinAnalysis_GUI
 
 from piscat.InputOutput.read_write_data import load_dict_from_hdf5
 
-from PySide2 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 from functools import partial
 import pandas as pd
 import numpy as np

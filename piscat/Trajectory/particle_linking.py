@@ -4,7 +4,7 @@ from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from piscat.Localization import data_handeling
 
 from tqdm.autonotebook import tqdm
-from PySide2.QtCore import *
+from PySide6.QtCore import *
 
 import trackpy as tp
 import pandas as pd

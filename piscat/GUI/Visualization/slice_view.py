@@ -1,9 +1,9 @@
-from PySide2 import QtGui
-from PySide2 import QtCore
-from PySide2 import QtWidgets
+from PySide6 import QtGui
+from PySide6 import QtCore
+from PySide6 import QtWidgets
 
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
 from scipy.ndimage import median_filter
 
 import numpy as np
@@ -256,7 +256,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
             if self.parent().parent().title == "PNG":
                 pass
             elif self.parent().parent().title != "PNG":
-                steps = event.delta() // 120
+                steps = event.angleDelta().y() // 120
                 vector = steps and steps // abs(steps)  # 0, 1, or -1
                 for step in range(1, abs(steps) + 1):
 

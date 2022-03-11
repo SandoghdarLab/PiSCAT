@@ -1,7 +1,7 @@
 from piscat.BackgroundCorrection.noise_floor import NoiseFloor
 from piscat.Preproccessing import Normalization
 
-from PySide2 import QtGui, QtCore, QtWidgets
+from PySide6 import QtGui, QtCore, QtWidgets
 import pandas as pd
 import os
 

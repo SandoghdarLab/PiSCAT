@@ -2,7 +2,7 @@ from piscat.Preproccessing.filtering import Filters
 from piscat.GUI.InputOutput import Reading
 from piscat.GUI.BackgroundCorrection import FUN_DRA
 
-from PySide2 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 import numpy as np
 
