@@ -98,7 +98,7 @@ height is swept axially to form an axial stack made of 2D iPSF images. This stac
 plane and plotted in (II). The amplitude and differential phase of the same plane is shown in (III) and (IV) respectively. 
 \label{fig:piscat}](Fig1.png){ width=100% }
 
-PiSCAT provides several algorithms for localization and tracking of nanoparticles (see \autoref{fig:piscat}a-(VI)). The 
+PiSCAT provides several algorithms for localization and tracking [@Trackpy] of nanoparticles (see \autoref{fig:piscat}a-(VI)). The 
 current version offers several image processing techniques to mainly accomplish the following: 1) Background correction 
 that improves the distinction of the signal of interest from the background, 2) Localizing particles in (X,Y,Z axis and time). 
 To achieve this, we need the combination of different computer vision and machine learning algorithms with physical 
