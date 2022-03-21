@@ -64,13 +64,13 @@ key features of PiSCAT. PiSCAT is also optimized for parallel coding to decrease
 PiSCAT is a unified python-based package that presents classical computer vision and machine learning analysis for 
 various applications such as unlabeled protein detection or three-dimensional (3D) tracking of nanoparticles.
 Protein detection based on the linear relationship of contrast and particle mass is one of the popular iSCAT 
-applications [@Dastjerdi2021], [@piliarik2014direct]. But due to camera hardware 
+applications [@Dastjerdi2021; @piliarik2014direct]. But due to camera hardware 
 limitations, a protein cannot be visualized in a single frame (see \autoref{fig:piscat}a-(I)). To remove the 
 static background, this method subtracts the averages of two consecutive batches (see \autoref{fig:piscat}a-(II)). 
 Additionally, we need algorithms to localize and track particles in spatial and temporal domains to correctly read 
 the contrasts and provide a histogram from them (see \autoref{fig:piscat}a-(III)).
 Another application of iSCAT is to monitor the diffusion of single nanoparticles such as lipid vesicles across the surface of 
-giant unilamellar vesicles (GUVs; @spindler2018high; see \autoref{fig:piscat}a-(IV)). As in most iSCAT signal processing 
+giant unilamellar vesicles (GUVs; [@spindler2018high]; see \autoref{fig:piscat}a-(IV)). As in most iSCAT signal processing 
 steps, we first separate the nanoparticle signals from the background signal present in the raw videos. In comparison 
 to diffusing nanoparticles, the slowly varying GUV signal can be estimated using temporal median and then removed during 
 background correction. Although this method partially removes background rings and can reveal nanoparticles as small 
