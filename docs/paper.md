@@ -37,7 +37,7 @@ bibliography: paper.bib
 
 Interferometric scattering (iSCAT) microscopy allows one to image and track nano-objects with a nanometer spatial 
 and microsecond temporal resolution over arbitrarily long measurement 
-times [@\lindfors2004PRL; @\taylor2019interferometric; @\RichardBook]. A key advantage of this technique over 
+times [@lindfors2004PRL; @taylor2019interferometric; @RichardBook]. A key advantage of this technique over 
 the well-established fluorescence methods is the indefinite photostability of the scattering phenomenon in 
 contrast to the photobleaching of fluorophores. This means that one can perform very long measurements. Moreover, 
 scattering processes are linear and thus do not saturate. This leads to larger signals than is possible from a 
@@ -70,7 +70,7 @@ static background, this method subtracts the averages of two consecutive batches
 Additionally, we need algorithms to localize and track particles in spatial and temporal domains to correctly read 
 the contrasts and provide a histogram from them (see \autoref{fig:piscat}a-(III)).
 Another application of iSCAT is to monitor the diffusion of single nanoparticles such as lipid vesicles across the surface of 
-giant unilamellar vesicles (GUVs; [\@spindler2018high]; see \autoref{fig:piscat}a-(IV)). As in most iSCAT signal processing 
+giant unilamellar vesicles (GUVs; @spindler2018high; see \autoref{fig:piscat}a-(IV)). As in most iSCAT signal processing 
 steps, we first separate the nanoparticle signals from the background signal present in the raw videos. In comparison 
 to diffusing nanoparticles, the slowly varying GUV signal can be estimated using temporal median and then removed during 
 background correction. Although this method partially removes background rings and can reveal nanoparticles as small 
