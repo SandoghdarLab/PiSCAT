@@ -70,7 +70,7 @@ static background, this method subtracts the averages of two consecutive batches
 Additionally, we need algorithms to localize and track particles in spatial and temporal domains to correctly read 
 the contrasts and provide a histogram from them (see \autoref{fig:piscat}a-(III)).
 Another application of iSCAT is to monitor the diffusion of single nanoparticles such as lipid vesicles across the surface of 
-giant unilamellar vesicles (GUVs; \@spindler2018high; see \autoref{fig:piscat}a-(IV)). As in most iSCAT signal processing 
+giant unilamellar vesicles (GUVs; [\@spindler2018high]; see \autoref{fig:piscat}a-(IV)). As in most iSCAT signal processing 
 steps, we first separate the nanoparticle signals from the background signal present in the raw videos. In comparison 
 to diffusing nanoparticles, the slowly varying GUV signal can be estimated using temporal median and then removed during 
 background correction. Although this method partially removes background rings and can reveal nanoparticles as small 
