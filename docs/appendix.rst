@@ -6,7 +6,7 @@ Summary of the PiSCAT pipeline for efficient nanoparticle detection
 
 The implementation flowchart for detecting single unlabeled proteins from iSCAT videos is shown in the following Fig [1].
 
-.. image:: ./Fig/flowchart.PNG
+.. image:: ./Fig/flowchart.png
    :width: 600 px
    :alt: PiSCAT pipeline [1]
    :align: center

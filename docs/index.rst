@@ -3,6 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. image:: https://zenodo.org/badge/360498327.svg
+   :target: https://zenodo.org/badge/latestdoi/360498327
 
 PiSCAT: An open source package in Python for interferometric Scattering Microscopy
 ==================================================================================
