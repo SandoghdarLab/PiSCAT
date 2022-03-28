@@ -1,3 +1,5 @@
+<a href="https://zenodo.org/badge/latestdoi/360498327"><img src="https://zenodo.org/badge/360498327.svg" alt="DOI"></a>
+
 ![](https://github.com/SandoghdarLab/PiSCAT/blob/28eafb06ea4f6b468dde70e33fa970d1699974cf/docs/Fig/PiSCAT_logo_bg.png)
 
 # PiSCAT: An open source package in Python for interferometric Scattering Microscopy ([Homepage](https://piscat.readthedocs.io))
@@ -51,7 +53,8 @@ python -m piscat.Tutorials
 
 ## Citing PiSCAT
 
-TODO
+[![DOI](https://zenodo.org/badge/360498327.svg)](https://zenodo.org/badge/latestdoi/360498327)
+
 
 ## Testing
 
