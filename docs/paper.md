@@ -54,7 +54,7 @@ existing libraries and packages turns out not to be satisfactory. Here, we prese
 in Python for processing the iSCAT images, named PiSCAT. In order to make this framework accessible to a wide range 
 of applications, we have developed a GUI (Graphical User Interface), which enables the users to conduct the analysis 
 of interest, regardless of their programming skills. Reading different image 
-or video formats, background correction (e.g removing fixed pattern noise (FPN), differential rolling average (DRA)), 
+or video formats, background correction (e.g., removing fixed pattern noise (FPN), differential rolling average (DRA)), 
 point spread function (PSF) detection, linking and extraction of trajectories of target PSFs are amongst the 
 key features of PiSCAT. PiSCAT is also optimized for parallel coding to decrease the analysis time.
 
