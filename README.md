@@ -1,5 +1,7 @@
 <a href="https://zenodo.org/badge/latestdoi/360498327"><img src="https://zenodo.org/badge/360498327.svg" alt="DOI"></a>
 
+<a style="border-width:0" href="https://doi.org/10.21105/joss.04024"><img src="https://joss.theoj.org/papers/10.21105/joss.04024/status.svg" alt="DOI badge" ></a>
+
 ![](https://github.com/SandoghdarLab/PiSCAT/blob/28eafb06ea4f6b468dde70e33fa970d1699974cf/docs/Fig/PiSCAT_logo_bg.png)
 
 # PiSCAT: An open source package in Python for interferometric Scattering Microscopy ([Homepage](https://piscat.readthedocs.io))
@@ -53,7 +55,7 @@ python -m piscat.Tutorials
 
 ## Citing PiSCAT
 
-[![DOI](https://zenodo.org/badge/360498327.svg)](https://zenodo.org/badge/latestdoi/360498327)
+<a style="border-width:0" href="https://doi.org/10.21105/joss.04024"><img src="https://joss.theoj.org/papers/10.21105/joss.04024/status.svg" alt="DOI badge" ></a>
 
 
 ## Testing
