@@ -261,7 +261,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
                 for step in range(1, abs(steps) + 1):
 
                     self.slice_num -= vector
-                    if self.slice_num >= 0 and self.slice_num <= self.input_video.shape[0]:
+                    if self.slice_num >= 0 and self.slice_num <= self.input_video.shape[0]-1:
                         self.parent().parent().slice_slider.setValue(self.slice_num)
                         self.current_pixmap = self.create_pixmap(self.input_video[self.slice_num, :, :])
                         self.update_slice(self.current_pixmap)

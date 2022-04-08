@@ -8,7 +8,7 @@ import sys
 
 class CPUConfigurations():
 
-    def __init__(self, n_jobs=-1, backend='multiprocessing', verbose=0, parallel_active=True, threshold_for_parallel_run=None):
+    def __init__(self, n_jobs=-1, backend='multiprocessing', verbose=0, parallel_active=True, threshold_for_parallel_run=None, flag_report=False):
         """
         This class generates a JSON file based on the parallel loop setting on the CPU that the user prefers.
         This JSON was used by other functions and methods to set hyperparameters in a parallel loop.
@@ -48,9 +48,12 @@ class CPUConfigurations():
 
         threshold_for_parallel_run: float
             It reserved for next generation of PiSCAT.
+
+        flag_report: bool
+            This flag is set if you need to see the values that will be used for CPU configuration.
         """
         try:
-            self.read_cpu_setting()
+            self.read_cpu_setting(flag_report)
 
         except FileNotFoundError:
             self.n_jobs = n_jobs
@@ -81,7 +84,11 @@ class CPUConfigurations():
         df_configfile = pd.DataFrame(data=setting_dic)
         df_configfile.to_json(filepath)
 
-    def read_cpu_setting(self):
+    def read_cpu_setting(self, flag_report=False):
+        """
+         flag_report: bool
+                This flag is set if you need to see the values that will be used for CPU configuration.
+        """
         subdir = "piscat_configuration"
         here = os.path.dirname(os.getcwd())
         filepath = os.path.join(here, subdir, 'cpu_configurations.json')
@@ -94,5 +101,11 @@ class CPUConfigurations():
         self.verbose = cpu_setting['verbose']['0']
         self.parallel_active = cpu_setting['parallel_active']['0']
         self.threshold_for_parallel_run = cpu_setting['threshold_for_parallel_run']['0']
+
+        if flag_report:
+            print("PiSCAT's general parallel flag is set to {}".format(self.parallel_active))
+            print("\nThe number of parallel jobs is set to {}".format(self.n_jobs))
+            print("\nThe backend is set to {}".format( self.backend ))
+            print("\nThe verbose is set to {}".format(self.verbose))
 
 

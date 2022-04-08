@@ -156,7 +156,7 @@ class Reading(QtWidgets.QMainWindow):
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
 
-                self.update_output.emit([self.original_video, title, self.filename])
+                self.update_output.emit([self.original_video, title, self.filename, None])
 
             elif title == "Fits":
                 fits_video = reading_videos.read_fits(self.filename)

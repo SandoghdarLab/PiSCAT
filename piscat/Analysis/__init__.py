@@ -1,3 +1,5 @@
 from .analysis_protein_histogram import ReadProteinAnalysis
 from .plot_protein_histogram import PlotProteinHistogram
 from .analysis_protein_videos import protein_analysis
+from .analysis_protein_videos_anomaly import anomaly_protein_analysis
+from .analysis_protein_videos_dnn_anomaly import dnn_anomaly_protein_analysis

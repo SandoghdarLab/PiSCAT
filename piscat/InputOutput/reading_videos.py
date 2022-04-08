@@ -1,11 +1,15 @@
 from __future__ import print_function
 from skimage import io
+from PIL import Image
 from skimage.color import rgb2gray
 from astropy.io import fits
+from tqdm.autonotebook import tqdm
+from joblib import Parallel, delayed
 import os
 import pandas as pd
 import numpy as np
 import cv2
+
 
 
 def video_reader(file_name, type='binary', img_width=128, img_height=128, image_type=np.dtype('<f8'), s_frame=0, e_frame=-1):
@@ -124,7 +128,15 @@ def read_tif(filename):
         The video is 3D-numpy (number of frames, width, height).
 
     """
-    vid_ = io.imread(filename)
+    tiff = Image.open(filename)
+    vid_ = []
+    for i in tqdm(range(tiff.n_frames)):
+        tiff.seek(i)
+        vid_.append(np.array(tiff))
+    vid_ = np.array(vid_)
+
+    # vid_ = io.imread(filename)
+
     if vid_.ndim == 4:
         frames_list = []
         for i_ in range(vid_.shape[0]):

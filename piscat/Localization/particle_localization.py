@@ -32,8 +32,8 @@ class PSFsExtraction:
 
         [[frame number, center y, center x, sigma], [frame number, center y, center x, sigma], ...]
 
-        Parameters
-        ----------
+                Parameters
+                ----------
         video: NDArray
             Numpy 3D video array.
 

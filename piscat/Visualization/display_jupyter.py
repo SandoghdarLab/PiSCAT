@@ -108,7 +108,7 @@ class JupyterDisplay:
 
 class JupyterDisplay_StatusLine:
 
-    def __init__(self, video, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1):
+    def __init__(self, video, median_filter_flag=False, color='gray', imgSizex=5, imgSizey=5, IntSlider_width='500px', step=1, value=0):
         """
         This class displays the video in the Jupyter notebook interactively while highlight status line
 
@@ -134,6 +134,9 @@ class JupyterDisplay_StatusLine:
 
         step: int
             Stride between visualization frames.
+
+        value: int
+            Initial frame value for visualization
         """
         self.color = color
         self.video = video
@@ -145,7 +148,7 @@ class JupyterDisplay_StatusLine:
         self.video_remove, status_information = status_.find_status_line()
         self.statusLine_position = status_information['status_line_position']
 
-        interact(self.display, frame=widgets.IntSlider(min=0, max=self.video.shape[0] - 1, step=step, value=10,
+        interact(self.display, frame=widgets.IntSlider(min=0, max=self.video.shape[0] - 1, step=step, value=value,
                                                        layout=Layout(width=IntSlider_width),
                                                        readout_format='10', continuous_update=False,
                                                        description='Frame:'))
@@ -389,7 +392,6 @@ class JupyterPSFs_subplotLocalizationDisplay:
 
         value: int
             Initial frame value for visualization
-
         """
         self.list_video = list_videos
         self.numVideos = len(list_videos)
@@ -451,7 +453,7 @@ class JupyterPSFs_subplotLocalizationDisplay:
 
 class JupyterPSFs_TrackingDisplay:
 
-    def __init__(self, video, df_PSFs, median_filter_flag=False, step=1, color='gray', imgSizex=5, imgSizey=5,):
+    def __init__(self, video, df_PSFs, median_filter_flag=False, step=1, color='gray', imgSizex=5, imgSizey=5, value=0):
         """
         This class displays video in the Jupyter notebook interactively while highlighting PSFs with trajectories.
 
@@ -480,6 +482,9 @@ class JupyterPSFs_TrackingDisplay:
 
         step: int
            Stride between visualization frames.
+
+        value: int
+            Initial frame value for visualization
         """
 
         self.video = video
@@ -499,7 +504,7 @@ class JupyterPSFs_TrackingDisplay:
         colors_ = cm.autumn(np.linspace(0, 1, len(self.list_particles_idx)))
 
         self.colors = colors_[0:len(self.list_particles_idx), :]
-        interact(self.show_psf, frame_number=widgets.IntSlider(min=0, max=self.video.shape[0] - 1, step=step, value=0,
+        interact(self.show_psf, frame_number=widgets.IntSlider(min=0, max=self.video.shape[0] - 1, step=step, value=value,
                     readout_format='1', continuous_update=False, description='Frame:'))
 
     def show_psf(self, frame_number):
@@ -546,7 +551,7 @@ class JupyterPSFs_TrackingDisplay:
 class JupyterSelectedPSFs_localizationDisplay:
 
     def __init__(self, video, particles, particles_num='#0', frame_extend=0, median_filter_flag=False, flag_fit2D=False,
-                 color='gray', imgSizex=10, imgSizey=10, IntSlider_width='500px', step=1):
+                 color='gray', imgSizex=10, imgSizey=10, IntSlider_width='500px', step=1, value=0):
         """
         This class interactively shows video in a Jupyter notebook while highlighting PSFs based on ID.
 
@@ -588,6 +593,9 @@ class JupyterSelectedPSFs_localizationDisplay:
 
         step: int
            Stride between visualization frames.
+
+        value: int
+            Initial frame value for visualization
         """
 
         if type(particles) is list:
@@ -622,7 +630,7 @@ class JupyterSelectedPSFs_localizationDisplay:
 
         self.frame_number = list(range(min_extend_particle_frame, max_extend_particle_frame, 1))
         interact(self.show_psf,
-                 f_num=widgets.IntSlider(min=self.frame_number[0], max=self.frame_number[-1] - 1, step=step, value=10,
+                 f_num=widgets.IntSlider(min=self.frame_number[0], max=self.frame_number[-1] - 1, step=step, value=value,
                                          readout_format='1', continuous_update=False, layout=Layout(width=IntSlider_width),
                                          description='Frame:'))
 
@@ -706,7 +714,7 @@ class JupyterSelectedPSFs_localizationDisplay:
 class JupyterSubplotDisplay:
 
     def __init__(self, list_videos, numRows, numColumns, list_titles=None, imgSizex=20, imgSizey=20, IntSlider_width='500px',
-                 median_filter_flag=False, color='gray', step=1):
+                 median_filter_flag=False, color='gray', step=1, value=0):
 
         """
         This class interactively displays several videos (with the same number of frames) in a Jupyter notebook.
@@ -729,19 +737,22 @@ class JupyterSubplotDisplay:
           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
 
         color: str
-          It defines the colormap for visualization.
+            It defines the colormap for visualization.
 
         imgSizex: int
-          Image length size.
+            Image length size.
 
         imgSizey: int
-          Image width size.
+            Image width size.
 
         IntSlider_width: str
-          Size of slider
+            Size of slider
 
         step: int
-          Stride between visualization frames.
+            Stride between visualization frames.
+
+        value: int
+            Initial frame value for visualization
         """
 
         self.color = color
@@ -760,7 +771,7 @@ class JupyterSubplotDisplay:
 
         max_numberFrames = np.max([vid_.shape[0] for vid_ in list_videos])
 
-        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames-1, step=step, value=0, layout=Layout(width=IntSlider_width),
+        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames-1, step=step, value=value, layout=Layout(width=IntSlider_width),
                                                        readout_format='100', continuous_update=False, description='Frame:'))
 
     def display(self, frame):
@@ -929,7 +940,7 @@ class JupyterFPNcDisplay:
 
     def __init__(self, list_videos, list_titles=None, correction_axis=0, numRows=1, numColumns=2,
                  imgSizex=20, imgSizey=20, IntSlider_width='500px',
-                 median_filter_flag=False, color='gray', step=1):
+                 median_filter_flag=False, color='gray', step=1, value=0):
         """
         This class can sub-display several FPNc video in the Jupyter notebook interactively while 1D projection on
         the direction of correction axis illustrates below on each subplot.
@@ -952,22 +963,25 @@ class JupyterFPNcDisplay:
             List of titles for each sub plot.
 
         median_filter_flag: bool
-          In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
 
         color: str
-          It defines the colormap for visualization.
+            It defines the colormap for visualization.
 
         imgSizex: int
-          Image length size.
+            Image length size.
 
         imgSizey: int
-          Image width size.
+            Image width size.
 
         IntSlider_width: str
-          Size of slider
+            Size of slider
 
         step: int
-          Stride between visualization frames.
+            Stride between visualization frames.
+
+        value: int
+            Initial frame value for visualization
         """
         self.color = color
         self.video = list_videos
@@ -986,7 +1000,7 @@ class JupyterFPNcDisplay:
 
         max_numberFrames = np.max([vid_.shape[0] for vid_ in list_videos])
 
-        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames, step=step, value=10, layout=Layout(width=IntSlider_width),
+        interact(self.display, frame=widgets.IntSlider(min=0, max=max_numberFrames, step=step, value=value, layout=Layout(width=IntSlider_width),
                                                        readout_format='100', continuous_update=False,
                                                        description='Frame:'))
 
