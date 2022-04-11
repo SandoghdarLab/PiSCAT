@@ -4,6 +4,8 @@ from piscat.Preproccessing import Normalization
 from PySide6 import QtGui, QtCore, QtWidgets
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 
 class Noise_Floor(QtWidgets.QMainWindow):
@@ -22,11 +24,60 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.file_path = None
         self.find_radius_update_tab_flag = True
 
-        self.checkbox_power_normalization = QtWidgets.QCheckBox("Laser power normalization", self)
+        # self.checkbox_power_normalization = QtWidgets.QCheckBox("Laser power normalization", self)
+
+        self.groupBox_PN = QtWidgets.QGroupBox("Laser Power normalization:")
+        self.groupBox_PN.setCheckable(True)
+        self.groupBox_PN.setChecked(False)
+
+        self.start_win_size_x = QtWidgets.QLineEdit()
+        self.start_win_size_x.setPlaceholderText('ROI X start')
+        self.start_win_size_x_label = QtWidgets.QLabel("start width pixel:")
+
+        self.end_win_size_x = QtWidgets.QLineEdit()
+        self.end_win_size_x.setPlaceholderText('ROI X end')
+        self.end_win_size_x_label = QtWidgets.QLabel("end width pixel:")
+
+        self.start_win_size_y = QtWidgets.QLineEdit()
+        self.start_win_size_y.setPlaceholderText('ROI Y start')
+        self.start_win_size_y_label = QtWidgets.QLabel("start hight pixel:")
+
+        self.end_win_size_y = QtWidgets.QLineEdit()
+        self.end_win_size_y.setPlaceholderText('ROI X end')
+        self.end_win_size_y_label = QtWidgets.QLabel("start hight pixel:")
+
+        self.selected_frame = QtWidgets.QLineEdit()
+        self.selected_frame.setPlaceholderText('selected frame')
+        self.selected_frame_label = QtWidgets.QLabel("selected preview frame:")
+        self.selected_frame.setText('0')
+
+        self.preview_roi = QtWidgets.QPushButton("ROI preview")
+        self.preview_roi.setAutoDefault(False)
+        self.preview_roi.clicked.connect(self.preview_roi_plot)
+        self.preview_roi.setFixedHeight(20)
+        self.preview_roi.setFixedWidth(100)
+
+        grid_pn = QtWidgets.QGridLayout()
+        grid_pn.addWidget(self.start_win_size_x_label, 0, 0)
+        grid_pn.addWidget(self.start_win_size_x, 0, 1)
+
+        grid_pn.addWidget(self.end_win_size_x_label, 0, 2)
+        grid_pn.addWidget(self.end_win_size_x, 0, 3)
+
+        grid_pn.addWidget(self.start_win_size_y_label, 1, 0)
+        grid_pn.addWidget(self.start_win_size_y, 1, 1)
+
+        grid_pn.addWidget(self.end_win_size_y_label, 1, 2)
+        grid_pn.addWidget(self.end_win_size_y, 1, 3)
+
+        grid_pn.addWidget(self.selected_frame_label, 2, 0)
+        grid_pn.addWidget(self.selected_frame, 2, 1)
+        grid_pn.addWidget(self.preview_roi, 2, 2)
+
+        self.groupBox_PN.setLayout(grid_pn)
 
         self.checkbox_save = QtWidgets.QCheckBox("Saving as CSV", self)
         self.checkbox_save.toggled.connect(lambda: self.save_active())
-
 
         self.checkbox_loglog_scale = QtWidgets.QRadioButton("log scale")
         self.checkbox_loglog_scale.setChecked(True)
@@ -46,7 +97,7 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
         self.grid.addWidget(self.createSecondExclusiveGroup(), 1, 0)
         self.grid.addWidget(self.createThirdExclusiveGroup(), 2, 0)
-        self.grid.addWidget(self.checkbox_power_normalization, 5, 0)
+        self.grid.addWidget(self.groupBox_PN, 5, 0)
         self.grid.addWidget(self.checkbox_save, 6, 0)
         self.grid.addWidget(self.checkbox_loglog_scale, 7, 0)
         self.grid.addWidget(self.checkbox_normal_scale, 8, 0)
@@ -196,8 +247,20 @@ class Noise_Floor(QtWidgets.QMainWindow):
 
     def run_noiseFloor(self):
 
-        if self.checkbox_power_normalization.isChecked():
-            self.original_video, _ = Normalization(video=self.original_video).power_normalized()
+        if self.groupBox_PN.isChecked():
+            try:
+                self.s_x_win_pn = int(self.start_win_size_x.text())
+                self.e_x_win_pn = int(self.end_win_size_x.text())
+                self.s_y_win_pn = int(self.start_win_size_y.text())
+                self.e_y_win_pn = int(self.end_win_size_y.text())
+            except:
+                self.s_x_win_pn = None
+                self.e_x_win_pn = None
+                self.s_y_win_pn = None
+                self.e_y_win_pn = None
+
+            self.original_video, _ = Normalization(video=self.original_video).power_normalized(roi_x=(self.s_x_win_pn, self.e_x_win_pn),
+                                                                                                roi_y=(self.s_y_win_pn, self.e_y_win_pn),)
 
         if self.groupBox_FPNc.isChecked():
             FPN_flag = True
@@ -271,6 +334,32 @@ class Noise_Floor(QtWidgets.QMainWindow):
             self.msg_box.setWindowTitle("Warning!")
             self.msg_box.setText("Please update first!5")
             self.msg_box.exec_()
+
+    def preview_roi_plot(self, selected_frame):
+        if self.groupBox_PN.isChecked():
+            self.flag_power_normalization = True
+            try:
+                self.s_x_win_pn = int(self.start_win_size_x.text())
+                self.e_x_win_pn = int(self.end_win_size_x.text())
+                self.s_y_win_pn = int(self.start_win_size_y.text())
+                self.e_y_win_pn = int(self.end_win_size_y.text())
+                selected_frame = int(self.selected_frame.text())
+
+                img_ = self.original_video[selected_frame, :, :]
+                roi_img_ = img_[self.s_x_win_pn:self.e_x_win_pn, self.s_y_win_pn:self.e_y_win_pn]
+
+                fig, ax = plt.subplots()
+                ax.imshow(img_, cmap='gray')
+                rect = patches.Rectangle((self.s_x_win_pn, self.s_y_win_pn), roi_img_.shape[0], roi_img_.shape[1]
+                                         , linewidth=2, edgecolor='r', facecolor='none')
+                ax.add_patch(rect)
+                plt.show()
+
+            except:
+                self.msg_box1 = QtWidgets.QMessageBox()
+                self.msg_box1.setWindowTitle("Warning!")
+                self.msg_box1.setText("The ROI is not defined!")
+                self.msg_box1.exec_()
 
     def get_values(self):
 

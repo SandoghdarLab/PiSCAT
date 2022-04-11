@@ -11,6 +11,7 @@ from PySide6.QtCore import *
 class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
 
     update_output = QtCore.Signal(object)
+    update_pn_roi = QtCore.Signal(object)
     set_new_text = QtCore.Signal(object)
     set_plain_text = QtCore.Signal(object)
 
@@ -132,7 +133,7 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.info_DRA.window.close()
             self.dra_wrapper()
 
-    def run_DRA_from_bgtabs(self, mode_FPN, batch_size, flag_power_normalization, flag_FPN, axis):
+    def run_DRA_from_bgtabs(self, mode_FPN, batch_size, flag_power_normalization, roi_x_pn, roi_y_pn, flag_FPN, axis):
         title = ''
 
         if self.original_video is not None and self.original_video.shape[0] - (2 * batch_size) <= 0:
@@ -146,10 +147,13 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
 
             if flag_power_normalization:
                 self.set_new_text.emit("Start PN -->")
-
                 self.flag_update_original_video = True
+
+
                 worker = Normalization(self.original_video, flag_pn=True)
+                self.update_pn_roi.connect(worker.update_class_parameter)
                 worker.signals.result.connect(self.update_original_video)
+                self.update_pn_roi.emit([roi_x_pn, roi_y_pn])
                 self.threadpool.start(worker)
                 while self.flag_update_original_video:
                     QtCore.QCoreApplication.processEvents()

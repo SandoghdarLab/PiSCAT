@@ -15,7 +15,6 @@ from piscat.GUI.VideoAnalysis import Analysis
 from piscat.GUI.VideoAnalysis import AnalysisConstant
 from piscat.GUI.ProgressBar.fun_progressBar import ProgressBar
 from piscat.GUI.Projects.Protein import ProteinTabs
-from piscat.GUI.Projects.Anomaly import AnomalyTabs
 from piscat.GUI.Projects.Protein import Noise_Floor
 from piscat.GUI.BatchAnalysis.batch_data import BatchAnalysis
 from piscat.GUI.Projects.iPSF.iPSF_model import GUI_iPSF
@@ -179,14 +178,9 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         iPSF_model.setStatusTip("iPSF model")
         self.connect(iPSF_model, QtCore.SIGNAL('triggered()'), self.iPSF_projects)
 
-        anomaly_track = QtGui.QAction("iSCAT Anomaly", self)
-        anomaly_track.setStatusTip("iSCAT Anomaly")
-        self.connect(anomaly_track, QtCore.SIGNAL('triggered()'), self.anomaly_projects)
-
         analyze_menu.addAction(noise_floor)
         analyze_menu.addAction(protein_track)
         analyze_menu.addAction(iPSF_model)
-        analyze_menu.addAction(anomaly_track)
 
         # --------Analyze.--------
 
@@ -211,7 +205,6 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         help_menu.addAction(help)
         # help_menu.addAction(tutorials)
         help_menu.addAction(about)
-
         # --------About-----------
 
         # --------Information Box--------
@@ -320,11 +313,6 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.protein_gui = ProteinTabs(video_in=self.original_video, batch_size=None, object_update_progressBar=self.update_progressBar)
         self.protein_gui.new_update_DRA_video.connect(partial(self.updata_input_video, label='DRA', flag_DRA=True))
         self.protein_gui.show()
-
-    def anomaly_projects(self):
-        self.anomaly_gui = AnomalyTabs(video_in=self.original_video, batch_size=None, object_update_progressBar=self.update_progressBar)
-        self.anomaly_gui.new_update_DRA_video.connect(partial(self.updata_input_video, label='DRA', flag_DRA=True))
-        self.anomaly_gui.show()
 
     def iPSF_projects(self):
         self.iPSF_gui = GUI_iPSF()

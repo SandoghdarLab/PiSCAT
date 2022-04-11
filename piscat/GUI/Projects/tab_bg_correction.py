@@ -5,7 +5,8 @@ from piscat.GUI.BackgroundCorrection import FUN_DRA
 from PySide6 import QtCore, QtWidgets
 
 import numpy as np
-
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 class BgCorrection_GUI(QtWidgets.QWidget):
 
@@ -113,10 +114,24 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     self.axis = 0
                     self.mode_FPN = 'fFPN'
 
-                if self.checkbox_power_normalization.isChecked():
+                if self.groupBox_PN.isChecked():
                     self.flag_power_normalization = True
+                    try:
+                        self.s_x_win_pn = int(self.start_win_size_x.text())
+                        self.e_x_win_pn = int(self.end_win_size_x.text())
+                        self.s_y_win_pn = int(self.start_win_size_y.text())
+                        self.e_y_win_pn = int(self.end_win_size_y.text())
+                    except:
+                        self.s_x_win_pn = None
+                        self.e_x_win_pn = None
+                        self.s_y_win_pn = None
+                        self.e_y_win_pn = None
                 else:
                     self.flag_power_normalization = False
+                    self.s_x_win_pn = None
+                    self.e_x_win_pn = None
+                    self.s_y_win_pn = None
+                    self.e_y_win_pn = None
 
                 if self.batch_size != '':
                     self.batch_size = int(self.batch_size)
@@ -125,6 +140,8 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     dra_ = FUN_DRA(video=self.input_video, object_update_progressBar=self.object_update_progressBar)
                     dra_video = dra_.run_DRA_from_bgtabs(mode_FPN=self.mode_FPN, batch_size=self.batch_size,
                                                          flag_power_normalization=self.flag_power_normalization,
+                                                         roi_x_pn=(self.s_x_win_pn, self.e_x_win_pn),
+                                                         roi_y_pn=(self.s_y_win_pn, self.e_y_win_pn),
                                                          flag_FPN=self.flag_FPN, axis=self.axis)
 
                     self.output = [dra_video, "DRA"]
@@ -271,12 +288,59 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.le_batchSize_label = QtWidgets.QLabel("Batch size (frames):")
             self.le_batchSize.setFixedWidth(50)
 
-            self.checkbox_power_normalization = QtWidgets.QCheckBox("Laser power normalization", self)
+            self.groupBox_PN = QtWidgets.QGroupBox("Laser Power normalization:")
+            self.groupBox_PN.setCheckable(True)
+            self.groupBox_PN.setChecked(False)
+
+            self.start_win_size_x = QtWidgets.QLineEdit()
+            self.start_win_size_x.setPlaceholderText('ROI X start')
+            self.start_win_size_x_label = QtWidgets.QLabel("start width pixel:")
+
+            self.end_win_size_x = QtWidgets.QLineEdit()
+            self.end_win_size_x.setPlaceholderText('ROI X end')
+            self.end_win_size_x_label = QtWidgets.QLabel("end width pixel:")
+
+            self.start_win_size_y = QtWidgets.QLineEdit()
+            self.start_win_size_y.setPlaceholderText('ROI Y start')
+            self.start_win_size_y_label = QtWidgets.QLabel("start hight pixel:")
+
+            self.end_win_size_y = QtWidgets.QLineEdit()
+            self.end_win_size_y.setPlaceholderText('ROI X end')
+            self.end_win_size_y_label = QtWidgets.QLabel("start hight pixel:")
+
+            self.selected_frame = QtWidgets.QLineEdit()
+            self.selected_frame.setPlaceholderText('selected frame')
+            self.selected_frame_label = QtWidgets.QLabel("selected preview frame:")
+            self.selected_frame.setText('0')
+            
+            self.preview_roi = QtWidgets.QPushButton("ROI preview")
+            self.preview_roi.setAutoDefault(False)
+            self.preview_roi.clicked.connect(self.preview_roi_plot)
+            self.preview_roi.setFixedHeight(20)
+            self.preview_roi.setFixedWidth(100)
+
+            grid_pn = QtWidgets.QGridLayout()
+            grid_pn.addWidget(self.start_win_size_x_label, 0, 0)
+            grid_pn.addWidget(self.start_win_size_x, 0, 1)
+
+            grid_pn.addWidget(self.end_win_size_x_label, 0, 2)
+            grid_pn.addWidget(self.end_win_size_x, 0, 3)
+
+            grid_pn.addWidget(self.start_win_size_y_label, 1, 0)
+            grid_pn.addWidget(self.start_win_size_y, 1, 1)
+
+            grid_pn.addWidget(self.end_win_size_y_label, 1, 2)
+            grid_pn.addWidget(self.end_win_size_y, 1, 3)
+
+            grid_pn.addWidget(self.selected_frame_label, 2, 0)
+            grid_pn.addWidget(self.selected_frame, 2, 1)
+            grid_pn.addWidget(self.preview_roi, 2, 2)
+
+            self.groupBox_PN.setLayout(grid_pn)
 
             grid_batch = QtWidgets.QGridLayout()
             grid_batch.addWidget(self.le_batchSize_label, 0, 0)
             grid_batch.addWidget(self.le_batchSize, 0, 1)
-            grid_batch.addWidget(self.checkbox_power_normalization, 0, 2)
             self.groupBatchSize.setLayout(grid_batch)
 
             self.groupBox_FPNc = QtWidgets.QGroupBox("FPNc:")
@@ -323,7 +387,8 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.groupBox_FPNc.setLayout(grid)
 
             self.grid1.addWidget(self.groupBatchSize, 1, 0)
-            self.grid1.addWidget(self.groupBox_FPNc, 2, 0)
+            self.grid1.addWidget(self.groupBox_PN, 2, 0)
+            self.grid1.addWidget(self.groupBox_FPNc, 3, 0)
 
         elif self.combo_bg_filter.currentText() == "Spatial median Filter":
 
@@ -409,6 +474,32 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
     def updata_bg_video(self, video_in):
         self.original_video_bg = video_in[0]
+
+    def preview_roi_plot(self, selected_frame):
+        if self.groupBox_PN.isChecked():
+            self.flag_power_normalization = True
+            try:
+                self.s_x_win_pn = int(self.start_win_size_x.text())
+                self.e_x_win_pn = int(self.end_win_size_x.text())
+                self.s_y_win_pn = int(self.start_win_size_y.text())
+                self.e_y_win_pn = int(self.end_win_size_y.text())
+                selected_frame = int(self.selected_frame.text())
+
+                img_ = self.input_video[selected_frame, :, :]
+                roi_img_ = img_[self.s_x_win_pn:self.e_x_win_pn, self.s_y_win_pn:self.e_y_win_pn]
+
+                fig, ax = plt.subplots()
+                ax.imshow(img_, cmap='gray')
+                rect = patches.Rectangle((self.s_x_win_pn, self.s_y_win_pn), roi_img_.shape[0], roi_img_.shape[1]
+                                         , linewidth=2, edgecolor='r', facecolor='none')
+                ax.add_patch(rect)
+                plt.show()
+
+            except:
+                self.msg_box1 = QtWidgets.QMessageBox()
+                self.msg_box1.setWindowTitle("Warning!")
+                self.msg_box1.setText("The ROI is not defined!")
+                self.msg_box1.exec_()
 
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()

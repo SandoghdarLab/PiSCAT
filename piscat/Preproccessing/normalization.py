@@ -42,6 +42,8 @@ class Normalization(QRunnable):
         self.cpu = CPUConfigurations()
 
         self.video = video
+        self.roi_x = None
+        self.roi_y = None
         self.signals = WorkerSignals()
 
         self.flag_pn = flag_pn
@@ -49,9 +51,14 @@ class Normalization(QRunnable):
         self.flag_image_specific = flag_image_specific
 
     @Slot()
+    def update_class_parameter(self, data_in):
+        self.roi_x = data_in[0]
+        self.roi_y = data_in[1]
+
+    @Slot()
     def run(self, *args, **kwargs):
         if self.flag_pn:
-            result = self.power_normalized()
+            result = self.power_normalized(self.roi_x, self.roi_y)
         if self.flag_global:
             result = self.normalized_image_global()
         if self.flag_image_specific:
@@ -156,11 +163,11 @@ class Normalization(QRunnable):
 
         Parameters
         ----------
-        roi_x: list
-            On the x-axis, is a list of the region's minimum and maximum values.
+        roi_x: tuple
+            On the x-axis, is a tuple of the region's minimum and maximum values.
 
-        roi_y: list
-            On the y-axis, is a list of the region's minimum and maximum values.
+        roi_y: tuple
+            On the y-axis, is a tuple of the region's minimum and maximum values.
 
         inter_flag_parallel_active: bool
             Internal flag for activating parallel computation. Default is False!
@@ -174,7 +181,7 @@ class Normalization(QRunnable):
             Temporal fluctuations of all pixels after power normalization.
         """
         if roi_x is not None or roi_y is not None:
-            roi_ = {'x_min': roi_x[0], 'x_min': roi_x[1], 'y_min': roi_y[0], 'y_min': roi_y[1]}
+            roi_ = {'x_min': roi_x[0], 'x_max': roi_x[1], 'y_min': roi_y[0], 'y_max': roi_y[1]}
             temp0 = np.sum(self.video[:, roi_['x_min']:roi_['x_max'], roi_['y_min']:roi_['y_max']], axis=1)
 
         else:
