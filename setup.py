@@ -61,7 +61,6 @@ setup(
                         "wget",
                         "h5py",
                         "imageio-ffmpeg",
-                        "tensorflow",
                         "astropy"
                       ],
     # not to be confused with definitions in pyproject.toml [build-system]

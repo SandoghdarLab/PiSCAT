@@ -149,13 +149,19 @@ class Normalization(QRunnable):
         img2 = (self.video - mins) / (maxs - mins)
         return img2
 
-    def power_normalized(self, inter_flag_parallel_active=False):
+    def power_normalized(self, roi_x=None, roi_y=None, inter_flag_parallel_active=False):
         """
         This function corrects the fluctuations in the laser light intensity
         by dividing each pixel in an image by the sum of all pixels on the same frames.
 
         Parameters
         ----------
+        roi_x: list
+            On the x-axis, is a list of the region's minimum and maximum values.
+
+        roi_y: list
+            On the y-axis, is a list of the region's minimum and maximum values.
+
         inter_flag_parallel_active: bool
             Internal flag for activating parallel computation. Default is False!
 
@@ -167,12 +173,19 @@ class Normalization(QRunnable):
         power_fluctuation_percentage: NDArray
             Temporal fluctuations of all pixels after power normalization.
         """
-        temp0 = np.sum(self.video, axis=1)
+        if roi_x is not None or roi_y is not None:
+            roi_ = {'x_min': roi_x[0], 'x_min': roi_x[1], 'y_min': roi_y[0], 'y_min': roi_y[1]}
+            temp0 = np.sum(self.video[:, roi_['x_min']:roi_['x_max'], roi_['y_min']:roi_['y_max']], axis=1)
+
+        else:
+            roi_ = None
+            temp0 = np.sum(self.video, axis=1)
+
         sum_pixels = np.sum(temp0, axis=1)
         if inter_flag_parallel_active is True and self.cpu.parallel_active is True:
             print("\n---start power_normalized with parallel loop---")
             result = Parallel(n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose)(
-                delayed(self.power_normalized_kernel)(f_) for f_ in tqdm(range(self.video.shape[0])))
+                delayed(self.power_normalized_kernel)(f_, roi_) for f_ in tqdm(range(self.video.shape[0])))
             normalized_power = np.asarray(result)
             normalized_power = normalized_power * np.mean(sum_pixels)
 
@@ -187,6 +200,7 @@ class Normalization(QRunnable):
             print("Done")
         return (normalized_power, power_fluctuation_percentage)
 
-    def power_normalized_kernel(self, f_):
-        sum_img_pixels = np.sum(self.video[f_])
+    def power_normalized_kernel(self, f_, roi_):
+        if roi_ is not None:
+            sum_img_pixels = np.sum(self.video[f_, roi_['x_min']:roi_['x_max'],  roi_['y_min']:roi_['y_max']])
         return np.divide(self.video[f_], sum_img_pixels)
