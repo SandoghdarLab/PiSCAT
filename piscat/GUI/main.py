@@ -109,6 +109,9 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         open_im2vid = imp.addAction("Image Sequence to video")
         self.connect(open_im2vid, QtCore.SIGNAL('triggered()'), self.image2video_loading_wrapper)
 
+        open_tiff_vid = imp.addAction("TIFF")
+        self.connect(open_tiff_vid, QtCore.SIGNAL('triggered()'), self.tiff_video_loading_wrapper)
+
         load_python_script = imp.addAction("Run Python script")
         self.connect(load_python_script, QtCore.SIGNAL('triggered()'), Reading().run_py_script)
 
@@ -306,6 +309,11 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.reading.update_output.connect(partial(self.updata_input_video, label='loading'))
         self.reading.im2video()
 
+    def tiff_video_loading_wrapper(self):
+        self.reading = Reading()
+        self.reading.update_output.connect(partial(self.updata_input_video, label='loading'))
+        self.reading.tiff_video()
+
     def noise_floor(self):
         self.noise_floor_ = Noise_Floor(video=self.original_video)
 
@@ -327,7 +335,10 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             self.list_available_video['DRA_video'] = True
             status_line_info = None
         else:
-            status_line_info = data_in[3]
+            try:
+                status_line_info = data_in[3]
+            except:
+                status_line_info = None
             self.original_video = data_in[0]
             self.list_available_video['original_video'] = True
         title = data_in[1]
@@ -378,11 +389,6 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
     def batch_analysis(self):
         self.batch_analysis_gui = BatchAnalysis(object_update_progressBar=self.update_progressBar)
         self.batch_analysis_gui.show()
-
-
-
-
-
 
 
 def main():

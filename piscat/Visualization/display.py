@@ -124,7 +124,7 @@ class DisplaySubplot():
             self.pressed_key['key'] = event.key
 
 
-class Display():
+class Display:
 
     def __init__(self, video, step=0, color='gray', time_delay=0, median_filter_flag=False):
         """

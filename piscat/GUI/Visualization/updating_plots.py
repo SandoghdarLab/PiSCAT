@@ -22,7 +22,6 @@ class MplCanvas(FigureCanvas):
             for j in range(numColumns):
                 self.axes.append(fig.add_subplot(grid[i, j]))
 
-        # self.axes = fig.add_subplot(subplot)
         super(MplCanvas, self).__init__(fig)
 
 
@@ -43,10 +42,10 @@ class UpdatingPlots(QtWidgets.QMainWindow):
         self.canvas.draw()
 
 
-class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
+class UpdatingPlotsPyqtGraphSpatial(QtWidgets.QWidget):
 
     def __init__(self):
-        super(UpdatingPlotsPyqtGraph, self).__init__()
+        super(UpdatingPlotsPyqtGraphSpatial, self).__init__()
         self.layout = QtWidgets.QVBoxLayout(self)
 
         self.graphWidget = pg.PlotWidget()
@@ -62,6 +61,31 @@ class UpdatingPlotsPyqtGraph(QtWidgets.QWidget):
 
     def closeEvent(self, event):
         # QtCore.QCoreApplication.instance().quit()
+        print("closing plot")
+
+
+class UpdatingPlotsPyqtGraphTemporal(QtWidgets.QWidget):
+
+    def __init__(self):
+        super(UpdatingPlotsPyqtGraphTemporal, self).__init__()
+        self.layout = QtWidgets.QVBoxLayout(self)
+
+        self.graphWidget = pg.PlotWidget()
+        self.graphWidget.setBackground('w')
+        self.graphWidget.showGrid(x=True, y=True)
+        styles = {"color": "#f00", "font-size": "20px"}
+        self.graphWidget.setLabel("left", "Pixel intensity", **styles)
+        self.graphWidget.setLabel("bottom", "Frame number", **styles)
+
+        self.layout.addWidget(self.graphWidget)
+
+        pen_1 = pg.mkPen(color=(255, 102, 0))
+        pen_2 = pg.mkPen(color=(0, 0, 255))
+
+        self.data_line = self.graphWidget.plot([1], [1], pen=pen_1)
+        self.data_point = self.graphWidget.plot([1], [1], pen=pen_2, symbol='o')
+
+    def closeEvent(self, event):
         print("closing plot")
 
 

@@ -61,7 +61,8 @@ setup(
                         "wget",
                         "h5py",
                         "imageio-ffmpeg",
-                        "astropy"
+                        "astropy",
+                        "tifffile"
                       ],
     # not to be confused with definitions in pyproject.toml [build-system]
     setup_requires=["pytest-runner"],

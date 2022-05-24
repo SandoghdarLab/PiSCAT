@@ -12,6 +12,7 @@ from piscat.GUI.Visualization.contrast_adjustment_GUI import Contrast_adjustment
 from piscat.GUI.Visualization import slice_view
 from piscat.GUI.InputOutput import save_GUI
 from piscat.GUI.Visualization.play_setting import PlaySetting
+from piscat.GUI.Visualization.temporal_annotation_setting import TemporalAnnotationSetting
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -64,6 +65,11 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.max_intensity = None
         self.min_intensity = None
         self.frame_strides = 1
+        self.flag_median_filter = False
+        self.window_size = 1
+        self.marker_size = 5
+        self.flag_smooth_filter = True
+
         self.signals = WorkerSignals()
         self.sliceNumber.connect(self.Update_SliceNumber)
 
@@ -105,12 +111,20 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.Display.setFixedWidth(130)
         self.Display.setStyleSheet("background-color : lightgrey")
 
-        # annotation
-        self.annotation = QtWidgets.QPushButton("Live annotation")
-        self.annotation.setCheckable(True)
-        self.annotation.clicked.connect(self.annotationFun)
-        self.annotation.setFixedWidth(130)
-        self.annotation.setStyleSheet("background-color : lightgrey")
+        # Annotation
+        self.annotation_s = QtWidgets.QPushButton("Live spatial annotation")
+        self.annotation_s.setCheckable(True)
+        self.annotation_s.clicked.connect(self.annotation_spatial_Fun)
+        self.annotation_s.setFixedWidth(150)
+        self.annotation_s.setStyleSheet("background-color : lightgrey")
+
+        self.annotation_t = QtWidgets.QPushButton("Live temporal annotation")
+        self.annotation_t.setCheckable(True)
+        self.annotation_t.clicked.connect(self.annotation_temporal_Fun)
+        self.annotation_t.setFixedWidth(150)
+        self.annotation_t.setStyleSheet("background-color : lightgrey")
+        self.annotation_t.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.annotation_t.customContextMenuRequested.connect(self.annotation_context_menu)
 
         # Play
         self.playBtn = QtWidgets.QPushButton()
@@ -121,7 +135,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         # create context menu
         self.playBtn.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.playBtn.customContextMenuRequested.connect(self.on_context_menu)
+        self.playBtn.customContextMenuRequested.connect(self.play_context_menu)
 
         # stop
         self.stopBtn = QtWidgets.QPushButton()
@@ -190,12 +204,13 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         self.grid_diplay = QtWidgets.QGridLayout()
         self.grid_diplay.addWidget(self.Display, 0, 0)
-        self.grid_diplay.addWidget(self.annotation, 0, 1)
+        self.grid_diplay.addWidget(self.annotation_s, 0, 1)
         self.grid_diplay.addWidget(self.con_adj,  0, 2)
 
         if self.mask is True:
             self.grid_diplay.addWidget(self.Display_mask, 1, 0)
 
+        self.grid_diplay.addWidget(self.annotation_t, 1, 1)
         self.grid_diplay.addWidget(self.save, 1, 2)
         self.groupBox_displayBtn.setLayout(self.grid_diplay)
 
@@ -218,17 +233,28 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
     def activeMedianFilter(self, box_status):
         if box_status.isChecked():
             self.viewer.medianFilterFlag = True
+            self.flag_median_filter = True
         else:
             self.viewer.medianFilterFlag = False
+            self.flag_median_filter = False
 
-    def annotationFun(self):
-        if self.annotation.isChecked():
-            self.annotation.setStyleSheet("background-color : lightblue")
+    def annotation_spatial_Fun(self):
+        if self.annotation_s.isChecked():
+            self.annotation_s.setStyleSheet("background-color : lightblue")
 
         else:
-            self.annotation.setStyleSheet("background-color : lightgrey")
+            self.annotation_s.setStyleSheet("background-color : lightgrey")
 
-        self.viewer.annotation.emit()
+        self.viewer.annotation_s.emit()
+
+    def annotation_temporal_Fun(self):
+        if self.annotation_t.isChecked():
+            self.annotation_t.setStyleSheet("background-color : lightblue")
+
+        else:
+            self.annotation_t.setStyleSheet("background-color : lightgrey")
+
+        self.viewer.annotation_t.emit([self.window_size, self.flag_smooth_filter, self.marker_size])
 
     def closeEvent(self, event):
         try:
@@ -324,9 +350,9 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         if self.Display.clicked:
             if self.step_size != '' and self.step_size is not None:
-                Display(video=np.fliplr(self.original_video), time_delay=float(self.time_delay))
+                Display(video=np.fliplr(self.original_video), time_delay=float(self.time_delay), median_filter_flag=self.flag_median_filter)
             else:
-                Display(video=np.fliplr(self.original_video), time_delay=float(self.time_delay))
+                Display(video=np.fliplr(self.original_video), time_delay=float(self.time_delay), median_filter_flag=self.flag_median_filter)
 
     def matplotlib_display_mask(self):
 
@@ -431,10 +457,17 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.threadpool.start(self.thread)
 
     @QtCore.Slot()
-    def update_animate(self, setting):
+    def update_spatial_animate(self, setting):
         self.step_size = setting[0]
         self.time_delay = setting[1]
         self.fps = setting[2]
+        self.raise_()
+
+    @QtCore.Slot()
+    def update_temporal_annotation(self, setting):
+        self.window_size = setting[0]
+        self.flag_smooth_filter = setting[1]
+        self.marker_size = setting[2]
         self.raise_()
 
     def set_new_slice_num(self):
@@ -513,10 +546,15 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.viewer.slice_num = self.slice_slider.value()
         self.updata_viewer()
 
-    def on_context_menu(self):
+    def play_context_menu(self):
         self.animatePanel_ = PlaySetting()
-        self.animatePanel_.procDone_Animation_panel.connect(self.update_animate)
+        self.animatePanel_.procDone_Animation_panel.connect(self.update_spatial_animate)
         self.animatePanel_.show()
+
+    def annotation_context_menu(self):
+        self.temporal_annotation = TemporalAnnotationSetting()
+        self.temporal_annotation.temporalAnnotation_signal.connect(self.update_temporal_annotation)
+        self.temporal_annotation.show()
 
     def frame_read(self, frame_num):
         if self.viewer.dragMode() == QtWidgets.QGraphicsView.NoDrag:

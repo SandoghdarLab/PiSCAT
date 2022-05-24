@@ -5,7 +5,7 @@ import scipy.ndimage
 import math
 
 
-class DirectionalIntensity():
+class DirectionalIntensity:
 
     def __init__(self):
         pass

@@ -5,13 +5,14 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from scipy.ndimage import median_filter
+from scipy.signal import savgol_filter
 
 import numpy as np
 
 from piscat.Localization.directional_intensity import DirectionalIntensity
 from piscat.Preproccessing.normalization import Normalization
 from piscat.Visualization.contrast_adjustment import ContrastAdjustment
-from piscat.GUI.Visualization.updating_plots import UpdatingPlotsPyqtGraph
+from piscat.GUI.Visualization.updating_plots import UpdatingPlotsPyqtGraphSpatial, UpdatingPlotsPyqtGraphTemporal
 
 
 class SliceView(QtWidgets.QGraphicsView, QRunnable):
@@ -20,7 +21,8 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
     frameClicked = QtCore.Signal(int)
     pixmapClicked = QtCore.Signal(QtCore.QPoint)
     cursorMove = QtCore.Signal(object)
-    annotation = QtCore.Signal()
+    annotation_s = QtCore.Signal()
+    annotation_t = QtCore.Signal(object)
     finished = Signal()
 
     x0 = 0
@@ -33,7 +35,8 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.scene = QtWidgets.QGraphicsScene()
         super(SliceView, self).__init__(self.scene, *args, **kwargs)
 
-        self.updatePlot = UpdatingPlotsPyqtGraph()
+        self.updatePlot_spatial = UpdatingPlotsPyqtGraphSpatial()
+        self.updatePlot_temporal = UpdatingPlotsPyqtGraphTemporal()
 
         self.RAW_Video = video_original
 
@@ -50,7 +53,8 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.current_mask_pixmap = None
         self.maskArray = None
         self.mask_is_set = False
-        self.livePaint_Flag = False
+        self.live_spatial_paint_Flag = False
+        self.live_temporal_paint_Flag = False
         self.medianFilterFlag = False
         self.ori_X0 = 0
         self.ori_Y0 = 0
@@ -58,11 +62,13 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.ori_Y1 = 0
         self.pixel_value = 0
         self.slice_num = 0
+        self.marker_size = 5
 
         self._zoom = 0
         self._empty = True
 
-        self.annotation.connect(self.active_LivePaint)
+        self.annotation_s.connect(self.active_spatial_live_paint)
+        self.annotation_t.connect(self.active_temporal_live_paint)
 
         self.setBackgroundBrush(QtGui.QColor(0, 0, 0))
         self.setScene(self.scene)
@@ -119,6 +125,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
 
             self.frameClicked.emit(self.slice_num)
             self.photoClicked.emit((self.ori_X0, self.ori_Y0))
+            self.paint_point()
 
         super(SliceView, self).mousePressEvent(event)
 
@@ -138,7 +145,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
                 self.ori_X1 = int((self.RAW_Video.shape[1] / self.pixmap_video.size().toTuple()[0]) * self.x1)
                 self.ori_Y1 = int((self.RAW_Video.shape[2] / self.pixmap_video.size().toTuple()[1]) * self.y1)
 
-                self.paint()
+                self.paint_line()
 
     def initialze_mask(self):
 
@@ -212,8 +219,10 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
 
         self.pixmap_video = input_pixmap.scaled(QtCore.QSize(width, height), QtCore.Qt.KeepAspectRatio)
         self._photo = self.scene.addPixmap(self.pixmap_video)
-        if self.livePaint_Flag:
-            self.paint()
+        if self.live_spatial_paint_Flag:
+            self.paint_line()
+        if self.live_temporal_paint_Flag:
+            self.paint_point()
 
     def update_overlay(self, input_mask_pixmap, first_flag=True):
         width = np.max([self.video_width, 400])
@@ -270,19 +279,35 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
                             self.update_overlay(self.current_mask_pixmap)
 
     @QtCore.Slot()
-    def active_LivePaint(self):
+    def active_spatial_live_paint(self):
 
-        if self.livePaint_Flag is False:
-            self.livePaint_Flag = True
-        elif self.livePaint_Flag is True:
-            self.livePaint_Flag = False
+        if self.live_spatial_paint_Flag is False:
+            self.live_spatial_paint_Flag = True
+        elif self.live_spatial_paint_Flag is True:
+            self.live_spatial_paint_Flag = False
             try:
                 self.scene.removeItem(self.Line)
                 self.scene.update()
             except:
                 pass
 
-    def paint(self):
+    @QtCore.Slot()
+    def active_temporal_live_paint(self, setting=None):
+
+        if self.live_temporal_paint_Flag is False:
+            self.live_temporal_paint_Flag = True
+        elif self.live_temporal_paint_Flag is True:
+            self.live_temporal_paint_Flag = False
+
+        try:
+            self.scene.removeItem(self.point_)
+            self.scene.update()
+        except:
+            pass
+
+        self.read_temporal_pixel_values(setting=setting)
+
+    def paint_line(self):
         pen = QPen(Qt.red)
         pen.setCosmetic(True)
         pen.setWidth(1)
@@ -295,9 +320,24 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.Line = self.scene.addLine(self.x0, self.y0, self.x1, self.y1, pen)
         self.scene.addItem(self.Line)
         self.scene.update()
-        self.read_pixel_valus()
+        self.read_spatial_pixel_values()
 
-    def read_pixel_valus(self):
+    def paint_point(self):
+        pen = QPen(Qt.red)
+        pen.setCosmetic(True)
+        pen.setWidth(1)
+
+        try:
+            self.scene.removeItem(self.Line)
+        except AttributeError:
+            pass
+
+        self.point_ = self.scene.addEllipse(self.x0, self.y0, self.marker_size, self.marker_size, pen)
+        self.scene.addItem(self.point_)
+        self.scene.update()
+        self.read_temporal_pixel_values(setting=None)
+
+    def read_spatial_pixel_values(self):
         try:
             DI = DirectionalIntensity()
             radial_index = DI.interpolate_pixels_along_line(x0=int(self.ori_X0), y0=int(self.ori_Y0), x1=int(self.ori_X1),
@@ -309,10 +349,42 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
                 pixels_.append(frame[int(idx_[1]), int(idx_[0])])
 
             x = list(range(0, len(pixels_)))
-            self.updatePlot.data_line.setData(x, pixels_)  # Update the data.
-            self.updatePlot.show()
+            self.updatePlot_spatial.data_line.setData(x, pixels_)  # Update the data.
+            self.updatePlot_spatial.show()
         except:
             pass
+
+    def read_temporal_pixel_values(self, setting=None):
+
+        if setting is not None:
+            self.win_size = setting[0]
+            self.flag_smooth = setting[1]
+            self.marker_size = setting[2]
+
+        try:
+            min_temporal_range = int(np.max((0, self.slice_num-self.win_size)))
+            max_temporal_range = int(np.min((self.RAW_Video.shape[0], self.slice_num+self.win_size)))
+
+            temporal_intensity = self.RAW_Video[min_temporal_range:max_temporal_range, self.ori_Y0, self.ori_X0]
+            # current_intensity = self.RAW_Video[self.slice_num, self.ori_Y0, self.ori_X0]
+
+            if self.flag_smooth:
+
+                smooth_window_size = round(0.05 * len(temporal_intensity))
+                if (smooth_window_size % 2) == 0:
+                    smooth_window_size = smooth_window_size + 1
+
+                if self.win_size > 3:
+                    temporal_intensity = savgol_filter(temporal_intensity, smooth_window_size, 3)
+
+            x = list(range(min_temporal_range, max_temporal_range))
+            idx_ = np.abs((min_temporal_range - self.slice_num))
+            self.updatePlot_temporal.data_line.setData(x, temporal_intensity)  # Update the data.
+            self.updatePlot_temporal.data_point.setData([x[idx_]], [temporal_intensity[idx_]])  # Update the data.
+            self.updatePlot_temporal.show()
+        except:
+            pass
+
 
 
 

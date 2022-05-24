@@ -271,6 +271,52 @@ class Reading(QtWidgets.QMainWindow):
             self.msg_box.setText("Selected parameters are not correct!")
             self.msg_box.exec_()
 
+    def tiff_video(self):
+
+        title = self.askdir_file()
+
+        if self.filename:
+
+            if title == "TIF":
+                tif_video = reading_videos.read_tif_iterate(self.filename)
+                self.info_image = video_cropping.Cropping(self)
+
+                while self.info_image.raw_data_update_flag:
+                    QtWidgets.QApplication.processEvents()
+
+                if self.info_image.flag_RGB2GRAY:
+                    if tif_video.shape[2] == 4:
+                        tif_video = cv2.cvtColor(tif_video, cv2.COLOR_BGR2GRAY)
+                        tif_video = np.expand_dims(tif_video, axis=0)
+
+                if self.info_image.frame_e is not None:
+
+                    if self.info_image.frame_e != -1:
+                        self.original_video = tif_video[
+                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
+                                              self.info_image.width_size_s:self.info_image.width_size_e,
+                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                    elif self.info_image.frame_e == -1:
+                        self.original_video = tif_video[self.info_image.frame_s::self.info_image.frame_jump,
+                                              self.info_image.width_size_s:self.info_image.width_size_e,
+                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                else:
+                    self.original_video = tif_video
+
+                self.original_video = self.original_video.copy(order='C')
+
+                if self.info_image.flag_display is True:
+                    self.visualization_ = Visulization_localization()
+                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
+
+                self.update_output.emit([self.original_video, title, self.filename, None])
+
+            else:
+                self.msg_box = QtWidgets.QMessageBox()
+                self.msg_box.setWindowTitle("Warning!")
+                self.msg_box.setText("Type of image is not defined!")
+                self.msg_box.exec_()
+
     def run_py_script(self):
         title = self.askdir_file()
 
