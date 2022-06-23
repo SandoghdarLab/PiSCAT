@@ -176,7 +176,6 @@ def read_tif_iterate(filename):
     return frames_list
 
 
-
 def read_avi(filename):
     """
     Reading video with AVI format.
