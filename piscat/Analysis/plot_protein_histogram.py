@@ -962,7 +962,10 @@ class PlotProteinHistogram(PrintColors):
         font_size = font_size
         bbox = [0, 0, 1, 1]
         ax2.axis('off')
-        mpl_table = ax2.table(cellText=df.values, rowLabels=df.index, bbox=bbox, colLabels=df.columns)
+        colors = plt.cm.BuPu(np.linspace(0, 0.5, df.shape[0]))
+        cell_colors = [[colors[i_]] * df.shape[1] for i_ in range(df.shape[0])]
+        mpl_table = ax2.table(cellText=df.values, rowLabels=df.index, bbox=bbox, colLabels=df.columns,  rowColours=colors,
+                              cellColours=cell_colors)
         mpl_table.auto_set_font_size(False)
         mpl_table.set_fontsize(font_size)
         fig.add_subplot(ax2)
