@@ -98,7 +98,7 @@ class ReadProteinAnalysis(CameraParameters):
                         folder_cnt_ += 1
 
         print('{} folders was read'.format(folder_cnt_))
-        print('{} df_PSFs should find in histogram '.format(num_particles))
+        print('{} PSFs discovered prior to trimming '.format(num_particles))
 
     def plot_localization_heatmap(self, pixelSize=None, unit='um', flag_in_time=False, time_delay=0.1, dir_name=None):
         """
