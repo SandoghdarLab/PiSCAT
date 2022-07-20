@@ -57,6 +57,12 @@ PiSCAT:
 
 .. toctree::
    :maxdepth: 1
+   :caption: Please cite us:
+
+   cite_us
+
+.. toctree::
+   :maxdepth: 1
    :caption: Contents:
 
    installation

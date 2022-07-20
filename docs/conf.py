@@ -53,6 +53,7 @@ extensions = [
                 'recommonmark',
                 'sphinx_markdown_tables',
                 'sphinxcontrib.bibtex',
+                'sphinx_copybutton',
 
 ]
 # The html index document.

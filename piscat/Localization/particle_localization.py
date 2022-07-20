@@ -32,8 +32,8 @@ class PSFsExtraction:
 
         [[frame number, center y, center x, sigma], [frame number, center y, center x, sigma], ...]
 
-                Parameters
-                ----------
+        Parameters
+        ----------
         video: NDArray
             Numpy 3D video array.
 
@@ -43,6 +43,7 @@ class PSFsExtraction:
 
         flag_GUI: bool
             While the GUI is calling this class, it is true.
+
         """
         super(PSFsExtraction, self).__init__()
         self.cpu = CPUConfigurations()
