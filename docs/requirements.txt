@@ -30,3 +30,4 @@ m2r2
 recommonmark
 sphinx-markdown-tables
 sphinx-copybutton
+Markdown
