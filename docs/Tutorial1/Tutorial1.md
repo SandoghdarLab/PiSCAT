@@ -75,8 +75,6 @@ help(reading_videos.video_reader)#Calling help on an imported module/class to kn
                 * 'tif': use this flag to load tif
                 * 'avi': use this flag to load avi
                 * 'png': use this flag to load png
-                * 'fits': use this flag to load fits
-                * 'fli': use this flag to load fli
         
         optional_parameters:
             These parameters are used when video 'bin_type' define as binary.

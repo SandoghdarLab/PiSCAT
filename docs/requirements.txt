@@ -8,8 +8,8 @@ pandas
 opencv-python
 scipy
 matplotlib
-PyQt5
-Pyside2
+PyQt6
+Pyside6
 pyqtgraph
 scikit_learn
 scikit-image
