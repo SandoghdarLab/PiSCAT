@@ -31,4 +31,4 @@ m2r2
 recommonmark
 sphinx-markdown-tables
 sphinx-copybutton
-Markdown==3.2
+Markdown==3.0
