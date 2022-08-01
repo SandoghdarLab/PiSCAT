@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import cv2
 import tifffile
+from flifile import FliFile
 
 
 def video_reader(file_name, type='binary', img_width=128, img_height=128, image_type=np.dtype('<f8'), s_frame=0, e_frame=-1):
@@ -29,6 +30,8 @@ def video_reader(file_name, type='binary', img_width=128, img_height=128, image_
             * 'avi': use this flag to load avi
             * 'png': use this flag to load png
             * 'fits': use this flag to load fits
+            * 'fli': use this flag to load fli
+
 
     optional_parameters:
         These parameters are used when video 'bin_type' define as binary.
@@ -67,6 +70,8 @@ def video_reader(file_name, type='binary', img_width=128, img_height=128, image_
         video = read_png(file_name)
     elif type == 'fits':
         video = read_fits(file_name)
+    elif type == 'fli':
+        video = read_fli(file_name)
     return video
 
 
@@ -242,6 +247,28 @@ def read_fits(filename):
     """
     hdul = fits.open(filename)
     return hdul[0].data
+
+
+def read_fli(filename):
+    """
+    Reading image/video with fli format.
+
+    Parameters
+    ----------
+    file_name: str
+        Path and name of fits image/video.
+
+    Returns
+    -------
+    @returns: NDArray
+        The video as 3D-numpy with the following shape (number of frames, width, height)
+
+    """
+    myflifile = FliFile(filename)
+    data = myflifile.getdata()
+    data_ = np.transpose(data, (2, 0, 1))
+    return data_
+
 
 
 class DirectoryType:

@@ -62,8 +62,9 @@ setup(
                         "h5py",
                         "imageio-ffmpeg",
                         "astropy",
-                        "tifffile"
-                      ],
+                        "tifffile",
+                        "flifile"
+    ],
     # not to be confused with definitions in pyproject.toml [build-system]
     setup_requires=["pytest-runner"],
     python_requires=">=3.8",
