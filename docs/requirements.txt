@@ -21,6 +21,7 @@ ipywidgets
 networkx
 numba
 astropy
+flifile
 requests
 wget
 versioned-hdf5
