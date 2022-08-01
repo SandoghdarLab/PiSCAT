@@ -29,6 +29,6 @@ h5py
 ipykernel
 m2r2
 recommonmark
-sphinx-markdown-tables
 sphinx-copybutton
-Markdown==3.0
+Markdown==3.2
+sphinx-markdown-tables
