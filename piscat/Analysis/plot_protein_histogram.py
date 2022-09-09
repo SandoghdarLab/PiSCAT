@@ -20,7 +20,7 @@ from tqdm.autonotebook import tqdm
 
 class PlotProteinHistogram(PrintColors):
 
-    def __init__(self, intersection_display_flag=False, imgSizex=5, imgSizey=5):
+    def __init__(self, intersection_display_flag=False, imgSizex=5, imgSizey=5, flag_localization_filter=False, radius=None):
 
         """
         This class use video analysis data ('HDF5', 'Matlab') to plot histograms.
@@ -37,8 +37,20 @@ class PlotProteinHistogram(PrintColors):
         imgSizey: int
             The height of the histogram figure.
 
+        flag_localization_filter: bool
+            This flag is used to define a mask and filter PSF depending on the localization map.
+
+        radius: int
+            This parameter is used to define the radius of a circular mask that has the same center as the localization
+            map and filters PSF in the edges and border.
+
         """
         PrintColors.__init__(self)
+
+        self.radius = radius
+        self.flag_localization_filter = flag_localization_filter
+        self.centerOfImage_X = None
+        self.centerOfImage_Y = None
 
         self.imgSizex = imgSizex
         self.imgSizey = imgSizey
@@ -63,6 +75,8 @@ class PlotProteinHistogram(PrintColors):
 
         self.t_iPSFCentroidSigmas_ = []
 
+        self.t_len_linking = []
+
         self.t_particle_center_fit_intensity = []
 
         self.tSmooth_particle_center_intensity = []
@@ -82,6 +96,7 @@ class PlotProteinHistogram(PrintColors):
         self.t_std_y_center_bright = []
         self.t_particle_ID_bright = []
         self.t_particle_frame_bright = []
+        self.t_linking_len_bright = []
 
         self.t_mean_x_center_dark = []
         self.t_std_x_center_dark = []
@@ -89,6 +104,9 @@ class PlotProteinHistogram(PrintColors):
         self.t_std_y_center_dark = []
         self.t_particle_ID_dark = []
         self.t_particle_frame_dark = []
+        self.t_linking_len_dark = []
+
+        self.t_particle_localization_flag = []
 
     def __call__(self, folder_name, particles, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence,
                  pixel_size=0.66):
@@ -256,27 +274,76 @@ class PlotProteinHistogram(PrintColors):
                                    fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
                                    MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
 
+    def get_setting(self, flag_localization_filter, radius, centerOfImage_X, centerOfImage_Y):
+        self.radius = radius
+        self.centerOfImage_X = centerOfImage_X
+        self.centerOfImage_Y = centerOfImage_Y
+        self.flag_localization_filter = flag_localization_filter
+
     def localization(self, x_center, y_center, center_int, particle_ID, frame_number):
         if np.mean(center_int) >= 0:
-            self.t_mean_x_center_bright.append(np.mean(x_center))
-            self.t_std_x_center_bright.append(np.std(x_center))
-            self.t_mean_y_center_bright.append(np.mean(y_center))
-            self.t_std_y_center_bright.append(np.std(y_center))
-            self.t_particle_ID_bright.append(particle_ID)
-            self.t_particle_frame_bright.append(int(np.median(frame_number)))
+            if self.flag_localization_filter:
+                x = np.mean(x_center) - self.centerOfImage_X
+                y = np.mean(y_center) - self.centerOfImage_Y
+                if np.sqrt(x**2 + y**2) <= self.radius:
+
+                        self.t_particle_localization_flag = True
+
+                        self.t_mean_x_center_bright.append(np.mean(x_center))
+                        self.t_std_x_center_bright.append(np.std(x_center))
+                        self.t_mean_y_center_bright.append(np.mean(y_center))
+                        self.t_std_y_center_bright.append(np.std(y_center))
+                        self.t_particle_ID_bright.append(np.unique(particle_ID)[0])
+                        self.t_particle_frame_bright.append(int(np.median(frame_number)))
+                        self.t_linking_len_bright.append(len(center_int))
+
+                else:
+                    self.t_particle_localization_flag = False
+            else:
+                self.t_particle_localization_flag = True
+
+                self.t_mean_x_center_bright.append(np.mean(x_center))
+                self.t_std_x_center_bright.append(np.std(x_center))
+                self.t_mean_y_center_bright.append(np.mean(y_center))
+                self.t_std_y_center_bright.append(np.std(y_center))
+                self.t_particle_ID_bright.append(np.unique(particle_ID)[0])
+                self.t_particle_frame_bright.append(int(np.median(frame_number)))
+                self.t_linking_len_bright.append(len(center_int))
 
         elif np.mean(center_int) < 0:
-            self.t_mean_x_center_dark.append(np.mean(x_center))
-            self.t_std_x_center_dark.append(np.std(x_center))
-            self.t_mean_y_center_dark.append(np.mean(y_center))
-            self.t_std_y_center_dark.append(np.std(y_center))
-            self.t_particle_ID_dark.append(particle_ID)
-            self.t_particle_frame_dark.append(int(np.median(frame_number)))
+
+            if self.flag_localization_filter:
+                x = np.mean(x_center) - self.centerOfImage_X
+                y = np.mean(y_center) - self.centerOfImage_Y
+                if np.sqrt(x**2 + y**2) <= self.radius:
+
+                        self.t_particle_localization_flag = True
+
+                        self.t_mean_x_center_dark.append(np.mean(x_center))
+                        self.t_std_x_center_dark.append(np.std(x_center))
+                        self.t_mean_y_center_dark.append(np.mean(y_center))
+                        self.t_std_y_center_dark.append(np.std(y_center))
+                        self.t_particle_ID_dark.append(np.unique(particle_ID)[0])
+                        self.t_particle_frame_dark.append(int(np.median(frame_number)))
+                        self.t_linking_len_dark.append(len(center_int))
+
+                else:
+                    self.t_particle_localization_flag = False
+            else:
+                self.t_particle_localization_flag = True
+
+                self.t_mean_x_center_dark.append(np.mean(x_center))
+                self.t_std_x_center_dark.append(np.std(x_center))
+                self.t_mean_y_center_dark.append(np.mean(y_center))
+                self.t_std_y_center_dark.append(np.std(y_center))
+                self.t_particle_ID_dark.append(np.unique(particle_ID)[0])
+                self.t_particle_frame_dark.append(int(np.median(frame_number)))
+                self.t_linking_len_dark.append(len(center_int))
 
     def data_handling(self, center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
                       fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence):
 
-        if len(center_int) != 0 and ~np.isnan(center_int).all():
+        if len(center_int) != 0 and ~np.isnan(center_int).all() and self.t_particle_localization_flag:
             win_size = self.determine_windows_size(center_int)
             if win_size > 3:
                 V_smooth = savgol_filter(center_int, win_size, 3)
@@ -314,6 +381,7 @@ class PlotProteinHistogram(PrintColors):
 
                 self.t_contrast_intersection.append(yi)
                 self.t_contrast_intersection_index.append(xi)
+                self.t_len_linking.append(len(center_int))
 
                 self.t_contrast_Prominence.append(prom)
                 self.t_contrast_Prominence_index.append(prom_idx)
@@ -324,7 +392,7 @@ class PlotProteinHistogram(PrintColors):
         else:
             properties = None
 
-        if num_parameters == 21:
+        if num_parameters == 21 and self.t_particle_localization_flag:
             nan_array = np.isnan(fit_intensity)
             not_nan_array = ~ nan_array
             fit_intensity_ = fit_intensity[not_nan_array]
@@ -625,6 +693,7 @@ class PlotProteinHistogram(PrintColors):
                     list_AIC.append(AIC)
                     list_BIC.append(BIC)
                     list_keys.append(key)
+
 
                 except:
                     print('---GMM did not extract for ' + key, '---')
@@ -1127,7 +1196,7 @@ class PlotProteinHistogram(PrintColors):
         plt.title('Ratio mean of Sigma_Max/Sigma_Min=' + str(ratio_sigma))
         plt.show()
 
-    def plot_localization_heatmap(self, pixel_size, unit='nm', flag_in_time=False, time_delay=0.1, dir_name=None):
+    def plot_localization_heatmap(self, pixel_size, unit, flag_in_time=False, time_delay=0.1, dir_name=None):
         """
         This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
 
@@ -1196,7 +1265,22 @@ class PlotProteinHistogram(PrintColors):
         if flag_in_time:
             plot_bright_dark_psf_inTime(df_bright_sort, df_dark_sort, time_delay, dir_name)
         else:
-            plot_bright_dark_psf(df_bright_sort, df_dark_sort, unit=unit)
+            plot_bright_dark_psf(df_bright_sort, df_dark_sort, unit)
+
+    def plot_linking_length_histogram(self, bins=None):
+
+        fig, axs = plt.subplots(1, 3, sharey=True, tight_layout=True)
+        axs[0].hist(self.t_linking_len_bright, bins=bins)
+        axs[0].set_title('bright PSF linking length')
+
+        axs[1].hist(self.t_linking_len_dark, bins=bins)
+        axs[1].set_title('dark PSF linking length')
+
+        total_len = self.t_linking_len_bright + self.t_linking_len_dark
+        axs[2].hist(total_len, bins=bins)
+        axs[2].set_title('total PSF linking length')
+
+        plt.show()
 
     def save_hist_data(self, dirName, name, upper_limitation=1, lower_limitation=-1, Flag_GMM_fit=True, max_n_components=3):
         """
@@ -1223,7 +1307,6 @@ class PlotProteinHistogram(PrintColors):
             The maximum number of components that GMM used for AIC and BIC tests. This helps to find an optimum number of the mixture.
 
         """
-
         df, list_data, title = self.extract_hist_information(con_intersections=self.t_contrast_intersection,
                                                              con_peaks=self.t_contrast_peaks,
                                                              con_proms=self.t_contrast_Prominence,
@@ -1236,6 +1319,14 @@ class PlotProteinHistogram(PrintColors):
             dic_data[t_] = d_
 
         read_write_data.save_dic_to_hdf5(dic_data=dic_data, path=dirName, name=name)
+
+        dic_ = {'con_intersections': self.t_contrast_intersection,
+                'con_peaks': self.t_contrast_peaks,
+                'con_proms': self.t_contrast_Prominence,
+                'len_linking_intersections': self.t_len_linking}
+
+        read_write_data.save_dic_to_hdf5(dic_data=dic_, path=dirName, name=name+'_data_hist_without_trim')
+
 
 
 

@@ -21,7 +21,7 @@ class ReadProteinAnalysis(CameraParameters):
         """
         CameraParameters.__init__(self, name=camera_Name)
 
-    def __call__(self, dirName, name_dir, video_frame_num, MinPeakWidth, MinPeakProminence=0, type_file='h5'):
+    def __call__(self, dirName, name_dir, video_frame_num, MinPeakWidth, MinPeakProminence=0, type_file='h5', his_setting=None):
         """
         By calling the object of class this function tries to read the result of the corresponding video it is defined
         with ``dirName`` and ``name_dir``. These results concatenated with previous results to use for plotting histogram.
@@ -46,6 +46,12 @@ class ReadProteinAnalysis(CameraParameters):
         type_file: str
             It defines the format of the file as the save file for analysis data ('HDF5', 'Matlab').
 
+        his_setting: dict
+            The dictionary is used to establish various parameters for localization-based filtering of PSF information
+            in the histogram. The following gives an example of how this dictionary might be used:
+
+            | his_setting = {'radius': 20, 'flag_localization_filter': True, 'centerOfImage_X': 34, 'centerOfImage_Y': 34}
+
         """
 
         df_histogram = reading_videos.DirectoryType(dirName, type_file=type_file).return_df()
@@ -53,6 +59,17 @@ class ReadProteinAnalysis(CameraParameters):
         file_names = df_histogram['File'].tolist()
 
         self.his_ = PlotProteinHistogram(intersection_display_flag=False)
+        if his_setting is None:
+            self.his_.get_setting(radius=None,
+                                  flag_localization_filter=False,
+                                  centerOfImage_X=None,
+                                  centerOfImage_Y=None)
+        else:
+            self.his_.get_setting(radius=his_setting['radius'],
+                                  flag_localization_filter=his_setting['flag_localization_filter'],
+                                  centerOfImage_X=his_setting['centerOfImage_X'],
+                                  centerOfImage_Y=his_setting['centerOfImage_X'])
+
         self.dic_video_num_particle = {'Folder_name': [], 'num_particles': []}
 
         num_particles = 0

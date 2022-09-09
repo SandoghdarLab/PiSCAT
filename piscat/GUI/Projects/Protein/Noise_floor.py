@@ -15,6 +15,7 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.window = QtWidgets.QWidget()
 
         self.original_video = video
+        self.original_video_pn = None
 
         self.min_radius = None
         self.max_radius = None
@@ -259,8 +260,10 @@ class Noise_Floor(QtWidgets.QMainWindow):
                 self.s_y_win_pn = None
                 self.e_y_win_pn = None
 
-            self.original_video, _ = Normalization(video=self.original_video).power_normalized(roi_x=(self.s_x_win_pn, self.e_x_win_pn),
+            self.original_video_pn, _ = Normalization(video=self.original_video).power_normalized(roi_x=(self.s_x_win_pn, self.e_x_win_pn),
                                                                                                 roi_y=(self.s_y_win_pn, self.e_y_win_pn),)
+        else:
+            self.original_video_pn = self.original_video
 
         if self.groupBox_FPNc.isChecked():
             FPN_flag = True
@@ -291,7 +294,7 @@ class Noise_Floor(QtWidgets.QMainWindow):
         flag_first_except = False
         while result_flag:
             try:
-                self.noise_floor_ = NoiseFloor(self.original_video, list_range=self.radius_list,
+                self.noise_floor_ = NoiseFloor(self.original_video_pn, list_range=self.radius_list,
                                                select_correction_axis=self.axis,
                                                FPN_flag=FPN_flag, mode_FPN=self.mode_FPN, n_jobs=None,
                                                inter_flag_parallel_active=inter_flag_parallel_active)
