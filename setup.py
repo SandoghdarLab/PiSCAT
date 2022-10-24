@@ -44,9 +44,9 @@ setup(
                         "matplotlib",
                         "opencv-python",
                         "pandas",
-                        "PyQt6",
-                        "Pyside6",
-                        "pyqtgraph",
+                        "PyQt6==6.2",
+                        "Pyside6==6.2",
+                        "pyqtgraph==0.12",
                         "PyQtWebEngine",
                         "scikit_learn",
                         "scikit-image",
@@ -63,7 +63,8 @@ setup(
                         "imageio-ffmpeg",
                         "astropy",
                         "tifffile",
-                        "flifile"
+                        "flifile",
+                        "notebook"
     ],
     # not to be confused with definitions in pyproject.toml [build-system]
     setup_requires=["pytest-runner"],
