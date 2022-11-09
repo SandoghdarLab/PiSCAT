@@ -226,7 +226,11 @@ def read_png(filename):
         The video is 2D-numpy (width, height).
     """
     img = io.imread(filename)
-    grayscale = rgb2gray(img)
+    if len(img.shape) == 3:
+        grayscale = rgb2gray(img)
+    elif len(img.shape) == 2:
+        grayscale = img
+
     return grayscale
 
 
