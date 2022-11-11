@@ -624,7 +624,7 @@ class FastRadialSymmetryTransform():
            Strictness of symmetry transform (higher=more strict; 2 is good place to start)
 
         beta: float
-            Gradient threshold parameter, float in [0,1]
+            Gradient threshold_min parameter, float in [0,1]
 
         stdFactor: float
            Standard deviation factor for gaussian kernel
@@ -650,14 +650,14 @@ class FastRadialSymmetryTransform():
         #Find gradient vector magnitude
         gnorms = np.sqrt(np.add(np.multiply(gx, gx), np.multiply(gy, gy)))
 
-        #Use beta to set threshold - speeds up transform significantly
+        #Use beta to set threshold_min - speeds up transform significantly
         gthresh = np.amax(gnorms) * beta
 
         #Find x/y distance to affected pixels
         gpx = np.multiply(np.divide(gx, gnorms, out=np.zeros(gx.shape), where=gnorms!=0), radii).round().astype(int)
         gpy = np.multiply(np.divide(gy, gnorms, out=np.zeros(gy.shape), where=gnorms!=0), radii).round().astype(int)
 
-        #Iterate over all pixels (w/ gradient above threshold)
+        #Iterate over all pixels (w/ gradient above threshold_min)
         for coords, gnorm in np.ndenumerate(gnorms):
             if gnorm > gthresh:
               i, j = coords

@@ -1,7 +1,7 @@
 # Tutorial for the correction of the fixed pattern noise in iSCAT images recorded using a sCMOS camera
 
 The weak residual stripes [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)] remaining after
-Differential Rolling Average ([DRA](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage)) are called fixed pattern noise (FPN). A modern CMOS camera typically uses multiple ADCs to improve the imaging speed. The mismatch between the gain and bias of the ADCs [[2](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4014637)] however leaves a FPN on the recorded images. The problem is that the gain and bias parameters temporally fluctuate and therefore FPN is visible even after the subtraction of two consecutive images from each other. The periodicity of such a pattern in our [imaging condition](https://piscat.readthedocs.io/tutorials.html) is about ten pixels which is in the order of the size of a diffraction-limited spot (DLS) of a nano-scatterer. We therefore discuss the effect of FPN on the noise floor behaviour as well as PSF detection sensitivity. We then use a variety of PiSCAT algorithmic approaches based on 
+Differential Rolling Average ([DRA](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage)) are called fixed pattern noise (FPN). A modern CMOS camera typically uses multiple ADCs to improve the imaging speed. The mismatch between the gain and bias of the ADCs [[2](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4014637)] however leaves a FPN on the recorded images. The problem is that the gain and bias parameters temporally fluctuate and therefore FPN is visible even after the subtraction of two consecutive images from each other. The periodicity of such a pattern in our [imaging condition](https://piscat.readthedocs.io/tutorials.html) is about ten pixels which is in the order of the size of a diffraction-limited spot (DLS) of a nano-scatterer. We therefore discuss the effect of FPN on the noise floor behaviour as well as point spread function (PSF) detection sensitivity. We then use a variety of PiSCAT algorithmic approaches based on 
 [wavelet transform](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.FrequencyFPNc.update_wFPN) 
 [[3](https://www.sciencedirect.com/science/article/abs/pii/S0923596517301522)], [Fourier transform](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.FrequencyFPNc.update_fFPN)[[4](https://www.mdpi.com/1424-8220/18/12/4299)] and [column projection FPN filtering](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.MedianProjectionFPNc) in order to correct for the FPN in the DRA frames.
 
@@ -102,7 +102,7 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 plt.plot(gainMap1D_mFPN[0][500])
 plt.xlabel('Pixels')
-plt.ylabel('cpFPN projection of DRA')
+plt.ylabel('mFPN projection of DRA')
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
 ```
@@ -192,19 +192,19 @@ PSF_1 = PSFsExtraction(video=RVideo_PN_mFPNc)
 PSFs = PSF_1.psf_detection_preview(function='dog', 
                             min_sigma=1.6, max_sigma=1.7, sigma_ratio=1.1, threshold=6e-5,
                             overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px', 
-                                   title='Localization threshold on mFPNc')
+                                   title='Localization threshold_min on mFPNc')
 
 PSF_l = PSFsExtraction(video=RVideo_PN_cpFPNc)
 PSFs = PSF_l.psf_detection_preview(function='dog', 
                             min_sigma=1.6, max_sigma=1.7, sigma_ratio=1.1, threshold=6e-5,
                             overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px', 
-                                   title='Localization threshold on cpFPNc')
+                                   title='Localization threshold_min on cpFPNc')
 
 PSF_l = PSFsExtraction(video=RVideo_PN_fFPN)
 PSFs = PSF_l.psf_detection_preview(function='dog',
                            min_sigma=1.6, max_sigma=1.7, sigma_ratio=1.1, threshold=6e-5,
                            overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px',
-                                  title='Localization threshold on fFPNc')
+                                  title='Localization threshold_min on fFPNc')
 
 ```
 

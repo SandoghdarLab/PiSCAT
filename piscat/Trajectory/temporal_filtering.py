@@ -21,17 +21,20 @@ class TemporalFilter:
         self.video = video
         self.batchSize = batchSize
 
-    def filter_tarj_base_length(self, df_PSFs, threshold):
+    def filter_tarj_base_length(self, df_PSFs, threshold_min, threshold_max):
         """
-        This function removes the particle from data frames that have a temporal length smaller than threshold values.
+        This function removes the particle from data frames that have a temporal length smaller and bigger than threshold_min values.
 
         Parameters
         ----------
         df_PSFs: pandas dataframe
             The data frame contains PSFs locations and ID (x, y, frame, sigma, particle, ...)
 
-        threshold: int
+        threshold_min: int
             The minimum acceptable temporal length of one particle.
+
+        threshold_max: int
+            The maximum acceptable temporal length of one particle.
 
         Returns
         -------
@@ -45,23 +48,27 @@ class TemporalFilter:
             raise ValueError('---data frames is empty!---')
 
         his_all_particles = df_PSFs['particle'].value_counts()
-        temp = his_all_particles.where(his_all_particles >= threshold)
+        temp_0 = his_all_particles.where(his_all_particles >= threshold_min)
+        temp = his_all_particles.where(temp_0 <= threshold_max)
         select_particles = temp[~temp.isnull()]
         index_particles = select_particles.index
         particles = df_PSFs.loc[df_PSFs['particle'].isin(index_particles)]
         return particles, his_all_particles
 
-    def v_trajectory(self, df_PSFs, threshold):
+    def v_trajectory(self, df_PSFs, threshold_min, threshold_max):
         """
-        This function extract v-shape of the particle that have a temporal length bigger than threshold values.
+        This function extract v-shape of the particle that has a temporal length between threshold_min and threshold_min max values.
 
         Parameters
         ----------
         df_PSFs: pandas dataframe
             The data frame contains PSFs locations and ID (x, y, frame, sigma, particle, ...).
 
-        threshold: int
+        threshold_min: int
             The minimum acceptable temporal length of one particle.
+
+        threshold_max: int
+            The maximum acceptable temporal length of one particle.
 
         Returns
         -------
@@ -82,7 +89,7 @@ class TemporalFilter:
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError('---data frames is empty!---')
 
-        particles, his_all_particles = self.filter_tarj_base_length(df_PSFs=df_PSFs, threshold=threshold)
+        particles, his_all_particles = self.filter_tarj_base_length(df_PSFs=df_PSFs, threshold_min=threshold_min, threshold_max=threshold_max)
         all_trajectories = self.v_profile(df_PSFs=particles, window_size=self.batchSize)
         return all_trajectories, particles, his_all_particles
 

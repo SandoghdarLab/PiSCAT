@@ -252,7 +252,7 @@ class download_tutorial_data():
                 print("\nThe data file named ", name_mkdir_2, " already exists in the following path:", os.path.join(save_path, name_mkdir_1))
             else:
                 dr_ = os.path.join(save_path, name_mkdir_1)
-                self.run_download(url='https://owncloud.gwdg.de/index.php/s/tzRZ7ytBd1weNDl/download', save_path=dr_)
+                self.run_download(url='https://owncloud.gwdg.de/index.php/s/XgYOcvABZs9cD2Q/download', save_path=dr_)
 
         elif tutorial_id == 'Tutorial3_video':
             name_mkdir_1 = 'Demo data'
@@ -264,7 +264,7 @@ class download_tutorial_data():
                 print("Directory ", name_mkdir_2, " already exists!")
             else:
                 dr_ = os.path.join(save_path, name_mkdir_1)
-                self.run_download(url='https://owncloud.gwdg.de/index.php/s/KkGs00yZ7Xyx8pX/download', save_path=dr_)
+                self.run_download(url='https://owncloud.gwdg.de/index.php/s/p2WVZq7gtqOe6ZY/download', save_path=dr_)
 
             dr_mk = os.path.join(save_path, name_mkdir_1, name_mkdir_3)
 

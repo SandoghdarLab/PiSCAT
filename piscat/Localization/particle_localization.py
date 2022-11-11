@@ -516,12 +516,12 @@ class PSFsExtraction:
                 * The ratio between the standard deviation of Kernels which is used for computing the DoG and LoG.
                 * The number of intermediate values of standard deviations between min_sigma and max_sigma for computing the DoH.
 
-            * `threshold`: float
+            * `threshold_min`: float
                 The absolute lower bound for scale space maxima. Local maxima smaller than thresh are ignored. Reduce this
                 to detect blobs with less intensities.
 
             * `overlap`: float
-                A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold, smaller blobs are eliminated.
+                A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold_min, smaller blobs are eliminated.
 
         optional_2:
             These parameters are used when ``'_frst'`` is defined as function.
@@ -536,7 +536,7 @@ class PSFsExtraction:
                 Strictness of symmetry transform (higher=more strict; 2 is good place to start)
 
             * `beta`: float
-                gradient threshold parameter, float in range [0,1]
+                gradient threshold_min parameter, float in range [0,1]
 
             * `stdFactor`:
                 Standard deviation factor for gaussian kernel
@@ -677,12 +677,12 @@ class PSFsExtraction:
                 * The ratio between the standard deviation of Kernels which is used for computing the DoG and LoG.
                 * The number of intermediate values of standard deviations between min_sigma and max_sigma for computing the DoH.
 
-            * `threshold`: float
+            * `threshold_min`: float
                 The absolute lower bound for scale space maxima. Local maxima smaller than thresh are ignored. Reduce this
                 to detect blobs with less intensities.
 
             * `overlap`: float
-                A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold, smaller blobs are eliminated.
+                A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold_min, smaller blobs are eliminated.
 
         optional_2:
             These parameters are used when ``'_frst'`` is defined as function.
@@ -697,7 +697,7 @@ class PSFsExtraction:
                 Strictness of symmetry transform (higher=more strict; 2 is good place to start)
 
             * `beta`: float
-                gradient threshold parameter, float in range [0,1]
+                gradient threshold_min parameter, float in range [0,1]
 
             * `stdFactor`:
                 Standard deviation factor for gaussian kernel
@@ -798,6 +798,9 @@ class PSFsExtraction:
             selected_frame = self.video[self.frame_number, ...]
             min_range_, max_range_ = dog_preview(images=selected_frame, min_sigma=self.min_sigma,
                                                  max_sigma=self.max_sigma, sigma_ratio=self.sigma_ratio)
+
+            max_range_ = np.max(np.asarray([max_range_, threshold]))
+
             max_range_0 = 1.5 * max_range_
             sci_num = lambda x: "{:.2e}".format(x)
             tmp = sci_num(max_range_).split('e')
