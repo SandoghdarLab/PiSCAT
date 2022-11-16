@@ -66,7 +66,7 @@ class TestDownloadUrl(unittest.TestCase):
         download_url(test_obj.url, self.download_path)
         dir_list = os.listdir(self.download_path)
         self.assertTrue(len(dir_list) > 0, 'Downloaded folder did not create')
-        file_dir = os.path.join(self.download_path, dir_list[1])
+        file_dir = os.path.join(self.download_path, 'Tutorial3')
         file_list = os.listdir(file_dir)
         self.assertTrue(len(file_list) > 0, 'downloaded folder is empty')
 
@@ -77,7 +77,7 @@ class TestDownloadUrl(unittest.TestCase):
 class TestSaveLoad(unittest.TestCase):
     def setUp(self):
         self.save_path = current_path
-        self.save_path = os.path.join(self.save_path, 'Module/Data')
+        self.save_path = os.path.join(self.save_path, 'Module/Test Data')
         self.file_name = 'sample'
         self.saved_file_name = ''
 
