@@ -172,7 +172,7 @@ class BatchAnalysis(QtWidgets.QMainWindow):
         for key in data_in:
             if key == 'mode':
                 self.hyperparameters['Mode_PSF_Segmentation'] = data_in[key]
-            elif key == 'threshold':
+            elif key == 'threshold_min':
                 self.hyperparameters['PSF_detection_thr'] = data_in[key]
             elif key == 'Asymmetry_PSFs_filtering_threshold':
                 self.hyperparameters['symmetric_PSFs_thr'] = data_in[key]

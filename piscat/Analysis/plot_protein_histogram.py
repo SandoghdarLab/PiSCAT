@@ -864,6 +864,7 @@ class PlotProteinHistogram(PrintColors):
                         fit_X_sigma = None
                         fit_Y_sigma = None
 
+                    self.t_particle_localization_flag = True
                     properties, fit_properties = self.data_handling(center_int, center_int_flow, '', sigma,
                                                                     num_parameters, fit_intensity, fit_X_sigma,
                                                                     fit_Y_sigma, frame_number, batch_size,
@@ -878,8 +879,9 @@ class PlotProteinHistogram(PrintColors):
                         self.axs.axvline(properties[6], linestyle='--', zorder=5)
                         self.axs.axvline(properties[7], linestyle='--', zorder=6)
                         if math.isnan(properties[4][1]) and math.isnan(properties[4][0]):
-                            pass
+                            flag_skip_prominence = True
                         else:
+                            flag_skip_prominence = False
                             if properties[2][0] >= 0:
                                 self.axs.vlines(x=properties[4][1], ymin=properties[4][0] - properties[4][3],
                                                 ymax=properties[4][0], color="C1", label='Prominence')
@@ -889,10 +891,16 @@ class PlotProteinHistogram(PrintColors):
                         self.axs.set_ylim(np.min(properties[1]) + 0.5*np.min(properties[1]), np.max(properties[1]) + 0.5*np.max(properties[1]))
                         self.axs.grid()
                         self.axs.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
-                        handles, labels = self.axs.get_legend_handles_labels()
+                        if flag_skip_prominence:
+                            handles, labels = self.axs.get_legend_handles_labels()
 
-                        handles = [handles[2], handles[0], handles[1], handles[3], handles[4]]
-                        labels = [labels[2], labels[0], labels[1], labels[3], labels[4]]
+                            handles = [handles[2], handles[0], handles[1], handles[3]]
+                            labels = [labels[2], labels[0], labels[1], labels[3]]
+                        else:
+                            handles, labels = self.axs.get_legend_handles_labels()
+
+                            handles = [handles[2], handles[0], handles[1], handles[3], handles[4]]
+                            labels = [labels[2], labels[0], labels[1], labels[3], labels[4]]
                         self.axs.legend(handles, labels)
                         if save_path is not None:
                             print('plot saved!')
@@ -1326,6 +1334,43 @@ class PlotProteinHistogram(PrintColors):
                 'len_linking_intersections': self.t_len_linking}
 
         read_write_data.save_dic_to_hdf5(dic_data=dic_, path=dirName, name=name+'_data_hist_without_trim')
+
+    def localization_data(self):
+        """
+        This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
+
+        Parameters
+        ----------
+        pixel_size: float
+            camera pixel size
+
+        unit: str
+            unit of axises
+        """
+        bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
+        bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
+
+
+
+        dic_dark = {'x': self.t_mean_x_center_dark,
+                    'y': self.t_mean_y_center_dark,
+                    'bubble_size': bubble_size_dark_,
+                    'particle': np.asarray(self.t_particle_ID_dark),
+                    'frame': self.t_particle_frame_dark
+                    }
+
+        df_dark = pd.DataFrame.from_dict(dic_dark)
+
+        dic_bright = {'x': self.t_mean_x_center_bright,
+                      'y': self.t_mean_y_center_bright,
+                      'bubble_size': bubble_size_bright_,
+                      'particle': np.asarray(self.t_particle_ID_bright),
+                      'frame': self.t_particle_frame_bright
+                      }
+
+        df_bright = pd.DataFrame.from_dict(dic_bright)
+
+        return df_bright, df_dark
 
 
 

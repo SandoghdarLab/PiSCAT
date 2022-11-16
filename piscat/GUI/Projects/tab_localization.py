@@ -186,7 +186,7 @@ class Localization_GUI(QtWidgets.QWidget):
             self.line_asymmetry_PSF_Thr = QtWidgets.QLineEdit(self)
             tmp_str = "\u03C3"
             self.line_asymmetry_PSF_Thr.setPlaceholderText(tmp_str + "_x" + "/" + tmp_str + "_y")
-            self.line_asymmetry_PSF_Thr_label = QtWidgets.QLabel("Asymmetry threshold:")
+            self.line_asymmetry_PSF_Thr_label = QtWidgets.QLabel("Asymmetry threshold_min:")
 
             self.grid_filters.addWidget(self.line_asymmetry_PSF_label, 3, 1)
             self.grid_filters.addWidget(self.line_asymmetry_PSF, 3, 2)
@@ -610,7 +610,7 @@ class Localization_GUI(QtWidgets.QWidget):
                     self.setting_localization['min_sigma'] = self.min_sigma
                     self.setting_localization['max_sigma'] = self.max_sigma
                     self.setting_localization['sigma_ratio'] = self.sigma_ratio
-                    self.setting_localization['threshold'] = self.threshold
+                    self.setting_localization['threshold_min'] = self.threshold
                     self.setting_localization['overlap'] = self.overlap
                     self.setting_localization['min_radius'] = self.min_radial
                     self.setting_localization['max_radius'] = self.max_radial
@@ -675,7 +675,7 @@ class Localization_GUI(QtWidgets.QWidget):
                     self.setting_localization['min_sigma'] = self.min_sigma
                     self.setting_localization['max_sigma'] = self.max_sigma
                     self.setting_localization['sigma_ratio'] = self.sigma_ratio
-                    self.setting_localization['threshold'] = self.threshold
+                    self.setting_localization['threshold_min'] = self.threshold
                     self.setting_localization['overlap'] = self.overlap
                     self.setting_localization['min_radius'] = self.min_radial
                     self.setting_localization['max_radius'] = self.max_radial

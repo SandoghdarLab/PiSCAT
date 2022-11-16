@@ -175,7 +175,7 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
        Strictness of symmetry transform (higher=more strict; 2 is good place to start)
 
     beta: float
-        Gradient threshold parameter, float in [0,1]
+        Gradient threshold_min parameter, float in [0,1]
 
     stdFactor: float
        Standard deviation factor for gaussian kernel
@@ -194,7 +194,7 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
         to detect blobs with less intensities.
 
     overlap: float
-        A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold, smaller blobs are eliminated.
+        A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold_min, smaller blobs are eliminated.
 
     exclude_border: int, tuple of ints, or bool, optional
         If positive integer, `exclude_border` excludes peaks from within
@@ -236,7 +236,7 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
     image_cube = np.power(image_cube, 2)
     # image_cube = np.std(image_cube, axis=2)
 
-    # local_maxima = get_local_maxima(image_cube, threshold)
+    # local_maxima = get_local_maxima(image_cube, threshold_min)
     local_maxima = peak_local_max(image_cube, threshold_abs=threshold,
                                   footprint=np.ones((3,) * (image.ndim + 1)),
                                   threshold_rel=0.0,
