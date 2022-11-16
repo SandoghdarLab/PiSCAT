@@ -22,7 +22,8 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.his_all_particles = None
         self.memory = None
         self.search_range = None
-        self.temporal_length = None
+        self.temporal_length_min = None
+        self.temporal_length_max = None
         self.df_PSFs_link = None
         self.pixel_size = 1
         self.axisScale = 'nm'
@@ -69,6 +70,10 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.line_min_V_shape.setPlaceholderText("Minimum_temporal_length (frame)")
         self.line_min_V_shape_label = QtWidgets.QLabel("Minimum_temporal_length (frame):")
 
+        self.line_max_V_shape = QtWidgets.QLineEdit()
+        self.line_max_V_shape.setPlaceholderText("Maximum_temporal_length (frame)")
+        self.line_max_V_shape_label = QtWidgets.QLabel("Maximum_temporal_length (frame):")
+
         self.grid = QtWidgets.QGridLayout()
         self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
         self.grid.addWidget(self.createSecondExclusiveGroup(), 1, 0)
@@ -92,8 +97,12 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.grid_linking.addWidget(self.line_searchRange_label, 1, 0)
         self.grid_linking.addWidget(self.line_search_range, 1, 1)
 
-        self.grid_linking.addWidget(self.line_min_V_shape_label, 2, 0)
-        self.grid_linking.addWidget(self.line_min_V_shape, 2, 1)
+        self.grid_linking.addWidget(self.line_min_V_shape_label, 0, 2)
+        self.grid_linking.addWidget(self.line_min_V_shape, 0, 3)
+
+        self.grid_linking.addWidget(self.line_max_V_shape_label, 1, 2)
+        self.grid_linking.addWidget(self.line_max_V_shape, 1, 3)
+
         self.grid_linking.addWidget(self.btn_linking, 3, 0)
         self.grid_linking.addWidget(self.btn_hist_plot, 3, 1)
         self.grid_linking.addWidget(self.btn_filterLinking, 3, 2)
@@ -190,7 +199,8 @@ class Tracking_GUI(QtWidgets.QWidget):
                                                                   batchSize=self.batch_size)
 
                     all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=self.df_PSFs_link,
-                                                                                                   threshold=self.temporal_length)
+                                                                                                   threshold_min=self.temporal_length_min,
+                                                                                                   threshold_max=self.temporal_length_max)
 
                     linking_ = particle_linking.Linking()
                     self.PSFs_Particels_num['#Particles_after_temporal_filter'] = linking_.trajectory_counter(df_PSFs_t_filter)
@@ -203,7 +213,8 @@ class Tracking_GUI(QtWidgets.QWidget):
 
                     self.setting_tracking['Memory (frame)'] = self.memory
                     self.setting_tracking['Neighborhood_size (px)'] = self.search_range
-                    self.setting_tracking['Minimum_temporal_length (frame)'] = self.temporal_length
+                    self.setting_tracking['Minimum_temporal_length (frame)'] = self.temporal_length_min
+                    self.setting_tracking['Maximum_temporal_length (frame)'] = self.temporal_length_max
 
                     self.update_tracking.emit(self.link_df_PSFS)
                     self.update_trajectories.emit(all_trajectories)
@@ -275,7 +286,8 @@ class Tracking_GUI(QtWidgets.QWidget):
 
     def get_values_2(self):
         try:
-            self.temporal_length = int(self.line_min_V_shape.text())
+            self.temporal_length_min = int(self.line_min_V_shape.text())
+            self.temporal_length_max = int(self.line_max_V_shape.text())
 
             self.empty_value_box_flag = True
 

@@ -26,7 +26,7 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
     hyperparameters: dic
         The dictionary is used to define different parameters for analysis. In the following you can see the example of this dictionary:
 
-            | hyperparameters = {'function': 'dog', 'batch_size': 3000, 'min_V_shape_width': 1500,
+            | hyperparameters = {'function': 'dog', 'batch_size': 3000, 'min_V_shape_width': 1500, 'threshold_max': 6000
                                     'search_range': 2, 'memory': 20, 'min_sigma': 1.3, 'max_sigma': 3, 'sigma_ratio': 1.1,
                                     'PSF_detection_thr': 4e-5, 'overlap': 0, 'outlier_frames_thr': 20, 'Mode_PSF_Segmentation': 'BOTH',
                                     'symmetric_PSFs_thr': 0.6, 'mode_FPN': name_mkdir, 'select_correction_axis': 1, 'im_size_x': 72,
@@ -164,8 +164,9 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
                 t_filters = temporal_filtering.TemporalFilter(video=RVideo_PN_FPN,
                                                               batchSize=hyperparameters['batch_size'])
                 all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=df_PSFs_link,
-                                                                            threshold=hyperparameters[
-                                                                                'min_V_shape_width'])
+                                                                                               threshold_min=hyperparameters['min_V_shape_width'],
+                                                                                                threshold_max = hyperparameters['max_V_shape_width'])
+
                 PSFs_Particels_num['#Particles_after_V_shapeFilter'] = linking_.trajectory_counter(df_PSFs_t_filter)
 
                 read_write_data.save_mat(data=all_trajectories, path=s_dir_, name='all_trajectories')

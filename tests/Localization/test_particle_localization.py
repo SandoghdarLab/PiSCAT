@@ -19,6 +19,6 @@ def test_PSFsExtraction_non_jupyter(control_video):
     PSFs = PSF_l.psf_detection_preview(function='dog',
                                 min_sigma=1.6, max_sigma=1.7, sigma_ratio=1.1, threshold=5e-5,
                                 overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px',
-                                       title='Localization threshold on cpFPNc')
+                                       title='Localization threshold_min on cpFPNc')
 
     assert len(PSFs) == 15

@@ -13,7 +13,7 @@ class SpatialFilter:
         We have a `SpatialFilter` class in PiSCAT that allows users to filter `outlier_frames`
         that have a strong vibration or a particle flying by, `dense_PSFs`, and non-symmetric PSFs that
         may not properly resemble the iPSF expected from the experimental setup.
-        The threshold parameter in each of these filters determines the filter's sensitivity.
+        The threshold_min parameter in each of these filters determines the filter's sensitivity.
         """
         self.cpu = CPUConfigurations()
 
@@ -25,7 +25,7 @@ class SpatialFilter:
 
     def outlier_frames(self, df_PSFs, threshold=20):
         """
-        This function eliminates all detected PSFs in the frame that are greater than the threshold value.
+        This function eliminates all detected PSFs in the frame that are greater than the threshold_min value.
         PSFs that were detected in unstable frames are reduced using this method.
 
         Parameters
