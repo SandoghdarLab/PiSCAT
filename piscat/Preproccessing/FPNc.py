@@ -423,7 +423,7 @@ class FrequencyFPNc:
         if self.cpu.parallel_active is True and self.inter_flag_parallel_active is True:
             print("\n---start wFPNc with Parallel---")
             result = Parallel(n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose)(
-                delayed(self.wavelet_denoise)(f_) for f_ in tqdm(range(self.video.shape[0])))
+                delayed(self.wavelet_denoise)(f_, direction) for f_ in tqdm(range(self.video.shape[0])))
 
             self.video_out = np.asarray(result)
         else:
