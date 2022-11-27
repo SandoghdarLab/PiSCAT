@@ -1,3 +1,3 @@
 [run]
 branch = True
-source = piscat.InputOutput, piscat.Preproccessing
+source = piscat.InputOutput, piscat.Preproccessing, piscat.BackgroundCorrection
