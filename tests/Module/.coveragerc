@@ -1,3 +1,24 @@
 [run]
 branch = True
-source = piscat.InputOutput, piscat.Preproccessing, piscat.BackgroundCorrection
+source = piscat.InputOutput, piscat.Preproccessing, piscat.BackgroundCorrection, piscat.Localization
+omit =
+    # omit frst because this file will be deleted
+    */frst.py
+    # this function is not used in this version
+    */patch_genrator.py
+[report]
+exclude_lines =
+    @njit(parallel=True)
+    # this decorator belongs to the GUI
+    @Slot()
+    # this function is not used in current version
+    numba_temporal_moving_average
+    # these functions are called by GUI
+    _FPNc_GUI_axis
+    _FPN_GUI
+    self.flag_GUI is True:
+    self.flag_GUI:
+    # this method excluded because only the related function run without parallel condition
+    FPNc_kernel
+    # this part of the code run in Jupyter notebook
+    "JPY_PARENT_PID" in os.environ
