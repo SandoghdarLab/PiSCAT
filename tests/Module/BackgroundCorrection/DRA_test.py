@@ -29,7 +29,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_mFPN_column(self):
         self.test_obj.mode_FPN = 'mFPN'
@@ -38,7 +38,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_mFPN_column.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_mFPN_row(self):
         self.test_obj.mode_FPN = 'mFPN'
@@ -47,7 +47,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_mFPN_row.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_mFPN_both(self):
         self.test_obj.mode_FPN = 'mFPN'
@@ -56,7 +56,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_mFPN_both.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_cpFPN_column(self):
         self.test_obj.mode_FPN = 'cpFPN'
@@ -65,7 +65,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_cpFPN_column.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_cpFPN_row(self):
         self.test_obj.mode_FPN = 'cpFPN'
@@ -74,7 +74,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_cpFPN_row.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_cpFPN_both(self):
         self.test_obj.mode_FPN = 'cpFPN'
@@ -83,7 +83,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_cpFPN_both.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_fFPN_column(self):
         self.test_obj.mode_FPN = 'fFPN'
@@ -92,7 +92,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_fFPN_column.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_fFPN_row(self):
         self.test_obj.mode_FPN = 'fFPN'
@@ -101,7 +101,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_fFPN_row.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_fFPN_both(self):
         self.test_obj.mode_FPN = 'fFPN'
@@ -110,7 +110,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_fFPN_both.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_wFPN_column(self):
         self.test_obj.mode_FPN = 'wFPN'
@@ -119,7 +119,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_wFPN_column.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_wFPN_row(self):
         self.test_obj.mode_FPN = 'wFPN'
@@ -128,7 +128,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_wFPN_row.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_wFPN_both(self):
         self.test_obj.mode_FPN = 'wFPN'
@@ -137,7 +137,7 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_wFPN_both.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
     def test_differential_rolling_FFT_flag(self):
         output_video, _ = self.test_obj.differential_rolling(FFT_flag=True)
@@ -145,5 +145,5 @@ class TestDifferentialRollingAverage(unittest.TestCase):
                           self.test_obj.video.shape[1], self.test_obj.video.shape[2])
         loaded_data = load_fixture(os.path.join(self.path, 'test_differential_rolling_FFT_flag.pck'))
         self.assertTrue(output_video.shape == expected_shape)
-        self.assertTrue(np.all(np.nan_to_num(output_video - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(output_video) - np.nan_to_num(loaded_data) < 1e-6))
 
