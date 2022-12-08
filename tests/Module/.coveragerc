@@ -6,6 +6,8 @@ omit =
     */frst.py
     # this function is not used in this version
     */patch_genrator.py
+    #
+    */__init__.py
 [report]
 exclude_lines =
     @njit(parallel=True)
@@ -22,3 +24,15 @@ exclude_lines =
     FPNc_kernel
     # this part of the code run in Jupyter notebook
     "JPY_PARENT_PID" in os.environ
+    # this methods are excluded because they do not have any usage in the package
+    radial_profile_app2
+    plot_directional_intensity
+    plot_polar_image
+    index_coords
+    cart2polar
+    polar2cart
+    bin_by
+    reproject_image_into_polar
+
+[pytest]
+filterwarnings = ignore::DeprecationWarning
