@@ -33,6 +33,10 @@ exclude_lines =
     polar2cart
     bin_by
     reproject_image_into_polar
+    # this methods are excluded in radial symetry centering script in Localization because they do not have any usage in the package
+    radialcenter_probility_map
+    patch_genrator
+    psf_center_all_frames
 
 [pytest]
 filterwarnings = ignore::DeprecationWarning
