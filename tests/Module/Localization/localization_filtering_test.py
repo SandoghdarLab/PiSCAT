@@ -17,7 +17,7 @@ def load_fixture(filename):
         return pickle.load(file)
 
 
-class DirectionalIntensity(unittest.TestCase):
+class SpatialFilter(unittest.TestCase):
     def setUp(self):
         self.directory_path = os.path.join(current_path, 'Test Data/Video/')
         file_name_save = os.path.join(self.directory_path, 'test_fit_Gaussian2D_wrapper.pck')
