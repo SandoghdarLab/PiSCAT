@@ -11,7 +11,7 @@ current_path = os.path.abspath(os.path.join('.'))
 class TestWriteBinary(unittest.TestCase):
     def setUp(self):
         self.save_path = current_path
-        self.save_path = os.path.join(self.save_path, 'Test Data/Video')
+        self.save_path = os.path.join(self.save_path, 'TestData/Video')
         file_name_read = '600_100_100_f8.raw'
         file_path = os.path.join(self.save_path, file_name_read)
         self.video_data = video_reader(file_path, type='binary', img_width=100, img_height=100)

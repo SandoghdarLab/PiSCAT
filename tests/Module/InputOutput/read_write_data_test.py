@@ -77,7 +77,7 @@ class TestDownloadUrl(unittest.TestCase):
 class TestSaveLoad(unittest.TestCase):
     def setUp(self):
         self.save_path = current_path
-        self.save_path = os.path.join(self.save_path, 'Module/Test Data')
+        self.save_path = os.path.join(self.save_path, 'Module/TestData')
         self.file_name = 'sample'
         self.saved_file_name = ''
 

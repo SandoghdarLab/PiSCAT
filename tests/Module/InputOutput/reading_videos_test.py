@@ -10,7 +10,7 @@ class TestVideoReader(unittest.TestCase):
     def setUp(self):
         # self.save_path = os.path.dirname(current_path)
         self.save_path = current_path
-        self.save_path = os.path.join(self.save_path, 'Test Data/Video')
+        self.save_path = os.path.join(self.save_path, 'TestData/Video')
 
     def test_read_tif(self):
         file_name = '600_100_100_f8.tif'
@@ -41,7 +41,7 @@ class TestDirectoryType(unittest.TestCase):
     def setUp(self):
         # self.save_path = os.path.dirname(current_path)
         self.save_path = current_path
-        self.save_path = os.path.join(self.save_path, 'Test Data')
+        self.save_path = os.path.join(self.save_path, 'TestData')
 
     def test_return_df(self):
         test_obj = DirectoryType(self.save_path, '.tif')

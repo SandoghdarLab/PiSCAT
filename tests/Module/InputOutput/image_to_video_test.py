@@ -9,7 +9,7 @@ current_path = os.path.abspath(os.path.join('.'))
 
 class TestImage2Video(unittest.TestCase):
     def setUp(self):
-        self.path = os.path.join(current_path, 'Test Data/Images/')
+        self.path = os.path.join(current_path, 'TestData/Images/')
         current_dir_name = os.path.dirname(current_path)
         self.dir_name = os.path.join(current_dir_name, 'piscat_configuration')
         file_format = '*.raw'
