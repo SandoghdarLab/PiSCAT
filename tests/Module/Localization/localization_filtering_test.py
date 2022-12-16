@@ -19,7 +19,7 @@ def load_fixture(filename):
 
 class SpatialFilter(unittest.TestCase):
     def setUp(self):
-        self.directory_path = os.path.join(current_path, 'Test Data/Video/')
+        self.directory_path = os.path.join(current_path, 'TestData/Video/')
         file_name_save = os.path.join(self.directory_path, 'test_fit_Gaussian2D_wrapper.pck')
         psf_dataframe = load_fixture(file_name_save)
         linking_ = Linking()

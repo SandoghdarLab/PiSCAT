@@ -15,7 +15,7 @@ def load_fixture(filename):
 
 class DirectionalIntensity(unittest.TestCase):
     def setUp(self):
-        self.directory_path = os.path.join(current_path, 'Test Data/Video/')
+        self.directory_path = os.path.join(current_path, 'TestData/Video/')
         file_name_save = os.path.join(self.directory_path, 'test_localization_input_video.pck')
         self.video = load_fixture(file_name_save)
         self.frame = self.video[0, :, :]
