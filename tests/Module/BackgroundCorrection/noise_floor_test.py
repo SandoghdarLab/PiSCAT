@@ -10,7 +10,7 @@ current_path = os.path.abspath(os.path.join('.'))
 
 class TestNoiseFloor(unittest.TestCase):
     def setUp(self):
-        self.path = os.path.join(current_path, 'Test Data/Video/')
+        self.path = os.path.join(current_path, 'TestData/Video/')
         self.file_name = 'control_4999_128_128_uint16_2.33FPS.raw'
         file_path = os.path.join(self.path, self.file_name)
         video = video_reader(file_name=file_path, type='binary', img_width=128, img_height=128,
