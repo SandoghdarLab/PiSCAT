@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = piscat.InputOutput, piscat.Preproccessing, piscat.BackgroundCorrection, piscat.Localization, piscat.Trajectory
+source = piscat.InputOutput, piscat.Preproccessing, piscat.BackgroundCorrection, piscat.Localization, piscat.Trajectory, piscat.Analysis
 omit =
     # omit frst because this file will be deleted
     */frst.py
