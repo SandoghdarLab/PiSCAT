@@ -20,7 +20,7 @@ class TestCameraParameters(unittest.TestCase):
         test_obj_read = CameraParameters(name=self.file_name)
         self.assertTrue(test_obj_save.quantum_efficiency ==
                         test_obj_read.quantum_efficiency, 'configuration file is saved incorrectly')
-        delete_directory(self.dir_name)
+        #delete_directory(self.dir_name)
 
 
 if __name__ == '__main__':

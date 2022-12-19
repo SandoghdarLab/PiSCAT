@@ -17,7 +17,7 @@ def delete_directory(path):
         print("\nDirectory ", path, " dose not exist")
 
 
-current_path = os.path.abspath(os.path.join('..'))
+current_path = os.path.abspath(os.path.join('.'))
 
 
 class TestDownloadTutorialDataConstructor(unittest.TestCase):
@@ -25,7 +25,7 @@ class TestDownloadTutorialDataConstructor(unittest.TestCase):
         self.current_path = current_path
         save_path = os.path.dirname(self.current_path)
         self.save_path = os.path.join(save_path, 'Tutorials')
-        delete_directory(self.save_path)
+        #delete_directory(self.save_path)
 
     def test_control_folder_created(self):
         self.test_obj_control = download_tutorial_data('control_video')
@@ -33,7 +33,7 @@ class TestDownloadTutorialDataConstructor(unittest.TestCase):
         dr_mk = os.path.join(self.save_path, name_mkdir_1)
         self.assertTrue(os.path.isdir(self.save_path), 'download_tutorial_data did not create the folders')
         self.assertTrue(os.path.isdir(dr_mk), 'download_tutorial_data did not create the folders')
-        delete_directory(self.save_path)
+        #delete_directory(self.save_path)
 
     def test_Tutorial3_folder_created(self):
         self.test_obj_Tutorial3 = download_tutorial_data('Tutorial3_video')
@@ -41,7 +41,7 @@ class TestDownloadTutorialDataConstructor(unittest.TestCase):
         dr_mk = os.path.join(self.save_path, name_mkdir_1)
         self.assertTrue(os.path.isdir(self.save_path), 'download_tutorial_data did not create the folders')
         self.assertTrue(os.path.isdir(dr_mk), 'download_tutorial_data did not create the folders')
-        delete_directory(self.save_path)
+        #delete_directory(self.save_path)
 
 
 class TestDownloadUrl(unittest.TestCase):
@@ -70,8 +70,8 @@ class TestDownloadUrl(unittest.TestCase):
         file_list = os.listdir(file_dir)
         self.assertTrue(len(file_list) > 0, 'downloaded folder is empty')
 
-    def test_delete_directory(self):
-        delete_directory(self.save_path)
+    #def test_delete_directory(self):
+    #    delete_directory(self.save_path)
 
 
 class TestSaveLoad(unittest.TestCase):

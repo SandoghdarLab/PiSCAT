@@ -21,7 +21,7 @@ class TestWriteBinary(unittest.TestCase):
         video_path = write_binary(self.save_path, file_name_write, self.video_data)
         self.assertTrue(os.path.exists(video_path), 'directory is not created')
         self.assertTrue(os.path.exists(os.path.join(video_path, file_name_write)), 'file is not saved')
-        delete_directory(video_path)
+        #delete_directory(video_path)
 
     def test_write_MP4(self):
         file_name_write = 'test_MP4_file.mp4'
@@ -29,14 +29,14 @@ class TestWriteBinary(unittest.TestCase):
         video_path = write_MP4(self.save_path, file_name_write, self.video_data, jump=1)
         self.assertTrue(os.path.exists(video_path), 'directory is not created')
         self.assertTrue(os.path.exists(os.path.join(video_path, file_name_write)), 'file is not saved')
-        delete_directory(video_path)
+        #delete_directory(video_path)
 
     def test_write_GIF(self):
         file_name_write = 'test_gif_file.gif'
         video_path = write_GIF(self.save_path, file_name_write, self.video_data, jump=1)
         self.assertTrue(os.path.exists(video_path), 'directory is not created')
         self.assertTrue(os.path.exists(os.path.join(video_path, file_name_write)), 'file is not saved')
-        delete_directory(video_path)
+        #delete_directory(video_path)
 
 
 if __name__ == '__main__':

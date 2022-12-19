@@ -19,7 +19,7 @@ class TestGPUConfigurations(unittest.TestCase):
         test_obj_load = GPUConfigurations(flag_report=True)
         self.assertTrue(test_obj_save.gpu_active_flag == test_obj_load.gpu_active_flag,
                         'configuration file is saved incorrectly')
-        delete_directory(self.dir_name)
+        #delete_directory(self.dir_name)
 
     def test_print_all_available_gpu(self):
         test_obj = GPUConfigurations()

@@ -23,7 +23,7 @@ class TestImage2Video(unittest.TestCase):
         video = self.test_obj()
         self.assertTrue(video.dtype == 'float64', 'created data type is incorrect')
         self.assertTrue(video.shape == (101, 64, 64), 'shape of created video is incorrect')
-        delete_directory(self.dir_name)
+        #delete_directory(self.dir_name)
 
     def test_parallel_read_img(self):
         temp = self.test_obj .parallel_read_img(self.test_obj .path_list[0])
