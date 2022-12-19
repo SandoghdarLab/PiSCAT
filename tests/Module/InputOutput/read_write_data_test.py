@@ -17,7 +17,7 @@ def delete_directory(path):
         print("\nDirectory ", path, " dose not exist")
 
 
-current_path = os.path.abspath(os.path.join('.'))
+current_path = os.path.abspath(os.path.join('..'))
 
 
 class TestDownloadTutorialDataConstructor(unittest.TestCase):
@@ -52,9 +52,9 @@ class TestDownloadUrl(unittest.TestCase):
         self.download_path = os.path.join(self.save_path, 'Demo data')
 
     def test_control_download_method(self):
-
         test_obj = download_tutorial_data('control_video')
-        download_url(test_obj.url, self.download_path)
+        if not os.path.isdir(self.save_path):
+            download_url(test_obj.url, self.download_path)
         dir_list = os.listdir(self.download_path)
         self.assertTrue(len(dir_list) > 0, 'Downloaded folder did not create')
         file_dir = os.path.join(self.download_path, dir_list[0])
@@ -63,7 +63,8 @@ class TestDownloadUrl(unittest.TestCase):
 
     def test_Tutorial3_download_method(self):
         test_obj = download_tutorial_data('Tutorial3_video')
-        download_url(test_obj.url, self.download_path)
+        if not os.path.isdir(self.save_path):
+            download_url(test_obj.url, self.download_path)
         dir_list = os.listdir(self.download_path)
         self.assertTrue(len(dir_list) > 0, 'Downloaded folder did not create')
         file_dir = os.path.join(self.download_path, 'Tutorial3')
@@ -77,7 +78,7 @@ class TestDownloadUrl(unittest.TestCase):
 class TestSaveLoad(unittest.TestCase):
     def setUp(self):
         self.save_path = current_path
-        self.save_path = os.path.join(self.save_path, 'Module/TestData')
+        self.save_path = os.path.join(self.save_path, 'PiSCAT/TestData')
         self.file_name = 'sample'
         self.saved_file_name = ''
 
