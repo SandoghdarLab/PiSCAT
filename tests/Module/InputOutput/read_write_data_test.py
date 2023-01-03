@@ -25,7 +25,7 @@ class TestDownloadTutorialDataConstructor(unittest.TestCase):
         self.current_path = current_path
         save_path = os.path.dirname(self.current_path)
         self.save_path = os.path.join(save_path, 'Tutorials')
-        #delete_directory(self.save_path)
+        delete_directory(self.save_path)
 
     def test_control_folder_created(self):
         self.test_obj_control = download_tutorial_data('control_video')
@@ -33,7 +33,7 @@ class TestDownloadTutorialDataConstructor(unittest.TestCase):
         dr_mk = os.path.join(self.save_path, name_mkdir_1)
         self.assertTrue(os.path.isdir(self.save_path), 'download_tutorial_data did not create the folders')
         self.assertTrue(os.path.isdir(dr_mk), 'download_tutorial_data did not create the folders')
-        #delete_directory(self.save_path)
+        delete_directory(self.save_path)
 
     def test_Tutorial3_folder_created(self):
         self.test_obj_Tutorial3 = download_tutorial_data('Tutorial3_video')
@@ -41,7 +41,7 @@ class TestDownloadTutorialDataConstructor(unittest.TestCase):
         dr_mk = os.path.join(self.save_path, name_mkdir_1)
         self.assertTrue(os.path.isdir(self.save_path), 'download_tutorial_data did not create the folders')
         self.assertTrue(os.path.isdir(dr_mk), 'download_tutorial_data did not create the folders')
-        #delete_directory(self.save_path)
+        delete_directory(self.save_path)
 
 
 class TestDownloadUrl(unittest.TestCase):
@@ -53,8 +53,8 @@ class TestDownloadUrl(unittest.TestCase):
 
     def test_control_download_method(self):
         test_obj = download_tutorial_data('control_video')
-        if not os.path.isdir(self.save_path):
-            download_url(test_obj.url, self.download_path)
+        #if not os.path.isdir(self.save_path):
+        download_url(test_obj.url, self.download_path)
         dir_list = os.listdir(self.download_path)
         self.assertTrue(len(dir_list) > 0, 'Downloaded folder did not create')
         file_dir = os.path.join(self.download_path, dir_list[0])
@@ -63,15 +63,15 @@ class TestDownloadUrl(unittest.TestCase):
 
     def test_Tutorial3_download_method(self):
         test_obj = download_tutorial_data('Tutorial3_video')
-        if not os.path.isdir(self.save_path):
-            download_url(test_obj.url, self.download_path)
+        #if not os.path.isdir(self.save_path):
+        download_url(test_obj.url, self.download_path)
         dir_list = os.listdir(self.download_path)
         self.assertTrue(len(dir_list) > 0, 'Downloaded folder did not create')
         file_dir = os.path.join(self.download_path, 'Tutorial3')
         file_list = os.listdir(file_dir)
         self.assertTrue(len(file_list) > 0, 'downloaded folder is empty')
 
-    #def test_delete_directory(self):
+    # def test_delete_directory(self):
     #    delete_directory(self.save_path)
 
 
