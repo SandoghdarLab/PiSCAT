@@ -18,7 +18,7 @@ def test_download_data():
         os.mkdir(dr_name)
         print("\nDirectory TestData Created ")
         print("\nStrats to download Test Data ")
-        download_url(url='https://owncloud.gwdg.de/index.php/s/79uxE5tagphAejn/download', save_path=current_path)
+        download_url(url='https://owncloud.gwdg.de/index.php/s/H6xa8kHwXfnenAE/download', save_path=current_path)
         print("\nTestData downloaded successfully")
     except FileExistsError:
         print("\nDirectory TestData already exists in package directory. If you are not sure Test "
