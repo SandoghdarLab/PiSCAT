@@ -54,11 +54,11 @@ jobs:
         pip freeze
     - name: Test with pytest
       run: |
-        coverage run --source=piscat setup.py test
-    - name: Submit code coverage
-      run: |
-        coverage report -m
-        codecov
+        python setup.py test
+#    - name: Submit code coverage
+#      run: |
+#        coverage report -m
+#        codecov
 
 
 
