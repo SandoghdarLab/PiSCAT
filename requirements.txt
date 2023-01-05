@@ -25,4 +25,4 @@ tifffile==2022.5.4
 pytest==7.2.0
 coverage==6.5.0
 tensorflow==2.10.0
-
+flifile==1.3.0
