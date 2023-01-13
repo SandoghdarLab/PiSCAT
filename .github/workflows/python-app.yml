@@ -46,10 +46,8 @@ jobs:
         pip install -e .
         # show installed packages
         pip freeze
-        # Pyside6
-        pip uninstall pyside6 pyside6-addons pyside6-essentials shiboken6
-        pip cache purge
-        pip install pyside6
+        
+        
     - name: Install dependencies for Windows
       if: runner.os == 'Windows'
       run: |
