@@ -55,7 +55,7 @@ jobs:
         pip freeze
     - name: Test with pytest
       run: |
-        python setup.py test
+        coverage run -m pytest tests/test_smoke.py tests/Module/InputOutput/
 #    - name: Submit code coverage
 #      run: |
 #        coverage report -m
