@@ -35,9 +35,10 @@ jobs:
         # sudo apt install libgl1-mesa-glx
         # sudo apt-get update && apt-get install libgl1
         # sudo apt-get install ffmpeg libsm6 libxext6  -y
-        # start xvfb in the background
-        sudo apt-get update && apt-get install python3-opencv -y 
+        
+        sudo apt-get install python3-opencv -y 
         pip install opencv-python
+        # start xvfb in the background
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
     - name: Install dependencies for Mac and Linux
       if: runner.os != 'Windows'
