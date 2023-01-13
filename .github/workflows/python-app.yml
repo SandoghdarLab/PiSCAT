@@ -44,6 +44,7 @@ jobs:
         python -m pip install codecov coverage pytest
         # install dependencies
         pip install -e .
+        sudo apt-get -y install python3-pyqt5
         # show installed packages
         pip freeze
         
