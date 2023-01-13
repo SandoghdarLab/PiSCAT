@@ -40,7 +40,7 @@ jobs:
       run: |
         # prerequisites
         python -m pip install --upgrade pip wheel
-        python -m pip install codecov coverage pytest
+        
         # install dependencies
         pip install -e .
         # show installed packages
