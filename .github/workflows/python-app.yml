@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9']
-#        os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
+#        os: [windows-latest]
     env:
       # Display must be available globally for linux to know where xvfb is
       DISPLAY: :0
