@@ -33,7 +33,8 @@ jobs:
         sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
         # add for OpenGL
         sudo apt install libopengl0 -y
-        sudo apt-get update libegl1-mesa -y
+        sudo apt-get update
+        sudo apt install libegl1-mesa -y
         # sudo apt-get install -y python3-pyqt5
         # start xvfb in the background
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
