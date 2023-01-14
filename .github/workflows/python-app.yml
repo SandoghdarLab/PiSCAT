@@ -16,8 +16,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9']
-#        os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     env:
       # Display must be available globally for linux to know where xvfb is
       DISPLAY: :0
@@ -35,7 +34,6 @@ jobs:
         sudo apt install libopengl0 -y
         sudo apt-get update
         sudo apt install libegl1-mesa -y
-        # sudo apt-get install -y python3-pyqt5
         # start xvfb in the background
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
     - name: Install dependencies for Mac and Linux
