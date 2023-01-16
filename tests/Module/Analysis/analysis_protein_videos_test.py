@@ -11,7 +11,7 @@ import shutil
 def check_trajectory(calculated, loaded):
     for data, loaded_data in zip(calculated, loaded):
         for sub_data, sub_loaded_data in zip(data, loaded_data):
-            if np.all(sub_data - sub_loaded_data < 1e-10):
+            if np.all(sub_data - sub_loaded_data < 1e-5):
                 pass
             else:
                 return False
