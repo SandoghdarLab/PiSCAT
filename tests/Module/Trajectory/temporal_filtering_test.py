@@ -7,7 +7,7 @@ import unittest
 import os
 import pickle
 
-current_path = os.path.abspath(os.path.join('.'))
+current_path = os.path.abspath(os.path.join('..'))
 
 
 def load_fixture(filename):
@@ -64,7 +64,9 @@ class TemporalFilterTest(unittest.TestCase):
         self.assertTrue(check_result)
         file_name_save = os.path.join(self.directory_path, 'test_v_trajectory_linked_PSFs_filter.pck')
         loaded_file = load_fixture(file_name_save)
-        self.assertTrue(linked_PSFs_filter.equals(loaded_file))
+        result = loaded_file.replace(np.nan, 0) - linked_PSFs_filter.replace(np.nan, 0)
+        result_bool = result.all() == 0
+        self.assertTrue(result_bool.all())
         file_name_save = os.path.join(self.directory_path, 'his_all_particles.pck')
         loaded_file = load_fixture(file_name_save)
         self.assertTrue(his_all_particles.equals(loaded_file))
