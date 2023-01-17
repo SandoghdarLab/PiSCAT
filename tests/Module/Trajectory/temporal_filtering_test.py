@@ -7,7 +7,7 @@ import unittest
 import os
 import pickle
 
-current_path = os.path.abspath(os.path.join('..'))
+current_path = os.path.abspath(os.path.join('.'))
 
 
 def load_fixture(filename):
