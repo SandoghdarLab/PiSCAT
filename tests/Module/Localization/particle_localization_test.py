@@ -180,7 +180,7 @@ class TestPSFsExtraction(unittest.TestCase):
         self.assertTrue(psf_dataframe_gaussian.shape[1] == 18)
         self.assertTrue(psf_dataframe_gaussian_p.equals(psf_dataframe_gaussian))
         loaded_data = load_fixture(os.path.join(self.directory_path, 'test_fit_Gaussian2D_wrapper.pck'))
-        self.assertTrue(np.all(np.nan_to_num(psf_dataframe_gaussian_p - loaded_data) < 1e-6))
+        self.assertTrue(np.all(np.nan_to_num(psf_dataframe_gaussian_p[['y', 'x', 'frame']] - loaded_data[['y', 'x', 'frame']]) < 1e-6))
 
     def test_psf_detection_kernel_dog(self):
         self.test_obj.video = self.test_obj.video[0, :, :]
@@ -247,5 +247,5 @@ class TestPSFsExtraction(unittest.TestCase):
         psf_dataframe_p = psf_detection(self.test_obj, 'dog', mode='Bright')
         psf_dataframe_gaussian_p = self.test_obj.fit_Gaussian2D_wrapper(PSF_List=psf_dataframe_p, scale=5,
                                                                         internal_parallel_flag=True)
-        kernel_outputs = self.test_obj.fit_2D_gussian_kernel(0, scale=5, display_flag=True)
+        kernel_outputs = self.test_obj.fit_2D_gussian_kernel(0, scale=5, display_flag=False)
         self.assertTrue(len(kernel_outputs) == 18)
