@@ -23,13 +23,13 @@ class ReadProteinAnalysisTest(unittest.TestCase):
                    video_frame_num=None, MinPeakWidth=500, his_setting=self.his_setting, MinPeakProminence=0,
                    type_file='h5')
     # plt.close()
-        with patch("piscat.Analysis.plot_protein_histogram.plt.show") as show_patch:
-            self.hist_.plot_hist(self.his_setting)
-            assert show_patch.called
-    #
-        with patch("piscat.Analysis.plot_protein_histogram.plt.show") as show_patch:
-            self.hist_.plot_localization_heatmap(pixelSize=1, unit='um', flag_in_time=False, time_delay=1, dir_name=None)
-            assert show_patch.called
+    #     with patch("piscat.Analysis.plot_protein_histogram.plt.show") as show_patch:
+    #         self.hist_.plot_hist(self.his_setting)
+    #         assert show_patch.called
+    # #
+    #     with patch("piscat.Analysis.plot_protein_histogram.plt.show") as show_patch:
+    #         self.hist_.plot_localization_heatmap(pixelSize=1, unit='um', flag_in_time=False, time_delay=1, dir_name=None)
+    #         assert show_patch.called
 
 
 

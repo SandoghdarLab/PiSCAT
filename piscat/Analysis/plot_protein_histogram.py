@@ -7,9 +7,6 @@ import scipy.stats as ss
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-import matplotlib
-#matplotlib.use('TkAgg')
-matplotlib.use('Qt5Agg')
 from sklearn.mixture import GaussianMixture
 from scipy.signal import savgol_filter
 from scipy.signal import find_peaks
