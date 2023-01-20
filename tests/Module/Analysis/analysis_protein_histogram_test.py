@@ -1,9 +1,14 @@
 from piscat.Analysis.analysis_protein_histogram import ReadProteinAnalysis
 import unittest
 import os
-from unittest.mock import patch
-
+import pickle
 current_path = os.path.abspath(os.path.join('.'))
+
+
+def load_fixture(filename):
+    """Loads a fixture from file."""
+    with open(filename, 'rb') as file:
+        return pickle.load(file)
 
 
 class ReadProteinAnalysisTest(unittest.TestCase):
@@ -22,14 +27,14 @@ class ReadProteinAnalysisTest(unittest.TestCase):
         self.hist_(dirName=self.dir_name, name_dir=self.name_dir,
                    video_frame_num=None, MinPeakWidth=500, his_setting=self.his_setting, MinPeakProminence=0,
                    type_file='h5')
-    # plt.close()
-    #     with patch("piscat.Analysis.plot_protein_histogram.plt.show") as show_patch:
-    #         self.hist_.plot_hist(self.his_setting)
-    #         assert show_patch.called
-    # #
-    #     with patch("piscat.Analysis.plot_protein_histogram.plt.show") as show_patch:
-    #         self.hist_.plot_localization_heatmap(pixelSize=1, unit='um', flag_in_time=False, time_delay=1, dir_name=None)
-    #         assert show_patch.called
+        dir_name = os.path.join(current_path, 'TestData/Video')
+        fixture_name = os.path.join(dir_name, 'PlotProteinHistogram.pck')
+        loaded_plot_protein_histogram_obj = load_fixture(fixture_name)
+        self.assertTrue(loaded_plot_protein_histogram_obj.t_len_linking == self.hist_.his_.t_len_linking)
+        self.assertTrue(loaded_plot_protein_histogram_obj.t_linking_len_bright == self.hist_.his_.t_linking_len_bright)
+        self.assertTrue(loaded_plot_protein_histogram_obj.t_linking_len_dark == self.hist_.his_.t_linking_len_dark)
+        self.assertTrue(loaded_plot_protein_histogram_obj.t_mean_x_center_bright == self.hist_.his_.t_mean_x_center_bright)
+
 
 
 
