@@ -63,7 +63,4 @@ jobs:
     - name: Test with pytest
       run: |
         coverage run -m pytest tests/test_smoke.py tests/Module/InputOutput/ tests/Module/Preproccessing/ tests/Module/Analysis/ tests/Module/Trajectory tests/Module/BackgroundCorrection tests/Module/Localization
-    - name: Submit code coverage
-    - uses: romeovs/lcov-reporter-action@v0.2.16
-      with:
-        lcov-file: ./coverage/lcov.info
+
