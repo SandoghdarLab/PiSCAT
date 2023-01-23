@@ -75,7 +75,7 @@ jobs:
         pip freeze
     - name: Test with pytest
       run: |
-        coverage run -m pytest tests/test_smoke.py
+        coverage run -m pytest tests/test_smoke.py tests/Module/InputOutput/ tests/Module/Preproccessing/ tests/Module/Analysis/ tests/Module/Trajectory tests/Module/BackgroundCorrection tests/Module/Localization
     - name: code coverage report
       run: |
         coverage report -m  
