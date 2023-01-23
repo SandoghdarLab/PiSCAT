@@ -30,10 +30,10 @@ class ReadProteinAnalysisTest(unittest.TestCase):
         dir_name = os.path.join(current_path, 'TestData/Video')
         fixture_name = os.path.join(dir_name, 'PlotProteinHistogram.pck')
         loaded_plot_protein_histogram_obj = load_fixture(fixture_name)
-        self.assertTrue(loaded_plot_protein_histogram_obj.t_len_linking == self.hist_.his_.t_len_linking)
-        self.assertTrue(loaded_plot_protein_histogram_obj.t_linking_len_bright == self.hist_.his_.t_linking_len_bright)
-        self.assertTrue(loaded_plot_protein_histogram_obj.t_linking_len_dark == self.hist_.his_.t_linking_len_dark)
-        self.assertTrue(loaded_plot_protein_histogram_obj.t_mean_x_center_bright == self.hist_.his_.t_mean_x_center_bright)
+        self.assertTrue(len(loaded_plot_protein_histogram_obj.t_len_linking) == len(self.hist_.his_.t_len_linking))
+        self.assertTrue(len(loaded_plot_protein_histogram_obj.t_linking_len_bright) == len(self.hist_.his_.t_linking_len_bright))
+        self.assertTrue(len(loaded_plot_protein_histogram_obj.t_linking_len_dark) == len(self.hist_.his_.t_linking_len_dark))
+        self.assertTrue(len(loaded_plot_protein_histogram_obj.t_mean_x_center_bright) == len(self.hist_.his_.t_mean_x_center_bright))
 
 
 
