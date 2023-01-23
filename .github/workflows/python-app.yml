@@ -43,7 +43,7 @@ jobs:
       run: |
         # prerequisites
         python -m pip install --upgrade pip wheel
-        python -m pip install codecov coverage pytest
+        python -m pip install coverage coverage-lcov pytest
         # install dependencies
         pip install -e .
         
@@ -56,7 +56,7 @@ jobs:
       run: |
         # prerequisites
         python -m pip install --upgrade pip wheel
-        python -m pip install codecov coverage pytest
+        python -m pip install coverage coverage-lcov pytest
         # install dependencies
         pip install -e .
         # show installed packages
@@ -67,8 +67,8 @@ jobs:
     - name: code coverage report
       run: |
         coverage report -m
-        coverage html
+        coverage-lcov
     - name: Submit code coverage
       uses: romeovs/lcov-reporter-action@v0.2.16
       with:
-        lcov-file: ./htmlcov/index.html
+        lcov-file: ./lcov.info
