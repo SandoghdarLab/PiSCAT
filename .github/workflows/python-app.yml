@@ -79,9 +79,7 @@ jobs:
     - name: code coverage report
       run: |
         coverage report -m  
-    - name: Checkout
-      uses: actions/checkout@v3
-    - run: coverage html
+        coverage html
     - name: Setup Pages
       uses: actions/configure-pages@v2
     - name: Upload artifact
@@ -92,3 +90,5 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v1
+    - name: Checkout
+      uses: actions/checkout@v3
