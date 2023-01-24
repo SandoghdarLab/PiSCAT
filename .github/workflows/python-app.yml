@@ -2,9 +2,9 @@ name: Checks
 
 on:
   push:
-    branches: [ "unit-test" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "unit-test" ]
+    branches: [ "main" ]
   workflow_dispatch:
   
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
