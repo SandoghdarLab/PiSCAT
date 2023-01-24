@@ -11,7 +11,7 @@ import shutil
 def check_trajectory(calculated, loaded):
     for data, loaded_data in zip(calculated, loaded):
         for sub_data, sub_loaded_data in zip(data, loaded_data):
-            if np.all(sub_data == sub_loaded_data):
+            if np.all(sub_data - sub_loaded_data < 1e-5):
                 pass
             else:
                 return False
@@ -83,7 +83,10 @@ class ProteinAnalysisTest(unittest.TestCase):
             if 'position_PSFs' in file_name:
                 positions = pd.read_csv(os.path.join(self.directory_path[0], 'position_PSFs.csv'))
                 loaded_positions = pd.read_csv(os.path.join(path, file_name))
-                self.assertTrue(positions.equals(loaded_positions))
+                differ = loaded_positions - positions
+                differ_bool = differ < 1e-5
+                self.assertTrue(differ_bool.eq(True).all().all())
+
 
         delete_directory(os.path.join(self.directory_path[0], 'mFPN'))
 

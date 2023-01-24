@@ -1,0 +1,94 @@
+name: Checks
+
+on:
+  push:
+    branches: [ "unit-test" ]
+  pull_request:
+    branches: [ "unit-test" ]
+  workflow_dispatch:
+  
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: ['3.9']
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        # os: [windows-latest]
+    env:
+      # Display must be available globally for linux to know where xvfb is
+      DISPLAY: :0
+      
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Setup xvfb (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+        # add for OpenGL
+        sudo apt install libopengl0 -y
+        sudo apt-get update
+        sudo apt install libegl1-mesa -y
+        # start xvfb in the background
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+    - name: Install dependencies for Mac and Linux
+      if: runner.os != 'Windows'
+      run: |
+        # prerequisites
+        python -m pip install --upgrade pip wheel
+        python -m pip install coverage coverage-lcov pytest
+        # install dependencies
+        pip install -e .
+        
+        # show installed packages
+        pip freeze
+        
+        
+    - name: Install dependencies for Windows
+      if: runner.os == 'Windows'
+      run: |
+        # prerequisites
+        python -m pip install --upgrade pip wheel
+        python -m pip install coverage coverage-lcov pytest
+        # install dependencies
+        pip install -e .
+        # show installed packages
+        pip freeze
+    - name: Test with pytest
+      run: |
+        coverage run -m pytest tests/test_smoke.py tests/Module/InputOutput/ tests/Module/Preproccessing/ tests/Module/Analysis/ tests/Module/Trajectory tests/Module/BackgroundCorrection tests/Module/Localization
+    - name: code coverage report
+      run: |
+        coverage report -m  
+        coverage html
+    - name: Setup Pages
+      uses: actions/configure-pages@v2
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload entire repository
+        path: './htmlcov/'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
+    - name: Checkout
+      uses: actions/checkout@v3

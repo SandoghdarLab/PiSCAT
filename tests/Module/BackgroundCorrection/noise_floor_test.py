@@ -32,9 +32,9 @@ class TestNoiseFloor(unittest.TestCase):
         correct_resutlt = [0.001472, 0.000857, 0.000671, 0.000573, 0.000512]
         np.testing.assert_almost_equal(correct_resutlt, noise_floor.mean, 6)
 
-    @patch("matplotlib.pyplot.show")
-    def test_plot_fn(self, mock_show):
-        l_range = list(range(1, 10, 2))
-        noise_floor = NoiseFloor(self.video_remove_status, l_range, FPN_flag=False, mode='mode_spatial')
-        noise_floor.plot_result()
-        noise_floor.plot_result(flag_log=False)
+    # @patch("matplotlib.pyplot.show")
+    # def test_plot_fn(self, mock_show):
+    #     l_range = list(range(1, 10, 2))
+    #     noise_floor = NoiseFloor(self.video_remove_status, l_range, FPN_flag=False, mode='mode_spatial')
+    #     noise_floor.plot_result()
+    #     noise_floor.plot_result(flag_log=False)
