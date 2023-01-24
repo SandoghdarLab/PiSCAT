@@ -8,6 +8,8 @@ omit =
     */patch_genrator.py
     #
     */__init__.py
+    # remove this file because we can not test plots on git actions
+    */plot_protein_histogram.py
 [report]
 exclude_lines =
     @njit(parallel=True)
