@@ -61,8 +61,8 @@ class Plugin(PrintColors):
         target: boolean
             Specify and plugin data changed or not
         """
-        target = Path.cwd()
-        target = os.path.join(target, "piscat\Plugin\\" + plu_name)
+        target = os.path.dirname(os.path.realpath(__file__))
+        target = os.path.join(target, plu_name)
         if exists(target):
             print('Warning! Target directory %s already exists.' % str(target))
             answer = self.confirm(f'{self.BOLD}\n Target directory %s already exists. '
