@@ -145,3 +145,9 @@ docs/JupyterFiles
 # Exclude static temporary data
 piscat_configuration/
 /tests/data/Control/
+
+# exclude plugin folders
+piscat/Plugin/*
+
+# exception to the rule
+!piscat/Plugin/__main__.py
