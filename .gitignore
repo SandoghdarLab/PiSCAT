@@ -151,3 +151,4 @@ piscat/Plugin/*
 
 # exception to the rule
 !piscat/Plugin/__main__.py
+!piscat/Plugin/__init__.py
