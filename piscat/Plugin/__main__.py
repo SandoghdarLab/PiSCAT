@@ -62,9 +62,7 @@ class Plugin(PrintColors):
             Specify and plugin data changed or not
         """
         target = os.path.dirname(os.path.realpath(__file__))
-        print(target)
         target = os.path.join(target, plu_name)
-        print(target)
         if exists(target):
             print('Warning! Target directory %s already exists.' % str(target))
             answer = self.confirm(f'{self.BOLD}\n Target directory %s already exists. '
