@@ -99,8 +99,8 @@ class Plugin(PrintColors):
             if answer:
                 files_changes = self.copy_plugin(plugin_name)
                 if files_changes:
-                    dir_path = Path.cwd()
-                    path = os.path.join(dir_path, "piscat\Plugin\\" + plugin_name)
+                    folder_path = os.path.dirname(os.path.realpath(__file__))
+                    path = os.path.join(folder_path, plugin_name)
                     # implement pip as a subprocess:
                     subprocess.run('pip install -r' + path + '\\requirements.txt')
 
