@@ -67,7 +67,9 @@ setup(
                         "notebook",
                         "pytest",
                         "coverage",
-                        "tensorflow"
+                        "tensorflow",
+                        "GitPython",
+                        "subprocess.run"
     ],
     # not to be confused with definitions in pyproject.toml [build-system]
     setup_requires=["pytest-runner"],
