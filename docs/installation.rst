@@ -13,7 +13,7 @@ Adding PiSCAT Plugins
 
 To add PiSCAT Plugins, enter the following command in the console:
 
-`` python -m piscat.Plugins UAI``
+``python -m piscat.Plugins UAI``
 
 
 Local installation of PiSCAT

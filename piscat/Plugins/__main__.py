@@ -30,7 +30,7 @@ def parse_args():
 
 class Plugin(PrintColors):
     def __init__(self):
-        self.dic_git_url = {'anomaly_psf_identification': 'https://github.com/SandoghdarLab/PiSCAT_plugin.git'}
+        self.dic_git_url = {'UAI': 'https://github.com/SandoghdarLab/PiSCAT_plugin.git'}
 
     def confirm(self, prompt):
         """Get user confirmation from standard input.
