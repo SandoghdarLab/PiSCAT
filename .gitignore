@@ -147,8 +147,8 @@ piscat_configuration/
 /tests/data/Control/
 
 # exclude plugin folders
-piscat/Plugin/*
+piscat/Plugins/*
 
 # exception to the rule
-!piscat/Plugin/__main__.py
-!piscat/Plugin/__init__.py
+!piscat/Plugins/__main__.py
+!piscat/Plugins/__init__.py

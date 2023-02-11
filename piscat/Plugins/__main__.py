@@ -92,7 +92,7 @@ class Plugin(PrintColors):
 
     def add_plugin(self, plugin_name):
 
-        if plugin_name == 'anomaly_psf_identification':
+        if plugin_name == 'UAI':
             answer = self.confirm(f'{self.BOLD}\n This plugin is not obeyed the general PiSCAT license, and it has its specific {self.ENDC}'
                                   f'{self.BOLD}license. please visit "https://github.com/SandoghdarLab/PiSCAT_plugin" for more {self.ENDC}'
                                   f'{self.BOLD}information.{self.ENDC} {self.OKGREEN}\nI agree to install this plugin with a new License (y/n):{self.ENDC}')

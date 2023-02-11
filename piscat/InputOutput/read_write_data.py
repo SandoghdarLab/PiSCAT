@@ -274,6 +274,18 @@ class download_tutorial_data():
             except FileExistsError:
                 print("\nDirectory ", name_mkdir_3, " already exists")
 
+        elif tutorial_id == 'Tutorial_UAI':
+            name_mkdir_1 = 'UAI'
+
+            dr_ = os.path.join(save_path, name_mkdir_1)
+            if os.path.isdir(dr_):
+                print("Directory ", name_mkdir_1, " already exists!")
+            else:
+                dr_ = os.path.join(save_path, name_mkdir_1)
+                self.run_download(url='https://owncloud.gwdg.de/index.php/s/CdE5tAiMEKKpPiZ/download', save_path=dr_)
+
+            dr_mk = os.path.join(save_path, name_mkdir_1)
+
     def run_download(self, url, save_path):
         self.url = url
         self.save_path = save_path

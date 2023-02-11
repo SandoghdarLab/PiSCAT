@@ -8,6 +8,13 @@ To install PiSCAT using PyPi, enter the following command in the console:
 
 ``pip install piscat``
 
+Adding PiSCAT Plugins
+---------------------
+
+To add PiSCAT Plugins, enter the following command in the console:
+
+`` python -m piscat.Plugins UAI``
+
 
 Local installation of PiSCAT
 ----------------------------
