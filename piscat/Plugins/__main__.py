@@ -89,7 +89,6 @@ class Plugin(PrintColors):
                 print("The plugin repository can not be cloned")
                 return False
 
-
     def add_plugin(self, plugin_name):
 
         if plugin_name == 'UAI':

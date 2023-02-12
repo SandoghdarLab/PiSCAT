@@ -30,3 +30,5 @@ Tutorials
     Tutorial2/Tutorial2.md
     Tutorial3/Tutorial3.md
     Tutorial4/Tutorial4.md
+    Tutorial_UAI_1/Tutorial_UAI_1.md
+    Tutorial_UAI_2/Tutorial_UAI_2.md

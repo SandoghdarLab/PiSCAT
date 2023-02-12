@@ -714,7 +714,7 @@ class JupyterSelectedPSFs_localizationDisplay:
 class JupyterSubplotDisplay:
 
     def __init__(self, list_videos, numRows, numColumns, list_titles=None, imgSizex=20, imgSizey=20, IntSlider_width='500px',
-                 median_filter_flag=False, color='gray', step=1, value=0):
+                 median_filter_flag=False, color='gray', step=1, value=0, vmin=None, vmax=None):
 
         """
         This class interactively displays several videos (with the same number of frames) in a Jupyter notebook.
@@ -756,6 +756,9 @@ class JupyterSubplotDisplay:
         """
 
         self.color = color
+        self.vmin = vmin
+        self.vmax = vmax
+
         self.video = list_videos
         self.median_filter_flag = median_filter_flag
         self.numRows = numRows
@@ -796,13 +799,19 @@ class JupyterSubplotDisplay:
 
             divider = make_axes_locatable(img_grid_)
             cax = divider.append_axes("right", size="5%", pad=0.05)
-            myplot = img_grid_.imshow(frame_v, cmap=self.color)
+            if self.vmin is None or self.vmax is None:
+                myplot = img_grid_.imshow(frame_v, cmap=self.color)
+            else:
+                myplot = img_grid_.imshow(frame_v, cmap=self.color, vmin=self.vmin, vmax=self.vmax)
             img_grid_.axis('off')
             plt.colorbar(myplot, cax=cax)
             if tit_ is not None:
                 img_grid_.set_title(tit_)
 
         plt.show()
+
+
+
 
 
 class JupyterPSFs_2_modality_subplotLocalizationDisplay:
