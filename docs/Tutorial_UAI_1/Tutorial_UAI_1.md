@@ -120,7 +120,7 @@ Each pixel in a frame is categorized as anomalous/normal based on spatiotemporal
 
 
 ```python
-from piscat.Plugins.UAI.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
+from piscat.Plugins.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
 
 temporal_features = CreateFeatures(video=video_pn_hotPixel)
 out_feature_t_1 = temporal_features.temporal_features(batchSize=batchSize, flag_dc=False)
@@ -169,7 +169,7 @@ The collected features are fed into the `SpatioTemporalAnomalyDetection` class, 
 
 
 ```python
-from piscat.Plugins.UAI.UAI.Anomaly.spatio_temporal_anomaly import SpatioTemporalAnomalyDetection
+from piscat.Plugins.UAI.Anomaly.spatio_temporal_anomaly import SpatioTemporalAnomalyDetection
 
 # Applying anomaly detection
 anomaly_st = SpatioTemporalAnomalyDetection(feature_list, inter_flag_parallel_active=False)
@@ -198,7 +198,7 @@ The results of anomaly detection generate a binary video with zero values for th
 
 
 ```python
-from piscat.Plugins.UAI.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
+from piscat.Plugins.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
 
 binery_localization = BinaryToiSCATLocalization(video_binary=binary_st, 
                                                 video_iSCAT=RVideo_PN_FPN_hotPixel[0:-1:100], 

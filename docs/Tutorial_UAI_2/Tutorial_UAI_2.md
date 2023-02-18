@@ -125,7 +125,7 @@ train_video = RVideo_PN_FPN_hotPixel[30000:50000:1]
 video_norm = Normalization(train_video).normalized_image_global()
 
 # Training
-from piscat.Plugins.UAI.UAI.DNNModel.FastDVDNet import FastDVDNet
+from piscat.Plugins.UAI.DNNModel.FastDVDNet import FastDVDNet
 
 dnn_ = FastDVDNet(video_original=video_norm)
 batch_original_array, _ = dnn_.data_handling(stride=50)
@@ -163,7 +163,7 @@ test_video = RVideo_PN_FPN_hotPixel[30000:50000:1]
 video_norm = Normalization(test_video).normalized_image_global()
 
 # Training
-from piscat.Plugins.UAI.UAI.DNNModel.FastDVDNet import FastDVDNet
+from piscat.Plugins.UAI.DNNModel.FastDVDNet import FastDVDNet
 
 dnn_ = FastDVDNet(video_original=video_norm)
 batch_original_array, cropped_video = dnn_.data_handling(stride=1)
@@ -203,13 +203,13 @@ JupyterSubplotDisplay(list_videos=[feature_DNN, diff_vid, video_mask],
 ![](img_2.png)
 
 ```python
-from piscat.Plugins.UAI.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
+from piscat.Plugins.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
 
 feature_maps_spatio = CreateFeatures(video=cropped_video[2:-2, ...])
 dog_features = feature_maps_spatio.dog2D_creater(low_sigma=[1.7, 1.7], high_sigma=[1.8, 1.8], internal_parallel_flag=False)
 
 
-from piscat.Plugins.UAI.UAI.Anomaly.DNN_anomaly import DNNAnomaly
+from piscat.Plugins.UAI.Anomaly.DNN_anomaly import DNNAnomaly
 
 if_dnn = DNNAnomaly([video_mask, dog_features], contamination=0.002)
 mask_video_ = if_dnn.apply_IF_spacial_temporal(step=10, stride=200)
@@ -258,7 +258,7 @@ around each center of mass.
 
 
 ```python
-from piscat.Plugins.UAI.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
+from piscat.Plugins.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
 
 binery_localization = BinaryToiSCATLocalization(video_binary=result_anomaly_, sigma=1.7, 
                                                 video_iSCAT=test_video, 
