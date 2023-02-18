@@ -3,6 +3,8 @@
 Detecting low SNR PSFs is a challenging task, specially for small proteins. The main difficulty arises from the speckly background due to its similarity to a protein PSF. PiSCAT uses unsupervised machine learning methods known as anomaly detection to recognize anomalous events (e.g. protein PSF) from background data using a handcrafted feature matrix based on the isolation forest (iForest) [[1]()]. 
 
 ## Previously on PiSCAT tutorials...
+<span style="color:red">Please install PiSCAT Plugins ``UAI`` ([link](https://piscat.readthedocs.io/installation.html#adding-piscat-plugins)) before running this tutorial!</span>.
+
 Previously, we demonstrated how to use PiSCAT's APIs for [setting up the PiSCAT modules and downloading a demo iSCAT video](Tutorial1.ipynb#Setting-up-the-PiSCAT-modules-and-downloading-a-demo-iSCAT-video), [performing basic checks on the acquisition process](Tutorial1.ipynb#Examining-the-status-line-&-removing-it) and [basic data visualization](Tutorial1.ipynb#Display-and-inspect-a-loaded-video) and how we can used [DRA](Tutorial2.ipynb##Differential-imaging-of-averaged-iSCAT-frames) and [FPN](Tutorial3.ipynb#Tutorial-for-the-correction-of-the-fixed-pattern-noise-in-iSCAT-images-recorded-using-a-sCMOS-camera) for backgorund correction. Based on the number of available CPU cores for parallel processing, this tutorial needs 12-20 GB of computer memory (RAM) to run.
 
 

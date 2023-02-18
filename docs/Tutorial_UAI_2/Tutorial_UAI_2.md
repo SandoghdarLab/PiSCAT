@@ -6,6 +6,9 @@ used to create the feature matrix (see [Creating handcrafted feature matrix](Tut
 
 
 ## Previously on PiSCAT tutorials...
+<span style="color:red">Please install PiSCAT Plugins ``UAI`` ([link](https://piscat.readthedocs.io/installation.html#adding-piscat-plugins)) before running this tutorial!</span>.
+
+
 We assume the user is familiar with [PiSCAT](https://piscat.readthedocs.io/). In particular, we have previously demonstrated how
 to use PiSCAT’s APIs for setting up the PiSCAT modules and downloading a demo iSCAT video,
 performing basic checks on the acquisition process and basic data visualization and how one can
