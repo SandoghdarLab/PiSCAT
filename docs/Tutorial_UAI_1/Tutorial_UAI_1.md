@@ -120,19 +120,18 @@ JupyterSubplotDisplay(list_videos=[video_pn_hotPixel[batchSize:-batchSize, ...],
 
 Each pixel in a frame is categorized as anomalous/normal based on spatiotemporal information extracted from neighboring pixels and frames. The characteristics matrix for each frame has a 2D shape, with the number of rows corresponding to the number of pixels in the one frame and the number of columns representing Spatio-temporal features. This example has 8 temporal features (e.g. mean from batch one and two (M1, M2), the standard deviation of batch one and two (S1, S2), calibrating mean of batch one and two by removing the non-zero mean (M12)) and two spatial features (difference of Gaussian (DoG) and DRA). In this case, we skipped several frames to reduce computation time.
 
-
 ```python
-from piscat.Plugins.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
+from piscat.Plugin.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
 
 temporal_features = CreateFeatures(video=video_pn_hotPixel)
 out_feature_t_1 = temporal_features.temporal_features(batchSize=batchSize, flag_dc=False)
 out_feature_t_2 = temporal_features.temporal_features(batchSize=batchSize, flag_dc=True)
 
 spatio_features = CreateFeatures(video=RVideo_PN_FPN_hotPixel)
-dog_features = spatio_features.dog2D_creater(low_sigma=[1.7, 1.7], 
-                                             high_sigma=[1.8, 1.8], 
+dog_features = spatio_features.dog2D_creater(low_sigma=[1.7, 1.7],
+                                             high_sigma=[1.8, 1.8],
                                              internal_parallel_flag=False)
-#Spatio_temporal_anomaly
+# Spatio_temporal_anomaly
 feature_list = []
 feature_list.append(out_feature_t_1[0][0:-1:100])
 feature_list.append(out_feature_t_1[1][0:-1:100])
@@ -145,11 +144,11 @@ feature_list.append(dog_features[0:-1:100])
 feature_list.append(RVideo_PN_FPN_hotPixel[0:-1:100])
 
 # Display features
-list_titles = ['M1', 'M2', 'S1', 'S2', '|M1 -M2|', '|M1-M12|', '|M2-M12|','DoG']
-JupyterSubplotDisplay(list_videos=feature_list[:-1], 
-                        numRows=2, numColumns=4, list_titles=list_titles, 
-                        imgSizex=10, imgSizey=5, IntSlider_width='500px',
-                        median_filter_flag=False, color='gray', value=73)
+list_titles = ['M1', 'M2', 'S1', 'S2', '|M1 -M2|', '|M1-M12|', '|M2-M12|', 'DoG']
+JupyterSubplotDisplay(list_videos=feature_list[:-1],
+                      numRows=2, numColumns=4, list_titles=list_titles,
+                      imgSizex=10, imgSizey=5, IntSlider_width='500px',
+                      median_filter_flag=False, color='gray', value=73)
 ```
 
 ```lang-none    
@@ -169,19 +168,18 @@ JupyterSubplotDisplay(list_videos=feature_list[:-1],
 
 The collected features are fed into the `SpatioTemporalAnomalyDetection` class, which generates a feature matrix for each frame and feeds it to the specified anomaly technique (e.g. iForest). The output is a binary vector equal to the total number of pixels in the frame. `fun_anomaly` reshapes the output and produces a 2D  binary.
 
-
 ```python
-from piscat.Plugins.UAI.Anomaly.spatio_temporal_anomaly import SpatioTemporalAnomalyDetection
+from piscat.Plugin.UAI.Anomaly.spatio_temporal_anomaly import SpatioTemporalAnomalyDetection
 
 # Applying anomaly detection
 anomaly_st = SpatioTemporalAnomalyDetection(feature_list, inter_flag_parallel_active=False)
 binary_st, _ = anomaly_st.fun_anomaly(scale=1, method='IsolationForest', contamination=0.006)
 
 # Display 
-JupyterSubplotDisplay(list_videos=[RVideo_PN_FPN_hotPixel[0:-1:100], binary_st], 
-                                    numRows=1, numColumns=2, list_titles=['DRA', 'anomaly'], 
-                                    imgSizex=10, imgSizey=10, IntSlider_width='500px',
-                                    median_filter_flag=False, color='gray', value=73)
+JupyterSubplotDisplay(list_videos=[RVideo_PN_FPN_hotPixel[0:-1:100], binary_st],
+                      numRows=1, numColumns=2, list_titles=['DRA', 'anomaly'],
+                      imgSizex=10, imgSizey=10, IntSlider_width='500px',
+                      median_filter_flag=False, color='gray', value=73)
 ```
 
 ```lang-none     
@@ -198,12 +196,11 @@ JupyterSubplotDisplay(list_videos=[RVideo_PN_FPN_hotPixel[0:-1:100], binary_st],
 
 The results of anomaly detection generate a binary video with zero values for the pixels that have been identified as anomalous. The number of connected pixels in a certain region indicates the likelihood that this region contains an actual iPSF. Based on the facts, the `BinaryToiSCATLocalization` class employs [morphological operations](https://scikit-image.org/docs/stable/api/skimage.morphology.html#area-closing) to eliminate low probability pixels and determine the center of mass for each highlighted area. Previous localization methods (e.g., DOG, 2D-Gaussian fit, and radial symmetry) can now be utilized to fine-tune localization with sub-pixel accuracy in the window around each center of mass.
 
-
 ```python
-from piscat.Plugins.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
+from piscat.Plugin.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
 
-binery_localization = BinaryToiSCATLocalization(video_binary=binary_st, 
-                                                video_iSCAT=RVideo_PN_FPN_hotPixel[0:-1:100], 
+binery_localization = BinaryToiSCATLocalization(video_binary=binary_st,
+                                                video_iSCAT=RVideo_PN_FPN_hotPixel[0:-1:100],
                                                 area_threshold=4, internal_parallel_flag=False)
 
 df_PSFs = binery_localization.gaussian2D_fit_iSCAT(scale=5, internal_parallel_flag=False)

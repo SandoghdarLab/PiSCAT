@@ -118,8 +118,6 @@ As a first step for training the fastdvdnet, the data needs to be normalized. Th
 which can be created by using the `data_handling` function. The output of this class can then be fed
 into a tarining model.
 
-
-
 ```python
 from piscat.Preproccessing.normalization import Normalization
 
@@ -128,14 +126,14 @@ train_video = RVideo_PN_FPN_hotPixel[30000:50000:1]
 video_norm = Normalization(train_video).normalized_image_global()
 
 # Training
-from piscat.Plugins.UAI.DNNModel.FastDVDNet import FastDVDNet
+from piscat.Plugin.UAI.DNNModel.FastDVDNet import FastDVDNet
 
 dnn_ = FastDVDNet(video_original=video_norm)
 batch_original_array, _ = dnn_.data_handling(stride=50)
 
-save_DNN_path = os.path.join(dir_path, 'Tutorials', 'Demo data')#The path to the measurement data
+save_DNN_path = os.path.join(dir_path, 'Tutorials', 'Demo data')  # The path to the measurement data
 
-hyperparameters = {'DNN_batch_size':20, 'epochs': 100, 'shuffle': False, 'validation_split': 0.33}
+hyperparameters = {'DNN_batch_size': 20, 'epochs': 100, 'shuffle': False, 'validation_split': 0.33}
 dnn_.train(video_input_array=batch_original_array,
            DNN_param=hyperparameters,
            video_label_array=None,
@@ -154,10 +152,8 @@ dnn_.train(video_input_array=batch_original_array,
 Results of DNN can be seen here. Due to artifacts that occur around edges and corners, we use the
 `Mask2Video` class to apply a circular mask on the video.
 
-
 ```python
-save_DNN_path = os.path.join(dir_path, 'Tutorials', 'Demo data', 'UAI')#The path to the measurement data
-
+save_DNN_path = os.path.join(dir_path, 'Tutorials', 'Demo data', 'UAI')  # The path to the measurement data
 
 from piscat.Preproccessing.normalization import Normalization
 
@@ -166,29 +162,28 @@ test_video = RVideo_PN_FPN_hotPixel[30000:50000:1]
 video_norm = Normalization(test_video).normalized_image_global()
 
 # Training
-from piscat.Plugins.UAI.DNNModel.FastDVDNet import FastDVDNet
+from piscat.Plugin.UAI.DNNModel.FastDVDNet import FastDVDNet
 
 dnn_ = FastDVDNet(video_original=video_norm)
 batch_original_array, cropped_video = dnn_.data_handling(stride=1)
 
-
-feature_DNN = dnn_.test(video_input_array=batch_original_array, path_save=save_DNN_path, 
-          name_weights="anomaly_weights.h5")
+feature_DNN = dnn_.test(video_input_array=batch_original_array, path_save=save_DNN_path,
+                        name_weights="anomaly_weights.h5")
 
 from piscat.Preproccessing.applying_mask import Mask2Video
 
 diff_vid = np.abs(cropped_video[2:-2, ...] - feature_DNN)
 M2Vid = Mask2Video(diff_vid, mask=None, inter_flag_parallel_active=False)
-circlur_mask = M2Vid.mask_generating_circle(center=(int(diff_vid.shape[1]/2), int(diff_vid.shape[2]/2)), 
+circlur_mask = M2Vid.mask_generating_circle(center=(int(diff_vid.shape[1] / 2), int(diff_vid.shape[2] / 2)),
                                             redius=30)
 video_mask = M2Vid.apply_mask(flag_nan=False)
 
 # Display 
 list_titles = ['DNN_output', 'probability map', 'masked probability map']
-JupyterSubplotDisplay(list_videos=[feature_DNN, diff_vid, video_mask], 
-                        numRows=1, numColumns=3, list_titles=list_titles, 
-                        imgSizex=20, imgSizey=20, IntSlider_width='500px',
-                        median_filter_flag=True, color='gray', value=17681)
+JupyterSubplotDisplay(list_videos=[feature_DNN, diff_vid, video_mask],
+                      numRows=1, numColumns=3, list_titles=list_titles,
+                      imgSizex=20, imgSizey=20, IntSlider_width='500px',
+                      median_filter_flag=True, color='gray', value=17681)
 ```
 
 ```lang-none  
@@ -206,34 +201,34 @@ JupyterSubplotDisplay(list_videos=[feature_DNN, diff_vid, video_mask],
 ![](img_2.png)
 
 ```python
-from piscat.Plugins.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
+from piscat.Plugin.UAI.Anomaly.hand_crafted_feature_genration import CreateFeatures
 
 feature_maps_spatio = CreateFeatures(video=cropped_video[2:-2, ...])
-dog_features = feature_maps_spatio.dog2D_creater(low_sigma=[1.7, 1.7], high_sigma=[1.8, 1.8], internal_parallel_flag=False)
+dog_features = feature_maps_spatio.dog2D_creater(low_sigma=[1.7, 1.7], high_sigma=[1.8, 1.8],
+                                                 internal_parallel_flag=False)
 
-
-from piscat.Plugins.UAI.Anomaly.DNN_anomaly import DNNAnomaly
+from piscat.Plugin.UAI.Anomaly.DNN_anomaly import DNNAnomaly
 
 if_dnn = DNNAnomaly([video_mask, dog_features], contamination=0.002)
 mask_video_ = if_dnn.apply_IF_spacial_temporal(step=10, stride=200)
-
 
 from piscat.Preproccessing.normalization import Normalization
 
 r_diff = int(0.5 * abs(mask_video_.shape[1] - video_norm.shape[1]))
 c_diff = int(0.5 * abs(mask_video_.shape[2] - video_norm.shape[2]))
 
-mask_video_pad = np.pad(mask_video_, ((0, 0), (r_diff, r_diff), (c_diff, c_diff)), 'constant', constant_values=((0, 0), (1, 1), (1, 1)))
+mask_video_pad = np.pad(mask_video_, ((0, 0), (r_diff, r_diff), (c_diff, c_diff)), 'constant',
+                        constant_values=((0, 0), (1, 1), (1, 1)))
 
 result_anomaly_ = mask_video_pad.copy()
 result_anomaly_[mask_video_pad == -1] = 0
 result_anomaly_ = Normalization(video=result_anomaly_.astype(int)).normalized_image_specific()
 
 # Display 
-JupyterSubplotDisplay(list_videos=[video_norm, result_anomaly_], 
-                                    numRows=1, numColumns=2, list_titles=['DRA', 'Anomaly'], 
-                                    imgSizex=10, imgSizey=10, IntSlider_width='500px',
-                                    median_filter_flag=False, color='gray', value=17681)
+JupyterSubplotDisplay(list_videos=[video_norm, result_anomaly_],
+                      numRows=1, numColumns=2, list_titles=['DRA', 'Anomaly'],
+                      imgSizex=10, imgSizey=10, IntSlider_width='500px',
+                      median_filter_flag=False, color='gray', value=17681)
 ```
 
 ```lang-none      
@@ -259,12 +254,11 @@ for each highlighted area. Previous localization methods (e.g., DOG, 2D-Gaussian
 symmetry) can now be utilized to fine tune localization with sub-pixel accuracy in the window
 around each center of mass.
 
-
 ```python
-from piscat.Plugins.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
+from piscat.Plugin.UAI.Anomaly.anomaly_localization import BinaryToiSCATLocalization
 
-binery_localization = BinaryToiSCATLocalization(video_binary=result_anomaly_, sigma=1.7, 
-                                                video_iSCAT=test_video, 
+binery_localization = BinaryToiSCATLocalization(video_binary=result_anomaly_, sigma=1.7,
+                                                video_iSCAT=test_video,
                                                 area_threshold=3, internal_parallel_flag=False)
 
 df_PSFs = binery_localization.gaussian2D_fit_iSCAT(scale=1, internal_parallel_flag=False)
