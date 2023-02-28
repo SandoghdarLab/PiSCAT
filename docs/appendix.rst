@@ -17,7 +17,7 @@ Structure of the PiSCAT
 The PiSCAT structure is depicted in the following diagram. [2].
 
 .. image:: ./Fig/PiSCAT_structure.png
-  :width: 700
+  :width: 500
   :alt:  PiSCAT pipeline [1]
   :align: center
 
@@ -28,7 +28,7 @@ The implementation analysis pipeline, including the final results for self-super
 push the sensitivity limit in label-free detection of single proteins below 10 kDa, is shown in the following Fig [3].
 
 .. image:: ./Fig/PiSCAT_NM.png
-  :width: 700
+  :width: 900
   :alt:  PiSCAT pipeline [1]
   :align: center
 
