@@ -11,16 +11,16 @@ of single proteins below 10 kDa.
 
 Existing algorithms for detecting biomolecules using a label-free optical technique cannot detect single proteins
 with a molecular mass of fewer than 66 KDa with high precision
-`[1]<https://joss.theoj.org/papers/10.21105/joss.04024>`_, `[2]<https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_. Although
+`[1] <https://joss.theoj.org/papers/10.21105/joss.04024>`_, `[2] <https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_. Although
 prior PiSCAT pipeline algorithms included spatial-temporal information, they operated in two steps with equal
-weights `[2]<https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_. The modified version of this technique
+weights `[2] <https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_. The modified version of this technique
 changed the localization part to reduce false positive detection by utilizing the capabilities of ML/DNN to mix
 spatial-temporal information with unequal weights in a simultaneous fashion. UAI demonstrates that an unsupervised
 machine learning approach for anomaly detection increases the mass sensitivity limit to below 10 kDa, i.e., by a
 factor of four compared to the state-of-the-art from other methods. Thus, this plugin enables the identification of
 tiny nanoparticles by optical methods. The details and findings of this pipeline are published in the journal
 Nature Methods with the title  "Self-supervised machine learning pushes the sensitivity limit in label-free detection
-of single proteins below 10 kDa" `[3]<https://www.nature.com/articles/s41592-023-01778-2>`_.
+of single proteins below 10 kDa" `[3] <https://www.nature.com/articles/s41592-023-01778-2>`_.
 
 
 
