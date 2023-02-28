@@ -52,6 +52,7 @@ Once the installation is done and the python environment is activated, enter the
 ```
 python -m piscat.Tutorials
 ```
+
 This plugin has two tutorials.
 
 [1] `Tutorial for anomaly detection (Hand crafted feature matrix) <https://piscat.readthedocs.io/Tutorial_UAI_1/Tutorial_UAI_1.html>`_
