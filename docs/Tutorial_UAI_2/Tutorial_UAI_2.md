@@ -2,7 +2,7 @@
 
 We use the FastDVDNet model to extract suitable features for anomaly detection [[1](https://openaccess.thecvf.com/content_CVPR_2020/html/Tassano_FastDVDnet_Towards_Real-Time_Deep_Video_Denoising_Without_Flow_Estimation_CVPR_2020_paper.html)]. The outcome
 is a predicted frame that is subtracted from the target frame to construct a feature map that is
-used to create the feature matrix (see [Creating handcrafted feature matrix](Tutorial_anomaly_1.ipynb#Creating-hand-crafted-feature-matrix)).
+used to create the feature matrix (see [Creating handcrafted feature matrix](https://piscat.readthedocs.io/Tutorial_UAI_1/Tutorial_UAI_1.html)).
 
 
 ## Previously on PiSCAT tutorials...
