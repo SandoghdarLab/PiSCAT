@@ -40,7 +40,7 @@ pip install piscat
 2. To add PiSCAT Plugins, enter the following command in the console in the same python environment you install piscat:
 
 ```
-python -m piscat.Plugin UAI
+python -m piscat.Plugins UAI
 ```
 
 
