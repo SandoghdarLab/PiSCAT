@@ -52,8 +52,14 @@ large, complex, heterogeneous data. HDF5 uses a "file directory" like structure 
 the file in structured ways and to embed metadata as well, making it self-describing.
 
 
-PiSCAT:
+PiSCAT
 -------
+
+.. toctree::
+   :maxdepth: 1
+   :caption: PiSCAT Plugins:
+
+   plugin_UAI
 
 .. toctree::
    :maxdepth: 1
