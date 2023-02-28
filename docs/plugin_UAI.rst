@@ -28,7 +28,7 @@ Installation
 ------------
 
 Since this is a plugin for PiSCAT, first, you should install
-PiSCAT (see `PiSCAT website <https://piscat.readthedocs.io/installation.html>`_; after that, this
+PiSCAT (see `PiSCAT installation <https://piscat.readthedocs.io/installation.html>`_); after that, this
 plugging can add to PiSCAT.
 
 1. To install PiSCAT using PyPi, enter the following command in the console (you need the last version of piscat):
@@ -43,8 +43,10 @@ pip install piscat
 python -m piscat.Plugin UAI
 ```
 
+
 Running PiSCAT plugin Tutorials
 --------------------------------
+
 Once the installation is done and the python environment is activated, enter the following command in the console:
 
 ```
@@ -58,23 +60,23 @@ This plugin has two tutorials.
 
 license
 -------
+
 This plugin has a separate license from the general PiSCAT. The license will be added very soon. Meanwhile, if you have any questions regarding the
 license, please contact with the following emails:
 
-```
-- houman.mirzaalian-dastjerdi@mpl.mpg.de
-- matthias.baer@mpl.mpg.de
-```
+[1] houman.mirzaalian-dastjerdi@mpl.mpg.de
+
+[2] matthias.baer@mpl.mpg.de
+
 
 References
 ----------
 
+[1] `Mirzaalian Dastjerdi, H., Gholami Mahmoodabadi, R., Bär, M., Sandoghdar, V., & Köstler, H. (2022). PiSCAT: A Python Package for Interferometric Scattering Microscopy. The Journal of Open Source Software, 7. <https://joss.theoj.org/papers/10.21105/joss.04024>`_
 
-[1] (`Mirzaalian Dastjerdi, H., Gholami Mahmoodabadi, R., Bär, M., Sandoghdar, V., & Köstler, H. (2022). PiSCAT: A Python Package for Interferometric Scattering Microscopy. The Journal of Open Source Software, 7. <https://joss.theoj.org/papers/10.21105/joss.04024>`_)
+[2] `Dastjerdi, H. M., Dahmardeh, M., Gemeinhardt, A., Mahmoodabadi, R. G., Köstler, H., & Sandoghdar, V. (2021). Optimized analysis for sensitive detection and analysis of single proteins via interferometric scattering microscopy. Journal of Physics D: Applied Physics, 55, 054002. <https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_
 
-[2] (`Dastjerdi, H. M., Dahmardeh, M., Gemeinhardt, A., Mahmoodabadi, R. G., Köstler, H., & Sandoghdar, V. (2021). Optimized analysis for sensitive detection and analysis of single proteins via interferometric scattering microscopy. Journal of Physics D: Applied Physics, 55, 054002. <https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_)
-
-[3] (`Dahmardeh, M., Mirzaalian Dastjerdi, H., Mazal, H. et al. Self-supervised machine learning pushes the sensitivity limit in label-free detection of single proteins below 10kDa. Nat Methods (2023). <https://www.nature.com/articles/s41592-023-01778-2>`_)
+[3] `Dahmardeh, M., Mirzaalian Dastjerdi, H., Mazal, H. et al. Self-supervised machine learning pushes the sensitivity limit in label-free detection of single proteins below 10kDa. Nat Methods (2023). <https://www.nature.com/articles/s41592-023-01778-2>`_
 
 
 
