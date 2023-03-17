@@ -1,0 +1,123 @@
+[project]
+name = "piscat"
+dynamic = ["version"]
+description = "A high-performance library for interferometric scattering microscopy."
+readme = "README.md"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.8"
+authors = [
+    { name = "The PiSCAT Developers", email = "piscat@mpl.mpg.de" },
+    { name = "Houman Mirzaalian Dastjerdi" },
+    { name = "Marco Heisig" },
+    { name = "Matthias Baer" },
+    { name = "Reza Gholami" },
+    { name = "Mohammad Hossein Sheikhsaraf" },
+]
+keywords = ["Microscopy", "iSCAT"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "astropy",
+    "flifile",
+    "GitPython",
+    "h5py",
+    "imageio-ffmpeg",
+    "ipywidgets",
+    "joblib",
+    "matplotlib",
+    "networkx",
+    "notebook",
+    "numba",
+    "numpy>=1.22.0",
+    "opencv-python",
+    "pandas",
+    "psutil",
+    "PyQt6==6.2",
+    "pyqtgraph==0.12",
+    "PyQtWebEngine",
+    "Pyside6==6.2",
+    "requests",
+    "scikit-image",
+    "scikit_learn",
+    "scipy>=0.14.0",
+    "subprocess.run",
+    "tensorflow",
+    "tifffile",
+    "tqdm",
+    "trackpy",
+    "wget",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "typing_extensions",
+    "pycodestyle",
+    "ruff",
+]
+test = [
+    "coverage",
+    "pytest",
+    "pytest-benchmark[histogram]",
+]
+
+[project.urls]
+documentation = "https://piscat.readthedocs.io/"
+source = "https://github.com/SandoghdarLab/PiSCAT/"
+tracker = "https://github.com/SandoghdarLab/PiSCAT/issues"
+
+[project.gui-scripts]
+gui-name = "piscat.GUI:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "piscat/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["/piscat"]
+
+[tool.black]
+line-length = 98
+target-version = ['py37', 'py38']
+include = '\.pyi?$'
+
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 98
+skip_gitignore = true
+known_first_party = ["piscat"]
+
+[tool.ruff]
+line-length = 98
+select = ["E", "F", "B"]
+src = ["piscat", "tests"]
+target-version = "py38"
+
+# [tool.pytest.ini_options]
+# addopts = ["--import-mode=importlib"]
+
+[tool.pyright]
+include = ["piscat"]
+pythonVersion = "3.8"
+typeCheckingMode = "strict"
+reportMissingImports = true
+
+[tool.coverage.run]
+branch = true
+source = ["piscat"]
+exclude_lines = [
+    "if 0:",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"
