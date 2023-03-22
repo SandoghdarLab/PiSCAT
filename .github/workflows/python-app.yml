@@ -1,12 +1,8 @@
 name: Checks
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
-  
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -32,7 +28,7 @@ jobs:
     env:
       # Display must be available globally for linux to know where xvfb is
       DISPLAY: :0
-      
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -58,11 +54,11 @@ jobs:
         python -m pip install coverage coverage-lcov pytest
         # install dependencies
         pip install -e .
-        
+
         # show installed packages
         pip freeze
-        
-        
+
+
     - name: Install dependencies for Windows
       if: runner.os == 'Windows'
       run: |
@@ -78,7 +74,7 @@ jobs:
         coverage run -m pytest tests/test_smoke.py tests/Module/InputOutput/ tests/Module/Preproccessing/ tests/Module/Analysis/ tests/Module/Trajectory tests/Module/BackgroundCorrection tests/Module/Localization
     - name: code coverage report
       run: |
-        coverage report -m  
+        coverage report -m
         coverage html
     - name: Setup Pages
       uses: actions/configure-pages@v2
