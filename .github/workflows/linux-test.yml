@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  python-3-9-dbg:
+  python39-dbg:
     runs-on: ubuntu-20.04
     env:
       # For Xvfb
@@ -35,7 +35,7 @@ jobs:
           uname -a
           ulimit -a
           free -h
-          python-3.9-dbg --version
+          python3.9-dbg --version
       - name: Install PiSCAT and its Dependencies
         run: |
           # Update Python build utilities.
