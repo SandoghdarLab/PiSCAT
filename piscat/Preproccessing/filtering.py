@@ -7,7 +7,7 @@ import scipy.ndimage
 import scipy.signal
 from joblib import Parallel, delayed
 from PySide6.QtCore import *
-from scipy.ndimage.filters import median_filter
+from scipy.ndimage import median_filter
 from skimage import filters
 from tqdm.autonotebook import tqdm
 
