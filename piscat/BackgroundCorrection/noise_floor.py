@@ -1,12 +1,9 @@
-import math
-
 import numpy as np
 from joblib import Parallel, delayed
 from matplotlib import pyplot as plt
 
 from piscat.BackgroundCorrection import DRA
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from piscat.Preproccessing.filtering import Filters
 from piscat.Visualization.print_colors import PrintColors
 
 

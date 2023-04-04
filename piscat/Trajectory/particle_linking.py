@@ -1,12 +1,10 @@
 from __future__ import print_function
 
-import pandas as pd
 import trackpy as tp
 from PySide6.QtCore import *
 from tqdm.autonotebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from piscat.Localization import data_handeling
 
 
 class WorkerSignals(QObject):

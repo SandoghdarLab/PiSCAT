@@ -1,9 +1,5 @@
-import math
-from math import log, sqrt
-
 import numpy as np
-from scipy import spatial
-from scipy.ndimage import gaussian_filter, gaussian_laplace
+from scipy.ndimage import gaussian_filter
 from skimage.util import img_as_float
 
 

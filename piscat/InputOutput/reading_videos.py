@@ -8,8 +8,6 @@ import pandas as pd
 import tifffile
 from astropy.io import fits
 from flifile import FliFile
-from joblib import Parallel, delayed
-from PIL import Image
 from skimage import io
 from skimage.color import rgb2gray
 from tqdm.autonotebook import tqdm

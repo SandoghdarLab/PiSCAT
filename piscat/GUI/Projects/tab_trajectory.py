@@ -1,8 +1,8 @@
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
 from piscat.Trajectory import particle_linking, temporal_filtering
-from piscat.Visualization import plot, plot_histogram
+from piscat.Visualization import plot_histogram
 
 
 class Tracking_GUI(QtWidgets.QWidget):

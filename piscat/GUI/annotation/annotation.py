@@ -6,7 +6,7 @@ __email__ = "hmirzaa@mpl.mpg.de
 
 import json
 import re
-from base64 import b64decode, b64encode
+from base64 import b64encode
 
 import pandas as pd
 from PySide6.QtCore import *

@@ -5,7 +5,6 @@ import pywt
 from joblib import Parallel, delayed
 from PySide6.QtCore import *
 from skimage import filters
-from skimage.filters import rank
 from skimage.morphology import rectangle
 from tqdm.autonotebook import tqdm
 from tqdm.notebook import tqdm

@@ -1,11 +1,6 @@
-import os
-from functools import partial
-
-import numpy as np
 from PySide6 import QtCore, QtWidgets
 
 from piscat.Analysis.analysis_protein_videos import protein_analysis
-from piscat.GUI.InputOutput import Reading
 from piscat.InputOutput import reading_videos
 
 

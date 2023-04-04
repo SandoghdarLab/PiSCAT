@@ -15,7 +15,6 @@ from piscat.Localization import data_handeling, frst, gaussian_2D_fit, radial_sy
 from piscat.Localization.difference_of_gaussian import dog_preview
 from piscat.Preproccessing import filtering, normalization
 from piscat.Visualization import display_jupyter
-from piscat.Visualization.display_jupyter import JupyterPSFs_localizationPreviewDisplay
 
 
 class PSFsExtraction:

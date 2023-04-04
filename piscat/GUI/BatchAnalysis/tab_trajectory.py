@@ -1,7 +1,4 @@
-from PySide6 import QtCore, QtGui, QtWidgets
-
-from piscat.Trajectory import particle_linking, temporal_filtering
-from piscat.Visualization import plot, plot_histogram
+from PySide6 import QtCore, QtWidgets
 
 
 class Tracking_GUI(QtWidgets.QWidget):

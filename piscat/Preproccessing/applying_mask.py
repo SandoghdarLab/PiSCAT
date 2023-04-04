@@ -1,6 +1,4 @@
 import cv2 as cv
-import matplotlib as mpl
-import matplotlib.pylab as plt
 import numpy as np
 from joblib import Parallel, delayed
 from tqdm.autonotebook import tqdm

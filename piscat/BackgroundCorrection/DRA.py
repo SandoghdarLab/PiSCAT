@@ -3,8 +3,8 @@ import time
 import numpy as np
 from joblib import Parallel, delayed
 from numba import njit
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
+from PySide6 import QtCore
+#from PySide6.QtCore import *
 from scipy.ndimage import uniform_filter1d
 from tqdm.autonotebook import tqdm
 
@@ -30,15 +30,15 @@ def numba_diff(ndarray_1, ndarray_2):
     return diff_result
 
 
-class WorkerSignals(QObject):
-    updateProgress_DRA = Signal(int)
-    result_final = Signal(object)
-    finished_DRA = Signal()
-    DRA_complete_signal = Signal(bool)
-    updateProgress_FPNC = Signal(int)
+class WorkerSignals(QtCore.QObject):
+    updateProgress_DRA = QtCore.Signal(int)
+    result_final = QtCore.Signal(object)
+    finished_DRA = QtCore.Signal()
+    DRA_complete_signal = QtCore.Signal(bool)
+    updateProgress_FPNC = QtCore.Signal(int)
 
 
-class DifferentialRollingAverage(QRunnable):
+class DifferentialRollingAverage(QtCore.QRunnable):
     def __init__(
         self,
         video=None,
@@ -107,14 +107,14 @@ class DifferentialRollingAverage(QRunnable):
         self.FPNc_video = None
         self.flag_thread_FPNc = True
         self.object_update_progressBar = object_update_progressBar
-        self.threadpool = QThreadPool()
+        self.threadpool = QtCore.QThreadPool()
         self.signals = WorkerSignals()
 
-    @Slot()
+    @QtCore.Slot()
     def check_DRA_finish(self, flag):
         self.DRA_flag_run = flag
 
-    @Slot()
+    @QtCore.Slot()
     def run(self, *args, **kwargs):
         self.signals.DRA_complete_signal.connect(self.check_DRA_finish)
         video_DRA = self.differential_rolling(
@@ -126,19 +126,19 @@ class DifferentialRollingAverage(QRunnable):
 
         self.signals.result_final.emit(video_DRA)
 
-    @Slot()
+    @QtCore.Slot()
     def thread_FPNc_complete(self):
         self.object_update_progressBar.setRange(self.p_max)
         self.object_update_progressBar.setLabel("")
         print("THREAD FPNc COMPLETE!")
 
-    @Slot()
+    @QtCore.Slot()
     def result_tread_FPNc(self, result):
         self.FPNc_video = result
         self.flag_thread_FPNc = False
         print("FPNc video update!")
 
-    @Slot()
+    @QtCore.Slot()
     def startProgressBarFPNc(self, instance, **kwargs):
         self.thread_FPNc = instance(**kwargs)
         self.thread_FPNc.signals.updateProgress_FPNC.connect(

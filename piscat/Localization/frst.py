@@ -3,7 +3,6 @@ from __future__ import print_function
 import math
 from math import sqrt
 
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy import spatial
 from skimage import img_as_float

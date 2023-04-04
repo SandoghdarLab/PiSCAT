@@ -1,7 +1,4 @@
-import pandas as pd
-from PySide6 import QtCore, QtGui, QtWidgets
-
-from piscat.Localization import localization_filtering, particle_localization
+from PySide6 import QtCore, QtWidgets
 
 
 class Localization_GUI(QtWidgets.QWidget):

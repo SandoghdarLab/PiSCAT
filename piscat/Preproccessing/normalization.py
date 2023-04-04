@@ -1,6 +1,5 @@
 import numpy as np
 from joblib import Parallel, delayed
-from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import *
 from tqdm.autonotebook import tqdm
 

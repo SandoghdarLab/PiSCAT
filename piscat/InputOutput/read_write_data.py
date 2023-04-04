@@ -9,7 +9,6 @@ import numpy as np
 import scipy.io
 import wget
 from IPython.display import display
-from ipywidgets import fixed, interact, interact_manual, interactive
 
 from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
 

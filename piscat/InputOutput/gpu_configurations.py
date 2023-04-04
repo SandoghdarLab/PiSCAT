@@ -2,7 +2,6 @@ import os
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import json
-import sys
 
 import pandas as pd
 from tensorflow.python.client import device_lib

@@ -1,7 +1,6 @@
 import os
 import time
 
-import cv2
 import imageio
 from tqdm.autonotebook import tqdm
 
