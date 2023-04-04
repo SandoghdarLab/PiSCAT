@@ -43,7 +43,7 @@ setup(
                         "scipy>=0.14.0",
                         "matplotlib",
                         "opencv-python",
-                        "pandas",
+                        "pandas<2.0",
                         "PyQt6==6.2",
                         "Pyside6==6.2",
                         "pyqtgraph==0.12",

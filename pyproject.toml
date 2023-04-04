@@ -34,7 +34,7 @@ dependencies = [
     "numba",
     "numpy",
     "opencv-python",
-    "pandas",
+    "pandas<2.0",
     "psutil",
     "PyQt6==6.2.3",
     "pyqtgraph==0.12",
