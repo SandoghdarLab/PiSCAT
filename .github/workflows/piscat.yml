@@ -42,7 +42,7 @@ jobs:
           python -m pip freeze
       - name: Run Test Suite
         run: |
-          pytest --cov=piscat --cov-report html:htmlcov --cov-report term tests/Module/InputOutput/cpu_configurations_test.py
+          pytest --cov=piscat --cov-report html:htmlcov --cov-report term
 
   deploy:
     if: (github.repository == 'SandoghdarLab/PiSCAT') && (github.ref == 'refs/heads/master')
