@@ -16,7 +16,7 @@ from PySide6.QtCore import *
 from scipy.ndimage import median_filter
 
 from piscat.InputOutput import read_status_line
-from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
+from piscat.Trajectory.data_handling import protein_trajectories_list2dic
 from piscat.Visualization.print_colors import PrintColors
 
 

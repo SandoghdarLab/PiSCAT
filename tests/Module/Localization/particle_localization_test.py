@@ -3,7 +3,7 @@ import pickle
 import unittest
 
 from piscat.BackgroundCorrection.DRA import *
-from piscat.Localization import data_handeling, difference_of_gaussian, particle_localization
+from piscat.Localization import data_handling, difference_of_gaussian, particle_localization
 
 current_path = os.path.abspath(os.path.join("."))
 
@@ -319,11 +319,11 @@ class TestPSFsExtraction(unittest.TestCase):
     def test_list2dataframe(self):
         set_obj_parameter(self.test_obj, "dog", "BOTH")
         psf_list = self.test_obj.psf_detection_kernel(0)
-        data_frame = data_handeling.list2dataframe(psf_list, self.test_obj.video)
+        data_frame = data_handling.list2dataframe(psf_list, self.test_obj.video)
         self.assertTrue(data_frame.shape == (13, 5))
         append_list = np.zeros(shape=(data_frame.shape[0], 1))
         appended_list = np.append(psf_list, append_list, axis=1)
-        data_frame = data_handeling.list2dataframe(appended_list, self.test_obj.video)
+        data_frame = data_handling.list2dataframe(appended_list, self.test_obj.video)
         self.assertTrue(data_frame.shape == (13, 7))
 
     def test_difference_of_gaussian(self):

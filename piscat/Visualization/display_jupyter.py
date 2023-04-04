@@ -11,7 +11,7 @@ from skimage.morphology import disk
 
 from piscat.InputOutput import read_status_line
 from piscat.Localization import directional_intensity, gaussian_2D_fit
-from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
+from piscat.Trajectory.data_handling import protein_trajectories_list2dic
 
 
 class JupyterDisplay:

@@ -6,7 +6,7 @@ import numpy as np
 
 from piscat.Localization import localization_filtering
 from piscat.Trajectory import TemporalFilter, protein_trajectories_list2dic
-from piscat.Trajectory.data_handeling import fixed_length
+from piscat.Trajectory.data_handling import fixed_length
 from piscat.Trajectory.particle_linking import Linking
 
 current_path = os.path.abspath(os.path.join("."))

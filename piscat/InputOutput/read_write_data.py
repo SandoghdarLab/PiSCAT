@@ -10,7 +10,7 @@ import scipy.io
 import wget
 from IPython.display import display
 
-from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
+from piscat.Trajectory.data_handling import protein_trajectories_list2dic
 
 
 def save_mat(data, path, name=""):

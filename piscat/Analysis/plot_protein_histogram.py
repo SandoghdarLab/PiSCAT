@@ -12,7 +12,7 @@ from scipy.signal import find_peaks, savgol_filter
 from sklearn.mixture import GaussianMixture
 
 from piscat.InputOutput import read_write_data
-from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
+from piscat.Trajectory.data_handling import protein_trajectories_list2dic
 from piscat.Visualization.plot import plot_bright_dark_psf, plot_bright_dark_psf_inTime
 from piscat.Visualization.print_colors import PrintColors
 

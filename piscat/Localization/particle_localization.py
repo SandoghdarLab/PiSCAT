@@ -11,7 +11,7 @@ from skimage.feature import peak_local_max
 from tqdm.autonotebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from piscat.Localization import data_handeling, frst, gaussian_2D_fit, radial_symmetry_centering
+from piscat.Localization import data_handling, frst, gaussian_2D_fit, radial_symmetry_centering
 from piscat.Localization.difference_of_gaussian import dog_preview
 from piscat.Preproccessing import filtering, normalization
 from piscat.Visualization import display_jupyter
@@ -263,7 +263,7 @@ class PSFsExtraction:
         """
 
         if type(PSF_List) is list:
-            df_PSF = data_handeling.list2dataframe(feature_position=PSF_List, video=self.video)
+            df_PSF = data_handling.list2dataframe(feature_position=PSF_List, video=self.video)
         elif type(PSF_List) is pd.core.frame.DataFrame:
             df_PSF = PSF_List
         else:
@@ -509,7 +509,7 @@ class PSFsExtraction:
             ]
 
         tmp2 = [tmp for tmp in result0 if isinstance(tmp, np.ndarray)]  # remove non values
-        sub_pixel_localization = data_handeling.list2dataframe(
+        sub_pixel_localization = data_handling.list2dataframe(
             feature_position=tmp2, video=self.video
         )
 
@@ -775,7 +775,7 @@ class PSFsExtraction:
             result0 = [self.psf_detection_kernel(x) for x in tqdm(range(self.video.shape[0]))]
             result = [x for x in result0 if x is not None]
 
-        df_PSF = data_handeling.list2dataframe(feature_position=result, video=self.video)
+        df_PSF = data_handling.list2dataframe(feature_position=result, video=self.video)
 
         return df_PSF
 
@@ -1043,7 +1043,7 @@ class PSFsExtraction:
         else:
             result = self.psf_detection_kernel(self.frame_number)
 
-        df_PSF = data_handeling.list2dataframe(feature_position=result, video=self.video)
+        df_PSF = data_handling.list2dataframe(feature_position=result, video=self.video)
 
         return df_PSF
 
