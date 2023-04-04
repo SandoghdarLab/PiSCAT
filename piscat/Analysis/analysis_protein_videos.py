@@ -10,8 +10,8 @@ from piscat.Trajectory import particle_linking, temporal_filtering
 
 
 def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
-    """
-    This function analyses several videos based on the setting that the user defines in the ``hyperparameters`` and ``flags``.
+    """This function analyses several videos based on the setting that the
+    user defines in the ``hyperparameters`` and ``flags``.
 
     Parameters
     ----------
@@ -22,21 +22,33 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
         list of all video names.
 
     hyperparameters: dic
-        The dictionary is used to define different parameters for analysis. In the following you can see the example of this dictionary:
+        The dictionary is used to define different parameters for analysis. In
+        the following you can see the example of this dictionary:
 
-            | hyperparameters = {'function': 'dog', 'batch_size': 3000, 'min_V_shape_width': 1500, 'threshold_max': 6000
-                                    'search_range': 2, 'memory': 20, 'min_sigma': 1.3, 'max_sigma': 3, 'sigma_ratio': 1.1,
-                                    'PSF_detection_thr': 4e-5, 'overlap': 0, 'outlier_frames_thr': 20, 'Mode_PSF_Segmentation': 'BOTH',
-                                    'symmetric_PSFs_thr': 0.6, 'mode_FPN': name_mkdir, 'select_correction_axis': 1, 'im_size_x': 72,
-                                    'im_size_y': 72, 'image_format': '<u2'}
+            | hyperparameters = {'function': 'dog', 'batch_size': 3000,
+                                 'min_V_shape_width': 1500, 'threshold_max':
+                                 6000 'search_range': 2, 'memory': 20,
+                                 'min_sigma': 1.3, 'max_sigma': 3,
+                                 'sigma_ratio': 1.1, 'PSF_detection_thr': 4e-5,
+                                 'overlap': 0, 'outlier_frames_thr': 20,
+                                 'Mode_PSF_Segmentation': 'BOTH',
+                                 'symmetric_PSFs_thr': 0.6, 'mode_FPN':
+                                 name_mkdir, 'select_correction_axis': 1,
+                                 'im_size_x': 72, 'im_size_y': 72,
+                                 'image_format': '<u2'}
 
     flags: dic
-         The dictionary is used to active/deactivate different parts in analyzing pipelines. In the following you can see the example of this dictionary:
+         The dictionary is used to active/deactivate different parts in
+         analyzing pipelines. In the following you can see the example of this
+         dictionary:
 
-            | flags = {'PN': True, 'FPNc': True, 'outlier_frames_filter': True, 'Dense_Filter': True, 'symmetric_PSFs_Filter': True, 'FFT_flag': True}
+            | flags = {'PN': True, 'FPNc': True, 'outlier_frames_filter': True,
+              'Dense_Filter': True, 'symmetric_PSFs_Filter': True, 'FFT_flag':
+              True}
 
     name_mkdir: str
-        It defines the name of the folder that automatically creates next to each video to save the results of the analysis and setting history.
+        It defines the name of the folder that automatically creates next to
+        each video to save the results of the analysis and setting history.
 
     Returns
     -------
@@ -50,17 +62,21 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
 
         * `All extracted trajectories with 'HDF5' and 'Matlab' format.`
 
-            * `MATLAB` saves array contains the following information for each particle:
+            * `MATLAB` saves array contains the following information for each
+              particle:
 
-            | [intensity_horizontal, intensity_vertical, particle_center_intensity,
-                                particle_center_intensity_follow, particle_frame, particle_sigma, particle_X, particle_Y, particle_ID,
-                                optional(fit_intensity, fit_x, fit_y, fit_X_sigma, fit_Y_sigma, fit_Bias, fit_intensity_error,
-                                fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error, fit_Bias_error)]
+            | [intensity_horizontal, intensity_vertical,
+               particle_center_intensity, particle_center_intensity_follow,
+               particle_frame, particle_sigma, particle_X, particle_Y,
+               particle_ID, optional(fit_intensity, fit_x, fit_y, fit_X_sigma,
+               fit_Y_sigma, fit_Bias, fit_intensity_error, fit_x_error,
+               fit_y_error, fit_X_sigma_error, fit_Y_sigma_error,
+               fit_Bias_error)]
 
             * `HDF5` saves dictionary similar to the following structures:
 
-            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ..., ..., 'particle_ID': ...},
-                        "#1": {}, ...}
+            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ...,
+                        ..., 'particle_ID': ...}, "#1": {}, ...}
 
         * `Table of PSFs information`
 

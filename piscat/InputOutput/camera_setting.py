@@ -16,9 +16,9 @@ class CameraParameters:
         bit_depth=12,
         pixelSize=0.66,
     ):
-        """
-        Based on the camera features, this class generates a JSON file.
-        This JSON was used by other functions and methods to set certain parameters, such as pixel size.
+        """Based on the camera features, this class generates a JSON file.
+        This JSON was used by other functions and methods to set certain
+        parameters, such as pixel size.
 
         Parameters
         ----------
@@ -39,6 +39,7 @@ class CameraParameters:
 
         pixelSize: float
             Pixel size of camera.
+
         """
         try:
             self.read_camera_setting(name=name)

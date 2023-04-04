@@ -37,8 +37,7 @@ class HTML_Display:
         imgSizex=5,
         imgSizey=5,
     ):
-        """
-        This class display the video for HTML.
+        """This class display the video for HTML.
 
         Parameters
         ----------
@@ -46,7 +45,8 @@ class HTML_Display:
            Input video
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -59,6 +59,7 @@ class HTML_Display:
 
         imgSizey: int
           Image width size.
+
         """
         self.video = video
         self.median_filter_flag = median_filter_flag
@@ -111,8 +112,7 @@ class HTML_Display_StatusLine:
         imgSizey=5,
         time_delay=0.5,
     ):
-        """
-        This class displays the video in the HTML while highlight status line
+        """This class displays the video in the HTML while highlight status line
 
         Parameters
         ----------
@@ -120,7 +120,8 @@ class HTML_Display_StatusLine:
            Input video.
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -133,6 +134,7 @@ class HTML_Display_StatusLine:
 
         time_delay: float
            Delay between frames in milliseconds.
+
         """
         self.color = color
         self.video = video
@@ -262,7 +264,8 @@ class HTML_PSFs_subplotLocalizationDisplay(QRunnable, PrintColors):
             List of titles for each sub plot.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -444,7 +447,8 @@ class HTML_subplotDisplay:
             List of titles for each sub plot.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -547,8 +551,8 @@ class HTMLSelectedPSFs_localizationDisplay:
         imgSizey=5,
         time_delay=0.5,
     ):
-        """
-        This class displays video in the HTML while highlighting selected PSF.
+        """This class displays video in the HTML while highlighting selected
+        PSF.
 
         Parameters
         ----------
@@ -558,21 +562,24 @@ class HTMLSelectedPSFs_localizationDisplay:
         particles: dic
              Dictionary similar to the following structures.:
 
-            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ..., ..., 'particle_ID': ...},
-                "#1": {}, ...}
+            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ...,
+               ..., 'particle_ID': ...}, "#1": {}, ...}
 
         particles_num: str
             Choose the corresponding key in the particles dictionary.
 
         frame_extend: int
-            Display particle for ``frame_extend`` before and after segmented ones. In case there are not enough frames before/after
-            , it shows only for the number of existing frames.
+            Display particle for ``frame_extend`` before and after segmented
+            ones. In case there are not enough frames before/after, it shows
+            only for the number of existing frames.
 
         flag_fit2D: bool
-            It activate 2D-Gaussian fit to extract fitting information of selected PSF.
+            It activate 2D-Gaussian fit to extract fitting information of
+            selected PSF.
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -585,6 +592,7 @@ class HTMLSelectedPSFs_localizationDisplay:
 
         time_delay: float
             Delay between frames in milliseconds.
+
         """
 
         self.video = video

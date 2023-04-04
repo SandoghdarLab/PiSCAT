@@ -21,7 +21,8 @@ def write_binary(dir_path, file_name, data, type="original"):
         Video with numpy format.
 
     type: str or bin_type
-        The video bin type is not changed by 'original,' but the user can convert it (e.g. float --> int16).
+        The video bin type is not changed by 'original,' but the user can
+        convert it (e.g. float --> int16).
 
     Returns
     -------

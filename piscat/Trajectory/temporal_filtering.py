@@ -4,8 +4,8 @@ from tqdm.autonotebook import tqdm
 
 class TemporalFilter:
     def __init__(self, video, batchSize):
-        """
-        Filters to be applied to temporal features are included in this class.
+        """ Filters to be applied to temporal features are included in this
+        class.
 
         Parameters
         ----------
@@ -20,13 +20,14 @@ class TemporalFilter:
         self.batchSize = batchSize
 
     def filter_tarj_base_length(self, df_PSFs, threshold_min, threshold_max):
-        """
-        This function removes the particle from data frames that have a temporal length smaller and bigger than threshold_min values.
+        """This function removes the particle from data frames that have a
+        temporal length smaller and bigger than threshold_min values.
 
         Parameters
         ----------
         df_PSFs: pandas dataframe
-            The data frame contains PSFs locations and ID (x, y, frame, sigma, particle, ...)
+            The data frame contains PSFs locations and ID (x, y, frame, sigma,
+            particle, ...)
 
         threshold_min: int
             The minimum acceptable temporal length of one particle.
@@ -41,6 +42,7 @@ class TemporalFilter:
 
         his_all_particles: list
             List that shows the statistics of particles length.
+
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError("---data frames is empty!---")
@@ -54,8 +56,8 @@ class TemporalFilter:
         return particles, his_all_particles
 
     def v_trajectory(self, df_PSFs, threshold_min, threshold_max):
-        """
-        This function extract v-shape of the particle that has a temporal length between threshold_min and threshold_min max values.
+        """This function extract v-shape of the particle that has a temporal
+        length between threshold_min and threshold_min max values.
 
         Parameters
         ----------
@@ -73,16 +75,20 @@ class TemporalFilter:
         all_trajectories: List of list
             Returns list of extracted data (i.e [List of list])
 
-            | [intensity_horizontal, intensity_vertical, particle_center_intensity,
-                particle_center_intensity_follow, particle_frame, particle_sigma, particle_X, particle_Y, particle_ID,
-                optional(fit_intensity, fit_x, fit_y, fit_X_sigma, fit_Y_sigma, fit_Bias, fit_intensity_error,
-                fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error, fit_Bias_error)]
+            | [intensity_horizontal, intensity_vertical,
+               particle_center_intensity, particle_center_intensity_follow,
+               particle_frame, particle_sigma, particle_X, particle_Y,
+               particle_ID, optional(fit_intensity, fit_x, fit_y, fit_X_sigma,
+               fit_Y_sigma, fit_Bias, fit_intensity_error, fit_x_error,
+               fit_y_error, fit_X_sigma_error, fit_Y_sigma_error,
+               fit_Bias_error)]
 
         particles: pandas dataframe
              The dataframe after using temporal filter (x, y, frame, sigma, particle, ...)
 
         his_all_particles: list
             List that shows the statistics of particles length.
+
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             raise ValueError("---data frames is empty!---")
@@ -94,23 +100,27 @@ class TemporalFilter:
         return all_trajectories, particles, his_all_particles
 
     def v_profile(self, df_PSFs, window_size=2000):
-        """
-        The V-Shape trajectories and extended version are calculated.
+        """The V-Shape trajectories and extended version are calculated.
 
         Parameters
         ----------
         window_size: int
-            The maximum number of the frames that follow the V-Shape contrast from both sides.
+            The maximum number of the frames that follow the V-Shape contrast
+            from both sides.
 
         Returns
         -------
         all_trajectories: List of list
             Returns array contains the following information for each particle.
 
-            | [intensity_horizontal, intensity_vertical, particle_center_intensity,
-                particle_center_intensity_follow, particle_frame, particle_sigma, particle_X, particle_Y, particle_ID,
-                optional(fit_intensity, fit_x, fit_y, fit_X_sigma, fit_Y_sigma, fit_Bias, fit_intensity_error,
-                fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error, fit_Bias_error)]
+            | [intensity_horizontal, intensity_vertical,
+               particle_center_intensity, particle_center_intensity_follow,
+               particle_frame, particle_sigma, particle_X, particle_Y,
+               particle_ID, optional(fit_intensity, fit_x, fit_y, fit_X_sigma,
+               fit_Y_sigma, fit_Bias, fit_intensity_error, fit_x_error,
+               fit_y_error, fit_X_sigma_error, fit_Y_sigma_error,
+               fit_Bias_error)]
+
         """
 
         all_trajectories = []

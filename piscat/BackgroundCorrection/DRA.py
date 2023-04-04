@@ -49,8 +49,7 @@ class DifferentialRollingAverage(QtCore.QRunnable):
         FPN_flag_GUI=False,
         gui_select_correction_axis=1,
     ):
-        """
-        Differential Rolling Average (DRA).
+        """Differential Rolling Average (DRA).
 
         Parameters
         ----------
@@ -75,13 +74,16 @@ class DifferentialRollingAverage(QtCore.QRunnable):
                 This flag is defined as True when GUI calls this method.
 
             * `FPN_flag_GUI`: bool
-                This flag is defined as True when GUI calls this method while we want activate FPNc.
+                This flag is defined as True when GUI calls this method while
+                we want activate FPNc.
 
             * `gui_select_correction_axis`: int (0/1), 'Both'
-                This parameter is used only when FPN_flag_GUI is True, otherwise it will be ignored.
+                This parameter is used only when FPN_flag_GUI is True,
+                otherwise it will be ignored.
 
             * `object_update_progressBar`: object
                 Object that updates the progress bar in GUI.
+
         """
         super(DifferentialRollingAverage, self).__init__()
 
@@ -158,32 +160,36 @@ class DifferentialRollingAverage(QtCore.QRunnable):
         max_iterations=10,
         FFT_widith=1,
     ):
-        """
-        To use DRA, you'll need to call the "differential rolling" process.
+        """To use DRA, you'll need to call the "differential rolling" process.
 
         Parameters
         ----------
         FPN_flag: bool
-            This flag activates the fixed pattern noise correction function in case define as true.
+            This flag activates the fixed pattern noise correction function in
+            case define as true.
 
         select_correction_axis: int (0/1), 'Both'
-            This parameter is used only when FPN_flag is True, otherwise it will be ignored.
+            This parameter is used only when FPN_flag is True, otherwise it
+            will be ignored.
 
             * 0: FPN will be applied row-wise.
             * 1: FPN will be applied column-wise.
             * 'Both': FPN will be applied on two axis.
 
         FFT_flag: bool
-            In case it is True, DRA will be performed in parallel to improve the time performance.
+            In case it is True, DRA will be performed in parallel to improve
+            the time performance.
 
         inter_flag_parallel_active: bool
             This flag actives/inactives parallel computation of wFPNc.
 
         max_iterations: int
-            This parameter is used when fFPT is selected that defines the total number of filtering iterations.
+            This parameter is used when fFPT is selected that defines the total
+            number of filtering iterations.
 
         FFT_widith: int
-            This parameter is used when fFPT is selected that defines the frequency mask's width.
+            This parameter is used when fFPT is selected that defines the
+            frequency mask's width.
 
         Returns
         -------
@@ -192,6 +198,7 @@ class DifferentialRollingAverage(QtCore.QRunnable):
 
         gainMap1D_: NDArray
             Returns projection on each frame based on the correction axis
+
         """
         if FPN_flag and self.mode_FPN == "cpFPN":
             print("\n--- start DRA + cpFPN_axis: " + str(select_correction_axis) + "---")

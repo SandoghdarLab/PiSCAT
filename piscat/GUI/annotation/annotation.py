@@ -781,7 +781,8 @@ class SubQGraphicsScene(QGraphicsScene):
 
         # update selections/highlights based on cursor location
 
-        # check if any vertex is epsilon close to the cursor position and find the corresponding shape
+        # check if any vertex is epsilon close to the cursor position and find
+        # the corresponding shape
         id_point = [
             [i for i, y in enumerate(poly.points) if distance(pos - y) <= self.epsilon]
             for poly in self.polys

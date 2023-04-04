@@ -5,15 +5,16 @@ import numpy as np
 
 class StatusLine:
     def __init__(self, video):
-        """
-        A status line from an image frame is read.
-        The last line of the Photonfocus camra picture is the status line.
-        All data is returned in the form of a struct, as well as the cut-frame without the status line.
+        """A status line from an image frame is read.  The last line of the
+        Photonfocus camra picture is the status line.  All data is returned in
+        the form of a struct, as well as the cut-frame without the status line.
 
         Parameters
         ----------
         video: NDArray
-            Numpy array with the following form should be used for video (number of frame, width, height).
+            Numpy array with the following form should be used for video
+            (number of frame, width, height).
+
         """
 
         self.video = video
@@ -31,6 +32,7 @@ class StatusLine:
 
         self.camera_info: dic
             The dictionary that illustrates the obtain information in the status line.
+
         """
 
         if np.all(self.video[0, -1, :4] == [0xFF, 0x00, 0xAA, 0x55]):
@@ -163,7 +165,8 @@ class StatusLine:
         if width >= 44:
             ROIy_start = (
                 sum(np.multiply(StatusLine[40:44], converter)) / NrAcc
-            )  # Vertical start position of ROI (Window.Y). In MROI-mode this parameter is the start position of the first ROI
+            )  # Vertical start position of ROI (Window.Y). In MROI-mode this
+               # parameter is the start position of the first ROI
             self.camera_info["ROIy_start"] = ROIy_start
 
         if width >= 48:
@@ -213,5 +216,6 @@ class StatusLine:
         if width >= 96:
             TrgLvl = self.decimalToBinary(
                 int(np.sum(np.multiply(StatusLine[92:96], converter))) / NrAcc, 4
-            )  # Trigger Level: signals level of the trigger input signals. Bit 0: ExSync (CC1): Bit 1: I/O Trigger; Bit 2: CC3; Bit 3: CC4
+            )  # Trigger Level: signals level of the trigger input signals. Bit
+               # 0: ExSync (CC1): Bit 1: I/O Trigger; Bit 2: CC3; Bit 3: CC4
             self.camera_info["TrgLvl"] = TrgLvl

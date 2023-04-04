@@ -10,14 +10,17 @@ from piscat.InputOutput.read_write_data import load_dict_from_hdf5
 
 class ReadProteinAnalysis(CameraParameters):
     def __init__(self, camera_Name="Photonfocus.json"):
-        """
-        This class is developed to read the results of different video analyses that were analyzed with the ``protein_analysis``
-        function. In the end, this class has different methods to display histograms or save histogram results.
+        """This class is developed to read the results of different video
+        analyses that were analyzed with the ``protein_analysis`` function. In
+        the end, this class has different methods to display histograms or save
+        histogram results.
 
         Parameters
         ----------
         camera_Name: str
-            Define the name of the camera configuration JSON file that will use for reading pixel size.
+            Define the name of the camera configuration JSON file that will use
+            for reading pixel size.
+
         """
         CameraParameters.__init__(self, name=camera_Name)
 
@@ -31,9 +34,10 @@ class ReadProteinAnalysis(CameraParameters):
         type_file="h5",
         his_setting=None,
     ):
-        """
-        By calling the object of class this function tries to read the result of the corresponding video it is defined
-        with ``dirName`` and ``name_dir``. These results concatenated with previous results to use for plotting histogram.
+        """By calling the object of class this function tries to read the
+        result of the corresponding video it is defined with ``dirName`` and
+        ``name_dir``. These results concatenated with previous results to use
+        for plotting histogram.
 
         Parameters
         ----------
@@ -47,19 +51,25 @@ class ReadProteinAnalysis(CameraParameters):
             The number of frames for the corresponding video.
 
         MinPeakWidth: int
-            This is defined as the minimum V-shaped mouth that will use for prominence.
+            This is defined as the minimum V-shaped mouth that will use for
+            prominence.
 
         MinPeakProminence: int
-            This is defined as the minimum V-shape height that will use for prominence.
+            This is defined as the minimum V-shape height that will use for
+            prominence.
 
         type_file: str
-            It defines the format of the file as the save file for analysis data ('HDF5', 'Matlab').
+            It defines the format of the file as the save file for analysis
+            data ('HDF5', 'Matlab').
 
         his_setting: dict
-            The dictionary is used to establish various parameters for localization-based filtering of PSF information
-            in the histogram. The following gives an example of how this dictionary might be used:
+            The dictionary is used to establish various parameters for
+            localization-based filtering of PSF information in the
+            histogram. The following gives an example of how this dictionary
+            might be used:
 
-            | his_setting = {'radius': 20, 'flag_localization_filter': True, 'centerOfImage_X': 34, 'centerOfImage_Y': 34}
+            | his_setting = {'radius': 20, 'flag_localization_filter': True,
+                             'centerOfImage_X': 34, 'centerOfImage_Y': 34}
 
         """
 
@@ -143,8 +153,8 @@ class ReadProteinAnalysis(CameraParameters):
     def plot_localization_heatmap(
         self, pixelSize=None, unit="um", flag_in_time=False, time_delay=0.1, dir_name=None
     ):
-        """
-        This method plots heatmap of particle localization. The size of each disk depicts the movment of each particles during tracking.
+        """This method plots heatmap of particle localization. The size of
+        each disk depicts the movment of each particles during tracking.
 
         Parameters
         ----------
@@ -158,7 +168,8 @@ class ReadProteinAnalysis(CameraParameters):
             In the case of True, show binding and unbinding events in time.
 
         time_delay: float
-            Define the time delay between binding and unbinding events frames. This only works when `flag_in_time` is set to True.
+            Define the time delay between binding and unbinding events
+            frames. This only works when `flag_in_time` is set to True.
 
         dir_name: str
             You can save time slap frames if you specify a save path.
@@ -174,17 +185,21 @@ class ReadProteinAnalysis(CameraParameters):
         )
 
     def plot_hist(self, his_setting):
-        """
-        This method plots histograms for different contrast extraction methods for black PSFs, white PSFs and all together.
+        """This method plots histograms for different contrast extraction
+        methods for black PSFs, white PSFs and all together.
 
         Parameters
         ----------
         his_setting: dic
-             This dictionary defines a histogram plotting setting. In the following you can see the example for it:
+             This dictionary defines a histogram plotting setting. In the
+             following you can see the example for it:
 
-                | his_setting = {'bins': None, 'lower_limitation': -7e-4, 'upper_limitation': 7e-4,
-                                   'Flag_GMM_fit': True, 'max_n_components': 3, 'step_range': 1e-6,
-                                   'face': 'g', 'edge': 'k', 'scale': 1e1, 'external_GMM': False}
+                | his_setting = {'bins': None, 'lower_limitation': -7e-4,
+                                 'upper_limitation': 7e-4, 'Flag_GMM_fit':
+                                 True, 'max_n_components': 3, 'step_range':
+                                 1e-6, 'face': 'g', 'edge': 'k', 'scale': 1e1,
+                                 'external_GMM': False}
+
         """
         self.his_.plot_histogram(
             bins=his_setting["bins"],
@@ -200,16 +215,20 @@ class ReadProteinAnalysis(CameraParameters):
         )
 
     def plot_hist_2Dfit(self, his_setting):
-        """
-        This method plots histograms for 2D Gaussian fitting contrast for black PSFs, white PSFs and all together.
+        """This method plots histograms for 2D Gaussian fitting contrast for
+        black PSFs, white PSFs and all together.
 
         Parameters
         ----------
         his_setting: dic
-            This dictionary defines a histogram plotting setting. In the following you can see the example for it:
+            This dictionary defines a histogram plotting setting. In the
+            following you can see the example for it:
 
-               | his_setting = {'bins': None, 'lower_limitation': -7e-4, 'upper_limitation': 7e-4,
-                                  'Flag_GMM_fit': True, 'max_n_components': 3, 'step_range': 1e-6, 'face': 'g', 'edge': 'k', }
+               | his_setting = {'bins': None, 'lower_limitation': -7e-4,
+                                'upper_limitation': 7e-4, 'Flag_GMM_fit': True,
+                                'max_n_components': 3, 'step_range': 1e-6,
+                                'face': 'g', 'edge': 'k', }
+
         """
         self.his_.plot_fit_histogram(
             bins=his_setting["bins"],
@@ -223,8 +242,7 @@ class ReadProteinAnalysis(CameraParameters):
         )
 
     def save_hist_data(self, dirName, name_dir, his_setting):
-        """
-        This function save the histogram data with HDF5 format.
+        """This function save the histogram data with HDF5 format.
 
         Parameters
         ----------
@@ -235,10 +253,13 @@ class ReadProteinAnalysis(CameraParameters):
             Name that use for saving data.
 
         his_setting: dic
-            This dictionary defines a histogram plotting setting. In the following you can see the example for it:
+            This dictionary defines a histogram plotting setting. In the
+            following you can see the example for it:
 
-               | his_setting = {'lower_limitation': -7e-4, 'upper_limitation': 7e-4,
-                                  'Flag_GMM_fit': True, 'max_n_components': 3}
+               | his_setting = {'lower_limitation': -7e-4, 'upper_limitation':
+                                7e-4, 'Flag_GMM_fit': True, 'max_n_components':
+                                3}
+
         """
         self.his_.save_hist_data(
             dirName=dirName,

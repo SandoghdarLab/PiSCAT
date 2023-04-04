@@ -95,9 +95,9 @@ class Plugin(PrintColors):
     def add_plugin(self, plugin_name):
         if plugin_name == "UAI":
             answer = self.confirm(
-                f"{self.BOLD}\n This plugin is not obeyed the general PiSCAT license, and it has its specific {self.ENDC}"
-                f'{self.BOLD}license. please visit "https://github.com/SandoghdarLab/PiSCAT_plugin" for more {self.ENDC}'
-                f"{self.BOLD}information.{self.ENDC} {self.OKGREEN}\nI agree to install this plugin with a new License (y/n):{self.ENDC}"
+                f"{self.BOLD}\nThis plugin uses a more restrictive license!{self.ENDC}"
+                f"{self.BOLD}\nSee https://github.com/SandoghdarLab/PiSCAT_plugin{self.ENDC}"
+                f"{self.OKGREEN}\nI agree to this plugin's License (y/n):{self.ENDC}"
             )
             if answer:
                 files_changes = self.copy_plugin(plugin_name)
@@ -106,17 +106,6 @@ class Plugin(PrintColors):
                     path = os.path.join(folder_path, plugin_name)
                     # implement pip as a subprocess:
                     subprocess.run("pip install -r" + path + "\\requirements.txt")
-
-    # def start_tutorials():
-    #     """Copy the PiSCAT tutorials to the target directory and start Jupyter server
-    #
-    #     The target directory is the first argument of sys.argv.
-    #     """
-    #
-    #     target_root = parse_args()
-    #     root = copy_tutorials(target_root)
-    #     jupyter = find_jupyter()
-    #     start_server(root, jupyter)
 
 
 def main(p_name):

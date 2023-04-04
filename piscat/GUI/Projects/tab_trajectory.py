@@ -270,8 +270,6 @@ class Tracking_GUI(QtWidgets.QWidget):
             else:
                 label = False
 
-            # plot.plot2df(self.link_df_PSFS, pixel_size=self.pixel_size, scale=self.axisScale, title='', flag_label=label)
-
             his_ = PlotProteinHistogram(intersection_display_flag=False)
             his_(
                 folder_name="",

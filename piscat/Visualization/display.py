@@ -32,8 +32,8 @@ class DisplaySubplot:
     def __init__(
         self, list_videos, numRows, numColumns, step=0, median_filter_flag=False, color="gray"
     ):
-        """
-        This class shows several videos (with the same number of frames) at once.
+        """This class shows several videos (with the same number of frames) at
+        once.
 
         Parameters
         ----------
@@ -47,13 +47,15 @@ class DisplaySubplot:
            It defines number of columns in sub-display.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
 
         step: int
             Stride between visualization frames.
+
         """
 
         self.color = color
@@ -127,8 +129,7 @@ class DisplaySubplot:
 
 class Display:
     def __init__(self, video, step=0, color="gray", time_delay=0, median_filter_flag=False):
-        """
-        This class display the video.
+        """This class display the video.
 
         Parameters
         ----------
@@ -136,7 +137,8 @@ class Display:
             Input video.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -227,8 +229,8 @@ class DisplayPSFs_subplotLocalizationDisplay:
         imgSizey=5,
         time_delay=0.1,
     ):
-        """
-        This class shows several videos (with the same number of frames) at once while highlight localize PSFs.
+        """This class shows several videos (with the same number of frames) at
+        once while highlight localize PSFs.
 
         Parameters
         ----------
@@ -248,7 +250,8 @@ class DisplayPSFs_subplotLocalizationDisplay:
             List of titles for each sub plot
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -261,6 +264,7 @@ class DisplayPSFs_subplotLocalizationDisplay:
 
         time_delay: float
             Delay between frames in milliseconds.
+
         """
 
         self.list_video = list_videos

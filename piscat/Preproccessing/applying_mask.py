@@ -40,8 +40,9 @@ class Mask2Video:
             print("--- Mask is not define! ---")
 
     def apply_mask(self, flag_nan=True):
-        """
-        This method is used to apply a mask on a video. The masked values might be defined as nan, or they can be chosen from the median values of each frame.
+        """This method is used to apply a mask on a video. The masked values
+        might be defined as nan, or they can be chosen from the median values
+        of each frame.
 
         Parameters
         ----------

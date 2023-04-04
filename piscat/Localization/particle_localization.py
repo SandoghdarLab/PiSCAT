@@ -19,12 +19,13 @@ from piscat.Visualization import display_jupyter
 
 class PSFsExtraction:
     def __init__(self, video, flag_transform=False, flag_GUI=False, **kwargs):
-        """
-        This class employs a variety of PSF localization methods, including DoG/LoG/DoH/RS/RVT.
+        """This class employs a variety of PSF localization methods, including
+        DoG/LoG/DoH/RS/RVT.
 
         It returns a list containing the following details:
 
-        [[frame number, center y, center x, sigma], [frame number, center y, center x, sigma], ...]
+        [[frame number, center y, center x, sigma], [frame number, center y,
+        center x, sigma], ...]
 
         Parameters
         ----------
@@ -153,8 +154,7 @@ class PSFsExtraction:
         )
 
     def frst(self, image):
-        """
-        PSF localization using frst.
+        """PSF localization using frst.
 
         Parameters
         ----------
@@ -168,7 +168,9 @@ class PSFsExtraction:
 
         References
         ----------
-            [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry transform for detecting points of interest. Computer Vision, ECCV 2002.
+            [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry
+            transform for detecting points of interest. Computer Vision, ECCV
+            2002.
         """
 
         normaliz_image = normalization.Normalization(image).normalized_image()
@@ -235,8 +237,7 @@ class PSFsExtraction:
         return tmp
 
     def fit_Gaussian2D_wrapper(self, PSF_List, scale=5, internal_parallel_flag=False):
-        """
-        PSF localization using fit_Gaussian2D.
+        """PSF localization using fit_Gaussian2D.
 
         Parameters
         ----------
@@ -252,9 +253,13 @@ class PSFsExtraction:
         Returns
         -------
         df: pandas dataframe
-            The data frame contains PSFs locations ( 'y', 'x', 'frame', 'center_intensity', 'sigma', 'Sigma_ratio') and fitting information.
-            fit_params is a list include ('Fit_Amplitude', 'Fit_X-Center', 'Fit_Y-Center', 'Fit_X-Sigma', 'Fit_Y-Sigma',
-            'Fit_Bias', 'Fit_errors_Amplitude', 'Fit_errors_X-Center', 'Fit_errors_Y-Center', 'Fit_errors_X-Sigma', 'Fit_errors_Y-Sigma', 'Fit_errors_Bias'].
+            The data frame contains PSFs locations ( 'y', 'x', 'frame',
+            'center_intensity', 'sigma', 'Sigma_ratio') and fitting
+            information.  fit_params is a list include ('Fit_Amplitude',
+            'Fit_X-Center', 'Fit_Y-Center', 'Fit_X-Sigma', 'Fit_Y-Sigma',
+            'Fit_Bias', 'Fit_errors_Amplitude', 'Fit_errors_X-Center',
+            'Fit_errors_Y-Center', 'Fit_errors_X-Sigma', 'Fit_errors_Y-Sigma',
+            'Fit_errors_Bias'].
         """
 
         if type(PSF_List) is list:
@@ -408,10 +413,10 @@ class PSFsExtraction:
             return params
 
     def frst_one_PSF(self, image):
-        """
-        The lateral position of PSFs with subpixel resolution is returned by this function.
-        Because this function only works when there is only one PSF in the field of view, it
-        is typically used after coarse localization to extract fine localization for each PSF.
+        """The lateral position of PSFs with subpixel resolution is returned
+        by this function.  Because this function only works when there is only
+        one PSF in the field of view, it is typically used after coarse
+        localization to extract fine localization for each PSF.
 
         Parameters
         ----------
@@ -425,8 +430,10 @@ class PSFsExtraction:
 
         References
         ----------
-            [1] Parthasarathy, R. Rapid, accurate particle tracking by calculation of radial symmetry centers.
-            Nat Methods 9, 724–726 (2012). https://doi.org/10.1038/nmeth.2071
+            [1] Parthasarathy, R. Rapid, accurate particle tracking by
+            calculation of radial symmetry centers.  Nat Methods 9, 724–726
+            (2012). https://doi.org/10.1038/nmeth.2071
+
         """
         if image.shape[0] == image.shape[1]:
             xc, yc, sigma = radial_symmetry_centering.RadialCenter().radialcenter(Image=image)
@@ -448,8 +455,8 @@ class PSFsExtraction:
         return [yc, xc, sigma]
 
     def improve_localization_with_frst(self, df_PSFs, scale, flag_preview=False):
-        """
-        It extracts subpixels localization based on initial pixel localization using ``frst_one_PSF`` methods for all detected PSFs.
+        """It extracts subpixels localization based on initial pixel localization
+        using ``frst_one_PSF`` methods for all detected PSFs.
 
         Parameters
         ----------
@@ -457,7 +464,8 @@ class PSFsExtraction:
             The data frame contains PSFs locations( x, y, frame, sigma)
 
         scale: int
-            The ROI around PSFs is defined using this scale, which is based on their sigmas.
+            The ROI around PSFs is defined using this scale, which is based on
+            their sigmas.
 
         flag_preview: bool
             When the GUI calls these functions, this flag is set as True.
@@ -466,6 +474,7 @@ class PSFsExtraction:
         -------
         sub_pixel_localization: pandas dataframe
             The data frame contains subpixels PSFs locations( x, y, frame, sigma)
+
         """
         sigma = df_PSFs["sigma"].tolist()
         psf_position_x = df_PSFs["x"].tolist()
@@ -575,14 +584,15 @@ class PSFsExtraction:
         mode="BOTH",
         flag_GUI_=False,
     ):
-        """
-        This function is a wrapper for calling various PSF localization methods.
+        """This function is a wrapper for calling various PSF localization
+        methods.
 
         Parameters
         ----------
         function: str
-            PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``,
-            ``'frst_one_psf'``, ``'RVT'``)
+            PSF localization algorithm which should be selected from :
+            (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf'``,
+            ``'RVT'``)
 
         mode: str
             Defines which PSFs will be detected (``'BRIGHT'``, ``'DARK'``, or ``'BOTH'``).
@@ -591,36 +601,48 @@ class PSFsExtraction:
             Only is used when GUI calls this function.
 
         optional_1:
-            These parameters are used when ``'dog'``, ``'log'``, ``'doh'`` are defined as function.
+            These parameters are used when ``'dog'``, ``'log'``, ``'doh'`` are
+            defined as function.
 
             * `min_sigma`: float, list of floats
-                The is the minimum standard deviation for the kernel. The lower the value, the smaller blobs can be detected.
-                The standard deviations of the filter are given for each axis in sequence or with a single number which is considered for both axis.
+                The is the minimum standard deviation for the kernel. The lower
+                the value, the smaller blobs can be detected.  The standard
+                deviations of the filter are given for each axis in sequence or
+                with a single number which is considered for both axis.
 
             * `max_sigma`: float, list of floats
-                The is the maximum standard deviation for the kernel. The higher the value, the bigger blobs can be detected.
-                The standard deviations of the filter are given for each axis in sequence or with a single number
-                which is considered for both axis.
+                The is the maximum standard deviation for the kernel. The
+                higher the value, the bigger blobs can be detected.  The
+                standard deviations of the filter are given for each axis in
+                sequence or with a single number which is considered for both
+                axis.
 
             * `sigma_ratio`: float
-                * The ratio between the standard deviation of Kernels which is used for computing the DoG and LoG.
-                * The number of intermediate values of standard deviations between min_sigma and max_sigma for computing the DoH.
+                * The ratio between the standard deviation of Kernels which is
+                  used for computing the DoG and LoG.
+                * The number of intermediate values of standard deviations
+                  between min_sigma and max_sigma for computing the DoH.
 
             * `threshold_min`: float
-                The absolute lower bound for scale space maxima. Local maxima smaller than thresh are ignored. Reduce this
-                to detect blobs with less intensities.
+                The absolute lower bound for scale space maxima. Local maxima
+                smaller than thresh are ignored. Reduce this to detect blobs
+                with less intensities.
 
             * `overlap`: float
-                A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold_min, smaller blobs are eliminated.
+                A value between 0 and 1. If the area of two blobs are
+                overlapping by a fraction greater than threshold_min, smaller
+                blobs are eliminated.
 
         optional_2:
             These parameters are used when ``'frst'`` is defined as function.
 
             * `min_radial`: int
-                integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+                integer value for radius size in pixels (n in the original
+                paper); also is used as gaussian kernel size
 
             * `max_radial`: int
-                integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+                integer value for radius size in pixels (n in the original
+                paper); also is used as gaussian kernel size
 
             * `alpha`: str
                 Strictness of symmetry transform (higher=more strict; 2 is good place to start)
@@ -642,39 +664,59 @@ class PSFsExtraction:
 
             * `rvt_kind`:
                 either ``"basic"`` (only VoM), or ``"normalized"`` (VoM/MoV);
-                normalized version increases subpixel bias, but it works better at lower SNR
+                normalized version increases subpixel bias, but it works better
+                at lower SNR
 
             * `highpass_size`:
-                size of the high-pass filter; ``None`` means no filter (effectively, infinite size)
+                size of the high-pass filter; ``None`` means no filter
+                (effectively, infinite size)
 
             * `upsample`: int
-                integer image upsampling factor;
-                `rmin` and `rmax` are adjusted automatically (i.e., they refer to the non-upsampled image);
-                if ``upsample>1``, the resulting image size is multiplied by ``upsample``
+                integer image upsampling factor; `rmin` and `rmax` are adjusted
+                automatically (i.e., they refer to the non-upsampled image); if
+                ``upsample>1``, the resulting image size is multiplied by
+                ``upsample``
 
             * `rweights`:
-                relative weights of different radial kernels; must be a 1D array of the length ``(rmax-rmin+1)//coarse_factor``
-                coarse_factor: the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
-                coarse_mode: the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-                or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+                relative weights of different radial kernels; must be a 1D
+                array of the length ``(rmax-rmin+1)//coarse_factor``
+                coarse_factor: the reduction factor for the number ring
+                kernels; can be used to speed up calculations at the expense of
+                precision coarse_mode: the reduction method; can be ``"add"``
+                (add ``coarse_factor`` rings in a row to get a thicker ring,
+                which works better for smooth features), or ``"skip"`` (only
+                keep on in ``coarse_factor`` rings, which works better for very
+                fine features)
 
             * `coarse_factor`:
-                the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
+                the reduction factor for the number ring kernels; can be used
+                to speed up calculations at the expense of precision
 
             * `coarse_mode`:
-                the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-                or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+                the reduction method; can be ``"add"`` (add ``coarse_factor``
+                rings in a row to get a thicker ring, which works better for
+                smooth features), or ``"skip"`` (only keep on in
+                ``coarse_factor`` rings, which works better for very fine
+                features)
 
             * `pad_mode`:
-                edge padding mode for convolutions; can be either one of modes accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or ``"edge"``),
-                or ``"fast"``, which means faster no-padding (a combination of ``"wrap"`` and ``"constant"`` padding depending on the image size);
-                ``"fast"`` mode works faster for smaller images and larger ``rmax``, but the border pixels (within ``rmax`` from the edge) are less reliable;
-                note that the image mean is subtracted before processing, so ``pad_mode="constant"`` (default) is equivalent to padding with a constant value equal to the image mean
+                edge padding mode for convolutions; can be either one of modes
+                accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``,
+                or ``"edge"``), or ``"fast"``, which means faster no-padding (a
+                combination of ``"wrap"`` and ``"constant"`` padding depending
+                on the image size); ``"fast"`` mode works faster for smaller
+                images and larger ``rmax``, but the border pixels (within
+                ``rmax`` from the edge) are less reliable; note that the image
+                mean is subtracted before processing, so
+                ``pad_mode="constant"`` (default) is equivalent to padding with
+                a constant value equal to the image mean
 
         Returns
         -------
         df_PSF: pandas dataframe
-            The dataframe for PSFs that contains the ['x', 'y', 'frame number', 'sigma'] for each PSF.
+            The dataframe for PSFs that contains the ['x', 'y', 'frame number',
+            'sigma'] for each PSF.
+
         """
 
         self.min_sigma = min_sigma
@@ -767,13 +809,14 @@ class PSFsExtraction:
         IntSlider_width="500px",
         title="",
     ):
-        """
-        This function is a preview wrapper for calling various PSF localization methods.
+        """This function is a preview wrapper for calling various PSF
+        localization methods.
 
         Parameters
         ----------
         function: str
-            PSF localization algorithm which should be selected  from : (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf``')
+            PSF localization algorithm which should be selected from :
+            (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf``')
 
         mode: str
             Defines which PSFs will be detected (``'BRIGHT'``, ``'DARK'``, or ``'BOTH'``).
@@ -782,39 +825,52 @@ class PSFsExtraction:
             Selecting frame number that PSFs detection should apply on it.
 
         optional_1:
-            These parameters are used when ``'dog'``, ``'log'``, ``'doh'`` are defined as function.
+            These parameters are used when ``'dog'``, ``'log'``, ``'doh'`` are
+            defined as function.
 
             * `min_sigma`: float, list of floats
-                The is the minimum standard deviation for the kernel. The lower the value, the smaller blobs can be detected.
-                The standard deviations of the filter are given for each axis in sequence or with a single number which is considered for both axis.
+                The is the minimum standard deviation for the kernel. The lower
+                the value, the smaller blobs can be detected.  The standard
+                deviations of the filter are given for each axis in sequence or
+                with a single number which is considered for both axis.
 
             * `max_sigma`: float, list of floats
-                The is the maximum standard deviation for the kernel. The higher the value, the bigger blobs can be detected.
-                The standard deviations of the filter are given for each axis in sequence or with a single number
-                which is considered for both axis.
+                The is the maximum standard deviation for the kernel. The
+                higher the value, the bigger blobs can be detected.  The
+                standard deviations of the filter are given for each axis in
+                sequence or with a single number which is considered for both
+                axis.
 
             * `sigma_ratio`: float
-                * The ratio between the standard deviation of Kernels which is used for computing the DoG and LoG.
-                * The number of intermediate values of standard deviations between min_sigma and max_sigma for computing the DoH.
+                * The ratio between the standard deviation of Kernels which is
+                  used for computing the DoG and LoG.
+                * The number of intermediate values of standard deviations
+                  between min_sigma and max_sigma for computing the DoH.
 
             * `threshold_min`: float
-                The absolute lower bound for scale space maxima. Local maxima smaller than thresh are ignored. Reduce this
-                to detect blobs with less intensities.
+                The absolute lower bound for scale space maxima. Local maxima
+                smaller than thresh are ignored. Reduce this to detect blobs
+                with less intensities.
 
             * `overlap`: float
-                A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold_min, smaller blobs are eliminated.
+                A value between 0 and 1. If the area of two blobs are
+                overlapping by a fraction greater than threshold_min, smaller
+                blobs are eliminated.
 
         optional_2:
             These parameters are used when ``'frst'`` is defined as function.
 
             * `min_radial`: int
-                integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+                integer value for radius size in pixels (n in the original
+                paper); also is used as gaussian kernel size
 
             * `max_radial`: int
-                integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+                integer value for radius size in pixels (n in the original
+                paper); also is used as gaussian kernel size
 
             * `alpha`: str
-                Strictness of symmetry transform (higher=more strict; 2 is good place to start)
+                Strictness of symmetry transform (higher=more strict; 2 is good
+                place to start)
 
             * `beta`: float
                 gradient threshold_min parameter, float in range [0,1]
@@ -833,39 +889,59 @@ class PSFsExtraction:
 
             * `rvt_kind`:
                 either ``"basic"`` (only VoM), or ``"normalized"`` (VoM/MoV);
-                normalized version increases subpixel bias, but it works better at lower SNR
+                normalized version increases subpixel bias, but it works better
+                at lower SNR
 
             * `highpass_size`:
-                size of the high-pass filter; ``None`` means no filter (effectively, infinite size)
+                size of the high-pass filter; ``None`` means no filter
+                (effectively, infinite size)
 
             * `upsample`: int
-                integer image upsampling factor;
-                `rmin` and `rmax` are adjusted automatically (i.e., they refer to the non-upsampled image);
-                if ``upsample>1``, the resulting image size is multiplied by ``upsample``
+                integer image upsampling factor; `rmin` and `rmax` are adjusted
+                automatically (i.e., they refer to the non-upsampled image); if
+                ``upsample>1``, the resulting image size is multiplied by
+                ``upsample``
 
             * `rweights`:
-                relative weights of different radial kernels; must be a 1D array of the length ``(rmax-rmin+1)//coarse_factor``
-                coarse_factor: the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
-                coarse_mode: the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-                or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+                relative weights of different radial kernels; must be a 1D
+                array of the length ``(rmax-rmin+1)//coarse_factor``
+                coarse_factor: the reduction factor for the number ring
+                kernels; can be used to speed up calculations at the expense of
+                precision coarse_mode: the reduction method; can be ``"add"``
+                (add ``coarse_factor`` rings in a row to get a thicker ring,
+                which works better for smooth features), or ``"skip"`` (only
+                keep on in ``coarse_factor`` rings, which works better for very
+                fine features)
 
             * `coarse_factor`:
-                the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
+                the reduction factor for the number ring kernels; can be used
+                to speed up calculations at the expense of precision
 
             * `coarse_mode`:
-                the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-                or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+                the reduction method; can be ``"add"`` (add ``coarse_factor``
+                rings in a row to get a thicker ring, which works better for
+                smooth features), or ``"skip"`` (only keep on in
+                ``coarse_factor`` rings, which works better for very fine
+                features)
 
             * `pad_mode`:
-                edge padding mode for convolutions; can be either one of modes accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or ``"edge"``),
-                or ``"fast"``, which means faster no-padding (a combination of ``"wrap"`` and ``"constant"`` padding depending on the image size);
-                ``"fast"`` mode works faster for smaller images and larger ``rmax``, but the border pixels (within ``rmax`` from the edge) are less reliable;
-                note that the image mean is subtracted before processing, so ``pad_mode="constant"`` (default) is equivalent to padding with a constant value equal to the image mean
+                edge padding mode for convolutions; can be either one of modes
+                accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``,
+                or ``"edge"``), or ``"fast"``, which means faster no-padding (a
+                combination of ``"wrap"`` and ``"constant"`` padding depending
+                on the image size); ``"fast"`` mode works faster for smaller
+                images and larger ``rmax``, but the border pixels (within
+                ``rmax`` from the edge) are less reliable; note that the image
+                mean is subtracted before processing, so
+                ``pad_mode="constant"`` (default) is equivalent to padding with
+                a constant value equal to the image mean
 
         Returns
         -------
         df_PSF: pandas dataframe
-            The dataframe for PSFs that contains the ['x', 'y', 'frame number', 'sigma'] for each PSF
+            The dataframe for PSFs that contains the ['x', 'y', 'frame number',
+            'sigma'] for each PSF
+
         """
 
         self.min_sigma = min_sigma

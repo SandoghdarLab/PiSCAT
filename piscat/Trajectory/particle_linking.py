@@ -15,8 +15,8 @@ class WorkerSignals(QObject):
 
 class Linking:
     def __init__(self):
-        """
-         To obtain the temporal activity of each iPSF, we use the Trackpy packages' algorithm.
+        """ To obtain the temporal activity of each iPSF, we use the Trackpy
+         packages' algorithm.
 
         References
         ----------
@@ -26,8 +26,7 @@ class Linking:
         self.cpu = CPUConfigurations()
 
     def create_link(self, psf_position, search_range=50, memory=1):
-        """
-        Each iPSF temporal activity is obtained.
+        """Each iPSF temporal activity is obtained.
 
         Parameters
         ----------
@@ -35,15 +34,19 @@ class Linking:
             The data frame contains PSFs locations( x, y, frame, sigma, ...)
 
         search_range: float or tuple
-            The maximum distance features can move between frames, optionally per dimension.
+            The maximum distance features can move between frames, optionally
+            per dimension.
 
         memory: int
-            The maximum number of frames during which a feature can vanish, then reappear nearby, and be considered the same particle. 0 by default.
+            The maximum number of frames during which a feature can vanish,
+            then reappear nearby, and be considered the same particle. 0 by
+            default.
 
         Returns
         -------
         df_PSF: pandas dataframe
-            To the input data frame, append the 'particle' ID column. ( x, y, frame, sigma, particle, ...).
+            To the input data frame, append the 'particle' ID column. ( x, y,
+            frame, sigma, particle, ...).
 
         """
         df_PSF = tp.link_df(psf_position, search_range=search_range, memory=memory)
@@ -51,8 +54,7 @@ class Linking:
         return df_PSF
 
     def sorting_linking(self, df_PSFs):
-        """
-        This function uses trajectory lengths to sort particles in a dataframe.
+        """This function uses trajectory lengths to sort particles in a dataframe.
 
         Parameters
         ----------
@@ -62,7 +64,8 @@ class Linking:
         Returns
         -------
         total_sort_df_PSFs: pandas dataframe
-            The sort version of data frame contains PSFs locations(x, y, frame, sigma, particle, ...)
+            The sort version of data frame contains PSFs locations(x, y, frame,
+            sigma, particle, ...)
 
         """
         his_all_particles = df_PSFs["particle"].value_counts()

@@ -11,10 +11,10 @@ from piscat.Visualization.print_colors import PrintColors
 
 class GPUConfigurations(PrintColors):
     def __init__(self, gpu_device=None, gpu_active_flag=True, flag_report=False):
-        """
-        This class generates a JSON file for setting on the GPU that the user prefers.
-        This JSON was used by other functions and methods to set hyperparameters in a gpu usage.
-        For parallelization, PiSCAT used Tensorflow.
+        """This class generates a JSON file for setting on the GPU that the
+        user prefers.  This JSON was used by other functions and methods to set
+        hyperparameters in a gpu usage.  For parallelization, PiSCAT used
+        Tensorflow.
 
         Parameters
         ----------
@@ -22,10 +22,13 @@ class GPUConfigurations(PrintColors):
             Select the GPU device that will be used.
 
         gpu_active_flag: bool
-            Turn on the GPU version of the code. Otherwise, code is executed on the CPU.
+            Turn on the GPU version of the code. Otherwise, code is executed on
+            the CPU.
 
         flag_report: bool
-            This flag is set if you need to see the values that will be used for CPU configuration.
+            This flag is set if you need to see the values that will be used
+            for CPU configuration.
+
         """
 
         PrintColors.__init__(self)
@@ -76,7 +79,7 @@ class GPUConfigurations(PrintColors):
         Parameters
         ----------
          flag_report: bool
-            This flag is set if you need to see the values that will be used for CPU configuration.
+            Whether you need to see the values that will be used for CPU configuration.
 
         """
         subdir = "piscat_configuration"
@@ -112,5 +115,5 @@ class GPUConfigurations(PrintColors):
 
         if count_ == 0:
             print(
-                f"{self.WARNING}\nPiSCAT cannot detect any GPU! TensorFlow code is entirely executed on the CPU!!{self.ENDC}"
+                f"{self.WARNING}\nNo GPU found, TensorFlow will use CPU only!!{self.ENDC}"
             )

@@ -61,8 +61,8 @@ def feature2df(feature_position, videos):
 
 
 def list2dataframe(feature_position, video):
-    """
-    This function converts the output of ``particle_localization.PSFsExtraction`` method from list to data frame.
+    """This function converts the output of
+    ``particle_localization.PSFsExtraction`` method from list to data frame.
 
     Parameters
     ----------
@@ -75,7 +75,9 @@ def list2dataframe(feature_position, video):
     Returns
     -------
     df_features: pandas dataframe
-        PSF positions are stored in the data frame. ( 'y', 'x', 'frame', 'center_intensity', 'sigma', 'Sigma_ratio', ...).
+        PSF positions are stored in the data frame. ( 'y', 'x', 'frame',
+        'center_intensity', 'sigma', 'Sigma_ratio', ...).
+
     """
     if feature_position is not None:
         if type(feature_position) is list:

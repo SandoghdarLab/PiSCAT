@@ -7,14 +7,17 @@ from piscat.iPSF_model.VectorialDiffractionIntegral import VectorialDiffractionI
 
 class ScatteredFieldDifferentialPhase:
     def __init__(self, p, Xp, z_focus, nz, nx):
-        """
-        To calculate the Electric field scattered from a nanoparticle using a vectorial diffraction formulation.
+        """To calculate the Electric field scattered from a nanoparticle using
+        a vectorial diffraction formulation.
 
         References
         ----------
-        "Point spread function in interferometric scattering microscopy (iSCAT). Part I: aberrations in defocusing and axial localization.",
-        Reza Gholami Mahmoodabadi, Richard W. Taylor, Martin Kaller, Susann Spindler, Mahdi Mazaheri, Kiarash Kasaian, and Vahid Sandoghdar
-        Optics Express Vol. 28, Issue 18, pp. 25969-25988 (2020) https://doi.org/10.1364/OE.401374
+        "Point spread function in interferometric scattering microscopy
+        (iSCAT). Part I: aberrations in defocusing and axial localization.",
+        Reza Gholami Mahmoodabadi, Richard W. Taylor, Martin Kaller, Susann
+        Spindler, Mahdi Mazaheri, Kiarash Kasaian, and Vahid Sandoghdar Optics
+        Express Vol. 28, Issue 18, pp. 25969-25988 (2020)
+        https://doi.org/10.1364/OE.401374
 
         Parameters
         ----------

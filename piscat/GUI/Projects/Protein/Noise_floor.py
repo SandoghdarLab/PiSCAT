@@ -25,8 +25,6 @@ class Noise_Floor(QtWidgets.QMainWindow):
         self.file_path = None
         self.find_radius_update_tab_flag = True
 
-        # self.checkbox_power_normalization = QtWidgets.QCheckBox("Laser power normalization", self)
-
         self.groupBox_PN = QtWidgets.QGroupBox("Laser Power normalization:")
         self.groupBox_PN.setCheckable(True)
         self.groupBox_PN.setChecked(False)

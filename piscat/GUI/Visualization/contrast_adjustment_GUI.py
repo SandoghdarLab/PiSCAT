@@ -98,9 +98,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
         return self.groupBox_slideBar
 
     def valueHandler(self, value):
-        scaledValue = (
-            float(value) / 100
-        )  # bin_type of "value" is int so you need to convert it to float in order to get float bin_type for "scaledValue"
+        scaledValue = float(value) / 100
 
     def frame_getter(self, image):
         self.image = image

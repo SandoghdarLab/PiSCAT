@@ -9,11 +9,13 @@ from piscat.InputOutput.cpu_configurations import CPUConfigurations
 
 class SpatialFilter:
     def __init__(self):
-        """
-        We have a `SpatialFilter` class in PiSCAT that allows users to filter `outlier_frames`
-        that have a strong vibration or a particle flying by, `dense_PSFs`, and non-symmetric PSFs that
-        may not properly resemble the iPSF expected from the experimental setup.
-        The threshold_min parameter in each of these filters determines the filter's sensitivity.
+        """We have a `SpatialFilter` class in PiSCAT that allows users to
+        filter `outlier_frames` that have a strong vibration or a particle
+        flying by, `dense_PSFs`, and non-symmetric PSFs that may not properly
+        resemble the iPSF expected from the experimental setup.  The
+        threshold_min parameter in each of these filters determines the
+        filter's sensitivity.
+
         """
         self.cpu = CPUConfigurations()
 
@@ -24,9 +26,9 @@ class SpatialFilter:
         return list_frames
 
     def outlier_frames(self, df_PSFs, threshold=20):
-        """
-        This function eliminates all detected PSFs in the frame that are greater than the threshold_min value.
-        PSFs that were detected in unstable frames are reduced using this method.
+        """This function eliminates all detected PSFs in the frame that are
+        greater than the threshold_min value.  PSFs that were detected in
+        unstable frames are reduced using this method.
 
         Parameters
         ----------
@@ -61,12 +63,14 @@ class SpatialFilter:
             The data frame contains PSFs locations( x, y, frame, sigma)
 
         threshold: float
-            It specifies the portion of the overlay that two PSFs must have to remove from the list.
+            It specifies the portion of the overlay that two PSFs must have to
+            remove from the list.
 
         Returns
         -------
         filter_df_PSFs: pandas dataframe
                     The filter data frame contains PSFs locations( x, y, frame, sigma)
+
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             print("---data frames is empty!---")
@@ -171,8 +175,8 @@ class SpatialFilter:
             raise Exception("---data frames is empty!---")
 
     def remove_side_lobes_artifact(self, df_PSFs, threshold=0):
-        """
-        This filter removes false detections on side lobes of PSFs caused by the localization algorithm by comparing center intensity contrast.
+        """This filter removes false detections on side lobes of PSFs caused
+        by the localization algorithm by comparing center intensity contrast.
 
         Parameters
         ----------
@@ -180,12 +184,14 @@ class SpatialFilter:
             The data frame contains PSFs locations( x, y, frame, sigma, center_intensity)
 
         threshold: float
-            It specifies the portion of the overlay that two PSFs must have to remove from the list.
+            It specifies the portion of the overlay that two PSFs must have to
+            remove from the list.
 
         Returns
         -------
         filter_df_PSFs: pandas dataframe
             The filter data frame contains PSFs locations( x, y, frame, sigma, center_intensity)
+
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             print("---data frames is empty!---")

@@ -58,7 +58,7 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         self.main_frame_layout = QtWidgets.QVBoxLayout()
         self.main_frame.setLayout(self.main_frame_layout)
 
-        # ------------------------- Adding the main Logo ---------------------------------------------
+        # ---------- Adding the main Logo ----------
         label_logo = QtWidgets.QLabel(self)
         logo_piscat_path = pkg_resources.resource_filename(
             "piscat.GUI.icons", "PiSCAT_logo_bg.png"
@@ -76,7 +76,7 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
         label.setMovie(loader_gif)
         self.main_frame_layout.addWidget(label)
 
-        # ------------------defining the toolbox GroupBox and add it to the main frame.---------------
+        # ---------- defining the toolbox GroupBox and add it to the main frame. ----------
         self.toolbox_GB = QtWidgets.QGroupBox("Information")
         self.toolbox_GB.setFixedHeight(200)
         self.toolbox_GB_layout = QtWidgets.QVBoxLayout()

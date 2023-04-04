@@ -21,25 +21,27 @@ def fixed_length(in_list):
 
 
 def protein_trajectories_list2dic(v_shape_list):
-    """
-    From the output of ``TemporalFilter.v_trajectory``, this function converts the list to dictionary format.
+    """From the output of ``TemporalFilter.v_trajectory``, this function
+    converts the list to dictionary format.
 
     Parameters
     ----------
     v_shape_list: List of list
 
         | [intensity_horizontal, intensity_vertical, particle_center_intensity,
-            particle_center_intensity_follow, particle_frame, particle_sigma, particle_X, particle_Y, particle_ID,
-            optional(fit_intensity, fit_x, fit_y, fit_X_sigma, fit_Y_sigma, fit_Bias, fit_intensity_error,
-            fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error, fit_Bias_error)]
+           particle_center_intensity_follow, particle_frame, particle_sigma,
+           particle_X, particle_Y, particle_ID, optional(fit_intensity, fit_x,
+           fit_y, fit_X_sigma, fit_Y_sigma, fit_Bias, fit_intensity_error,
+           fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error,
+           fit_Bias_error)]
 
     Returns
     -------
     dic_all: dic
        Return dictionary similar to the following structures
 
-       | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ..., ..., 'particle_ID': ...},
-            "#1": {}, ...}
+       | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ..., ...,
+          'particle_ID': ...}, "#1": {}, ...}
 
     """
     dic_all = {}

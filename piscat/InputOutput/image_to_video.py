@@ -13,8 +13,8 @@ from piscat.InputOutput.reading_videos import video_reader
 
 class Image2Video:
     def __init__(self, path, file_format, width_size, height_size, image_type, reader_type):
-        """
-        This class reads images of a particular kind from a folder and concatenates them into a single NumPy array.
+        """This class reads images of a particular kind from a folder and
+        concatenates them into a single NumPy array.
 
         Parameters
         ----------
@@ -43,6 +43,7 @@ class Image2Video:
             * `'tif'`: use this flag to load tif
             * `'avi`': use this flag to load avi
             * `'png'`: use this flag to load png
+
         """
         self.cpu = CPUConfigurations()
 

@@ -16,10 +16,10 @@ class CPUConfigurations:
         threshold_for_parallel_run=None,
         flag_report=False,
     ):
-        """
-        This class generates a JSON file based on the parallel loop setting on the CPU that the user prefers.
-        This JSON was used by other functions and methods to set hyperparameters in a parallel loop.
-        For parallelization, PiSCAT used Joblib.
+        """This class generates a JSON file based on the parallel loop setting
+        on the CPU that the user prefers.  This JSON was used by other
+        functions and methods to set hyperparameters in a parallel loop.  For
+        parallelization, PiSCAT used Joblib.
 
         | [1]. https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html.
 
@@ -34,21 +34,27 @@ class CPUConfigurations:
             The following backends are supported:
 
             * `“loky”`:
-                It can induce some communication and Memory overhead when exchanging
-                input and output data with the worker Python processes.
+                It can induce some communication and Memory overhead when
+                exchanging input and output data with the worker Python
+                processes.
 
             * `“multiprocessing”`:
-                It previous process-based backend based on multiprocessing.Pool. Less robust than loky.
+                It previous process-based backend based on
+                multiprocessing.Pool. Less robust than loky.
 
             * `“threading”`:
-                It is a very low-overhead backend but it suffers from the Python Global Interpreter.
-                Lock if the called function relies a lot on Python objects. “threading” is mostly useful when
-                the execution bottleneck is a compiled extension that explicitly releases
-                the GIL (for instance a Cython loop wrapped in a “with nogil” block or an expensive call to a library such as NumPy).
+                It is a very low-overhead backend but it suffers from the
+                Python Global Interpreter.  Lock if the called function relies
+                a lot on Python objects. “threading” is mostly useful when the
+                execution bottleneck is a compiled extension that explicitly
+                releases the GIL (for instance a Cython loop wrapped in a “with
+                nogil” block or an expensive call to a library such as NumPy).
 
         verbose: int, optional
-            The verbosity level, if non zero, progress messages are printed. Above 50, the output is sent to stdout.
-            The frequency of the messages increases with the verbosity level. If it more than 10, all iterations are reported.
+            The verbosity level, if non zero, progress messages are
+            printed. Above 50, the output is sent to stdout.  The frequency of
+            the messages increases with the verbosity level. If it more than
+            10, all iterations are reported.
 
         parallel_active: bool
             Functions will run the parallel implementation if it is True.
@@ -57,7 +63,9 @@ class CPUConfigurations:
             It reserved for next generation of PiSCAT.
 
         flag_report: bool
-            This flag is set if you need to see the values that will be used for CPU configuration.
+            This flag is set if you need to see the values that will be used
+            for CPU configuration.
+
         """
         try:
             self.read_cpu_setting(flag_report)
@@ -98,7 +106,7 @@ class CPUConfigurations:
     def read_cpu_setting(self, flag_report=False):
         """
         flag_report: bool
-               This flag is set if you need to see the values that will be used for CPU configuration.
+               Whether you need to see the values that will be used for CPU configuration.
         """
         subdir = "piscat_configuration"
         here = os.path.dirname(os.getcwd())

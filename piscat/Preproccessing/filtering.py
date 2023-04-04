@@ -23,9 +23,9 @@ class WorkerSignals(QObject):
 
 class Filters:
     def __init__(self, video, inter_flag_parallel_active=True):
-        """
-        This class generates a list of video/image filters.
-        To improve performance on large video files, some of them have a parallel implementation.
+        """This class generates a list of video/image filters.  To improve
+        performance on large video files, some of them have a parallel
+        implementation.
 
         Parameters
         ----------
@@ -33,7 +33,10 @@ class Filters:
             The video is 3D-numpy (number of frames, width, height).
 
         inter_flag_parallel_active: bool
-            If the user wants to enable general parallel tasks in the CPU configuration, he or she can only use this flag to enable or disable this process.
+            If the user wants to enable general parallel tasks in the CPU
+            configuration, he or she can only use this flag to enable or
+            disable this process.
+
         """
         self.cpu = CPUConfigurations()
         self.inter_flag_parallel_active = inter_flag_parallel_active
@@ -42,8 +45,8 @@ class Filters:
         self.filtered_video = None
 
     def temporal_median(self):
-        """
-        By extracting the temporal median from pixels, the background is corrected.
+        """By extracting the temporal median from pixels, the background is
+        corrected.
 
         Returns
         -------
@@ -55,8 +58,8 @@ class Filters:
         return np.divide(self.video, video_med_) - 1
 
     def flat_field(self, sigma):
-        """
-        This method corrects the video background by creating a synthetic flat fielding version of the background.
+        """This method corrects the video background by creating a synthetic
+        flat fielding version of the background.
 
         Parameters
         ----------
@@ -191,15 +194,20 @@ class FFT2D(QRunnable):
 
 class RadialVarianceTransform:
     def __init__(self, inter_flag_parallel_active=True):
-        """
-        Efficient Python implementation of Radial Variance Transform.
+        """Efficient Python implementation of Radial Variance Transform.
 
-        The main function is :func:`rvt` in the bottom of the file, which applies the transform to a single image (2D numpy array).
+        The main function is :func:`rvt` in the bottom of the file, which
+        applies the transform to a single image (2D numpy array).
 
 
         Compared to the vanilla convolution implementation, there are two speed-ups:
-        1) Pre-calculating and caching kernel FFT; this way so only one inverse FFT is calculated per convolution + one direct fft of the image is used for all convolutions
-        2) When finding MoV, calculate ``np.mean(rsqmeans)`` in a single convolution by averaging all kernels first
+
+        1) Pre-calculating and caching kernel FFT; this way so only one inverse
+        FFT is calculated per convolution + one direct fft of the image is used
+        for all convolutions
+
+        2) When finding MoV, calculate ``np.mean(rsqmeans)`` in a single
+        convolution by averaging all kernels first
 
         Parameters
         ----------
@@ -209,7 +217,10 @@ class RadialVarianceTransform:
 
         References
         ----------
-        [1] Kashkanova, Anna D., et al. "Precision single-particle localization using radial variance transform." Optics Express 29.7 (2021): 11070-11083.
+        [1] Kashkanova, Anna D., et al. "Precision single-particle localization
+        using radial variance transform." Optics Express 29.7 (2021):
+        11070-11083.
+
         """
         self.cpu = CPUConfigurations()
         self._kernels_fft_cache = {}
@@ -230,11 +241,13 @@ class RadialVarianceTransform:
         return tmp
 
     def generate_all_kernels(self, rmin, rmax, coarse_factor=1, coarse_mode="add"):
-        """
-        Generate a set of kernels with radii between `rmin` and `rmax` and sizes ``2*rmax+1``.
+        """Generate a set of kernels with radii between `rmin` and `rmax` and
+        sizes ``2*rmax+1``.
 
-        ``coarse_factor`` and ``coarse_mode`` determine if the number of those kernels is reduced by either skipping or adding them
-        (see :func:`rvt` for a more detail explanation).
+        ``coarse_factor`` and ``coarse_mode`` determine if the number of those
+        kernels is reduced by either skipping or adding them (see :func:`rvt`
+        for a more detail explanation).
+
         """
         kernels = [self.gen_r_kernel(r, rmax) for r in range(rmin, rmax + 1)]
         if coarse_factor > 1:
@@ -268,7 +281,8 @@ class RadialVarianceTransform:
 
     ## Prepare auxiliary parameters
     def get_fshape(self, s1, s2, fast_mode=False):
-        """Get the required shape of the transformed image given the shape of the original image and the kernel"""
+        """Get the required shape of the transformed image given the shape of
+        the original image and the kernel."""
         shape = s1 if fast_mode else s1 + s2 - 1
         fshape = [scipy.fftpack.next_fast_len(int(d)) for d in shape]
 
@@ -277,7 +291,8 @@ class RadialVarianceTransform:
 
     ## Preparing FFTs of arrays
     def prepare_fft(self, inp, fshape, pad_mode="constant"):
-        """Prepare the image for a convolution by taking its Fourier transform, applying padding if necessary"""
+        """Prepare the image for a convolution by taking its Fourier transform,
+        applying padding if necessary."""
         if pad_mode == "fast":
             return np.fft.rfftn(inp, fshape)
         else:
@@ -288,7 +303,8 @@ class RadialVarianceTransform:
 
     ## Shortcut of SciPy fftconvolve, which takes already fft'd arrays on the input
     def convolve_fft(self, sp1, sp2, s1, s2, fshape, fast_mode=False):
-        """Calculate the convolution from the Fourier transforms of the original image and the kernel, trimming the result if necessary"""
+        """Calculate the convolution from the Fourier transforms of the
+        original image and the kernel, trimming the result if necessary."""
         ret = np.fft.irfftn(sp1 * sp2, fshape)
         if fast_mode:
             return np.roll(ret, (-(s2[0] // 2), -(s2[1] // 2)), (0, 1))[: s1[0], : s1[1]].copy()
@@ -308,8 +324,7 @@ class RadialVarianceTransform:
         coarse_mode="add",
         pad_mode="constant",
     ):
-        """
-        Perform core part of Radial Variance Transform (RVT) of an image.
+        """Perform core part of Radial Variance Transform (RVT) of an image.
 
         Parameters
         ----------
@@ -324,23 +339,34 @@ class RadialVarianceTransform:
 
         kind: str, ("basic", "normalized")
             either ``"basic"`` (only VoM), or ``"normalized"`` (VoM/MoV);
-            normalized version increases subpixel bias, but it works better at lower SNR
+            normalized version increases subpixel bias, but it works better at
+            lower SNR
 
         rweights:
-            relative weights of different radial kernels; must be a 1D array of the length ``(rmax-rmin+1)//coarse_factor``
+            relative weights of different radial kernels; must be a 1D array of
+            the length ``(rmax-rmin+1)//coarse_factor``
 
         coarse_factor:
-            the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
+            the reduction factor for the number ring kernels; can be used to
+            speed up calculations at the expense of precision
 
         coarse_mode: str, ("add", "skip")
-            The reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            The reduction method; can be ``"add"`` (add ``coarse_factor`` rings
+            in a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         pad_mode: str, ("constant", "reflect", "edge", "fast")
-            Edge padding mode for convolutions; can be either one of modes accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or ``"edge"``),
-            or ``"fast"``, which means faster no-padding (a combination of ``"wrap"`` and ``"constant"`` padding depending on the image size);
-            ``"fast"`` mode works faster for smaller images and larger ``rmax``, but the border pixels (within ``rmax`` from the edge) are less reliable;
-            note that the image mean is subtracted before processing, so ``pad_mode="constant"`` (default) is equivalent to padding with a constant value equal to the image mean
+            Edge padding mode for convolutions; can be either one of modes
+            accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or
+            ``"edge"``), or ``"fast"``, which means faster no-padding (a
+            combination of ``"wrap"`` and ``"constant"`` padding depending on
+            the image size); ``"fast"`` mode works faster for smaller images
+            and larger ``rmax``, but the border pixels (within ``rmax`` from
+            the edge) are less reliable; note that the image mean is subtracted
+            before processing, so ``pad_mode="constant"`` (default) is
+            equivalent to padding with a constant value equal to the image mean
+
         """
         self._check_core_args(rmin, rmax, kind, coarse_mode)  # check arguments validity
         s1 = np.array(img.shape)
@@ -366,7 +392,7 @@ class RadialVarianceTransform:
             rweights = np.asarray(rweights)
             if len(rweights) != len(kernels_fft):
                 raise ValueError(
-                    "the number of kernel weights {} is different from the number of kernels {}".format(
+                    "The number of weights {} differs from the number of kernels {}".format(
                         len(rweights), len(kernels_fft)
                     )
                 )
@@ -434,8 +460,7 @@ class RadialVarianceTransform:
         coarse_mode="add",
         pad_mode="constant",
     ):
-        """
-        Perform Radial Variance Transform (RVT) of an image.
+        """Perform Radial Variance Transform (RVT) of an image.
 
         Parameters
         ----------
@@ -456,28 +481,41 @@ class RadialVarianceTransform:
             size of the high-pass filter; ``None`` means no filter (effectively, infinite size)
 
         upsample: int
-            integer image upsampling factor;
-            `rmin` and `rmax` are adjusted automatically (i.e., they refer to the non-upsampled image);
-            if ``upsample>1``, the resulting image size is multiplied by ``upsample``
+            integer image upsampling factor; `rmin` and `rmax` are adjusted
+            automatically (i.e., they refer to the non-upsampled image); if
+            ``upsample>1``, the resulting image size is multiplied by
+            ``upsample``
 
         rweights:
-            relative weights of different radial kernels; must be a 1D array of the length ``(rmax-rmin+1)//coarse_factor``
-            coarse_factor: the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
-            coarse_mode: the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            relative weights of different radial kernels; must be a 1D array of
+            the length ``(rmax-rmin+1)//coarse_factor`` coarse_factor: the
+            reduction factor for the number ring kernels; can be used to speed
+            up calculations at the expense of precision coarse_mode: the
+            reduction method; can be ``"add"`` (add ``coarse_factor`` rings in
+            a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         coarse_factor:
-            the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
+            the reduction factor for the number ring kernels; can be used to
+            speed up calculations at the expense of precision
 
         coarse_mode:
-            the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            the reduction method; can be ``"add"`` (add ``coarse_factor`` rings
+            in a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         pad_mode:
-            edge padding mode for convolutions; can be either one of modes accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or ``"edge"``),
-            or ``"fast"``, which means faster no-padding (a combination of ``"wrap"`` and ``"constant"`` padding depending on the image size);
-            ``"fast"`` mode works faster for smaller images and larger ``rmax``, but the border pixels (within ``rmax`` from the edge) are less reliable;
-            note that the image mean is subtracted before processing, so ``pad_mode="constant"`` (default) is equivalent to padding with a constant value equal to the image mean
+            edge padding mode for convolutions; can be either one of modes
+            accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or
+            ``"edge"``), or ``"fast"``, which means faster no-padding (a
+            combination of ``"wrap"`` and ``"constant"`` padding depending on
+            the image size); ``"fast"`` mode works faster for smaller images
+            and larger ``rmax``, but the border pixels (within ``rmax`` from
+            the edge) are less reliable; note that the image mean is subtracted
+            before processing, so ``pad_mode="constant"`` (default) is
+            equivalent to padding with a constant value equal to the image mean
 
         Returns
         -------
@@ -524,8 +562,7 @@ class RadialVarianceTransform:
         coarse_mode="add",
         pad_mode="constant",
     ):
-        """
-        This is an RVT wrapper that allows you to get video in parallel.
+        """This is an RVT wrapper that allows you to get video in parallel.
 
         Parameters
         ----------
@@ -540,38 +577,54 @@ class RadialVarianceTransform:
 
         kind:
             either ``"basic"`` (only VoM), or ``"normalized"`` (VoM/MoV);
-            normalized version increases subpixel bias, but it works better at lower SNR
+            normalized version increases subpixel bias, but it works better at
+            lower SNR
 
         highpass_size:
-            size of the high-pass filter; ``None`` means no filter (effectively, infinite size)
+            size of the high-pass filter; ``None`` means no filter
+            (effectively, infinite size)
 
         upsample: int
-            integer image upsampling factor;
-            `rmin` and `rmax` are adjusted automatically (i.e., they refer to the non-upsampled image);
-            if ``upsample>1``, the resulting image size is multiplied by ``upsample``
+            integer image upsampling factor; `rmin` and `rmax` are adjusted
+            automatically (i.e., they refer to the non-upsampled image); if
+            ``upsample>1``, the resulting image size is multiplied by
+            ``upsample``
 
         rweights:
-            relative weights of different radial kernels; must be a 1D array of the length ``(rmax-rmin+1)//coarse_factor``
-            coarse_factor: the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
-            coarse_mode: the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            relative weights of different radial kernels; must be a 1D array of
+            the length ``(rmax-rmin+1)//coarse_factor`` coarse_factor: the
+            reduction factor for the number ring kernels; can be used to speed
+            up calculations at the expense of precision coarse_mode: the
+            reduction method; can be ``"add"`` (add ``coarse_factor`` rings in
+            a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         coarse_factor:
-            the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
+            the reduction factor for the number ring kernels; can be used to
+            speed up calculations at the expense of precision
 
         coarse_mode:
-            the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            the reduction method; can be ``"add"`` (add ``coarse_factor`` rings
+            in a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         pad_mode:
-            edge padding mode for convolutions; can be either one of modes accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or ``"edge"``),
-            or ``"fast"``, which means faster no-padding (a combination of ``"wrap"`` and ``"constant"`` padding depending on the image size);
-            ``"fast"`` mode works faster for smaller images and larger ``rmax``, but the border pixels (within ``rmax`` from the edge) are less reliable;
-            note that the image mean is subtracted before processing, so ``pad_mode="constant"`` (default) is equivalent to padding with a constant value equal to the image mean
+            edge padding mode for convolutions; can be either one of modes
+            accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or
+            ``"edge"``), or ``"fast"``, which means faster no-padding (a
+            combination of ``"wrap"`` and ``"constant"`` padding depending on
+            the image size); ``"fast"`` mode works faster for smaller images
+            and larger ``rmax``, but the border pixels (within ``rmax`` from
+            the edge) are less reliable; note that the image mean is subtracted
+            before processing, so ``pad_mode="constant"`` (default) is
+            equivalent to padding with a constant value equal to the image mean
 
         Returns
         -------
             Returns transform source video.
+
         """
         self.video = video
 
@@ -636,8 +689,7 @@ class RadialVarianceTransform:
         coarse_mode="add",
         pad_mode="constant",
     ):
-        """
-        Perform Radial Variance Transform (RVT) of an image.
+        """Perform Radial Variance Transform (RVT) of an image.
 
         Parameters
         ----------
@@ -652,34 +704,49 @@ class RadialVarianceTransform:
 
         kind:
             either ``"basic"`` (only VoM), or ``"normalized"`` (VoM/MoV);
-            normalized version increases subpixel bias, but it works better at lower SNR
+            normalized version increases subpixel bias, but it works better at
+            lower SNR
 
         highpass_size:
-            size of the high-pass filter; ``None`` means no filter (effectively, infinite size)
+            size of the high-pass filter; ``None`` means no filter
+            (effectively, infinite size)
 
         upsample: int
-            integer image upsampling factor;
-            `rmin` and `rmax` are adjusted automatically (i.e., they refer to the non-upsampled image);
-            if ``upsample>1``, the resulting image size is multiplied by ``upsample``
+            integer image upsampling factor; `rmin` and `rmax` are adjusted
+            automatically (i.e., they refer to the non-upsampled image); if
+            ``upsample>1``, the resulting image size is multiplied by
+            ``upsample``
 
         rweights:
-            relative weights of different radial kernels; must be a 1D array of the length ``(rmax-rmin+1)//coarse_factor``
-            coarse_factor: the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
-            coarse_mode: the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            relative weights of different radial kernels; must be a 1D array of
+            the length ``(rmax-rmin+1)//coarse_factor`` coarse_factor: the
+            reduction factor for the number ring kernels; can be used to speed
+            up calculations at the expense of precision coarse_mode: the
+            reduction method; can be ``"add"`` (add ``coarse_factor`` rings in
+            a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         coarse_factor:
-            the reduction factor for the number ring kernels; can be used to speed up calculations at the expense of precision
+            the reduction factor for the number ring kernels; can be used to
+            speed up calculations at the expense of precision
 
         coarse_mode:
-            the reduction method; can be ``"add"`` (add ``coarse_factor`` rings in a row to get a thicker ring, which works better for smooth features),
-            or ``"skip"`` (only keep on in ``coarse_factor`` rings, which works better for very fine features)
+            the reduction method; can be ``"add"`` (add ``coarse_factor`` rings
+            in a row to get a thicker ring, which works better for smooth
+            features), or ``"skip"`` (only keep on in ``coarse_factor`` rings,
+            which works better for very fine features)
 
         pad_mode:
-            edge padding mode for convolutions; can be either one of modes accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or ``"edge"``),
-            or ``"fast"``, which means faster no-padding (a combination of ``"wrap"`` and ``"constant"`` padding depending on the image size);
-            ``"fast"`` mode works faster for smaller images and larger ``rmax``, but the border pixels (within ``rmax`` from the edge) are less reliable;
-            note that the image mean is subtracted before processing, so ``pad_mode="constant"`` (default) is equivalent to padding with a constant value equal to the image mean
+            edge padding mode for convolutions; can be either one of modes
+            accepted by ``np.pad`` (such as ``"constant"``, ``"reflect"``, or
+            ``"edge"``), or ``"fast"``, which means faster no-padding (a
+            combination of ``"wrap"`` and ``"constant"`` padding depending on
+            the image size); ``"fast"`` mode works faster for smaller images
+            and larger ``rmax``, but the border pixels (within ``rmax`` from
+            the edge) are less reliable; note that the image mean is subtracted
+            before processing, so ``pad_mode="constant"`` (default) is
+            equivalent to padding with a constant value equal to the image mean
 
         Returns
         -------
@@ -715,13 +782,16 @@ class RadialVarianceTransform:
 
 class FastRadialSymmetryTransform:
     def __init__(self):
-        """
-        Implementation of fast radial symmetry transform in pure Python using OpenCV and numpy.
+        """Implementation of fast radial symmetry transform in pure Python using OpenCV and numpy.
 
         References
         ----------
-        [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry transform for detecting points of interest. Computer Vision, ECCV 2002.
+
+        [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry transform
+        for detecting points of interest. Computer Vision, ECCV 2002.
+
         [2] https://github.com/Xonxt/frst
+
         """
         pass
 
@@ -740,8 +810,7 @@ class FastRadialSymmetryTransform:
         )
 
     def _frst(self, img, radii, alpha, beta, stdFactor, mode="BOTH"):
-        """
-        Performs fast radial symmetry transform
+        """Performs fast radial symmetry transform
 
         Parameters
         ----------
@@ -749,10 +818,12 @@ class FastRadialSymmetryTransform:
            Input_video image, grayscale.
 
         radii: int
-           Integer value for radius size in pixels (n in the original paper); also used to size gaussian kernel
+           Integer value for radius size in pixels (n in the original paper);
+           also used to size gaussian kernel
 
         alpha: float
-           Strictness of symmetry transform (higher=more strict; 2 is good place to start)
+           Strictness of symmetry transform (higher=more strict; 2 is good
+           place to start)
 
         beta: float
             Gradient threshold_min parameter, float in [0,1]
@@ -762,6 +833,7 @@ class FastRadialSymmetryTransform:
 
         mode: str
            BRIGHT, DARK, or BOTH
+
         """
         mode = mode.upper()
         assert mode in ["BRIGHT", "DARK", "BOTH"]

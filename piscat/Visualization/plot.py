@@ -170,8 +170,7 @@ def plot_bright_dark_psf(df_bright, df_dark, unit="nm"):
 
 
 def plot_bright_dark_psf_inTime(df_bright, df_dark, time_delay=0.1, dir_name=None):
-    """
-    Showing binding and unbinding events in time.
+    """Showing binding and unbinding events in time.
 
     Parameters
     ----------
@@ -182,10 +181,12 @@ def plot_bright_dark_psf_inTime(df_bright, df_dark, time_delay=0.1, dir_name=Non
         Dark PSF positions are stored in the data frame.
 
     time_delay: float
-        Define the time delay between binding and unbinding events frames. This only works when `flag_in_time` is set to True.
+        Define the time delay between binding and unbinding events frames. This
+        only works when `flag_in_time` is set to True.
 
     dir_name: str
         You can save time slap frames if you specify a save path.
+
     """
     particle_ID_bright = df_bright["particle"].tolist()
     particle_x_bright = df_bright["x"].tolist()

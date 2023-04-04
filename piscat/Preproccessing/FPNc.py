@@ -22,13 +22,14 @@ class WorkerSignals(QObject):
 
 class MedianProjectionFPNc(QRunnable):
     def __init__(self, video, select_correction_axis, flag_GUI=False):
-        """
-        This class uses a heuristic procedure called Median Projection FPN (mFPN) to reduce fixed pattern noise (FPN).
+        """This class uses a heuristic procedure called Median Projection FPN
+        (mFPN) to reduce fixed pattern noise (FPN).
 
         References
         ----------
-        [1] Mirzaalian Dastjerdi, Houman, et al. "Optimized analysis for sensitive detection and analysis of single
-        proteins via interferometric scattering microscopy." Journal of Physics D: Applied Physics (2021).
+        [1] Mirzaalian Dastjerdi, Houman, et al. "Optimized analysis for
+        sensitive detection and analysis of single proteins via interferometric
+        scattering microscopy." Journal of Physics D: Applied Physics (2021).
         (http://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)
 
         Parameters
@@ -39,6 +40,7 @@ class MedianProjectionFPNc(QRunnable):
         select_correction_axis: int (0/1)
             * `0`: FPN will be applied row-wise.
             * `1`: FPN will be applied column-wise.
+
         """
 
         super(MedianProjectionFPNc, self).__init__()
@@ -168,8 +170,8 @@ class MedianProjectionFPNc(QRunnable):
 
 class ColumnProjectionFPNc(QRunnable):
     def __init__(self, video, select_correction_axis, flag_GUI=False):
-        """
-        This class uses a heuristic procedure called Column Projection FPN (cpFPN) to reduce fixed pattern noise (FPN).
+        """ This class uses a heuristic procedure called Column Projection FPN
+        (cpFPN) to reduce fixed pattern noise (FPN).
 
         Parameters
         ----------
@@ -342,16 +344,19 @@ class ColumnProjectionFPNc(QRunnable):
 
 class FrequencyFPNc:
     def __init__(self, video, inter_flag_parallel_active=True):
-        """
-        This class corrects FPN using two well-known frequency domain techniques from the literature.
+        """This class corrects FPN using two well-known frequency domain
+        techniques from the literature.
 
         References
         ----------
-        [1] Cao, Yanlong, et al. "A multi-scale non-uniformity correction method based on wavelet decomposition and
-        guided filtering for uncooled long wave infrared camera." Signal Processing: Image Communication 60 (2018): 13-21.
+        [1] Cao, Yanlong, et al. "A multi-scale non-uniformity correction
+        method based on wavelet decomposition and guided filtering for uncooled
+        long wave infrared camera." Signal Processing: Image Communication 60
+        (2018): 13-21.
 
-        [2] Zeng, Qingjie, et al. "Single infrared image-based stripe non-uniformity correction via a two-stage
-        filtering method." Sensors 18.12 (2018): 4299.
+        [2] Zeng, Qingjie, et al. "Single infrared image-based stripe
+        non-uniformity correction via a two-stage filtering method." Sensors
+        18.12 (2018): 4299.
 
         Parameters
         ----------
@@ -359,7 +364,10 @@ class FrequencyFPNc:
             The video is 3D-numpy (number of frames, width, height).
 
         inter_flag_parallel_active: bool
-            If the user wants to enable generic parallel tasks in CPU configuration, this flag is used to disable parallel execution of this function.
+            If the user wants to enable generic parallel tasks in CPU
+            configuration, this flag is used to disable parallel execution of
+            this function.
+
         """
         super(FrequencyFPNc, self).__init__()
         self.cpu = CPUConfigurations()

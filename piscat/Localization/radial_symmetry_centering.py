@@ -12,12 +12,13 @@ from piscat.Preproccessing import patch_genrator
 
 class RadialCenter:
     def __init__(self):
-        """
-        The RadialCenter localization algorithm is implemented in Python.
+        """The RadialCenter localization algorithm is implemented in Python.
 
         References
         ----------
-        Parthasarathy, R. Rapid, accurate particle tracking by calculation of radial symmetry centers. Nat Methods 9, 724–726 (2012).
+
+        Parthasarathy, R. Rapid, accurate particle tracking by calculation of
+        radial symmetry centers. Nat Methods 9, 724–726 (2012).
         https://doi.org/10.1038/nmeth.2071
         """
 

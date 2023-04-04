@@ -179,8 +179,8 @@ def blob_frst(
     *,
     exclude_border=False,
 ):
-    """
-    This function uses scikit-image's local maximum function to localize the PSFs using a ``_frst``.
+    """This function uses scikit-image's local maximum function to localize
+    the PSFs using a ``_frst``.
 
     Parameters
     ----------
@@ -200,17 +200,21 @@ def blob_frst(
        BRIGHT, DARK, or BOTH
 
     min_radial: int
-       integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+       integer value for radius size in pixels (n in the original paper); also
+       is used as gaussian kernel size
 
     max_radial: int
-       integer value for radius size in pixels (n in the original paper); also is used as gaussian kernel size
+       integer value for radius size in pixels (n in the original paper); also
+       is used as gaussian kernel size
 
     threshold: float
-        The absolute lower bound for scale space maxima. Local maxima smaller than thresh are ignored. Reduce this
-        to detect blobs with less intensities.
+        The absolute lower bound for scale space maxima. Local maxima smaller
+        than thresh are ignored. Reduce this to detect blobs with less
+        intensities.
 
     overlap: float
-        A value between 0 and 1. If the area of two blobs are overlapping by a fraction greater than threshold_min, smaller blobs are eliminated.
+        A value between 0 and 1. If the area of two blobs are overlapping by a
+        fraction greater than threshold_min, smaller blobs are eliminated.
 
     exclude_border: int, tuple of ints, or bool, optional
         If positive integer, `exclude_border` excludes peaks from within

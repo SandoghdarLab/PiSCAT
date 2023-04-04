@@ -10,13 +10,13 @@ class DirectionalIntensity:
         pass
 
     def interpolate_pixels_along_line(self, x0, y0, x1, y1):
-        """
-        Uses Xiaolin Wu's line algorithm to interpolate all of the pixels along a
+        """Uses Xiaolin Wu's line algorithm to interpolate all of the pixels along a
         straight line, given two points (x0, y0) and (x1, y1)
 
         References
         ----------
-        [1] Wikipedia article containing pseudo code that function was based off of: http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
+        [1] Wikipedia article containing pseudo code that function was based
+        off of: http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
         """
         pixels = []
         steep = abs(y1 - y0) > abs(x1 - x0)
@@ -62,7 +62,8 @@ class DirectionalIntensity:
         xpxl1 = x_end
         ypxl1 = round(y_end)
 
-        # Loop between the first x coordinate and the second x coordinate, interpolating the y coordinates
+        # Loop between the first x coordinate and the second x coordinate,
+        # interpolating the y coordinates
         for x in range(xpxl0 + 1, xpxl1):
             if steep:
                 pixels.extend(

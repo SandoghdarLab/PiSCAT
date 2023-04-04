@@ -15,8 +15,7 @@ class WorkerSignals(QObject):
 
 class Normalization(QRunnable):
     def __init__(self, video, flag_pn=False, flag_global=False, flag_image_specific=False):
-        """
-        This class contains a different version of video/image normalization methods.
+        """This class contains a different version of video/image normalization methods.
 
         Parameters
         ----------
@@ -25,13 +24,16 @@ class Normalization(QRunnable):
 
         optional_1: GUI
             * `flag_pn`: bool
-                If it is True, the power_normalized method is applied on input video on GUI.
+                If it is True, the power_normalized method is applied on input
+                video on GUI.
 
             * `flag_global`: bool
-                If it is True, the normalized_image_global method is applied on input video on GUI.
+                If it is True, the normalized_image_global method is applied on
+                input video on GUI.
 
             * `flag_image_specific`: bool
-                If it is True, the normalized_image_specific method is applied on input video on GUI.
+                If it is True, the normalized_image_specific method is applied
+                on input video on GUI.
 
         """
         super(Normalization, self).__init__()
@@ -63,8 +65,8 @@ class Normalization(QRunnable):
         self.signals.result.emit(result)
 
     def normalized_image_global(self, new_max=1, new_min=0):
-        """
-        Based on the global min and max in the video, this method normalizes all pixels in the video between``new_min`` and ``new_max``.
+        """Based on the global min and max in the video, this method
+        normalizes all pixels in the video between``new_min`` and ``new_max``.
 
         Parameters
         ----------
@@ -78,6 +80,7 @@ class Normalization(QRunnable):
         -------
         img2: NDArray
             Normalize video (3D-Numpy array).
+
         """
         mins = self.video.min(axis=(0, 1, 2), keepdims=True)
         maxs = self.video.max(axis=(0, 1, 2), keepdims=True)
@@ -85,8 +88,8 @@ class Normalization(QRunnable):
         return img2
 
     def normalized_image_specific(self, scale=255, format="uint8"):
-        """
-        This approach normalizes all pixels in the image between 0 and 1 based on the image min and max in the video frame.
+        """This approach normalizes all pixels in the image between 0 and 1
+        based on the image min and max in the video frame.
 
         Parameters
         ----------
@@ -94,12 +97,14 @@ class Normalization(QRunnable):
             Video's new global maximum pixel intensity.
 
         format: str
-            It describes how the bytes in the fixed-size block of memory corresponding to an array item should be interpreted.
+            It describes how the bytes in the fixed-size block of memory
+            corresponding to an array item should be interpreted.
 
         Returns
         -------
         n_video: NDArray
             Normalize video (3D-Numpy array).
+
         """
         if len(self.video.shape) == 3:
             print("\nconverting video bin_type to " + format + "--->", end=" ")
@@ -154,9 +159,9 @@ class Normalization(QRunnable):
         return img2
 
     def power_normalized(self, roi_x=None, roi_y=None, inter_flag_parallel_active=False):
-        """
-        This function corrects the fluctuations in the laser light intensity
-        by dividing each pixel in an image by the sum of all pixels on the same frames.
+        """This function corrects the fluctuations in the laser light
+        intensity by dividing each pixel in an image by the sum of all pixels
+        on the same frames.
 
         Parameters
         ----------
@@ -176,6 +181,7 @@ class Normalization(QRunnable):
 
         power_fluctuation_percentage: NDArray
             Temporal fluctuations of all pixels after power normalization.
+
         """
         if roi_x is not None or roi_y is not None:
             roi_ = {"x_min": roi_x[0], "x_max": roi_x[1], "y_min": roi_y[0], "y_max": roi_y[1]}

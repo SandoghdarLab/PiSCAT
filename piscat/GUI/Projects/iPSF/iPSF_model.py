@@ -89,10 +89,12 @@ class GUI_iPSF(QtWidgets.QWidget):
 
         self.pixel_size = QtWidgets.QLineEdit()
         self.pixel_size.setToolTip(
-            "Imaging pixel size in meters, related to the physical pixel size through the magnification of the setup"
+            ("Imaging pixel size in meters."
+             "Related to the physical pixel size through the magnification of the setup.")
         )
         self.pixel_size.setPlaceholderText(
-            "Imaging pixel size in meters, related to the physical pixel size through the magnification of the setup"
+            ("Imaging pixel size in meters."
+             "Related to the physical pixel size through the magnification of the setup.")
         )
         self.pixel_size_label = QtWidgets.QLabel("Pixel size:")
         self.pixel_size.setFixedWidth(150)
@@ -432,7 +434,8 @@ class GUI_iPSF(QtWidgets.QWidget):
                 p.ns = self.ns_var
                 # Physical size of the camera pixel in meters
                 p.pixel_size_physical = self.pixel_size_physical_var
-                # Imaging pixel size in meters, related to the physical pixel size through the magnification of the setup
+                # Imaging pixel size in meters, related to the physical pixel
+                # size through the magnification of the setup
                 pixel_size = self.pixel_size_var
                 # Magnification of the imaging system
                 p.M = self.pixel_size_physical_var / self.pixel_size_var

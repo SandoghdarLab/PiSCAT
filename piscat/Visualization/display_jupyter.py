@@ -29,8 +29,7 @@ class JupyterDisplay:
         IntSlider_width="500px",
         step=1,
     ):
-        """
-        This class displays the video in jupyter notebook.
+        """This class displays the video in jupyter notebook.
 
         Parameters
         ----------
@@ -38,13 +37,15 @@ class JupyterDisplay:
             Input video.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
 
         title: list
-            A list of string titles with a length equal to the number of frames in the video.
+            A list of string titles with a length equal to the number of frames
+            in the video.
 
         xlabel: str
             The label text for x-axis.
@@ -59,8 +60,9 @@ class JupyterDisplay:
             Image width size.
 
         extent:
-            The extent kwarg determines the bounding box in data coordinates that the image will fill, which is
-            specified in data coordinates as (left, right, bottom, top).
+            The extent kwarg determines the bounding box in data coordinates
+            that the image will fill, which is specified in data coordinates as
+            (left, right, bottom, top).
 
         IntSlider_width: str
             Size of slider
@@ -137,8 +139,8 @@ class JupyterDisplay_StatusLine:
         step=1,
         value=0,
     ):
-        """
-        This class displays the video in the Jupyter notebook interactively while highlight status line
+        """This class displays the video in the Jupyter notebook interactively
+        while highlight status line
 
         Parameters
         ----------
@@ -146,7 +148,8 @@ class JupyterDisplay_StatusLine:
             Input video.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -165,6 +168,7 @@ class JupyterDisplay_StatusLine:
 
         value: int
             Initial frame value for visualization
+
         """
         self.color = color
         self.video = video
@@ -244,8 +248,8 @@ class JupyterPSFs_localizationDisplay:
         step=1,
         value=0,
     ):
-        """
-        This class displays the video in the Jupyter notebook interactively while highlight PSFs.
+        """This class displays the video in the Jupyter notebook interactively
+        while highlight PSFs.
 
         Parameters
         ----------
@@ -256,7 +260,8 @@ class JupyterPSFs_localizationDisplay:
             Data Frames that contains the location of PSFs.
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -275,6 +280,7 @@ class JupyterPSFs_localizationDisplay:
 
         value: int
            Initial frame value for visualization
+
         """
         self.video = video
         self.imgSizex = imgSizex
@@ -345,8 +351,8 @@ class JupyterPSFs_localizationPreviewDisplay:
         IntSlider_width="500px",
         step=1,
     ):
-        """
-        This class displays the video in the Jupyter notebook interactively while highlight PSFs.
+        """This class displays the video in the Jupyter notebook interactively
+        while highlight PSFs.
 
         Parameters
         ----------
@@ -363,7 +369,8 @@ class JupyterPSFs_localizationPreviewDisplay:
             list of frame that we want to see preview of localization.
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -379,6 +386,7 @@ class JupyterPSFs_localizationPreviewDisplay:
 
         step: int
            Stride between visualization frames.
+
         """
         self.video = video
         self.imgSizex = imgSizex
@@ -467,8 +475,9 @@ class JupyterPSFs_subplotLocalizationDisplay:
         step=1,
         value=0,
     ):
-        """
-        This class shows several videos (with the same number of frames) at once in the Jupyter notebook interactively while highlight localize PSFs.
+        """This class shows several videos (with the same number of frames) at
+        once in the Jupyter notebook interactively while highlight localize
+        PSFs.
 
         Parameters
         ----------
@@ -488,7 +497,8 @@ class JupyterPSFs_subplotLocalizationDisplay:
             List of titles for each sub plot.
 
         median_filter_flag: bool
-          In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+          In case it defines as True, a median filter is applied with size 3 to
+          remove hot pixel effect.
 
         color: str
           It defines the colormap for visualization.
@@ -507,6 +517,7 @@ class JupyterPSFs_subplotLocalizationDisplay:
 
         value: int
             Initial frame value for visualization
+
         """
         self.list_video = list_videos
         self.numVideos = len(list_videos)
@@ -596,8 +607,8 @@ class JupyterPSFs_TrackingDisplay:
         imgSizey=5,
         value=0,
     ):
-        """
-        This class displays video in the Jupyter notebook interactively while highlighting PSFs with trajectories.
+        """This class displays video in the Jupyter notebook interactively
+        while highlighting PSFs with trajectories.
 
         Parameters
         ----------
@@ -608,7 +619,8 @@ class JupyterPSFs_TrackingDisplay:
             Data Frames that contains the location of PSFs.
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -627,6 +639,7 @@ class JupyterPSFs_TrackingDisplay:
 
         value: int
             Initial frame value for visualization
+
         """
 
         self.video = video
@@ -733,8 +746,8 @@ class JupyterSelectedPSFs_localizationDisplay:
         step=1,
         value=0,
     ):
-        """
-        This class interactively shows video in a Jupyter notebook while highlighting PSFs based on ID.
+        """This class interactively shows video in a Jupyter notebook while
+        highlighting PSFs based on ID.
 
         Parameters
         ----------
@@ -744,21 +757,23 @@ class JupyterSelectedPSFs_localizationDisplay:
         particles: dic
              Dictionary similar to the following structures.:
 
-            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ..., ..., 'particle_ID': ...},
-                "#1": {}, ...}
+            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ...,
+               ..., 'particle_ID': ...}, "#1": {}, ...}
 
         particles_num: str
             Choose the corresponding key in the particles dictionary.
 
         frame_extend: int
-            Display particle for ``frame_extend`` before and after segmented ones. In case there are not enough frames before/after
-            , it shows only for the number of existing frames.
+            Display particle for ``frame_extend`` before and after segmented
+            ones. In case there are not enough frames before/after, it shows
+            only for the number of existing frames.
 
         flag_fit2D: bool
             It activate 2D-Gaussian fit to extract fitting information of selected PSF.
 
         median_filter_flag: bool
-           In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+           In case it defines as True, a median filter is applied with size 3
+           to remove hot pixel effect.
 
         color: str
            It defines the colormap for visualization.
@@ -777,6 +792,7 @@ class JupyterSelectedPSFs_localizationDisplay:
 
         value: int
             Initial frame value for visualization
+
         """
 
         if type(particles) is list:
@@ -931,8 +947,8 @@ class JupyterSubplotDisplay:
         vmin=None,
         vmax=None,
     ):
-        """
-        This class interactively displays several videos (with the same number of frames) in a Jupyter notebook.
+        """This class interactively displays several videos (with the same
+        number of frames) in a Jupyter notebook.
 
         Parameters
         ----------
@@ -949,7 +965,8 @@ class JupyterSubplotDisplay:
             List of titles for each sub plot
 
         median_filter_flag: bool
-          In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+          In case it defines as True, a median filter is applied with size 3 to
+          remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -968,6 +985,7 @@ class JupyterSubplotDisplay:
 
         value: int
             Initial frame value for visualization
+
         """
 
         self.color = color
@@ -1057,8 +1075,8 @@ class JupyterPSFs_2_modality_subplotLocalizationDisplay:
         edgecolor_1="r",
         edgecolor_2="g",
     ):
-        """
-        This class will interactively sub-display multiple videos in a Jupyter notebook while highlighting PSFs determined in two modalities.
+        """This class will interactively sub-display multiple videos in a
+        Jupyter notebook while highlighting PSFs determined in two modalities.
 
         Parameters
         ----------
@@ -1081,7 +1099,8 @@ class JupyterPSFs_2_modality_subplotLocalizationDisplay:
             List of titles for each sub plot.
 
         median_filter_flag: bool
-          In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+          In case it defines as True, a median filter is applied with size 3 to
+          remove hot pixel effect.
 
         color: str
           It defines the colormap for visualization.
@@ -1227,9 +1246,9 @@ class JupyterFPNcDisplay:
         step=1,
         value=0,
     ):
-        """
-        This class can sub-display several FPNc video in the Jupyter notebook interactively while 1D projection on
-        the direction of correction axis illustrates below on each subplot.
+        """This class can sub-display several FPNc video in the Jupyter
+        notebook interactively while 1D projection on the direction of
+        correction axis illustrates below on each subplot.
 
         Parameters
         ----------
@@ -1249,7 +1268,8 @@ class JupyterFPNcDisplay:
             List of titles for each sub plot.
 
         median_filter_flag: bool
-            In case it defines as True, a median filter is applied with size 3 to remove hot pixel effect.
+            In case it defines as True, a median filter is applied with size 3
+            to remove hot pixel effect.
 
         color: str
             It defines the colormap for visualization.
@@ -1268,6 +1288,7 @@ class JupyterFPNcDisplay:
 
         value: int
             Initial frame value for visualization
+
         """
         self.color = color
         self.video = list_videos

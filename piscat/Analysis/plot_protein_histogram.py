@@ -26,14 +26,13 @@ class PlotProteinHistogram(PrintColors):
         flag_localization_filter=False,
         radius=None,
     ):
-        """
-        This class use video analysis data ('HDF5', 'Matlab') to plot histograms.
+        """This class use video analysis data ('HDF5', 'Matlab') to plot histograms.
 
         Parameters
         ----------
         intersection_display_flag: bool
-            This flag can be used when we want to see the result of intersection on
-            top of v-shaped (Please read tutorials 3).
+            This flag can be used when we want to see the result of
+            intersection on top of v-shaped (Please read tutorials 3).
 
         imgSizex: int
             The width of the histogram figure.
@@ -42,11 +41,13 @@ class PlotProteinHistogram(PrintColors):
             The height of the histogram figure.
 
         flag_localization_filter: bool
-            This flag is used to define a mask and filter PSF depending on the localization map.
+            This flag is used to define a mask and filter PSF depending on the
+            localization map.
 
         radius: int
-            This parameter is used to define the radius of a circular mask that has the same center as the localization
-            map and filters PSF in the edges and border.
+            This parameter is used to define the radius of a circular mask that
+            has the same center as the localization map and filters PSF in the
+            edges and border.
 
         """
         PrintColors.__init__(self)
@@ -122,24 +123,29 @@ class PlotProteinHistogram(PrintColors):
         MinPeakProminence,
         pixel_size=0.66,
     ):
-        """
-        By calling the object of class this function tries to read the result of the corresponding video it is defined
-        with ``folder_name``. These results concatenated with previous results to use for plotting histogram.
+        """By calling the object of class this function tries to read the
+        result of the corresponding video it is defined with
+        ``folder_name``. These results concatenated with previous results to
+        use for plotting histogram.
 
         Parameters
         ----------
         folder_name: str
-            Name of a folder that data read from it. This saves next to data for convinces tracking the analysis.
+            Name of a folder that data read from it. This saves next to data
+            for convinces tracking the analysis.
 
         particles: list/dict
 
-            | [intensity_horizontal, intensity_vertical, particle_center_intensity,
-                            particle_center_intensity_follow, particle_frame, particle_sigma, particle_X, particle_Y, particle_ID,
-                            optional(fit_intensity, fit_x, fit_y, fit_X_sigma, fit_Y_sigma, fit_Bias, fit_intensity_error,
-                            fit_x_error, fit_y_error, fit_X_sigma_error, fit_Y_sigma_error, fit_Bias_error)]
+            | [intensity_horizontal, intensity_vertical,
+               particle_center_intensity, particle_center_intensity_follow,
+               particle_frame, particle_sigma, particle_X, particle_Y,
+               particle_ID, optional(fit_intensity, fit_x, fit_y, fit_X_sigma,
+               fit_Y_sigma, fit_Bias, fit_intensity_error, fit_x_error,
+               fit_y_error, fit_X_sigma_error, fit_Y_sigma_error,
+               fit_Bias_error)]
 
-            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ..., ..., 'particle_ID': ...},
-                        "#1": {}, ...}
+            | {"#0": {'intensity_horizontal': ..., 'intensity_vertical': ...,
+              ..., 'particle_ID': ...}, "#1": {}, ...}
 
         batch_size: int
             The size of batch that was used on the DRA step.
@@ -148,10 +154,12 @@ class PlotProteinHistogram(PrintColors):
             The number of frames for the corresponding video.
 
         MinPeakWidth: int
-            This is defined as the minimum V-shaped mouth that will use for prominence.
+            This is defined as the minimum V-shaped mouth that will use for
+            prominence.
 
         MinPeakProminence: int
-            This is defined as the minimum V-shape height that will use for prominence.
+            This is defined as the minimum V-shape height that will use for
+            prominence.
 
         pixel_size: float
             The size of the camera pixel.
@@ -1201,8 +1209,8 @@ class PlotProteinHistogram(PrintColors):
         scale=1e1,
         external_GMM=False,
     ):
-        """
-        This method plots histograms for different contrast extraction methods for black PSFs, white PSFs and all together.
+        """This method plots histograms for different contrast extraction
+        methods for black PSFs, white PSFs and all together.
 
         Parameters
         ----------
@@ -1228,7 +1236,8 @@ class PlotProteinHistogram(PrintColors):
             Activate/Deactivate GMM.
 
         max_n_components: int
-            The maximum number of components that GMM used for AIC and BIC tests. This helps to find an optimum number of the mixture.
+            The maximum number of components that GMM used for AIC and BIC
+            tests. This helps to find an optimum number of the mixture.
 
         imgSizex: int
             The width of the histogram figure.
@@ -1243,7 +1252,9 @@ class PlotProteinHistogram(PrintColors):
             This value multiplies the full range for x-axis plotting.
 
         external_GMM: bool
-            This flag modifies GMM's visualization. Only the external border is visible if it is set to True.
+            This flag modifies GMM's visualization. Only the external border is
+            visible if it is set to True.
+
         """
 
         df, list_data, title = self.extract_hist_information(
@@ -1371,8 +1382,8 @@ class PlotProteinHistogram(PrintColors):
         scale=1e1,
         external_GMM=False,
     ):
-        """
-        This method plots histograms for 2D Gaussian fitting contrast for black PSFs, white PSFs and all together.
+        """This method plots histograms for 2D Gaussian fitting contrast for
+        black PSFs, white PSFs and all together.
 
         Parameters
         ----------
@@ -1398,7 +1409,8 @@ class PlotProteinHistogram(PrintColors):
            Activate/Deactivate GMM.
 
         max_n_components: int
-           The maximum number of components that GMM used for AIC and BIC tests. This helps to find an optimum number of the mixture.
+           The maximum number of components that GMM used for AIC and BIC
+           tests. This helps to find an optimum number of the mixture.
 
         imgSizex: int
            The width of the histogram figure.
@@ -1413,7 +1425,8 @@ class PlotProteinHistogram(PrintColors):
                    This value multiplies the full range for x-axis plotting.
 
         external_GMM: bool
-           This flag modifies GMM's visualization. Only the external border is visible if it is set to True.
+           This flag modifies GMM's visualization. Only the external border is
+           visible if it is set to True.
 
         """
 
@@ -1539,8 +1552,8 @@ class PlotProteinHistogram(PrintColors):
     def plot_localization_heatmap(
         self, pixel_size, unit, flag_in_time=False, time_delay=0.1, dir_name=None
     ):
-        """
-        This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
+        """This method generates a particle localization heatmap. Every disk's
+        size represents the movement of each particle during tracking.
 
         Parameters
         ----------
@@ -1554,10 +1567,12 @@ class PlotProteinHistogram(PrintColors):
             In the case of True, show binding and unbinding events in time.
 
         time_delay: float
-            Define the time delay between binding and unbinding events frames. This only works when `flag_in_time` is set to True.
+            Define the time delay between binding and unbinding events
+            frames. This only works when `flag_in_time` is set to True.
 
         dir_name: str
             You can save time slap frames if you specify a save path.
+
         """
         bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
         bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
@@ -1653,7 +1668,8 @@ class PlotProteinHistogram(PrintColors):
             Activate/Deactivate GMM.
 
         max_n_components: int
-            The maximum number of components that GMM used for AIC and BIC tests. This helps to find an optimum number of the mixture.
+            The maximum number of components that GMM used for AIC and BIC
+            tests. This helps to find an optimum number of the mixture.
 
         """
         df, list_data, title = self.extract_hist_information(
@@ -1683,8 +1699,8 @@ class PlotProteinHistogram(PrintColors):
         )
 
     def localization_data(self):
-        """
-        This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
+        """This method generates a particle localization heatmap. Every disk's
+        size represents the movement of each particle during tracking.
 
         Parameters
         ----------
@@ -1693,6 +1709,7 @@ class PlotProteinHistogram(PrintColors):
 
         unit: str
             unit of axises
+
         """
         bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
         bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)

@@ -21,8 +21,7 @@ class NoiseFloor(CPUConfigurations, PrintColors):
         FFT_widith=1,
         mode="mode_temporal",
     ):
-        """
-        This class measures the noise floor for various batch sizes.
+        """This class measures the noise floor for various batch sizes.
 
         Parameters
         ----------
@@ -33,7 +32,8 @@ class NoiseFloor(CPUConfigurations, PrintColors):
             list os all batch size that DRA should be calculated for them.
 
         FPN_flag: bool
-            This flag activates the fixed pattern noise correction function in case define as true.
+            This flag activates the fixed pattern noise correction function in
+            case define as true.
 
         mode_FPN: {‘cpFPN’, ‘mFPN’, ‘wFPN’, 'fFPN'}, optional
             Flag that defines method of FPNc.
@@ -44,17 +44,21 @@ class NoiseFloor(CPUConfigurations, PrintColors):
             * `fFPN`: FFT2D_Wavelet FPNc
 
         select_correction_axis: int (0/1), 'Both'
-            This parameter is used only when FPN_flag is True, otherwise it will be ignored.
+            This parameter is used only when FPN_flag is True, otherwise it
+            will be ignored.
 
             * `0`: FPN will be applied row-wise.
             * `1`: FPN will be applied column-wise.
             * `'Both'`: FPN will be applied on two axis.
 
         max_iterations: int
-            This parameter is used when fFPT is selected that defines the total number of filtering iterations.
+            This parameter is used when fFPT is selected that defines the total
+            number of filtering iterations.
 
         FFT_widith: int
-            This parameter is used when fFPT is selected that defines the frequency mask's width.
+            This parameter is used when fFPT is selected that defines the
+            frequency mask's width.
+
         """
 
         CPUConfigurations.__init__(self)
