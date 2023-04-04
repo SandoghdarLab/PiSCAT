@@ -57,7 +57,7 @@ class TestDownloadUrl(unittest.TestCase):
         download_url(test_obj.url, self.download_path)
         dir_list = os.listdir(self.download_path)
         self.assertTrue(len(dir_list) > 0, 'Downloaded folder did not create')
-        file_dir = os.path.join(self.download_path, dir_list[0])
+        file_dir = os.path.join(self.download_path, 'Control')
         file_list = os.listdir(file_dir)
         self.assertTrue(len(file_list) > 0, 'downloaded folder is empty')
 
