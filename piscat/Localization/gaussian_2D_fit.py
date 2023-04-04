@@ -46,8 +46,8 @@ def fit_2D_Gaussian_varAmp(image, sigma_x, sigma_y, display_flag=False):
     @return: (list)
             [sigma_ratio, fit_params, fit_errors]
     """
-    x = np.linspace(0, image.shape[0] - 1, image.shape[0], dtype=np.int)
-    y = np.linspace(0, image.shape[1] - 1, image.shape[1], dtype=np.int)
+    x = np.linspace(0, image.shape[0] - 1, image.shape[0], dtype=np.int64)
+    y = np.linspace(0, image.shape[1] - 1, image.shape[1], dtype=np.int64)
     xy_mesh = np.meshgrid(y, x)
 
     data = np.transpose(image)

@@ -508,21 +508,21 @@ class FrequencyFPNc:
 
         if direction == "Horizontal":
             cH_3_corr = self.guided_filter(
-                cH_3, cA_3, win_size=(1, np.int(0.5 * cA_3.shape[0])), eps=0.3**2
+                cH_3, cA_3, win_size=(1, np.int64(0.5 * cA_3.shape[0])), eps=0.3**2
             )
             coeffs_3_corr = cA_3, (cH_3_corr, cV_3, cD_3)
             cA_2_new_ = pywt.idwt2(coeffs_3_corr, "sym8")
             cA_2_new = self.size_handling(cH_2, cA_2_new_)
 
             cH_2_corr = self.guided_filter(
-                cH_2, cA_2_new, win_size=(1, np.int(0.25 * cA_3.shape[0])), eps=0.2**2
+                cH_2, cA_2_new, win_size=(1, np.int64(0.25 * cA_3.shape[0])), eps=0.2**2
             )
             coeffs_2_corr = cA_2_new, (cH_2_corr, cV_2, cD_2)
             cA_1_new_ = pywt.idwt2(coeffs_2_corr, "sym8")
             cA_1_new = self.size_handling(cH_1, cA_1_new_)
 
             cH_1_corr = self.guided_filter(
-                cH_1, cA_1_new, win_size=(1, np.int(0.1 * cA_3.shape[0])), eps=0.1**2
+                cH_1, cA_1_new, win_size=(1, np.int64(0.1 * cA_3.shape[0])), eps=0.1**2
             )
             coeffs_1_corr = cA_1_new, (cH_1_corr, cV_1, cD_1)
             im_corr = pywt.idwt2(coeffs_1_corr, "sym8")
@@ -530,21 +530,21 @@ class FrequencyFPNc:
 
         elif direction == "Vertical":
             cV_3_corr = self.guided_filter(
-                cV_3, cA_3, win_size=(np.int(0.5 * cA_3.shape[0]), 1), eps=0.3**2
+                cV_3, cA_3, win_size=(np.int64(0.5 * cA_3.shape[0]), 1), eps=0.3**2
             )
             coeffs_3_corr = cA_3, (cH_3, cV_3_corr, cD_3)
             cA_2_new_ = pywt.idwt2(coeffs_3_corr, "sym8")
             cA_2_new = self.size_handling(cV_2, cA_2_new_)
 
             cV_2_corr = self.guided_filter(
-                cV_2, cA_2_new, win_size=(np.int(0.25 * cA_3.shape[0]), 1), eps=0.2**2
+                cV_2, cA_2_new, win_size=(np.int64(0.25 * cA_3.shape[0]), 1), eps=0.2**2
             )
             coeffs_2_corr = cA_2_new, (cH_2, cV_2_corr, cD_2)
             cA_1_new_ = pywt.idwt2(coeffs_2_corr, "sym8")
             cA_1_new = self.size_handling(cV_1, cA_1_new_)
 
             cV_1_corr = self.guided_filter(
-                cV_1, cA_1_new, win_size=(np.int(0.1 * cA_3.shape[0]), 1), eps=0.1**2
+                cV_1, cA_1_new, win_size=(np.int64(0.1 * cA_3.shape[0]), 1), eps=0.1**2
             )
             coeffs_1_corr = cA_1_new, (cH_1, cV_1_corr, cD_1)
             im_corr = pywt.idwt2(coeffs_1_corr, "sym8")

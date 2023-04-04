@@ -150,7 +150,7 @@ class VectorialDiffractionIntegral:
         xis = X - self.xp_
         yis = Y - self.yp_
         rxs = np.sqrt(xis * xis + yis * yis)
-        r0s = np.int_(rxs)
+        r0s = np.int64(rxs)
         drs = rxs - r0s
         drs[((r0s + 1) >= self.rmax_)] = 0
 

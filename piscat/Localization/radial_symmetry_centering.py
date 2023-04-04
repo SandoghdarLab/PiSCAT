@@ -89,10 +89,10 @@ class RadialCenter:
         Nx = Image.shape[0]
         Ny = Image.shape[1]
 
-        xm_onerow = np.arange(-((Nx - 1) / 2.0) + 0.5, ((Nx - 1) / 2.0) + 0.5, 1, dtype=np.int)
+        xm_onerow = np.arange(-((Nx - 1) / 2.0) + 0.5, ((Nx - 1) / 2.0) + 0.5, 1, dtype=np.int64)
         xm = np.broadcast_to(xm_onerow, (Nx - 1, Ny - 1))
 
-        ym_onecol = np.arange(-((Ny - 1) / 2.0) + 0.5, ((Ny - 1) / 2.0) + 0.5, dtype=np.int)
+        ym_onecol = np.arange(-((Ny - 1) / 2.0) + 0.5, ((Ny - 1) / 2.0) + 0.5, dtype=np.int64)
         ym = np.transpose(np.broadcast_to(ym_onecol, (Nx - 1, Ny - 1)))
 
         dIdu = Image[0 : Ny - 1, 1:Nx] - Image[1:Ny, 0 : Nx - 1]
@@ -137,8 +137,8 @@ class RadialCenter:
         yc = yc + (Ny + 1) / 2.0
 
         Isub = Image - np.min(Image)
-        x = np.linspace(0, Nx - 1, Nx, dtype=np.int)
-        y = np.linspace(0, Ny - 1, Ny, dtype=np.int)
+        x = np.linspace(0, Nx - 1, Nx, dtype=np.int64)
+        y = np.linspace(0, Ny - 1, Ny, dtype=np.int64)
         px, py = np.meshgrid(x, y)
         xoffset = px - xc
         yoffset = py - yc

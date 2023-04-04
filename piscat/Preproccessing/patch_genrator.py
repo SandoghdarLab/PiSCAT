@@ -61,7 +61,7 @@ class ImagePatching:
 
     def split_weight_matrix(self, video, patch_size=16, strides=4):
         self.total_start_position = []
-        self.weight_matrix = np.zeros((video.shape[1], video.shape[2]), dtype=np.int)
+        self.weight_matrix = np.zeros((video.shape[1], video.shape[2]), dtype=np.int64)
         self.patches = []
         for i_ in range(0, video.shape[1] - patch_size + strides, strides):
             for j_ in range(0, video.shape[2] - patch_size + strides, strides):

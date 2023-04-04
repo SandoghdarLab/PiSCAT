@@ -35,7 +35,7 @@ def feature2df(feature_position, videos):
         sigma = np.asarray(sigma)
         psf_position_x = feature_position[:, 2]
         psf_position_y = feature_position[:, 1]
-        psf_position_frame = np.asarray(feature_position[:, 0], dtype=np.int)
+        psf_position_frame = np.asarray(feature_position[:, 0], dtype=np.int64)
 
         center_intensity = np.asarray(
             [
