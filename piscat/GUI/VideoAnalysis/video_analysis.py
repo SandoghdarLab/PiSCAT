@@ -1,13 +1,13 @@
-from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-from piscat.GUI.InputOutput import Reading
-
-from PySide6 import QtCore, QtWidgets
 from functools import partial
+
 import numpy as np
+from PySide6 import QtCore, QtWidgets
+
+from piscat.GUI.InputOutput import Reading
+from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 
 
 class Analysis(QtWidgets.QMainWindow):
-
     update_output = QtCore.Signal(object)
 
     def __init__(self, parent=None):
@@ -66,45 +66,37 @@ class Analysis(QtWidgets.QMainWindow):
 
         self.window = QtWidgets.QWidget()
         self.setWindowTitle("Video calculator")
-        self.setStyleSheet('QMainWindow{background-color: darkgray;}')
+        self.setStyleSheet("QMainWindow{background-color: darkgray;}")
         self.window.setGeometry(450, 90, 600, 50)
         self.window.setLayout(self.grid)
         self.window.show()
 
     def on_select(self):
-
         if self.combo.currentText() == "Subtraction":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(True)
 
         elif self.combo.currentText() == "ADD":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(True)
 
         elif self.combo.currentText() == "Divide":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(True)
 
         elif self.combo.currentText() == "Background subtraction":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(True)
 
         elif self.combo.currentText() == "Dark frame correction":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(True)
 
         elif self.combo.currentText() == "Temporal Median":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(False)
 
         elif self.combo.currentText() == "Temporal Mean":
-
             self.load1.setEnabled(True)
             self.load2.setEnabled(False)
 
@@ -137,7 +129,6 @@ class Analysis(QtWidgets.QMainWindow):
         visualization_.new_display(input_video, input_video, object=None, title=headr_name)
 
     def do_update(self):
-
         if self.ok.clicked:
             if self.combo.currentText() == "Subtraction":
                 if self.original_video_1 is not None and self.original_video_2 is not None:
@@ -191,10 +182,11 @@ class Analysis(QtWidgets.QMainWindow):
                     self.msg_box.exec_()
 
             elif self.combo.currentText() == "Background subtraction":
-
                 if self.original_video_1 is not None and self.original_video_2 is not None:
                     if self.original_video_1.shape == self.original_video_2.shape:
-                        self.out_video = np.divide(self.original_video_1, self.original_video_2) - 1
+                        self.out_video = (
+                            np.divide(self.original_video_1, self.original_video_2) - 1
+                        )
                         self.display_result(self.out_video, "Background subtraction")
                         self.update_output.emit([self.out_video, self.combo.currentText(), None])
                     else:
@@ -209,14 +201,12 @@ class Analysis(QtWidgets.QMainWindow):
                     self.msg_box.exec_()
 
             elif self.combo.currentText() == "Dark frame correction":
-
                 if self.original_video_1 is not None and self.original_video_2 is not None:
+                    mean_dark_frame = np.mean(self.original_video_2, axis=0)
 
-                        mean_dark_frame = np.mean(self.original_video_2, axis=0)
-
-                        self.out_video = np.subtract(self.original_video_1, mean_dark_frame)
-                        self.display_result(self.out_video, "Background subtraction")
-                        self.update_output.emit([self.out_video, self.combo.currentText(), None])
+                    self.out_video = np.subtract(self.original_video_1, mean_dark_frame)
+                    self.display_result(self.out_video, "Background subtraction")
+                    self.update_output.emit([self.out_video, self.combo.currentText(), None])
 
                 else:
                     self.msg_box = QtWidgets.QMessageBox()
@@ -225,7 +215,6 @@ class Analysis(QtWidgets.QMainWindow):
                     self.msg_box.exec_()
 
             elif self.combo.currentText() == "Temporal Median":
-
                 if self.original_video_1 is not None:
                     self.out_video = np.median(self.original_video_1, axis=0)
                     self.display_result(self.out_video, "Temporal Median")
@@ -248,4 +237,3 @@ class Analysis(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()
         print("closing PlaySetting")
-

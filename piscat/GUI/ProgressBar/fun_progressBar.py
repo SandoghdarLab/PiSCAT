@@ -1,8 +1,8 @@
 # from GUI_RUN.Main import PiSCAT_GUI
 from PySide6 import QtCore
 
-class ProgressBar():
 
+class ProgressBar:
     def __init__(self, object):
         super(ProgressBar, self).__init__()
         self.progressBar = object

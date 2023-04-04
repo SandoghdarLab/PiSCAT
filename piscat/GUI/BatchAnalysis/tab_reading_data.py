@@ -1,15 +1,13 @@
-from piscat.GUI.InputOutput import Reading
+import os
 from functools import partial
 
-from PySide6 import QtCore
-from PySide6 import QtWidgets
-
-import os
 import numpy as np
+from PySide6 import QtCore, QtWidgets
+
+from piscat.GUI.InputOutput import Reading
 
 
 class LoadData_GUI(QtWidgets.QWidget):
-
     update_output_internal = QtCore.Signal(object)
     update_output_external = QtCore.Signal(object)
 
@@ -79,7 +77,6 @@ class LoadData_GUI(QtWidgets.QWidget):
         self.grid = QtWidgets.QGridLayout()
         self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
 
-
         self.setLayout(self.grid)
 
     def createFirstExclusiveGroup(self):
@@ -108,7 +105,6 @@ class LoadData_GUI(QtWidgets.QWidget):
         groupBox.setLayout(self.grid_file_browser)
         return groupBox
 
-
     def read_data(self):
         reading = Reading()
         reading.update_output.connect(self.updata_input_setting)
@@ -118,24 +114,28 @@ class LoadData_GUI(QtWidgets.QWidget):
     def updata_input_setting(self, data_in):
         self.info_video_setting = data_in[0]
 
-        self.filename = self.info_video_setting['path']
+        self.filename = self.info_video_setting["path"]
         self.LineEdit_path.setText(self.filename)
         # self.LineEdit_type.setText(self.info_video_setting['title'])
 
-        img_width = self.info_video_setting['img_width']
-        img_height = self.info_video_setting['img_height']
-        s_frame = self.info_video_setting['s_frame']
-        e_frame = self.info_video_setting['e_frame']
-        frame_stride = self.info_video_setting['frame_stride']
-        width_size_s = self.info_video_setting['width_size_s']
-        width_size_e = self.info_video_setting['width_size_e']
-        height_size_s = self.info_video_setting['height_size_s']
-        height_size_e = self.info_video_setting['height_size_e']
-        image_type = str(self.info_video_setting['image_type'])
+        img_width = self.info_video_setting["img_width"]
+        img_height = self.info_video_setting["img_height"]
+        s_frame = self.info_video_setting["s_frame"]
+        e_frame = self.info_video_setting["e_frame"]
+        frame_stride = self.info_video_setting["frame_stride"]
+        width_size_s = self.info_video_setting["width_size_s"]
+        width_size_e = self.info_video_setting["width_size_e"]
+        height_size_s = self.info_video_setting["height_size_s"]
+        height_size_e = self.info_video_setting["height_size_e"]
+        image_type = str(self.info_video_setting["image_type"])
 
-        imageSize_w = 'img_width:' + str(img_width) + ',' + str(width_size_s) + ':' + str(width_size_e)
-        imageSize_h = 'img_height:' + str(img_height) + ',' + str(height_size_s) + ':' + str(height_size_e)
-        imageSize_f = str(s_frame) + ':' + str(e_frame) + ':' + str(frame_stride)
+        imageSize_w = (
+            "img_width:" + str(img_width) + "," + str(width_size_s) + ":" + str(width_size_e)
+        )
+        imageSize_h = (
+            "img_height:" + str(img_height) + "," + str(height_size_s) + ":" + str(height_size_e)
+        )
+        imageSize_f = str(s_frame) + ":" + str(e_frame) + ":" + str(frame_stride)
 
         self.LineEdit_img_type.setText(image_type)
         self.LineEdit_frame.setText(imageSize_f)
@@ -165,12 +165,8 @@ class LoadData_GUI(QtWidgets.QWidget):
     def update_tab(self):
         self.get_values()
         if self.empty_value_box_flag:
-            self.data_in['type_file'] = self.file_type
-            self.data_in['name_mkdir'] = self.name_mkdir_
+            self.data_in["type_file"] = self.file_type
+            self.data_in["name_mkdir"] = self.name_mkdir_
 
             self.update_output_external.emit(self.data_in)
             self.update_tab_index.emit(1)
-
-
-
-

@@ -1,27 +1,32 @@
 from __future__ import print_function
 
-import numpy as np
 import math
+
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import scipy.stats as ss
 import scipy.stats as stats
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-
+from scipy.signal import find_peaks, savgol_filter
 from sklearn.mixture import GaussianMixture
-from scipy.signal import savgol_filter
-from scipy.signal import find_peaks
-from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
-from piscat.InputOutput import read_write_data
-from piscat.Visualization.print_colors import PrintColors
-from piscat.Visualization.plot import plot2df, plot_bright_dark_psf, plot_bright_dark_psf_inTime
 from tqdm.autonotebook import tqdm
+
+from piscat.InputOutput import read_write_data
+from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
+from piscat.Visualization.plot import plot2df, plot_bright_dark_psf, plot_bright_dark_psf_inTime
+from piscat.Visualization.print_colors import PrintColors
 
 
 class PlotProteinHistogram(PrintColors):
-
-    def __init__(self, intersection_display_flag=False, imgSizex=5, imgSizey=5, flag_localization_filter=False, radius=None):
-
+    def __init__(
+        self,
+        intersection_display_flag=False,
+        imgSizex=5,
+        imgSizey=5,
+        flag_localization_filter=False,
+        radius=None,
+    ):
         """
         This class use video analysis data ('HDF5', 'Matlab') to plot histograms.
 
@@ -108,8 +113,16 @@ class PlotProteinHistogram(PrintColors):
 
         self.t_particle_localization_flag = []
 
-    def __call__(self, folder_name, particles, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence,
-                 pixel_size=0.66):
+    def __call__(
+        self,
+        folder_name,
+        particles,
+        batch_size,
+        video_frame_num,
+        MinPeakWidth,
+        MinPeakProminence,
+        pixel_size=0.66,
+    ):
         """
         By calling the object of class this function tries to read the result of the corresponding video it is defined
         with ``folder_name``. These results concatenated with previous results to use for plotting histogram.
@@ -151,31 +164,31 @@ class PlotProteinHistogram(PrintColors):
 
         if type(particles) is dict:
             for key, item in particles.items():
-                intensity_horizontal = item['intensity_horizontal']
-                intensity_vertical = item['intensity_vertical']
-                center_int = item['center_int']
-                center_int_flow = item['center_int_flow']
-                frame_number = item['frame_number']
-                sigma = item['sigma']
-                x_center = item['x_center']
-                y_center = item['y_center']
-                particle_ID = item['particle_ID']
+                intensity_horizontal = item["intensity_horizontal"]
+                intensity_vertical = item["intensity_vertical"]
+                center_int = item["center_int"]
+                center_int_flow = item["center_int_flow"]
+                frame_number = item["frame_number"]
+                sigma = item["sigma"]
+                x_center = item["x_center"]
+                y_center = item["y_center"]
+                particle_ID = item["particle_ID"]
 
                 num_parameters = len(item)
 
                 if num_parameters == 21:
-                    fit_intensity = item['fit_intensity']
-                    fit_x = item['fit_x'] * pixel_size
-                    fit_y = item['fit_y'] * pixel_size
-                    fit_X_sigma = item['fit_X_sigma'] * pixel_size
-                    fit_Y_sigma = item['fit_Y_sigma'] * pixel_size
-                    fit_Bias = item['fit_Bias']
-                    fit_intensity_error = item['fit_intensity_error']
-                    fit_x_error = item['fit_x_error'] * pixel_size
-                    fit_y_error = item['fit_y_error'] * pixel_size
-                    fit_X_sigma_error = item['fit_X_sigma_error'] * pixel_size
-                    fit_Y_sigma_error = item['fit_Y_sigma_error'] * pixel_size
-                    fit_Bias_error = item['fit_Bias_error']
+                    fit_intensity = item["fit_intensity"]
+                    fit_x = item["fit_x"] * pixel_size
+                    fit_y = item["fit_y"] * pixel_size
+                    fit_X_sigma = item["fit_X_sigma"] * pixel_size
+                    fit_Y_sigma = item["fit_Y_sigma"] * pixel_size
+                    fit_Bias = item["fit_Bias"]
+                    fit_intensity_error = item["fit_intensity_error"]
+                    fit_x_error = item["fit_x_error"] * pixel_size
+                    fit_y_error = item["fit_y_error"] * pixel_size
+                    fit_X_sigma_error = item["fit_X_sigma_error"] * pixel_size
+                    fit_Y_sigma_error = item["fit_Y_sigma_error"] * pixel_size
+                    fit_Bias_error = item["fit_Bias_error"]
 
                 else:
                     fit_intensity = None
@@ -191,14 +204,31 @@ class PlotProteinHistogram(PrintColors):
                 center_int_flow_clean = center_int_flow[~np.isnan(center_int_flow)]
                 sigma_clean = sigma[~np.isnan(center_int)]
 
-                self.localization(x_center_clean, y_center_clean, center_int_clean, particle_ID_clean, frame_number_clean)
+                self.localization(
+                    x_center_clean,
+                    y_center_clean,
+                    center_int_clean,
+                    particle_ID_clean,
+                    frame_number_clean,
+                )
 
-                self.data_handling(center_int_clean, center_int_flow_clean, folder_name, sigma_clean, num_parameters, fit_intensity,
-                                   fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
-                                   MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
+                self.data_handling(
+                    center_int_clean,
+                    center_int_flow_clean,
+                    folder_name,
+                    sigma_clean,
+                    num_parameters,
+                    fit_intensity,
+                    fit_X_sigma,
+                    fit_Y_sigma,
+                    frame_number,
+                    batch_size,
+                    video_frame_num,
+                    MinPeakWidth=MinPeakWidth,
+                    MinPeakProminence=MinPeakProminence,
+                )
 
         if type(particles) is np.ndarray:
-
             for n_particle in range(particles.shape[0]):
                 if type(particles[n_particle][0]) is list:
                     intensity_horizontal = np.asarray(particles[n_particle][0])
@@ -266,13 +296,29 @@ class PlotProteinHistogram(PrintColors):
                 center_int_flow_clean = center_int_flow[~np.isnan(center_int_flow)]
                 sigma_clean = sigma[~np.isnan(center_int)]
 
-                self.localization(x_center_clean, y_center_clean, center_int_clean, particle_ID_clean,
-                                  frame_number_clean)
+                self.localization(
+                    x_center_clean,
+                    y_center_clean,
+                    center_int_clean,
+                    particle_ID_clean,
+                    frame_number_clean,
+                )
 
-                self.data_handling(center_int_clean, center_int_flow_clean, folder_name, sigma_clean, num_parameters,
-                                   fit_intensity,
-                                   fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num,
-                                   MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
+                self.data_handling(
+                    center_int_clean,
+                    center_int_flow_clean,
+                    folder_name,
+                    sigma_clean,
+                    num_parameters,
+                    fit_intensity,
+                    fit_X_sigma,
+                    fit_Y_sigma,
+                    frame_number,
+                    batch_size,
+                    video_frame_num,
+                    MinPeakWidth=MinPeakWidth,
+                    MinPeakProminence=MinPeakProminence,
+                )
 
     def get_setting(self, flag_localization_filter, radius, centerOfImage_X, centerOfImage_Y):
         self.radius = radius
@@ -286,16 +332,15 @@ class PlotProteinHistogram(PrintColors):
                 x = np.mean(x_center) - self.centerOfImage_X
                 y = np.mean(y_center) - self.centerOfImage_Y
                 if np.sqrt(x**2 + y**2) <= self.radius:
+                    self.t_particle_localization_flag = True
 
-                        self.t_particle_localization_flag = True
-
-                        self.t_mean_x_center_bright.append(np.mean(x_center))
-                        self.t_std_x_center_bright.append(np.std(x_center))
-                        self.t_mean_y_center_bright.append(np.mean(y_center))
-                        self.t_std_y_center_bright.append(np.std(y_center))
-                        self.t_particle_ID_bright.append(np.unique(particle_ID)[0])
-                        self.t_particle_frame_bright.append(int(np.median(frame_number)))
-                        self.t_linking_len_bright.append(len(center_int))
+                    self.t_mean_x_center_bright.append(np.mean(x_center))
+                    self.t_std_x_center_bright.append(np.std(x_center))
+                    self.t_mean_y_center_bright.append(np.mean(y_center))
+                    self.t_std_y_center_bright.append(np.std(y_center))
+                    self.t_particle_ID_bright.append(np.unique(particle_ID)[0])
+                    self.t_particle_frame_bright.append(int(np.median(frame_number)))
+                    self.t_linking_len_bright.append(len(center_int))
 
                 else:
                     self.t_particle_localization_flag = False
@@ -311,21 +356,19 @@ class PlotProteinHistogram(PrintColors):
                 self.t_linking_len_bright.append(len(center_int))
 
         elif np.mean(center_int) < 0:
-
             if self.flag_localization_filter:
                 x = np.mean(x_center) - self.centerOfImage_X
                 y = np.mean(y_center) - self.centerOfImage_Y
                 if np.sqrt(x**2 + y**2) <= self.radius:
+                    self.t_particle_localization_flag = True
 
-                        self.t_particle_localization_flag = True
-
-                        self.t_mean_x_center_dark.append(np.mean(x_center))
-                        self.t_std_x_center_dark.append(np.std(x_center))
-                        self.t_mean_y_center_dark.append(np.mean(y_center))
-                        self.t_std_y_center_dark.append(np.std(y_center))
-                        self.t_particle_ID_dark.append(np.unique(particle_ID)[0])
-                        self.t_particle_frame_dark.append(int(np.median(frame_number)))
-                        self.t_linking_len_dark.append(len(center_int))
+                    self.t_mean_x_center_dark.append(np.mean(x_center))
+                    self.t_std_x_center_dark.append(np.std(x_center))
+                    self.t_mean_y_center_dark.append(np.mean(y_center))
+                    self.t_std_y_center_dark.append(np.std(y_center))
+                    self.t_particle_ID_dark.append(np.unique(particle_ID)[0])
+                    self.t_particle_frame_dark.append(int(np.median(frame_number)))
+                    self.t_linking_len_dark.append(len(center_int))
 
                 else:
                     self.t_particle_localization_flag = False
@@ -340,10 +383,27 @@ class PlotProteinHistogram(PrintColors):
                 self.t_particle_frame_dark.append(int(np.median(frame_number)))
                 self.t_linking_len_dark.append(len(center_int))
 
-    def data_handling(self, center_int, center_int_flow, folder_name, sigma, num_parameters, fit_intensity,
-                      fit_X_sigma, fit_Y_sigma, frame_number, batch_size, video_frame_num, MinPeakWidth, MinPeakProminence):
-
-        if len(center_int) != 0 and ~np.isnan(center_int).all() and self.t_particle_localization_flag:
+    def data_handling(
+        self,
+        center_int,
+        center_int_flow,
+        folder_name,
+        sigma,
+        num_parameters,
+        fit_intensity,
+        fit_X_sigma,
+        fit_Y_sigma,
+        frame_number,
+        batch_size,
+        video_frame_num,
+        MinPeakWidth,
+        MinPeakProminence,
+    ):
+        if (
+            len(center_int) != 0
+            and ~np.isnan(center_int).all()
+            and self.t_particle_localization_flag
+        ):
             win_size = self.determine_windows_size(center_int)
             if win_size > 3:
                 V_smooth = savgol_filter(center_int, win_size, 3)
@@ -352,21 +412,41 @@ class PlotProteinHistogram(PrintColors):
                 V_smooth_follow = savgol_filter(center_int_flow, win_size, 3)
 
                 peak, index_peak, idx_ = self.find_peack_contrast(frame_number, V_smooth)
-                xi, yi = self.intersection_point(data_index=frame_number, data=V_smooth, index=index_peak,
-                                                 display=self.intersection_display_flag)
+                xi, yi = self.intersection_point(
+                    data_index=frame_number,
+                    data=V_smooth,
+                    index=index_peak,
+                    display=self.intersection_display_flag,
+                )
 
-                tprofile_frameNo_DRA_longer, start_FN_earlyV, end_FN_earlyV = self.frameNumber_longerProfile_2_Vshape(batch_size,
-                                                                                                                      video_frame_num,
-                                                                                                                      frame_number,
-                                                                                                                      V_smooth_follow)
+                (
+                    tprofile_frameNo_DRA_longer,
+                    start_FN_earlyV,
+                    end_FN_earlyV,
+                ) = self.frameNumber_longerProfile_2_Vshape(
+                    batch_size, video_frame_num, frame_number, V_smooth_follow
+                )
 
-                prom, prom_idx, p_idx_, pro_ = self.find_Prominence_contrast(tprofile_DRA_smooth=V_smooth, tprofile_DRA_tail_smooth=V_smooth_follow,
-                                                               tprofile_frameNo_DRA_longer=tprofile_frameNo_DRA_longer,
-                                                               start_FN_earlyV=start_FN_earlyV, end_FN_earlyV=end_FN_earlyV,
-                                                               MinPeakWidth=MinPeakWidth, MinPeakProminence=MinPeakProminence)
+                prom, prom_idx, p_idx_, pro_ = self.find_Prominence_contrast(
+                    tprofile_DRA_smooth=V_smooth,
+                    tprofile_DRA_tail_smooth=V_smooth_follow,
+                    tprofile_frameNo_DRA_longer=tprofile_frameNo_DRA_longer,
+                    start_FN_earlyV=start_FN_earlyV,
+                    end_FN_earlyV=end_FN_earlyV,
+                    MinPeakWidth=MinPeakWidth,
+                    MinPeakProminence=MinPeakProminence,
+                )
 
-                properties = [V_smooth, V_smooth_follow, [peak, index_peak], [yi, xi], [prom, prom_idx, p_idx_, pro_],
-                              tprofile_frameNo_DRA_longer, start_FN_earlyV, end_FN_earlyV]
+                properties = [
+                    V_smooth,
+                    V_smooth_follow,
+                    [peak, index_peak],
+                    [yi, xi],
+                    [prom, prom_idx, p_idx_, pro_],
+                    tprofile_frameNo_DRA_longer,
+                    start_FN_earlyV,
+                    end_FN_earlyV,
+                ]
 
                 self.folder_name.append(folder_name)
 
@@ -394,7 +474,7 @@ class PlotProteinHistogram(PrintColors):
 
         if num_parameters == 21 and self.t_particle_localization_flag:
             nan_array = np.isnan(fit_intensity)
-            not_nan_array = ~ nan_array
+            not_nan_array = ~nan_array
             fit_intensity_ = fit_intensity[not_nan_array]
 
             win_size = self.determine_windows_size(fit_intensity_)
@@ -403,8 +483,9 @@ class PlotProteinHistogram(PrintColors):
                     V_smooth = savgol_filter(fit_intensity_, win_size, 3)
 
                     peak, index_peak, idx_ = self.find_peack_contrast(frame_number, V_smooth)
-                    xi, yi = self.intersection_point(data_index=frame_number, data=V_smooth, index=index_peak,
-                                                     display=False)
+                    xi, yi = self.intersection_point(
+                        data_index=frame_number, data=V_smooth, index=index_peak, display=False
+                    )
 
                     self.t_particle_center_fit_intensity.append(fit_intensity_)
                     self.tSmooth_particle_center_intensity.append(V_smooth)
@@ -420,7 +501,13 @@ class PlotProteinHistogram(PrintColors):
 
                     self.t_iPSFCentroidSigmas_fit_x.append(fit_X_sigma_[idx_])
                     self.t_iPSFCentroidSigmas_fit_y.append(fit_Y_sigma_[idx_])
-                    fit_properties = [V_smooth, V_smooth_follow, [peak, index_peak], [yi, xi], [prom, prom_idx]]
+                    fit_properties = [
+                        V_smooth,
+                        V_smooth_follow,
+                        [peak, index_peak],
+                        [yi, xi],
+                        [prom, prom_idx],
+                    ]
 
                     return properties, fit_properties
 
@@ -434,7 +521,6 @@ class PlotProteinHistogram(PrintColors):
             return properties, None
 
     def determine_windows_size(self, signal):
-
         window_size = round(0.05 * len(signal))
         if (window_size % 2) == 0:
             window_size = window_size + 1
@@ -453,14 +539,26 @@ class PlotProteinHistogram(PrintColors):
             index_min_center_intensity = tprofile_DRA_index[index_min_]
             return min_center_intensity, index_min_center_intensity, index_min_
 
-    def find_Prominence_contrast(self, tprofile_DRA_smooth, tprofile_DRA_tail_smooth, tprofile_frameNo_DRA_longer,
-                                 start_FN_earlyV, end_FN_earlyV, MinPeakWidth, MinPeakProminence):
-
+    def find_Prominence_contrast(
+        self,
+        tprofile_DRA_smooth,
+        tprofile_DRA_tail_smooth,
+        tprofile_frameNo_DRA_longer,
+        start_FN_earlyV,
+        end_FN_earlyV,
+        MinPeakWidth,
+        MinPeakProminence,
+    ):
         if np.mean(tprofile_DRA_smooth) >= 0:
-            peaks_index, properties = find_peaks(x=tprofile_DRA_tail_smooth, width=[MinPeakWidth, np.inf],
-                                                 prominence=[MinPeakProminence, np.inf])
+            peaks_index, properties = find_peaks(
+                x=tprofile_DRA_tail_smooth,
+                width=[MinPeakWidth, np.inf],
+                prominence=[MinPeakProminence, np.inf],
+            )
             peaks_index = peaks_index.tolist()
-            frame_index_ = [tprofile_frameNo_DRA_longer[peaks_index[i_]] for i_ in range(len(peaks_index))]
+            frame_index_ = [
+                tprofile_frameNo_DRA_longer[peaks_index[i_]] for i_ in range(len(peaks_index))
+            ]
 
             idx_ = []
             frame_idx_ = []
@@ -486,10 +584,15 @@ class PlotProteinHistogram(PrintColors):
                 pro = np.nan
 
         elif np.mean(tprofile_DRA_smooth) < 0:
-            peaks_index, properties = find_peaks(x=-1*tprofile_DRA_tail_smooth, width=[MinPeakWidth, np.inf],
-                                                 prominence=[MinPeakProminence, np.inf])
+            peaks_index, properties = find_peaks(
+                x=-1 * tprofile_DRA_tail_smooth,
+                width=[MinPeakWidth, np.inf],
+                prominence=[MinPeakProminence, np.inf],
+            )
             peaks_index = peaks_index.tolist()
-            frame_index_ = [tprofile_frameNo_DRA_longer[peaks_index[i_]] for i_ in range(len(peaks_index))]
+            frame_index_ = [
+                tprofile_frameNo_DRA_longer[peaks_index[i_]] for i_ in range(len(peaks_index))
+            ]
 
             idx_ = []
             frame_idx_ = []
@@ -519,8 +622,8 @@ class PlotProteinHistogram(PrintColors):
         try:
             data = data.ravel()
             idx_ = np.where(data_index == index)
-            right_side = data[0:idx_[0][0]]
-            left_side = data[idx_[0][0]:]
+            right_side = data[0 : idx_[0][0]]
+            left_side = data[idx_[0][0] :]
 
             data_index = np.asarray(data_index)
             x_right = data_index[data_index < index]
@@ -535,7 +638,7 @@ class PlotProteinHistogram(PrintColors):
             y_left = p_l_left[0] + p_l_left[1] * x_left
 
             if p_l_right[1] == p_l_left[1]:
-                raise Exception('---lines do not intersect!---')
+                raise Exception("---lines do not intersect!---")
             else:
                 xi = (p_l_left[0] - p_l_right[0]) / (p_l_right[1] - p_l_left[1])
                 yi = p_l_left[1] * xi + p_l_left[0]
@@ -543,10 +646,18 @@ class PlotProteinHistogram(PrintColors):
             if display:
                 self.fig = plt.figure(figsize=(self.imgSizex, self.imgSizey))
                 self.axs = self.fig.add_axes([0, 0, 1, 1])
-                self.axs.plot(x_right, y_right, 'r', label='Fitted line at right', zorder=1)
-                self.axs.plot(x_left, y_left, 'r', label='Fitted line at left', zorder=2)
-                self.axs.scatter(xi, yi, s=80, facecolors='none', edgecolors='k', zorder=3, label='Intersection of the lines')
-                self.axs.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+                self.axs.plot(x_right, y_right, "r", label="Fitted line at right", zorder=1)
+                self.axs.plot(x_left, y_left, "r", label="Fitted line at left", zorder=2)
+                self.axs.scatter(
+                    xi,
+                    yi,
+                    s=80,
+                    facecolors="none",
+                    edgecolors="k",
+                    zorder=3,
+                    label="Intersection of the lines",
+                )
+                self.axs.ticklabel_format(style="sci", axis="y", scilimits=(0, 0))
 
             return int(xi), yi
 
@@ -566,7 +677,16 @@ class PlotProteinHistogram(PrintColors):
             mean_ = 0
         return mean_, std_
 
-    def extract_hist_information(self, con_intersections, con_peaks, con_proms, upper_limitation=1, lower_limitation=-1, max_n_components=3, Flag_GMM_fit=True):
+    def extract_hist_information(
+        self,
+        con_intersections,
+        con_peaks,
+        con_proms,
+        upper_limitation=1,
+        lower_limitation=-1,
+        max_n_components=3,
+        Flag_GMM_fit=True,
+    ):
         t_contrast_intersection = np.asarray(con_intersections)
         t_contrast_intersection = t_contrast_intersection[~np.isnan(t_contrast_intersection)]
 
@@ -586,38 +706,68 @@ class PlotProteinHistogram(PrintColors):
             t_black_contrast_proms = t_contrast_proms[t_contrast_proms < 0]
 
         # lower limit
-        t_bright_contrast_intersection = t_bright_contrast_intersection[t_bright_contrast_intersection >= lower_limitation]
-        t_black_contrast_intersection = t_black_contrast_intersection[t_black_contrast_intersection >= lower_limitation]
+        t_bright_contrast_intersection = t_bright_contrast_intersection[
+            t_bright_contrast_intersection >= lower_limitation
+        ]
+        t_black_contrast_intersection = t_black_contrast_intersection[
+            t_black_contrast_intersection >= lower_limitation
+        ]
 
-        t_bright_contrast_peaks = t_bright_contrast_peaks[t_bright_contrast_peaks >= lower_limitation]
-        t_black_contrast_peaks = t_black_contrast_peaks[t_black_contrast_peaks >= lower_limitation]
+        t_bright_contrast_peaks = t_bright_contrast_peaks[
+            t_bright_contrast_peaks >= lower_limitation
+        ]
+        t_black_contrast_peaks = t_black_contrast_peaks[
+            t_black_contrast_peaks >= lower_limitation
+        ]
 
         if con_proms is not None:
-            t_bright_contrast_proms = t_bright_contrast_proms[t_bright_contrast_proms >= lower_limitation]
-            t_black_contrast_proms = t_black_contrast_proms[t_black_contrast_proms >= lower_limitation]
+            t_bright_contrast_proms = t_bright_contrast_proms[
+                t_bright_contrast_proms >= lower_limitation
+            ]
+            t_black_contrast_proms = t_black_contrast_proms[
+                t_black_contrast_proms >= lower_limitation
+            ]
             t_contrast_proms = t_contrast_proms[t_contrast_proms >= lower_limitation]
 
-        t_contrast_intersection = t_contrast_intersection[t_contrast_intersection >= lower_limitation]
+        t_contrast_intersection = t_contrast_intersection[
+            t_contrast_intersection >= lower_limitation
+        ]
         t_contrast_peaks = t_contrast_peaks[t_contrast_peaks >= lower_limitation]
 
         # upper limit
-        t_bright_contrast_intersection = t_bright_contrast_intersection[t_bright_contrast_intersection < upper_limitation]
-        t_black_contrast_intersection = t_black_contrast_intersection[t_black_contrast_intersection < upper_limitation]
+        t_bright_contrast_intersection = t_bright_contrast_intersection[
+            t_bright_contrast_intersection < upper_limitation
+        ]
+        t_black_contrast_intersection = t_black_contrast_intersection[
+            t_black_contrast_intersection < upper_limitation
+        ]
 
-        t_bright_contrast_peaks = t_bright_contrast_peaks[t_bright_contrast_peaks < upper_limitation]
+        t_bright_contrast_peaks = t_bright_contrast_peaks[
+            t_bright_contrast_peaks < upper_limitation
+        ]
         t_black_contrast_peaks = t_black_contrast_peaks[t_black_contrast_peaks < upper_limitation]
 
         if con_proms is not None:
-            t_bright_contrast_proms = t_bright_contrast_proms[t_bright_contrast_proms < upper_limitation]
-            t_black_contrast_proms = t_black_contrast_proms[t_black_contrast_proms < upper_limitation]
+            t_bright_contrast_proms = t_bright_contrast_proms[
+                t_bright_contrast_proms < upper_limitation
+            ]
+            t_black_contrast_proms = t_black_contrast_proms[
+                t_black_contrast_proms < upper_limitation
+            ]
             t_contrast_proms = t_contrast_proms[t_contrast_proms < upper_limitation]
 
-        t_contrast_intersection = t_contrast_intersection[t_contrast_intersection < upper_limitation]
+        t_contrast_intersection = t_contrast_intersection[
+            t_contrast_intersection < upper_limitation
+        ]
         t_contrast_peaks = t_contrast_peaks[t_contrast_peaks < upper_limitation]
 
         # std & mean
-        mean_bright_intersection, std_bright_intersection = self.mean_std(t_bright_contrast_intersection)
-        mean_black_intersection, std_black_intersection = self.mean_std(t_black_contrast_intersection)
+        mean_bright_intersection, std_bright_intersection = self.mean_std(
+            t_bright_contrast_intersection
+        )
+        mean_black_intersection, std_black_intersection = self.mean_std(
+            t_black_contrast_intersection
+        )
 
         mean_bright_peak, std_bright_peak = self.mean_std(t_bright_contrast_peaks)
         mean_black_peak, std_black_peak = self.mean_std(t_black_contrast_peaks)
@@ -633,46 +783,128 @@ class PlotProteinHistogram(PrintColors):
         sci_num = lambda x: "{:.2e}".format(x)
 
         if con_proms is not None:
+            list_data = [
+                t_bright_contrast_peaks,
+                t_bright_contrast_intersection,
+                t_bright_contrast_proms,
+                t_black_contrast_peaks,
+                t_black_contrast_intersection,
+                t_black_contrast_proms,
+                t_contrast_peaks,
+                t_contrast_intersection,
+                t_contrast_proms,
+            ]
 
-            list_data = [t_bright_contrast_peaks, t_bright_contrast_intersection, t_bright_contrast_proms,
-                         t_black_contrast_peaks, t_black_contrast_intersection, t_black_contrast_proms,
-                         t_contrast_peaks, t_contrast_intersection, t_contrast_proms]
+            title = [
+                "Peak bright",
+                "Intersection bright",
+                "Prominence bright",
+                "Peak black",
+                "Intersection black",
+                "Prominence black",
+                "Total peak",
+                "Total Intersection",
+                "Total Prominence",
+            ]
 
-            title = ['Peak bright', 'Intersection bright', 'Prominence bright',
-                     'Peak black', 'Intersection black', 'Prominence black',
-                     'Total peak', 'Total Intersection', 'Total Prominence']
-
-            dic = {'Peak bright': [sci_num(mean_bright_peak), sci_num(std_bright_peak), int(t_bright_contrast_peaks.shape[0])],
-                   'Peak black': [sci_num(mean_black_peak), sci_num(std_black_peak), int(t_black_contrast_peaks.shape[0])],
-                   'Total peak': [sci_num(mean_peak), sci_num(std_peak), int(t_contrast_peaks.shape[0])],
-                   'Intersection bright': [sci_num(mean_bright_intersection), sci_num(std_bright_intersection), int(t_bright_contrast_intersection.shape[0])],
-                   'Intersection black': [sci_num(mean_black_intersection), sci_num(std_black_intersection), int(t_black_contrast_intersection.shape[0])],
-                   'Total Intersection': [sci_num(mean_intersection), sci_num(std_intersection), int(t_contrast_intersection.shape[0])],
-                   'Prominence bright': [sci_num(mean_bright_prom), sci_num(std_bright_prom), int(t_bright_contrast_proms.shape[0])],
-                   'Prominence black': [sci_num(mean_black_prom), sci_num(std_black_prom), int(t_black_contrast_proms.shape[0])],
-                   'Total Prominence': [sci_num(mean_prom), sci_num(std_prom), int(t_contrast_proms.shape[0])]
-                   }
+            dic = {
+                "Peak bright": [
+                    sci_num(mean_bright_peak),
+                    sci_num(std_bright_peak),
+                    int(t_bright_contrast_peaks.shape[0]),
+                ],
+                "Peak black": [
+                    sci_num(mean_black_peak),
+                    sci_num(std_black_peak),
+                    int(t_black_contrast_peaks.shape[0]),
+                ],
+                "Total peak": [
+                    sci_num(mean_peak),
+                    sci_num(std_peak),
+                    int(t_contrast_peaks.shape[0]),
+                ],
+                "Intersection bright": [
+                    sci_num(mean_bright_intersection),
+                    sci_num(std_bright_intersection),
+                    int(t_bright_contrast_intersection.shape[0]),
+                ],
+                "Intersection black": [
+                    sci_num(mean_black_intersection),
+                    sci_num(std_black_intersection),
+                    int(t_black_contrast_intersection.shape[0]),
+                ],
+                "Total Intersection": [
+                    sci_num(mean_intersection),
+                    sci_num(std_intersection),
+                    int(t_contrast_intersection.shape[0]),
+                ],
+                "Prominence bright": [
+                    sci_num(mean_bright_prom),
+                    sci_num(std_bright_prom),
+                    int(t_bright_contrast_proms.shape[0]),
+                ],
+                "Prominence black": [
+                    sci_num(mean_black_prom),
+                    sci_num(std_black_prom),
+                    int(t_black_contrast_proms.shape[0]),
+                ],
+                "Total Prominence": [
+                    sci_num(mean_prom),
+                    sci_num(std_prom),
+                    int(t_contrast_proms.shape[0]),
+                ],
+            }
         else:
-            list_data = [t_bright_contrast_peaks, t_bright_contrast_intersection,
-                         t_black_contrast_peaks, t_black_contrast_intersection,
-                         t_contrast_peaks, t_contrast_intersection]
+            list_data = [
+                t_bright_contrast_peaks,
+                t_bright_contrast_intersection,
+                t_black_contrast_peaks,
+                t_black_contrast_intersection,
+                t_contrast_peaks,
+                t_contrast_intersection,
+            ]
 
-            title = ['Peak bright', 'Intersection bright',
-                     'Peak black', 'Intersection black',
-                     'Total peak', 'Total Intersection']
+            title = [
+                "Peak bright",
+                "Intersection bright",
+                "Peak black",
+                "Intersection black",
+                "Total peak",
+                "Total Intersection",
+            ]
 
-            dic = {'Peak bright': [sci_num(mean_bright_peak), sci_num(std_bright_peak),
-                                   int(t_bright_contrast_peaks.shape[0])],
-                   'Peak black': [sci_num(mean_black_peak), sci_num(std_black_peak),
-                                  int(t_black_contrast_peaks.shape[0])],
-                   'Total peak': [sci_num(mean_peak), sci_num(std_peak), int(t_contrast_peaks.shape[0])],
-                   'Intersection bright': [sci_num(mean_bright_intersection), sci_num(std_bright_intersection),
-                                           int(t_bright_contrast_intersection.shape[0])],
-                   'Intersection black': [sci_num(mean_black_intersection), sci_num(std_black_intersection),
-                                          int(t_black_contrast_intersection.shape[0])],
-                   'Total Intersection': [sci_num(mean_intersection), sci_num(std_intersection),
-                                          int(t_contrast_intersection.shape[0])]
-                    }
+            dic = {
+                "Peak bright": [
+                    sci_num(mean_bright_peak),
+                    sci_num(std_bright_peak),
+                    int(t_bright_contrast_peaks.shape[0]),
+                ],
+                "Peak black": [
+                    sci_num(mean_black_peak),
+                    sci_num(std_black_peak),
+                    int(t_black_contrast_peaks.shape[0]),
+                ],
+                "Total peak": [
+                    sci_num(mean_peak),
+                    sci_num(std_peak),
+                    int(t_contrast_peaks.shape[0]),
+                ],
+                "Intersection bright": [
+                    sci_num(mean_bright_intersection),
+                    sci_num(std_bright_intersection),
+                    int(t_bright_contrast_intersection.shape[0]),
+                ],
+                "Intersection black": [
+                    sci_num(mean_black_intersection),
+                    sci_num(std_black_intersection),
+                    int(t_black_contrast_intersection.shape[0]),
+                ],
+                "Total Intersection": [
+                    sci_num(mean_intersection),
+                    sci_num(std_intersection),
+                    int(t_contrast_intersection.shape[0]),
+                ],
+            }
 
         num_gmm_mean = None
         list_means = []
@@ -694,9 +926,8 @@ class PlotProteinHistogram(PrintColors):
                     list_BIC.append(BIC)
                     list_keys.append(key)
 
-
                 except:
-                    print('---GMM did not extract for ' + key, '---')
+                    print("---GMM did not extract for " + key, "---")
                     list_means.append(None)
                     list_stds.append(None)
                     list_weights.append(None)
@@ -708,7 +939,9 @@ class PlotProteinHistogram(PrintColors):
             list_num_GMM_temp = [x for x in list_num_GMM if x is not None]
             max_num_gmm_mean = np.max(list_num_GMM_temp)
 
-            for means, stdevs, weights, key in zip(list_means, list_stds, list_weights, list_keys):
+            for means, stdevs, weights, key in zip(
+                list_means, list_stds, list_weights, list_keys
+            ):
                 if means is not None:
                     if isinstance(means, list):
                         if len(means) == max_num_gmm_mean:
@@ -741,30 +974,32 @@ class PlotProteinHistogram(PrintColors):
                         dic[key].append(None)
                         dic[key].append(None)
 
-            index_ = ['Mean', 'Std', '#Particles']
+            index_ = ["Mean", "Std", "#Particles"]
             for i_ in range(max_num_gmm_mean):
-                index_.append('GMM_mean' + str(i_+1))
-                index_.append('GMM_std' + str(i_+1))
-                index_.append('GMM_weight' + str(i_+1))
+                index_.append("GMM_mean" + str(i_ + 1))
+                index_.append("GMM_std" + str(i_ + 1))
+                index_.append("GMM_weight" + str(i_ + 1))
             df = pd.DataFrame(dic, index=index_)
 
         else:
-            df = pd.DataFrame(dic, index=['Mean', 'Std', '#Particles'])
+            df = pd.DataFrame(dic, index=["Mean", "Std", "#Particles"])
 
         return df, list_data, title
 
     def GMM(self, data, max_n_components):
         data = data.reshape(-1, 1)
         nan_array = np.isnan(data)
-        not_nan_array = ~ nan_array
+        not_nan_array = ~nan_array
         data = data[not_nan_array]
         data = data.reshape(-1, 1)
 
-        N = np.arange(1, max_n_components+1)
+        N = np.arange(1, max_n_components + 1)
         models = [None for i in range(len(N))]
         for i in range(len(N)):
             try:
-                models[i] = GaussianMixture(N[i], covariance_type='full', reg_covar=1e-10).fit(data)
+                models[i] = GaussianMixture(N[i], covariance_type="full", reg_covar=1e-10).fit(
+                    data
+                )
             except:
                 models[i] = None
 
@@ -801,10 +1036,12 @@ class PlotProteinHistogram(PrintColors):
 
             return means, stdevs, weights, AIC, BIC
         except:
-            print('---Data is not enough for GMM!---')
+            print("---Data is not enough for GMM!---")
             return np.nan, np.nan, np.nan, np.nan, np.nan
 
-    def frameNumber_longerProfile_2_Vshape(self, batch_size, video_shape_0, particle_frame_number, V_smooth_follow):
+    def frameNumber_longerProfile_2_Vshape(
+        self, batch_size, video_shape_0, particle_frame_number, V_smooth_follow
+    ):
         BS2 = 2 * batch_size
         start_FN_earlyV = particle_frame_number[0]
         end_FN_earlyV = particle_frame_number[-1]
@@ -817,47 +1054,57 @@ class PlotProteinHistogram(PrintColors):
 
         tprofile_frameNo_DRA_longer.append(list(range(end_FN_earlyV, end_extended_DRA, 1)))
 
-        tprofile_frameNo_DRA_longer = [item for sublist in tprofile_frameNo_DRA_longer for item in sublist]
+        tprofile_frameNo_DRA_longer = [
+            item for sublist in tprofile_frameNo_DRA_longer for item in sublist
+        ]
 
         if len(tprofile_frameNo_DRA_longer) != V_smooth_follow.shape[0]:
             pass
 
         return tprofile_frameNo_DRA_longer, start_FN_earlyV, end_FN_earlyV
 
-    def plot_contrast_extraction(self, particles, batch_size, video_frame_num, MinPeakWidth,
-                                 MinPeakProminence, pixel_size, particles_num='#0', save_path=None):
-
+    def plot_contrast_extraction(
+        self,
+        particles,
+        batch_size,
+        video_frame_num,
+        MinPeakWidth,
+        MinPeakProminence,
+        pixel_size,
+        particles_num="#0",
+        save_path=None,
+    ):
         if type(particles) is list:
             particles = protein_trajectories_list2dic(particles)
 
         if type(particles) is dict:
             for key, item in particles.items():
                 if key == particles_num:
-                    intensity_horizontal = item['intensity_horizontal']
-                    intensity_vertical = item['intensity_vertical']
-                    center_int = item['center_int']
-                    center_int_flow = item['center_int_flow']
-                    frame_number = item['frame_number']
-                    sigma = item['sigma']
-                    x_center = item['x_center']
-                    y_center = item['y_center']
-                    particle_ID = item['particle_ID']
+                    intensity_horizontal = item["intensity_horizontal"]
+                    intensity_vertical = item["intensity_vertical"]
+                    center_int = item["center_int"]
+                    center_int_flow = item["center_int_flow"]
+                    frame_number = item["frame_number"]
+                    sigma = item["sigma"]
+                    x_center = item["x_center"]
+                    y_center = item["y_center"]
+                    particle_ID = item["particle_ID"]
 
                     num_parameters = len(item)
 
                     if num_parameters == 21:
-                        fit_intensity = item['fit_intensity']
-                        fit_x = item['fit_x'] * pixel_size
-                        fit_y = item['fit_y'] * pixel_size
-                        fit_X_sigma = item['fit_X_sigma'] * pixel_size
-                        fit_Y_sigma = item['fit_Y_sigma'] * pixel_size
-                        fit_Bias = item['fit_Bias']
-                        fit_intensity_error = item['fit_intensity_error']
-                        fit_x_error = item['fit_x_error'] * pixel_size
-                        fit_y_error = item['fit_y_error'] * pixel_size
-                        fit_X_sigma_error = item['fit_X_sigma_error'] * pixel_size
-                        fit_Y_sigma_error = item['fit_Y_sigma_error'] * pixel_size
-                        fit_Bias_error = item['fit_Bias_error']
+                        fit_intensity = item["fit_intensity"]
+                        fit_x = item["fit_x"] * pixel_size
+                        fit_y = item["fit_y"] * pixel_size
+                        fit_X_sigma = item["fit_X_sigma"] * pixel_size
+                        fit_Y_sigma = item["fit_Y_sigma"] * pixel_size
+                        fit_Bias = item["fit_Bias"]
+                        fit_intensity_error = item["fit_intensity_error"]
+                        fit_x_error = item["fit_x_error"] * pixel_size
+                        fit_y_error = item["fit_y_error"] * pixel_size
+                        fit_X_sigma_error = item["fit_X_sigma_error"] * pixel_size
+                        fit_Y_sigma_error = item["fit_Y_sigma_error"] * pixel_size
+                        fit_Bias_error = item["fit_Bias_error"]
 
                     else:
                         fit_intensity = None
@@ -865,32 +1112,61 @@ class PlotProteinHistogram(PrintColors):
                         fit_Y_sigma = None
 
                     self.t_particle_localization_flag = True
-                    properties, fit_properties = self.data_handling(center_int, center_int_flow, '', sigma,
-                                                                    num_parameters, fit_intensity, fit_X_sigma,
-                                                                    fit_Y_sigma, frame_number, batch_size,
-                                                                    video_frame_num, MinPeakWidth=MinPeakWidth,
-                                                                    MinPeakProminence=MinPeakProminence)
+                    properties, fit_properties = self.data_handling(
+                        center_int,
+                        center_int_flow,
+                        "",
+                        sigma,
+                        num_parameters,
+                        fit_intensity,
+                        fit_X_sigma,
+                        fit_Y_sigma,
+                        frame_number,
+                        batch_size,
+                        video_frame_num,
+                        MinPeakWidth=MinPeakWidth,
+                        MinPeakProminence=MinPeakProminence,
+                    )
 
                     if properties is not None:
-
-                        self.axs.plot(properties[5], properties[1], 'C0--', linewidth=5, zorder=0)
-                        self.axs.plot(frame_number, properties[0], 'b', linewidth=5, zorder=0)
-                        self.axs.plot(properties[2][1], properties[2][0], 'gv', label='Peak', markersize=7, zorder=4)
-                        self.axs.axvline(properties[6], linestyle='--', zorder=5)
-                        self.axs.axvline(properties[7], linestyle='--', zorder=6)
+                        self.axs.plot(properties[5], properties[1], "C0--", linewidth=5, zorder=0)
+                        self.axs.plot(frame_number, properties[0], "b", linewidth=5, zorder=0)
+                        self.axs.plot(
+                            properties[2][1],
+                            properties[2][0],
+                            "gv",
+                            label="Peak",
+                            markersize=7,
+                            zorder=4,
+                        )
+                        self.axs.axvline(properties[6], linestyle="--", zorder=5)
+                        self.axs.axvline(properties[7], linestyle="--", zorder=6)
                         if math.isnan(properties[4][1]) and math.isnan(properties[4][0]):
                             flag_skip_prominence = True
                         else:
                             flag_skip_prominence = False
                             if properties[2][0] >= 0:
-                                self.axs.vlines(x=properties[4][1], ymin=properties[4][0] - properties[4][3],
-                                                ymax=properties[4][0], color="C1", label='Prominence')
+                                self.axs.vlines(
+                                    x=properties[4][1],
+                                    ymin=properties[4][0] - properties[4][3],
+                                    ymax=properties[4][0],
+                                    color="C1",
+                                    label="Prominence",
+                                )
                             else:
-                                self.axs.vlines(x=properties[4][1], ymin=properties[4][0] + properties[4][3],
-                                                ymax=properties[4][0], color="C1", label='Prominence')
-                        self.axs.set_ylim(np.min(properties[1]) + 0.5*np.min(properties[1]), np.max(properties[1]) + 0.5*np.max(properties[1]))
+                                self.axs.vlines(
+                                    x=properties[4][1],
+                                    ymin=properties[4][0] + properties[4][3],
+                                    ymax=properties[4][0],
+                                    color="C1",
+                                    label="Prominence",
+                                )
+                        self.axs.set_ylim(
+                            np.min(properties[1]) + 0.5 * np.min(properties[1]),
+                            np.max(properties[1]) + 0.5 * np.max(properties[1]),
+                        )
                         self.axs.grid()
-                        self.axs.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+                        self.axs.ticklabel_format(style="sci", axis="y", scilimits=(0, 0))
                         if flag_skip_prominence:
                             handles, labels = self.axs.get_legend_handles_labels()
 
@@ -903,16 +1179,29 @@ class PlotProteinHistogram(PrintColors):
                             labels = [labels[2], labels[0], labels[1], labels[3], labels[4]]
                         self.axs.legend(handles, labels)
                         if save_path is not None:
-                            print('plot saved!')
+                            print("plot saved!")
                             self.fig.savefig(save_path, dpi=500)
 
                         plt.show()
                     else:
-                        raise Exception('---Data can not extract!---')
+                        raise Exception("---Data can not extract!---")
 
-    def plot_histogram(self, bins=None, upper_limitation=1, lower_limitation=-1,
-                       step_range=1e-7, face='g', edge='y', Flag_GMM_fit=True, max_n_components=3, imgSizex=20,
-                       imgSizey=20, font_size=12, scale=1e1, external_GMM=False):
+    def plot_histogram(
+        self,
+        bins=None,
+        upper_limitation=1,
+        lower_limitation=-1,
+        step_range=1e-7,
+        face="g",
+        edge="y",
+        Flag_GMM_fit=True,
+        max_n_components=3,
+        imgSizex=20,
+        imgSizey=20,
+        font_size=12,
+        scale=1e1,
+        external_GMM=False,
+    ):
         """
         This method plots histograms for different contrast extraction methods for black PSFs, white PSFs and all together.
 
@@ -958,19 +1247,22 @@ class PlotProteinHistogram(PrintColors):
             This flag modifies GMM's visualization. Only the external border is visible if it is set to True.
         """
 
-        df, list_data, title = self.extract_hist_information(con_intersections=self.t_contrast_intersection,
-                                                             con_peaks=self.t_contrast_peaks,
-                                                             con_proms=self.t_contrast_Prominence,
-                                                             upper_limitation=upper_limitation,
-                                                             lower_limitation=lower_limitation,
-                                                             max_n_components=max_n_components,
-                                                             Flag_GMM_fit=Flag_GMM_fit)
+        df, list_data, title = self.extract_hist_information(
+            con_intersections=self.t_contrast_intersection,
+            con_peaks=self.t_contrast_peaks,
+            con_proms=self.t_contrast_Prominence,
+            upper_limitation=upper_limitation,
+            lower_limitation=lower_limitation,
+            max_n_components=max_n_components,
+            Flag_GMM_fit=Flag_GMM_fit,
+        )
 
         fig = plt.figure(figsize=(imgSizex, imgSizey))
         outer = gridspec.GridSpec(2, 1, wspace=0.3, hspace=0.2)
 
-        inner = gridspec.GridSpecFromSubplotSpec(3, 3,
-                                                 subplot_spec=outer[0], wspace=0.3, hspace=0.7)
+        inner = gridspec.GridSpecFromSubplotSpec(
+            3, 3, subplot_spec=outer[0], wspace=0.3, hspace=0.7
+        )
 
         for p_index in range(len(list_data)):
             if Flag_GMM_fit:
@@ -980,13 +1272,13 @@ class PlotProteinHistogram(PrintColors):
                     pdfs = []
                     means = []
                     stdevs = []
-                    weights =[]
+                    weights = []
                     for idx_ in index_:
-                        if 'GMM_mean' in idx_:
+                        if "GMM_mean" in idx_:
                             means.append(df[key][idx_])
-                        elif 'GMM_std' in idx_:
+                        elif "GMM_std" in idx_:
                             stdevs.append(df[key][idx_])
-                        elif 'GMM_weight' in idx_:
+                        elif "GMM_weight" in idx_:
                             weights.append(df[key][idx_])
 
                     d_ = np.abs(list_data[p_index])
@@ -995,8 +1287,11 @@ class PlotProteinHistogram(PrintColors):
 
                     x = np.arange(min_data, max_data, step_range)
 
-                    pdfs = [float(p) * ss.norm.pdf(x, float(mu), float(sd)) for mu, sd, p in zip(means, stdevs, weights)
-                            if mu is not None and sd is not None and p is not None]
+                    pdfs = [
+                        float(p) * ss.norm.pdf(x, float(mu), float(sd))
+                        for mu, sd, p in zip(means, stdevs, weights)
+                        if mu is not None and sd is not None and p is not None
+                    ]
                     density = np.sum(np.array(pdfs), axis=0)
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=True)
@@ -1006,11 +1301,17 @@ class PlotProteinHistogram(PrintColors):
                     else:
                         for j_ in range(len(weights)):
                             if weights[j_] is not None:
-                                ax.plot(x.ravel(), float(weights[j_]) * stats.norm.pdf(x.ravel(), float(means[j_]), float(stdevs[j_])).ravel())
+                                ax.plot(
+                                    x.ravel(),
+                                    float(weights[j_])
+                                    * stats.norm.pdf(
+                                        x.ravel(), float(means[j_]), float(stdevs[j_])
+                                    ).ravel(),
+                                )
 
-                    ax.set_ylabel('Density')
+                    ax.set_ylabel("Density")
                     ax.set_title(title[p_index])
-                    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                    ax.ticklabel_format(style="sci", axis="x", scilimits=(0, 0))
                     fig.add_subplot(ax)
 
                 except:
@@ -1019,9 +1320,9 @@ class PlotProteinHistogram(PrintColors):
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
                     ax.axis(xmin=0, xmax=upper_limitation * scale)
-                    ax.set_ylabel('#Counts')
+                    ax.set_ylabel("#Counts")
                     ax.set_title(title[p_index])
-                    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                    ax.ticklabel_format(style="sci", axis="x", scilimits=(0, 0))
                     fig.add_subplot(ax)
 
             else:
@@ -1030,28 +1331,47 @@ class PlotProteinHistogram(PrintColors):
                 ax = plt.Subplot(fig, inner[p_index])
                 ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
                 ax.axis(xmin=0, xmax=upper_limitation * scale)
-                ax.set_ylabel('#Counts')
+                ax.set_ylabel("#Counts")
                 ax.set_title(title[p_index])
-                ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                ax.ticklabel_format(style="sci", axis="x", scilimits=(0, 0))
                 fig.add_subplot(ax)
 
         ax2 = plt.Subplot(fig, outer[1])
         font_size = font_size
         bbox = [0, 0, 1, 1]
-        ax2.axis('off')
+        ax2.axis("off")
         colors = plt.cm.BuPu(np.linspace(0, 0.5, df.shape[0]))
         cell_colors = [[colors[i_]] * df.shape[1] for i_ in range(df.shape[0])]
-        mpl_table = ax2.table(cellText=df.values, rowLabels=df.index, bbox=bbox, colLabels=df.columns,  rowColours=colors,
-                              cellColours=cell_colors)
+        mpl_table = ax2.table(
+            cellText=df.values,
+            rowLabels=df.index,
+            bbox=bbox,
+            colLabels=df.columns,
+            rowColours=colors,
+            cellColours=cell_colors,
+        )
         mpl_table.auto_set_font_size(False)
         mpl_table.set_fontsize(font_size)
         fig.add_subplot(ax2)
 
         plt.show()
 
-    def plot_fit_histogram(self, bins=None, upper_limitation=1, lower_limitation=-1, step_range=1e-7, face='g',
-                           edge='y', Flag_GMM_fit=True, max_n_components=3, imgSizex=20, imgSizey=20, font_size=12,
-                           scale=1e1, external_GMM=False):
+    def plot_fit_histogram(
+        self,
+        bins=None,
+        upper_limitation=1,
+        lower_limitation=-1,
+        step_range=1e-7,
+        face="g",
+        edge="y",
+        Flag_GMM_fit=True,
+        max_n_components=3,
+        imgSizex=20,
+        imgSizey=20,
+        font_size=12,
+        scale=1e1,
+        external_GMM=False,
+    ):
         """
         This method plots histograms for 2D Gaussian fitting contrast for black PSFs, white PSFs and all together.
 
@@ -1098,19 +1418,22 @@ class PlotProteinHistogram(PrintColors):
 
         """
 
-        df, list_data, title = self.extract_hist_information(con_intersections=self.t_contrast_fit_intersection,
-                                                             con_peaks=self.t_contrast_fit_peaks,
-                                                             con_proms=None,
-                                                             upper_limitation=upper_limitation,
-                                                             lower_limitation=lower_limitation,
-                                                             max_n_components=max_n_components,
-                                                             Flag_GMM_fit=Flag_GMM_fit)
+        df, list_data, title = self.extract_hist_information(
+            con_intersections=self.t_contrast_fit_intersection,
+            con_peaks=self.t_contrast_fit_peaks,
+            con_proms=None,
+            upper_limitation=upper_limitation,
+            lower_limitation=lower_limitation,
+            max_n_components=max_n_components,
+            Flag_GMM_fit=Flag_GMM_fit,
+        )
 
         fig = plt.figure(figsize=(imgSizex, imgSizey))
         outer = gridspec.GridSpec(2, 1, wspace=0.3, hspace=0.2)
 
-        inner = gridspec.GridSpecFromSubplotSpec(3, 3,
-                                                 subplot_spec=outer[0], wspace=0.3, hspace=0.7)
+        inner = gridspec.GridSpecFromSubplotSpec(
+            3, 3, subplot_spec=outer[0], wspace=0.3, hspace=0.7
+        )
 
         for p_index in range(len(list_data)):
             if Flag_GMM_fit:
@@ -1122,11 +1445,11 @@ class PlotProteinHistogram(PrintColors):
                     stdevs = []
                     weights = []
                     for idx_ in index_:
-                        if 'GMM_mean' in idx_:
+                        if "GMM_mean" in idx_:
                             means.append(df[key][idx_])
-                        elif 'GMM_std' in idx_:
+                        elif "GMM_std" in idx_:
                             stdevs.append(df[key][idx_])
-                        elif 'GMM_weight' in idx_:
+                        elif "GMM_weight" in idx_:
                             weights.append(df[key][idx_])
 
                     d_ = np.abs(list_data[p_index])
@@ -1135,8 +1458,11 @@ class PlotProteinHistogram(PrintColors):
 
                     x = np.arange(min_data, max_data, step_range)
 
-                    pdfs = [float(p) * ss.norm.pdf(x, float(mu), float(sd)) for mu, sd, p in zip(means, stdevs, weights)
-                            if mu is not None and sd is not None and p is not None]
+                    pdfs = [
+                        float(p) * ss.norm.pdf(x, float(mu), float(sd))
+                        for mu, sd, p in zip(means, stdevs, weights)
+                        if mu is not None and sd is not None and p is not None
+                    ]
                     density = np.sum(np.array(pdfs), axis=0)
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=True)
@@ -1146,12 +1472,17 @@ class PlotProteinHistogram(PrintColors):
                     else:
                         for j_ in range(len(weights)):
                             if weights[j_] is not None:
-                                ax.plot(x.ravel(), float(weights[j_]) * stats.norm.pdf(x.ravel(), float(means[j_]),
-                                                                                       float(stdevs[j_])).ravel())
+                                ax.plot(
+                                    x.ravel(),
+                                    float(weights[j_])
+                                    * stats.norm.pdf(
+                                        x.ravel(), float(means[j_]), float(stdevs[j_])
+                                    ).ravel(),
+                                )
 
-                    ax.set_ylabel('Density')
+                    ax.set_ylabel("Density")
                     ax.set_title(title[p_index])
-                    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                    ax.ticklabel_format(style="sci", axis="x", scilimits=(0, 0))
                     fig.add_subplot(ax)
 
                 except:
@@ -1160,9 +1491,9 @@ class PlotProteinHistogram(PrintColors):
                     ax = plt.Subplot(fig, inner[p_index])
                     ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
                     ax.axis(xmin=0, xmax=upper_limitation * scale)
-                    ax.set_ylabel('#Counts')
+                    ax.set_ylabel("#Counts")
                     ax.set_title(title[p_index])
-                    ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                    ax.ticklabel_format(style="sci", axis="x", scilimits=(0, 0))
                     fig.add_subplot(ax)
 
             else:
@@ -1171,16 +1502,18 @@ class PlotProteinHistogram(PrintColors):
                 ax = plt.Subplot(fig, inner[p_index])
                 ax.hist(d_, bins=bins, fc=face, ec=edge, density=False)
                 ax.axis(xmin=0, xmax=upper_limitation * scale)
-                ax.set_ylabel('#Counts')
+                ax.set_ylabel("#Counts")
                 ax.set_title(title[p_index])
-                ax.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+                ax.ticklabel_format(style="sci", axis="x", scilimits=(0, 0))
                 fig.add_subplot(ax)
 
         ax2 = plt.Subplot(fig, outer[1])
         font_size = font_size
         bbox = [0, 0, 1, 1]
-        ax2.axis('off')
-        mpl_table = ax2.table(cellText=df.values, rowLabels=df.index, bbox=bbox, colLabels=df.columns)
+        ax2.axis("off")
+        mpl_table = ax2.table(
+            cellText=df.values, rowLabels=df.index, bbox=bbox, colLabels=df.columns
+        )
         mpl_table.auto_set_font_size(False)
         mpl_table.set_fontsize(font_size)
         fig.add_subplot(ax2)
@@ -1198,13 +1531,15 @@ class PlotProteinHistogram(PrintColors):
         plt.figure()
         plt.hist(self.t_iPSFCentroidSigmas_fit_x)
         plt.hist(self.t_iPSFCentroidSigmas_fit_y)
-        plt.xlabel('sigma(nm)')
-        plt.ylabel('#Counts')
-        plt.legend('Fitted sigma_x', 'Fitted sigma_y')
-        plt.title('Ratio mean of Sigma_Max/Sigma_Min=' + str(ratio_sigma))
+        plt.xlabel("sigma(nm)")
+        plt.ylabel("#Counts")
+        plt.legend("Fitted sigma_x", "Fitted sigma_y")
+        plt.title("Ratio mean of Sigma_Max/Sigma_Min=" + str(ratio_sigma))
         plt.show()
 
-    def plot_localization_heatmap(self, pixel_size, unit, flag_in_time=False, time_delay=0.1, dir_name=None):
+    def plot_localization_heatmap(
+        self, pixel_size, unit, flag_in_time=False, time_delay=0.1, dir_name=None
+    ):
         """
         This method generates a particle localization heatmap. Every disk's size represents the movement of each particle during tracking.
 
@@ -1228,8 +1563,8 @@ class PlotProteinHistogram(PrintColors):
         bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
         bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
 
-        print('Number of bright particles {}'.format(bubble_size_bright_.shape[0]))
-        print('Number of dark particles {}'.format(bubble_size_dark_.shape[0]))
+        print("Number of bright particles {}".format(bubble_size_bright_.shape[0]))
+        print("Number of dark particles {}".format(bubble_size_dark_.shape[0]))
 
         bubble_size_bright = []
         for s_b in bubble_size_bright_:
@@ -1240,33 +1575,33 @@ class PlotProteinHistogram(PrintColors):
 
         bubble_size_dark = []
         for s_d in bubble_size_dark_:
-
             if s_d == 0:
                 bubble_size_dark.append(s_d + 1e-6)
             else:
                 bubble_size_dark.append(s_d)
 
-        dic_dark = {'x': np.multiply(pixel_size, self.t_mean_x_center_dark),
-                    'y': np.multiply(pixel_size, self.t_mean_y_center_dark),
-                    'bubble_size': np.multiply(pixel_size, bubble_size_dark),
-                    'particle': np.asarray(self.t_particle_ID_dark),
-                    'frame': self.t_particle_frame_dark
-                    }
+        dic_dark = {
+            "x": np.multiply(pixel_size, self.t_mean_x_center_dark),
+            "y": np.multiply(pixel_size, self.t_mean_y_center_dark),
+            "bubble_size": np.multiply(pixel_size, bubble_size_dark),
+            "particle": np.asarray(self.t_particle_ID_dark),
+            "frame": self.t_particle_frame_dark,
+        }
 
         df_dark = pd.DataFrame.from_dict(dic_dark)
 
-        dic_bright = {'x': np.multiply(pixel_size, self.t_mean_x_center_bright),
-                      'y': np.multiply(pixel_size, self.t_mean_y_center_bright),
-                      'bubble_size': np.multiply(pixel_size, bubble_size_bright),
-                      'particle': np.asarray(self.t_particle_ID_bright),
-                      'frame': self.t_particle_frame_bright
-                      }
-
+        dic_bright = {
+            "x": np.multiply(pixel_size, self.t_mean_x_center_bright),
+            "y": np.multiply(pixel_size, self.t_mean_y_center_bright),
+            "bubble_size": np.multiply(pixel_size, bubble_size_bright),
+            "particle": np.asarray(self.t_particle_ID_bright),
+            "frame": self.t_particle_frame_bright,
+        }
 
         df_bright = pd.DataFrame.from_dict(dic_bright)
 
-        df_bright_sort = df_bright.sort_values('frame')
-        df_dark_sort = df_dark.sort_values('frame')
+        df_bright_sort = df_bright.sort_values("frame")
+        df_dark_sort = df_dark.sort_values("frame")
         df_bright_sort = df_bright_sort.reset_index()
         df_bright_sort.particle = df_bright_sort.index
 
@@ -1276,21 +1611,28 @@ class PlotProteinHistogram(PrintColors):
             plot_bright_dark_psf(df_bright_sort, df_dark_sort, unit)
 
     def plot_linking_length_histogram(self, bins=None):
-
         fig, axs = plt.subplots(1, 3, sharey=True, tight_layout=True)
         axs[0].hist(self.t_linking_len_bright, bins=bins)
-        axs[0].set_title('bright PSF linking length')
+        axs[0].set_title("bright PSF linking length")
 
         axs[1].hist(self.t_linking_len_dark, bins=bins)
-        axs[1].set_title('dark PSF linking length')
+        axs[1].set_title("dark PSF linking length")
 
         total_len = self.t_linking_len_bright + self.t_linking_len_dark
         axs[2].hist(total_len, bins=bins)
-        axs[2].set_title('total PSF linking length')
+        axs[2].set_title("total PSF linking length")
 
         plt.show()
 
-    def save_hist_data(self, dirName, name, upper_limitation=1, lower_limitation=-1, Flag_GMM_fit=True, max_n_components=3):
+    def save_hist_data(
+        self,
+        dirName,
+        name,
+        upper_limitation=1,
+        lower_limitation=-1,
+        Flag_GMM_fit=True,
+        max_n_components=3,
+    ):
         """
         This function save the histogram data with HDF5 format.
 
@@ -1315,25 +1657,31 @@ class PlotProteinHistogram(PrintColors):
             The maximum number of components that GMM used for AIC and BIC tests. This helps to find an optimum number of the mixture.
 
         """
-        df, list_data, title = self.extract_hist_information(con_intersections=self.t_contrast_intersection,
-                                                             con_peaks=self.t_contrast_peaks,
-                                                             con_proms=self.t_contrast_Prominence,
-                                                             upper_limitation=upper_limitation,
-                                                             lower_limitation=lower_limitation,
-                                                             max_n_components=max_n_components,
-                                                             Flag_GMM_fit=Flag_GMM_fit)
+        df, list_data, title = self.extract_hist_information(
+            con_intersections=self.t_contrast_intersection,
+            con_peaks=self.t_contrast_peaks,
+            con_proms=self.t_contrast_Prominence,
+            upper_limitation=upper_limitation,
+            lower_limitation=lower_limitation,
+            max_n_components=max_n_components,
+            Flag_GMM_fit=Flag_GMM_fit,
+        )
         dic_data = {}
         for d_, t_ in zip(list_data, title):
             dic_data[t_] = d_
 
         read_write_data.save_dic_to_hdf5(dic_data=dic_data, path=dirName, name=name)
 
-        dic_ = {'con_intersections': self.t_contrast_intersection,
-                'con_peaks': self.t_contrast_peaks,
-                'con_proms': self.t_contrast_Prominence,
-                'len_linking_intersections': self.t_len_linking}
+        dic_ = {
+            "con_intersections": self.t_contrast_intersection,
+            "con_peaks": self.t_contrast_peaks,
+            "con_proms": self.t_contrast_Prominence,
+            "len_linking_intersections": self.t_len_linking,
+        }
 
-        read_write_data.save_dic_to_hdf5(dic_data=dic_, path=dirName, name=name+'_data_hist_without_trim')
+        read_write_data.save_dic_to_hdf5(
+            dic_data=dic_, path=dirName, name=name + "_data_hist_without_trim"
+        )
 
     def localization_data(self):
         """
@@ -1350,28 +1698,24 @@ class PlotProteinHistogram(PrintColors):
         bubble_size_bright_ = np.maximum(self.t_std_y_center_bright, self.t_std_x_center_bright)
         bubble_size_dark_ = np.maximum(self.t_std_y_center_dark, self.t_std_x_center_dark)
 
-
-
-        dic_dark = {'x': self.t_mean_x_center_dark,
-                    'y': self.t_mean_y_center_dark,
-                    'bubble_size': bubble_size_dark_,
-                    'particle': np.asarray(self.t_particle_ID_dark),
-                    'frame': self.t_particle_frame_dark
-                    }
+        dic_dark = {
+            "x": self.t_mean_x_center_dark,
+            "y": self.t_mean_y_center_dark,
+            "bubble_size": bubble_size_dark_,
+            "particle": np.asarray(self.t_particle_ID_dark),
+            "frame": self.t_particle_frame_dark,
+        }
 
         df_dark = pd.DataFrame.from_dict(dic_dark)
 
-        dic_bright = {'x': self.t_mean_x_center_bright,
-                      'y': self.t_mean_y_center_bright,
-                      'bubble_size': bubble_size_bright_,
-                      'particle': np.asarray(self.t_particle_ID_bright),
-                      'frame': self.t_particle_frame_bright
-                      }
+        dic_bright = {
+            "x": self.t_mean_x_center_bright,
+            "y": self.t_mean_y_center_bright,
+            "bubble_size": bubble_size_bright_,
+            "particle": np.asarray(self.t_particle_ID_bright),
+            "frame": self.t_particle_frame_bright,
+        }
 
         df_bright = pd.DataFrame.from_dict(dic_bright)
 
         return df_bright, df_dark
-
-
-
-

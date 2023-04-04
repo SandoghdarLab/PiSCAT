@@ -1,22 +1,22 @@
-from piscat.Localization import directional_intensity
-
-import unittest
 import os
 import pickle
+import unittest
 
-current_path = os.path.abspath(os.path.join('.'))
+from piscat.Localization import directional_intensity
+
+current_path = os.path.abspath(os.path.join("."))
 
 
 def load_fixture(filename):
     """Loads a fixture from file."""
-    with open(filename, 'rb') as file:
+    with open(filename, "rb") as file:
         return pickle.load(file)
 
 
 class DirectionalIntensity(unittest.TestCase):
     def setUp(self):
-        self.directory_path = os.path.join(current_path, 'TestData/Video/')
-        file_name_save = os.path.join(self.directory_path, 'test_localization_input_video.pck')
+        self.directory_path = os.path.join(current_path, "TestData/Video/")
+        file_name_save = os.path.join(self.directory_path, "test_localization_input_video.pck")
         self.video = load_fixture(file_name_save)
         self.frame = self.video[0, :, :]
 
@@ -37,4 +37,3 @@ class DirectionalIntensity(unittest.TestCase):
         pixels = test_obj.interpolate_pixels_along_line(36, 12, 24, 24)
         self.assertTrue(len(pixels) == 26)
         self.assertTrue(pixels[18] == (33, 15))
-

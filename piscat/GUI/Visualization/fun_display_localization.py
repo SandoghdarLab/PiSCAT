@@ -1,21 +1,16 @@
-from piscat.GUI.Visualization import image_viewer
-from piscat.Preproccessing import Normalization
-from skimage.draw import circle_perimeter
-
-from PySide6 import QtGui
-from PySide6 import QtCore
-from PySide6 import QtWidgets
-from PySide6.QtCore import *
-
-from tqdm import tqdm
-from joblib import Parallel, delayed
-
 import numpy as np
 import pandas as pd
+from joblib import Parallel, delayed
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import *
+from skimage.draw import circle_perimeter
+from tqdm import tqdm
+
+from piscat.GUI.Visualization import image_viewer
+from piscat.Preproccessing import Normalization
 
 
 class Visulization_localization(QtWidgets.QMainWindow):
-
     def __init__(self, filename=None):
         super(Visulization_localization, self).__init__()
         self.different_views = {}
@@ -29,44 +24,61 @@ class Visulization_localization(QtWidgets.QMainWindow):
     def get_sliceNumber(self, frame_num):
         self.current_frame_number = frame_num
         if self.flag_all_localization_df:
-            circled_mask = self.create_circle_apply_toAll_pd(input_mask=self.maskArray, position_df=self.df_PSFs, parallel_flag=False)
+            circled_mask = self.create_circle_apply_toAll_pd(
+                input_mask=self.maskArray, position_df=self.df_PSFs, parallel_flag=False
+            )
 
             self.different_views[self.title].viewer.maskArray = circled_mask
             self.different_views[self.title].viewer.mask_is_set = True
-            mask_pixmap = self.different_views[self.title].viewer.create_mask_pixmap(circled_mask[self.current_frame_number, :, :])
+            mask_pixmap = self.different_views[self.title].viewer.create_mask_pixmap(
+                circled_mask[self.current_frame_number, :, :]
+            )
             self.different_views[self.title].viewer.update_overlay(mask_pixmap)
             self.different_views[self.title].get_in(self.df_PSFs)
         elif self.flag_all_localization_ndarray:
             pass
 
-    def new_display(self, display_input, original_video, object=None, title=None, mask_status=False, position_list=None):
+    def new_display(
+        self,
+        display_input,
+        original_video,
+        object=None,
+        title=None,
+        mask_status=False,
+        position_list=None,
+    ):
+        if mask_status is False:
+            self.different_views[title] = image_viewer.ImageViewer(
+                display_input, original_video, title
+            )
+            if title != "PNG":
+                self.slice_num = self.different_views[title].viewer.slice_num
+                current_pixmap = self.different_views[title].viewer.create_pixmap(
+                    display_input[self.slice_num, :, :]
+                )
+                self.different_views[title].viewer.update_slice(current_pixmap)
+            elif title == "PNG":
+                current_pixmap = self.different_views[title].viewer.create_pixmap(self.filename)
+                self.different_views[title].viewer.update_slice(current_pixmap)
 
-            if mask_status is False:
+        elif mask_status is True:
+            self.different_views[title] = image_viewer.ImageViewer(
+                display_input, original_video, title, mask=mask_status, list_psf=position_list
+            )
 
-                self.different_views[title] = image_viewer.ImageViewer(display_input, original_video, title)
-                if title != "PNG":
-                    self.slice_num = self.different_views[title].viewer.slice_num
-                    current_pixmap = self.different_views[title].viewer.create_pixmap(display_input[self.slice_num, :, :])
-                    self.different_views[title].viewer.update_slice(current_pixmap)
-                elif title == "PNG":
-                    current_pixmap = self.different_views[title].viewer.create_pixmap(self.filename)
-                    self.different_views[title].viewer.update_slice(current_pixmap)
+            if title != "PNG":
+                self.slice_num = self.different_views[title].viewer.slice_num
+                current_pixmap = self.different_views[title].viewer.create_pixmap(
+                    display_input[self.slice_num, :, :]
+                )
+                self.different_views[title].viewer.update_slice(current_pixmap)
+            elif title == "PNG":
+                current_pixmap = self.different_views[title].viewer.create_pixmap(self.filename)
+                self.different_views[title].viewer.update_slice(current_pixmap)
 
-            elif mask_status is True:
-
-                self.different_views[title] = image_viewer.ImageViewer(display_input, original_video, title, mask=mask_status, list_psf=position_list)
-
-                if title != "PNG":
-                    self.slice_num = self.different_views[title].viewer.slice_num
-                    current_pixmap = self.different_views[title].viewer.create_pixmap(display_input[self.slice_num, :, :])
-                    self.different_views[title].viewer.update_slice(current_pixmap)
-                elif title == "PNG":
-                    current_pixmap = self.different_views[title].viewer.create_pixmap(self.filename)
-                    self.different_views[title].viewer.update_slice(current_pixmap)
-
-            if object is not None:
-                self.different_views[title].currentFrame.connect(object.get_sliceNumber)
-                self.different_views[title].currentFrame.connect(self.get_sliceNumber)
+        if object is not None:
+            self.different_views[title].currentFrame.connect(object.get_sliceNumber)
+            self.different_views[title].currentFrame.connect(self.get_sliceNumber)
 
     def create_circle(self, x, y, r, shape):
         rr, cc = circle_perimeter(x, y, r, shape=shape)
@@ -81,22 +93,26 @@ class Visulization_localization(QtWidgets.QMainWindow):
 
     def create_circle_apply_toAll_pd(self, input_mask, position_df, parallel_flag):
         if position_df is not None:
-            frames = position_df['frame'].tolist()
-            x_positions = position_df['x'].tolist()
-            y_positions = position_df['y'].tolist()
-            sigmas = position_df['sigma'].tolist()
+            frames = position_df["frame"].tolist()
+            x_positions = position_df["x"].tolist()
+            y_positions = position_df["y"].tolist()
+            sigmas = position_df["sigma"].tolist()
 
             if parallel_flag:
                 self.input_mask = input_mask
-                Parallel(n_jobs=-1, backend='threading', verbose=0)(
-                    delayed(self.create_circle_apply_oneFrame_pd)(x_, y_, s_, f_) for x_, y_, s_, f_ in tqdm(zip(x_positions, y_positions, sigmas, frames)))
+                Parallel(n_jobs=-1, backend="threading", verbose=0)(
+                    delayed(self.create_circle_apply_oneFrame_pd)(x_, y_, s_, f_)
+                    for x_, y_, s_, f_ in tqdm(zip(x_positions, y_positions, sigmas, frames))
+                )
                 input_mask = self.input_mask
             else:
-                psf_current_frame = position_df.loc[position_df['frame'] == self.current_frame_number]
-                frames = psf_current_frame['frame'].tolist()
-                x_positions = psf_current_frame['x'].tolist()
-                y_positions = psf_current_frame['y'].tolist()
-                sigmas = psf_current_frame['sigma'].tolist()
+                psf_current_frame = position_df.loc[
+                    position_df["frame"] == self.current_frame_number
+                ]
+                frames = psf_current_frame["frame"].tolist()
+                x_positions = psf_current_frame["x"].tolist()
+                y_positions = psf_current_frame["y"].tolist()
+                sigmas = psf_current_frame["sigma"].tolist()
                 for x_, y_, s_, f_ in zip(x_positions, y_positions, sigmas, frames):
                     y = int(x_)
                     x = int(y_)
@@ -121,11 +137,10 @@ class Visulization_localization(QtWidgets.QMainWindow):
                         y = int(position_list[i_][j_, 1])
                         x = int(position_list[i_][j_, 2])
                         sigma = position_list[i_][j_, 3]
-                        radius = int(np.sqrt(2)*sigma)
+                        radius = int(np.sqrt(2) * sigma)
                         rr, cc = self.create_circle(y, x, radius, input_mask[0, :, :].shape)
                         input_mask[frame_number, rr, cc] = True
             else:
-
                 frame_number = int(position_list[0, 0])
                 for j_ in range(position_list.shape[0]):
                     y = int(position_list[j_, 1])
@@ -155,8 +170,8 @@ class Visulization_localization(QtWidgets.QMainWindow):
 
     @QtCore.Slot(np.ndarray)
     def bg_correction_update(self, in_video, label, object):
-            # self.call_norm_2_display(in_video)
-            self.new_display(in_video, in_video, object=object, title=label, mask_status=True)
+        # self.call_norm_2_display(in_video)
+        self.new_display(in_video, in_video, object=object, title=label, mask_status=True)
 
     def update_display_video(self, r_):
         self.norm_v = r_
@@ -172,21 +187,29 @@ class Visulization_localization(QtWidgets.QMainWindow):
             self.maskArray = np.zeros_like(video_in, dtype="bool")
 
             if type(df_PSFs) is np.ndarray:
-                circled_mask = self.create_circle_apply_toAll_list(self.maskArray, df_PSFs, flag_preview=True)
+                circled_mask = self.create_circle_apply_toAll_list(
+                    self.maskArray, df_PSFs, flag_preview=True
+                )
                 self.flag_all_localization_ndarray = True
-                print('list_done')
+                print("list_done")
 
             elif type(df_PSFs) is pd.core.frame.DataFrame:
                 if flag_preview:
-                    circled_mask = self.create_circle_apply_toAll_pd(self.maskArray, df_PSFs, parallel_flag=False)
+                    circled_mask = self.create_circle_apply_toAll_pd(
+                        self.maskArray, df_PSFs, parallel_flag=False
+                    )
 
                 else:
-                    circled_mask = self.create_circle_apply_toAll_pd(self.maskArray, df_PSFs, parallel_flag=False)
+                    circled_mask = self.create_circle_apply_toAll_pd(
+                        self.maskArray, df_PSFs, parallel_flag=False
+                    )
                     self.flag_all_localization_df = True
 
             self.different_views[title].viewer.maskArray = circled_mask
             self.different_views[title].viewer.mask_is_set = True
-            mask_pixmap = self.different_views[title].viewer.create_mask_pixmap(circled_mask[self.current_frame_number, :, :])
+            mask_pixmap = self.different_views[title].viewer.create_mask_pixmap(
+                circled_mask[self.current_frame_number, :, :]
+            )
             self.different_views[title].viewer.update_overlay(mask_pixmap)
             self.different_views[title].get_in(df_PSFs)
 
@@ -195,9 +218,3 @@ class Visulization_localization(QtWidgets.QMainWindow):
             self.msg_box.setWindowTitle("Warning!")
             self.msg_box.setText("Error in load data-frame!")
             self.msg_box.exec_()
-
-
-
-
-
-

@@ -1,14 +1,12 @@
-from piscat.InputOutput import read_status_line, reading_videos
-from piscat.InputOutput import read_write_data
-from piscat.BackgroundCorrection import DRA
-from piscat.Preproccessing import normalization, filtering
-from piscat.Localization import localization_filtering
-from piscat.Localization import particle_localization
-from piscat.Trajectory import particle_linking
-from piscat.Trajectory import temporal_filtering
-
 import os
+
 import numpy as np
+
+from piscat.BackgroundCorrection import DRA
+from piscat.InputOutput import read_status_line, read_write_data, reading_videos
+from piscat.Localization import localization_filtering, particle_localization
+from piscat.Preproccessing import filtering, normalization
+from piscat.Trajectory import particle_linking, temporal_filtering
 
 
 def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
@@ -43,7 +41,7 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
     Returns
     -------
     The following information will be saved
-    
+
         * `hyperparameters`
 
         * `flags`
@@ -71,13 +69,15 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
             | Saving the clean data frame (x, y, frame, sigma, particle, ...)
 
     """
-    PSFs_Particels_num = {'#Totall_PSFs': None,
-                          '#PSFs_afterOutlierFramesFilter': None,
-                          '#PSFs_afterDenseFilter': None,
-                          '#PSFs_afterSymmetricPSFsFilter': None,
-                          '#Totall_Particles': None,
-                          '#Particles_after_V_shapeFilter': None,
-                          '#Totall_frame_num_DRA': None}
+    PSFs_Particels_num = {
+        "#Totall_PSFs": None,
+        "#PSFs_afterOutlierFramesFilter": None,
+        "#PSFs_afterDenseFilter": None,
+        "#PSFs_afterSymmetricPSFsFilter": None,
+        "#Totall_Particles": None,
+        "#Particles_after_V_shapeFilter": None,
+        "#Totall_frame_num_DRA": None,
+    }
 
     for p_, n_ in zip(paths, video_names):
         print("---" + p_ + "---")
@@ -89,88 +89,126 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
             print("Directory ", name_mkdir, " already exists")
 
         s_dir_ = os.path.join(p_, name_mkdir)
-        read_write_data.save_dic2json(data_dictionary=hyperparameters, path=s_dir_, name='hyperparameters')
-        read_write_data.save_dic2json(data_dictionary=flags, path=s_dir_, name='flags')
+        read_write_data.save_dic2json(
+            data_dictionary=hyperparameters, path=s_dir_, name="hyperparameters"
+        )
+        read_write_data.save_dic2json(data_dictionary=flags, path=s_dir_, name="flags")
 
-        video = reading_videos.read_binary(file_name=p_ + '/' + n_,
-                                           img_width=hyperparameters['im_size_x'],
-                                           img_height=hyperparameters['im_size_y'],
-                                           image_type=np.dtype(hyperparameters['image_format']))
+        video = reading_videos.read_binary(
+            file_name=p_ + "/" + n_,
+            img_width=hyperparameters["im_size_x"],
+            img_height=hyperparameters["im_size_y"],
+            image_type=np.dtype(hyperparameters["image_format"]),
+        )
 
-        if isinstance(hyperparameters['start_fr'], int) and isinstance(hyperparameters['end_fr'], int):
-            video = video[hyperparameters['start_fr']:hyperparameters['end_fr'], :, :]
+        if isinstance(hyperparameters["start_fr"], int) and isinstance(
+            hyperparameters["end_fr"], int
+        ):
+            video = video[hyperparameters["start_fr"] : hyperparameters["end_fr"], :, :]
 
         status_ = read_status_line.StatusLine(video)
         video, status_info = status_.find_status_line()
 
-        if flags['PN']:
+        if flags["PN"]:
             video_pn, _ = normalization.Normalization(video=video).power_normalized()
         else:
             video_pn = video
 
-        DRA_ = DRA.DifferentialRollingAverage(video=video_pn, batchSize=hyperparameters['batch_size'],
-                                              mode_FPN=hyperparameters['mode_FPN'])
+        DRA_ = DRA.DifferentialRollingAverage(
+            video=video_pn,
+            batchSize=hyperparameters["batch_size"],
+            mode_FPN=hyperparameters["mode_FPN"],
+        )
 
-        RVideo_PN_FPN_, _ = DRA_.differential_rolling(FPN_flag=flags['FPNc'],
-                                                     select_correction_axis=hyperparameters['select_correction_axis'],
-                                                     FFT_flag=flags['FFT_flag'], inter_flag_parallel_active=True)
+        RVideo_PN_FPN_, _ = DRA_.differential_rolling(
+            FPN_flag=flags["FPNc"],
+            select_correction_axis=hyperparameters["select_correction_axis"],
+            FFT_flag=flags["FFT_flag"],
+            inter_flag_parallel_active=True,
+        )
 
-        if flags['filter_hotPixels']:
+        if flags["filter_hotPixels"]:
             RVideo_PN_FPN = filtering.Filters(RVideo_PN_FPN_).median(3)
         else:
             RVideo_PN_FPN = RVideo_PN_FPN_
 
-        PSFs_Particels_num['#Totall_frame_num_DRA'] = RVideo_PN_FPN.shape[0]
+        PSFs_Particels_num["#Totall_frame_num_DRA"] = RVideo_PN_FPN.shape[0]
 
         PSF_l = particle_localization.PSFsExtraction(video=RVideo_PN_FPN)
-        df_PSFs = PSF_l.psf_detection(function=hyperparameters['function'],  # function='log', 'doh', 'dog'
-                                      min_sigma=hyperparameters['min_sigma'], max_sigma=hyperparameters['max_sigma'],
-                                      sigma_ratio=hyperparameters['sigma_ratio'],
-                                      threshold=hyperparameters['PSF_detection_thr'],
-                                      overlap=hyperparameters['overlap'], mode=hyperparameters['Mode_PSF_Segmentation'])
+        df_PSFs = PSF_l.psf_detection(
+            function=hyperparameters["function"],  # function='log', 'doh', 'dog'
+            min_sigma=hyperparameters["min_sigma"],
+            max_sigma=hyperparameters["max_sigma"],
+            sigma_ratio=hyperparameters["sigma_ratio"],
+            threshold=hyperparameters["PSF_detection_thr"],
+            overlap=hyperparameters["overlap"],
+            mode=hyperparameters["Mode_PSF_Segmentation"],
+        )
 
         if df_PSFs is not None:
-            PSFs_Particels_num['#Totall_PSFs'] = df_PSFs.shape[0]
+            PSFs_Particels_num["#Totall_PSFs"] = df_PSFs.shape[0]
         else:
-            PSFs_Particels_num['#Totall_PSFs'] = 0
+            PSFs_Particels_num["#Totall_PSFs"] = 0
 
-        if PSFs_Particels_num['#Totall_PSFs'] > 1:
+        if PSFs_Particels_num["#Totall_PSFs"] > 1:
             s_filters = localization_filtering.SpatialFilter()
 
-            if flags['outlier_frames_filter']:
-                df_PSFs_s_filter = s_filters.outlier_frames(df_PSFs,
-                                                            threshold=hyperparameters['outlier_frames_thr'])
-                PSFs_Particels_num['#PSFs_afterOutlierFramesFilter'] = df_PSFs_s_filter.shape[0]
+            if flags["outlier_frames_filter"]:
+                df_PSFs_s_filter = s_filters.outlier_frames(
+                    df_PSFs, threshold=hyperparameters["outlier_frames_thr"]
+                )
+                PSFs_Particels_num["#PSFs_afterOutlierFramesFilter"] = df_PSFs_s_filter.shape[0]
             else:
                 df_PSFs_s_filter = df_PSFs
 
-            if flags['Dense_Filter']:
+            if flags["Dense_Filter"]:
                 df_PSFs_s_filter = s_filters.dense_PSFs(df_PSFs_s_filter, threshold=0)
-                PSFs_Particels_num['#PSFs_afterDenseFilter'] = df_PSFs_s_filter.shape[0]
+                PSFs_Particels_num["#PSFs_afterDenseFilter"] = df_PSFs_s_filter.shape[0]
 
-            if flags['symmetric_PSFs_Filter'] and df_PSFs_s_filter.shape[0] != 0:
-                df_PSF_2Dfit = PSF_l.fit_Gaussian2D_wrapper(PSF_List=df_PSFs, scale=5, internal_parallel_flag=True)
-                df_PSFs_s_filter = s_filters.symmetric_PSFs(df_PSFs=df_PSF_2Dfit, threshold=hyperparameters['symmetric_PSFs_thr'])
+            if flags["symmetric_PSFs_Filter"] and df_PSFs_s_filter.shape[0] != 0:
+                df_PSF_2Dfit = PSF_l.fit_Gaussian2D_wrapper(
+                    PSF_List=df_PSFs, scale=5, internal_parallel_flag=True
+                )
+                df_PSFs_s_filter = s_filters.symmetric_PSFs(
+                    df_PSFs=df_PSF_2Dfit, threshold=hyperparameters["symmetric_PSFs_thr"]
+                )
                 if df_PSFs_s_filter is not None:
-                    PSFs_Particels_num['#PSFs_afterSymmetricPSFsFilter'] = df_PSFs_s_filter.shape[0]
+                    PSFs_Particels_num["#PSFs_afterSymmetricPSFsFilter"] = df_PSFs_s_filter.shape[
+                        0
+                    ]
 
             if df_PSFs_s_filter.shape[0] > 1 and df_PSFs_s_filter is not None:
                 linking_ = particle_linking.Linking()
-                df_PSFs_link = linking_.create_link(psf_position=df_PSFs_s_filter,
-                                                    search_range=hyperparameters['search_range'],
-                                                    memory=hyperparameters['memory'])
-                PSFs_Particels_num['#Totall_Particles'] = linking_.trajectory_counter(df_PSFs_link)
+                df_PSFs_link = linking_.create_link(
+                    psf_position=df_PSFs_s_filter,
+                    search_range=hyperparameters["search_range"],
+                    memory=hyperparameters["memory"],
+                )
+                PSFs_Particels_num["#Totall_Particles"] = linking_.trajectory_counter(
+                    df_PSFs_link
+                )
 
-                t_filters = temporal_filtering.TemporalFilter(video=RVideo_PN_FPN,
-                                                              batchSize=hyperparameters['batch_size'])
-                all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=df_PSFs_link,
-                                                                                               threshold_min=hyperparameters['min_V_shape_width'],
-                                                                                                threshold_max = hyperparameters['max_V_shape_width'])
+                t_filters = temporal_filtering.TemporalFilter(
+                    video=RVideo_PN_FPN, batchSize=hyperparameters["batch_size"]
+                )
+                all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(
+                    df_PSFs=df_PSFs_link,
+                    threshold_min=hyperparameters["min_V_shape_width"],
+                    threshold_max=hyperparameters["max_V_shape_width"],
+                )
 
-                PSFs_Particels_num['#Particles_after_V_shapeFilter'] = linking_.trajectory_counter(df_PSFs_t_filter)
+                PSFs_Particels_num[
+                    "#Particles_after_V_shapeFilter"
+                ] = linking_.trajectory_counter(df_PSFs_t_filter)
 
-                read_write_data.save_mat(data=all_trajectories, path=s_dir_, name='all_trajectories')
-                read_write_data.save_df2csv(df_PSFs_t_filter, path=s_dir_, name='position_PSFs')
-                read_write_data.save_list_to_hdf5(list_data=all_trajectories, path=s_dir_, name='histData')
+                read_write_data.save_mat(
+                    data=all_trajectories, path=s_dir_, name="all_trajectories"
+                )
+                read_write_data.save_df2csv(df_PSFs_t_filter, path=s_dir_, name="position_PSFs")
+                read_write_data.save_list_to_hdf5(
+                    list_data=all_trajectories, path=s_dir_, name="histData"
+                )
 
-        read_write_data.save_dic2json(data_dictionary=PSFs_Particels_num, path=s_dir_, name='PSFs_Particels_num')
+        read_write_data.save_dic2json(
+            data_dictionary=PSFs_Particels_num, path=s_dir_, name="PSFs_Particels_num"
+        )

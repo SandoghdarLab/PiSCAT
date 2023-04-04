@@ -1,13 +1,11 @@
-from piscat.Preproccessing.filtering import FFT2D
-from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-
-from PySide6 import QtWidgets
-from PySide6 import QtCore
+from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import *
 
+from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
+from piscat.Preproccessing.filtering import FFT2D
 
-class FFT2D_GUI_wrapper():
 
+class FFT2D_GUI_wrapper:
     def __init__(self):
         super(FFT2D_GUI_wrapper, self).__init__()
         self.flag_update_FFT_video = True
@@ -20,7 +18,6 @@ class FFT2D_GUI_wrapper():
 
     def spectrum(self):
         if self.original_video is not None:
-
             self.flag_update_FFT_video = True
             worker = FFT2D(video=self.original_video)
             worker.signals.result.connect(self.update_FFT_video)
@@ -31,7 +28,7 @@ class FFT2D_GUI_wrapper():
             self.flag_update_FFT_video = True
 
             visualization_ = Visulization_localization()
-            visualization_.new_display(self.fft_v, self.fft_v, object=None, title='Spectrum')
+            visualization_.new_display(self.fft_v, self.fft_v, object=None, title="Spectrum")
 
         else:
             self.msg_box = QtWidgets.QMessageBox()

@@ -1,19 +1,29 @@
 from __future__ import print_function
-from skimage import io
-from PIL import Image
-from skimage.color import rgb2gray
-from astropy.io import fits
-from tqdm.autonotebook import tqdm
-from joblib import Parallel, delayed
+
 import os
-import pandas as pd
-import numpy as np
+
 import cv2
+import numpy as np
+import pandas as pd
 import tifffile
+from astropy.io import fits
 from flifile import FliFile
+from joblib import Parallel, delayed
+from PIL import Image
+from skimage import io
+from skimage.color import rgb2gray
+from tqdm.autonotebook import tqdm
 
 
-def video_reader(file_name, type='binary', img_width=128, img_height=128, image_type=np.dtype('<f8'), s_frame=0, e_frame=-1):
+def video_reader(
+    file_name,
+    type="binary",
+    img_width=128,
+    img_height=128,
+    image_type=np.dtype("<f8"),
+    s_frame=0,
+    e_frame=-1,
+):
     """
     This is a wrapper that can be used to call various video/image readers.
 
@@ -60,22 +70,31 @@ def video_reader(file_name, type='binary', img_width=128, img_height=128, image_
     @returns: NDArray
         The video/image
     """
-    if type == 'binary':
-        video = read_binary(file_name, img_width=img_width, img_height=img_height, image_type=image_type, s_frame=s_frame, e_frame=e_frame)
-    elif type == 'tif':
+    if type == "binary":
+        video = read_binary(
+            file_name,
+            img_width=img_width,
+            img_height=img_height,
+            image_type=image_type,
+            s_frame=s_frame,
+            e_frame=e_frame,
+        )
+    elif type == "tif":
         video = read_tif(file_name)
-    elif type == 'avi':
+    elif type == "avi":
         video = read_avi(file_name)
-    elif type == 'png':
+    elif type == "png":
         video = read_png(file_name)
-    elif type == 'fits':
+    elif type == "fits":
         video = read_fits(file_name)
-    elif type == 'fli':
+    elif type == "fli":
         video = read_fli(file_name)
     return video
 
 
-def read_binary(file_name, img_width=128, img_height=128, image_type=np.dtype('<f8'), s_frame=0, e_frame=-1):
+def read_binary(
+    file_name, img_width=128, img_height=128, image_type=np.dtype("<f8"), s_frame=0, e_frame=-1
+):
     """
     This function reads binary video.
 
@@ -113,7 +132,7 @@ def read_binary(file_name, img_width=128, img_height=128, image_type=np.dtype('<
         num_selected_frames = (e_frame - s_frame) * (img_width * img_height)
     offset = s_frame * (img_width * img_height)
 
-    img_bin = np.fromfile(file_name, image_type, count=num_selected_frames, sep='', offset=offset)
+    img_bin = np.fromfile(file_name, image_type, count=num_selected_frames, sep="", offset=offset)
     number_of_frame = int(img_bin.size / (img_width * img_height))
     return np.reshape(img_bin, (number_of_frame, img_width, img_height))
 
@@ -198,7 +217,7 @@ def read_avi(filename):
 
     cap = cv2.VideoCapture(filename)
     frames_list = []
-    while(cap.isOpened()):
+    while cap.isOpened():
         ret, frame = cap.read()
         if ret and frame is not None:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -274,9 +293,7 @@ def read_fli(filename):
     return data_
 
 
-
 class DirectoryType:
-
     def __init__(self, dirName, type_file):
         """
         Based on the type file description, this class generates a dataframe
@@ -297,14 +314,16 @@ class DirectoryType:
         fileNames = []
         dirPaths = []
         dirnames = []
-        for (dirpath, dirname, filenames) in os.walk(dirName):
+        for dirpath, dirname, filenames in os.walk(dirName):
             for file in filenames:
                 if file.endswith(self.type):
                     dirPaths.append(dirpath)
                     fileNames.append(file)
                     dirnames.append(os.path.basename(dirpath))
 
-        self.df = pd.DataFrame(list(zip(dirPaths, dirnames, fileNames)), columns=['Directory', 'Folder', 'File'])
+        self.df = pd.DataFrame(
+            list(zip(dirPaths, dirnames, fileNames)), columns=["Directory", "Folder", "File"]
+        )
 
     def return_df(self):
         """
@@ -333,8 +352,3 @@ class DirectoryType:
                 allFiles.append(fullPath)
 
         return allFiles
-
-
-
-
-

@@ -1,30 +1,25 @@
+import os
 import warnings
+
 import numpy as np
 import pandas as pd
-import os
-from PySide6.QtCore import Slot
+from ipywidgets import Layout, interact, widgets
 from joblib import Parallel, delayed
+from PySide6.QtCore import Slot
 from skimage import feature
-from tqdm.autonotebook import tqdm
-from ipywidgets import widgets
-from ipywidgets import Layout, interact
 from skimage.feature import peak_local_max
+from tqdm.autonotebook import tqdm
 
-from piscat.Preproccessing import normalization
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from piscat.Localization import data_handeling, frst
-from piscat.Localization import gaussian_2D_fit
-from piscat.Visualization import display_jupyter
-from piscat.Preproccessing import filtering
-from piscat.Localization import radial_symmetry_centering
-from piscat.Visualization.display_jupyter import JupyterPSFs_localizationPreviewDisplay
+from piscat.Localization import data_handeling, frst, gaussian_2D_fit, radial_symmetry_centering
 from piscat.Localization.difference_of_gaussian import dog_preview
+from piscat.Preproccessing import filtering, normalization
+from piscat.Visualization import display_jupyter
+from piscat.Visualization.display_jupyter import JupyterPSFs_localizationPreviewDisplay
 
 
 class PSFsExtraction:
-
     def __init__(self, video, flag_transform=False, flag_GUI=False, **kwargs):
-
         """
         This class employs a variety of PSF localization methods, including DoG/LoG/DoH/RS/RVT.
 
@@ -98,8 +93,15 @@ class PSFsExtraction:
             [y, x, sigma]
         """
 
-        return feature.blob_dog(image, min_sigma=self.min_sigma, max_sigma=self.max_sigma, sigma_ratio=self.sigma_ratio,
-                                threshold=self.threshold, overlap=self.overlap, exclude_border=True)
+        return feature.blob_dog(
+            image,
+            min_sigma=self.min_sigma,
+            max_sigma=self.max_sigma,
+            sigma_ratio=self.sigma_ratio,
+            threshold=self.threshold,
+            overlap=self.overlap,
+            exclude_border=True,
+        )
 
     def doh(self, image):
         """
@@ -116,9 +118,14 @@ class PSFsExtraction:
             [y, x, sigma]
         """
 
-        tmp = feature.blob_doh(image, min_sigma=self.min_sigma, max_sigma=self.max_sigma,
-                               num_sigma=int(self.sigma_ratio),
-                               threshold=self.threshold, overlap=self.overlap)
+        tmp = feature.blob_doh(
+            image,
+            min_sigma=self.min_sigma,
+            max_sigma=self.max_sigma,
+            num_sigma=int(self.sigma_ratio),
+            threshold=self.threshold,
+            overlap=self.overlap,
+        )
         return tmp
 
     def log(self, image):
@@ -136,9 +143,15 @@ class PSFsExtraction:
             [y, x, sigma]
         """
 
-        return feature.blob_log(image, min_sigma=self.min_sigma, max_sigma=self.max_sigma,
-                                num_sigma=int(self.sigma_ratio),
-                                threshold=self.threshold, overlap=self.overlap, exclude_border=True)
+        return feature.blob_log(
+            image,
+            min_sigma=self.min_sigma,
+            max_sigma=self.max_sigma,
+            num_sigma=int(self.sigma_ratio),
+            threshold=self.threshold,
+            overlap=self.overlap,
+            exclude_border=True,
+        )
 
     def frst(self, image):
         """
@@ -161,9 +174,17 @@ class PSFsExtraction:
 
         normaliz_image = normalization.Normalization(image).normalized_image()
 
-        tmp = frst.blob_frst(normaliz_image, min_radial=self.min_radial, max_radial=self.max_radial,
-                             radial_step=self.radial_step, threshold=self.threshold, alpha=self.alpha, beta=self.beta,
-                             stdFactor=self.stdFactor, mode=self.mode)
+        tmp = frst.blob_frst(
+            normaliz_image,
+            min_radial=self.min_radial,
+            max_radial=self.max_radial,
+            radial_step=self.radial_step,
+            threshold=self.threshold,
+            alpha=self.alpha,
+            beta=self.beta,
+            stdFactor=self.stdFactor,
+            mode=self.mode,
+        )
         return tmp
 
     def _rvt(self, image):
@@ -184,9 +205,18 @@ class PSFsExtraction:
             tr_img = image
         else:
             rvt_ = filtering.RadialVarianceTransform()
-            tr_img = rvt_.rvt(img=image, rmin=self.min_radial, rmax=self.max_radial, kind=self.rvt_kind, highpass_size=self.highpass_size,
-                        upsample=self.upsample, rweights=self.rweights, coarse_factor=self.coarse_factor, coarse_mode=self.coarse_mode,
-                        pad_mode=self.pad_mode)
+            tr_img = rvt_.rvt(
+                img=image,
+                rmin=self.min_radial,
+                rmax=self.max_radial,
+                kind=self.rvt_kind,
+                highpass_size=self.highpass_size,
+                upsample=self.upsample,
+                rweights=self.rweights,
+                coarse_factor=self.coarse_factor,
+                coarse_mode=self.coarse_mode,
+                pad_mode=self.pad_mode,
+            )
 
         local_maxima = peak_local_max(
             tr_img,
@@ -200,7 +230,7 @@ class PSFsExtraction:
         if local_maxima.size == 0:
             return np.empty((0, 3))
 
-        sigmas = (self.min_radial/np.sqrt(2)) * np.ones((local_maxima.shape[0], 1))
+        sigmas = (self.min_radial / np.sqrt(2)) * np.ones((local_maxima.shape[0], 1))
         tmp = np.concatenate((local_maxima, sigmas), axis=1)
 
         return tmp
@@ -233,17 +263,21 @@ class PSFsExtraction:
         elif type(PSF_List) is pd.core.frame.DataFrame:
             df_PSF = PSF_List
         else:
-            raise ValueError('PSF_List does not have correct bin_type')
+            raise ValueError("PSF_List does not have correct bin_type")
 
         self.df2numpy = df_PSF.to_numpy()
 
         if self.cpu.parallel_active and internal_parallel_flag:
-            print('\n---Fitting 2D gaussian with parallel loop---')
-            list_df = Parallel(n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose)(delayed(
-                self.fit_2D_gussian_kernel)(i_, scale) for i_ in tqdm(range(self.df2numpy.shape[0])))
+            print("\n---Fitting 2D gaussian with parallel loop---")
+            list_df = Parallel(
+                n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose
+            )(
+                delayed(self.fit_2D_gussian_kernel)(i_, scale)
+                for i_ in tqdm(range(self.df2numpy.shape[0]))
+            )
 
         else:
-            print('\n---Fitting 2D gaussian without parallel loop---')
+            print("\n---Fitting 2D gaussian without parallel loop---")
             list_df = []
             for i_ in tqdm(range(self.df2numpy.shape[0])):
                 tmp = self.fit_2D_gussian_kernel(i_, scale)
@@ -252,24 +286,48 @@ class PSFsExtraction:
         df2numpy = np.asarray(list_df)
 
         if df2numpy.shape[0] != 0:
-            df = pd.DataFrame(data=df2numpy, columns=['y', 'x', 'frame', 'center_intensity', 'sigma', 'Sigma_ratio',
-                                                       'Fit_Amplitude', 'Fit_X-Center', 'Fit_Y-Center', 'Fit_X-Sigma',
-                                                       'Fit_Y-Sigma', 'Fit_Bias', 'Fit_errors_Amplitude',
-                                                       'Fit_errors_X-Center', 'Fit_errors_Y-Center', 'Fit_errors_X-Sigma',
-                                                       'Fit_errors_Y-Sigma', 'Fit_errors_Bias'])
+            df = pd.DataFrame(
+                data=df2numpy,
+                columns=[
+                    "y",
+                    "x",
+                    "frame",
+                    "center_intensity",
+                    "sigma",
+                    "Sigma_ratio",
+                    "Fit_Amplitude",
+                    "Fit_X-Center",
+                    "Fit_Y-Center",
+                    "Fit_X-Sigma",
+                    "Fit_Y-Sigma",
+                    "Fit_Bias",
+                    "Fit_errors_Amplitude",
+                    "Fit_errors_X-Center",
+                    "Fit_errors_Y-Center",
+                    "Fit_errors_X-Sigma",
+                    "Fit_errors_Y-Sigma",
+                    "Fit_errors_Bias",
+                ],
+            )
         else:
             df = None
         return df
 
-    def fit_2D_gussian_kernel(self, i_, scale=5, flag_init=False, image=None, start_sigma=[None, None], display_flag=False):
-
+    def fit_2D_gussian_kernel(
+        self,
+        i_,
+        scale=5,
+        flag_init=False,
+        image=None,
+        start_sigma=[None, None],
+        display_flag=False,
+    ):
         if flag_init:
-            fit_params_ = gaussian_2D_fit.fit_2D_Gaussian_varAmp(image, sigma_x=start_sigma[0],
-                                                                 sigma_y=start_sigma[1],
-                                                                 display_flag=display_flag)
+            fit_params_ = gaussian_2D_fit.fit_2D_Gaussian_varAmp(
+                image, sigma_x=start_sigma[0], sigma_y=start_sigma[1], display_flag=display_flag
+            )
             return fit_params_
         else:
-
             sigma_0 = self.df2numpy[i_, 4]
             cen_int = self.df2numpy[i_, 3]
             frame_num = self.df2numpy[i_, 2]
@@ -285,8 +343,8 @@ class PSFsExtraction:
             start_y = np.max([0, p_y - window_size])
             start_x = np.max([0, p_x - window_size])
 
-            end_y = np.min([img_size_y-1, p_y + window_size])
-            end_x = np.min([img_size_x-1, p_x + window_size])
+            end_y = np.min([img_size_y - 1, p_y + window_size])
+            end_x = np.min([img_size_x - 1, p_x + window_size])
 
             w_s_x_1 = round(abs(p_x - start_x))
             w_s_y_1 = round(abs(p_y - start_y))
@@ -303,15 +361,15 @@ class PSFsExtraction:
             end_x = p_x + w_s
 
             if start_y >= 0 and start_x >= 0 and end_y <= img_size_y and end_x <= img_size_x:
-
-                window_frame = self.video[int(frame_num), int(start_y):int(end_y),
-                               int(start_x):int(end_x)]
+                window_frame = self.video[
+                    int(frame_num), int(start_y) : int(end_y), int(start_x) : int(end_x)
+                ]
             else:
-                raise ValueError('Cropping size is not accurate!')
+                raise ValueError("Cropping size is not accurate!")
 
-            fit_params = gaussian_2D_fit.fit_2D_Gaussian_varAmp(window_frame, sigma_x=start_sigma,
-                                                                sigma_y=start_sigma,
-                                                                display_flag=display_flag)
+            fit_params = gaussian_2D_fit.fit_2D_Gaussian_varAmp(
+                window_frame, sigma_x=start_sigma, sigma_y=start_sigma, display_flag=display_flag
+            )
 
             params = [p_y, p_x, frame_num, cen_int, sigma_0]
             if fit_params[0] is not None:
@@ -376,14 +434,14 @@ class PSFsExtraction:
 
         elif image.shape[0] > image.shape[1]:
             tmp = np.median(image) + np.zeros((image.shape[0], image.shape[0]))
-            tmp[:image.shape[0], :image.shape[1]] = image
+            tmp[: image.shape[0], : image.shape[1]] = image
             offset = image.shape[0] - image.shape[1]
             xc, yc, sigma = radial_symmetry_centering.RadialCenter().radialcenter(Image=tmp)
             xc = xc - offset
 
         elif image.shape[0] < image.shape[1]:
             tmp = np.median(image) + np.zeros((image.shape[1], image.shape[1]))
-            tmp[:image.shape[0], :image.shape[1]] = image
+            tmp[: image.shape[0], : image.shape[1]] = image
             offset = image.shape[1] - image.shape[0]
             xc, yc, sigma = radial_symmetry_centering.RadialCenter().radialcenter(Image=tmp)
             yc = yc - offset
@@ -410,29 +468,42 @@ class PSFsExtraction:
         sub_pixel_localization: pandas dataframe
             The data frame contains subpixels PSFs locations( x, y, frame, sigma)
         """
-        sigma = df_PSFs['sigma'].tolist()
-        psf_position_x = df_PSFs['x'].tolist()
-        psf_position_y = df_PSFs['y'].tolist()
-        psf_position_frame = df_PSFs['frame'].tolist()
+        sigma = df_PSFs["sigma"].tolist()
+        psf_position_x = df_PSFs["x"].tolist()
+        psf_position_y = df_PSFs["y"].tolist()
+        psf_position_frame = df_PSFs["frame"].tolist()
 
         if self.cpu.parallel_active and flag_preview is not True:
             print("\n---start improve_localization with parallel loop---")
             try:
-                result0 = Parallel(n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose)(
-                    delayed(self.frst_wrapper)(p_, scale) for p_ in tqdm(zip(psf_position_frame, psf_position_x, psf_position_y, sigma)))
+                result0 = Parallel(
+                    n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose
+                )(
+                    delayed(self.frst_wrapper)(p_, scale)
+                    for p_ in tqdm(zip(psf_position_frame, psf_position_x, psf_position_y, sigma))
+                )
 
             except:
                 warnings.warn("switch backend to threading", DeprecationWarning)
-                result0 = Parallel(n_jobs=self.cpu.n_jobs, backend='threading', verbose=self.cpu.verbose)(
-                    delayed(self.frst_wrapper)(p_, scale) for p_ in tqdm(zip(psf_position_frame, psf_position_x, psf_position_y, sigma)))
+                result0 = Parallel(
+                    n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose
+                )(
+                    delayed(self.frst_wrapper)(p_, scale)
+                    for p_ in tqdm(zip(psf_position_frame, psf_position_x, psf_position_y, sigma))
+                )
 
         else:
             print("\n---start improve_localization without parallel loop---")
 
-            result0 = [self.frst_wrapper(p_, scale) for p_ in tqdm(zip(psf_position_frame, psf_position_x, psf_position_y, sigma))]
+            result0 = [
+                self.frst_wrapper(p_, scale)
+                for p_ in tqdm(zip(psf_position_frame, psf_position_x, psf_position_y, sigma))
+            ]
 
         tmp2 = [tmp for tmp in result0 if isinstance(tmp, np.ndarray)]  # remove non values
-        sub_pixel_localization = data_handeling.list2dataframe(feature_position=tmp2, video=self.video)
+        sub_pixel_localization = data_handeling.list2dataframe(
+            feature_position=tmp2, video=self.video
+        )
 
         return sub_pixel_localization
 
@@ -481,10 +552,30 @@ class PSFsExtraction:
 
             return subPixel
 
-    def psf_detection(self, function, min_sigma=1, max_sigma=2, sigma_ratio=1.1, threshold=0, overlap=0,
-                      min_radial=1, max_radial=2, radial_step=0.1, alpha=2, beta=1, stdFactor=1,
-                      rvt_kind="basic",  highpass_size=None, upsample=1, rweights=None, coarse_factor=1, coarse_mode="add",
-                      pad_mode="constant", mode='BOTH', flag_GUI_=False):
+    def psf_detection(
+        self,
+        function,
+        min_sigma=1,
+        max_sigma=2,
+        sigma_ratio=1.1,
+        threshold=0,
+        overlap=0,
+        min_radial=1,
+        max_radial=2,
+        radial_step=0.1,
+        alpha=2,
+        beta=1,
+        stdFactor=1,
+        rvt_kind="basic",
+        highpass_size=None,
+        upsample=1,
+        rweights=None,
+        coarse_factor=1,
+        coarse_mode="add",
+        pad_mode="constant",
+        mode="BOTH",
+        flag_GUI_=False,
+    ):
         """
         This function is a wrapper for calling various PSF localization methods.
 
@@ -617,18 +708,24 @@ class PSFsExtraction:
             print("\n---start PSF detection with parallel loop---")
             if flag_GUI_ is False:
                 try:
-                    result0 = Parallel(n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose)(
-                        delayed(self.psf_detection_kernel)(x) for x in tqdm(range(self.video.shape[0])))
+                    result0 = Parallel(
+                        n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose
+                    )(
+                        delayed(self.psf_detection_kernel)(x)
+                        for x in tqdm(range(self.video.shape[0]))
+                    )
                     result = [x for x in result0 if x is not None]
                 except:
                     warnings.warn("switch backend to threading", DeprecationWarning)
 
-                    result0 = Parallel(n_jobs=self.cpu.n_jobs, backend='threading', verbose=self.cpu.verbose)(
-                        delayed(self.psf_detection_kernel)(x) for x in range(self.video.shape[0]))
+                    result0 = Parallel(
+                        n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose
+                    )(delayed(self.psf_detection_kernel)(x) for x in range(self.video.shape[0]))
                     result = [x for x in result0 if x is not None]
             else:
-                result0 = Parallel(n_jobs=self.cpu.n_jobs, backend='threading', verbose=self.cpu.verbose)(
-                    delayed(self.psf_detection_kernel)(x) for x in tqdm(range(self.video.shape[0])))
+                result0 = Parallel(
+                    n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose
+                )(delayed(self.psf_detection_kernel)(x) for x in tqdm(range(self.video.shape[0])))
                 result = [x for x in result0 if x is not None]
 
         else:
@@ -641,12 +738,36 @@ class PSFsExtraction:
 
         return df_PSF
 
-    def psf_detection_preview(self,  function, min_sigma=1, max_sigma=2, sigma_ratio=1.1, threshold=0, overlap=0,
-                                min_radial=1, max_radial=2, radial_step=0.1, alpha=2, beta=1, stdFactor=1,
-                                rvt_kind="basic",  highpass_size=None, upsample=1, rweights=None, coarse_factor=1, coarse_mode="add",
-                                pad_mode="constant", mode='BOTH', frame_number=0, median_filter_flag=False, color='gray',
-                                imgSizex=5, imgSizey=5, IntSlider_width='500px', title=''):
-
+    def psf_detection_preview(
+        self,
+        function,
+        min_sigma=1,
+        max_sigma=2,
+        sigma_ratio=1.1,
+        threshold=0,
+        overlap=0,
+        min_radial=1,
+        max_radial=2,
+        radial_step=0.1,
+        alpha=2,
+        beta=1,
+        stdFactor=1,
+        rvt_kind="basic",
+        highpass_size=None,
+        upsample=1,
+        rweights=None,
+        coarse_factor=1,
+        coarse_mode="add",
+        pad_mode="constant",
+        mode="BOTH",
+        frame_number=0,
+        median_filter_flag=False,
+        color="gray",
+        imgSizex=5,
+        imgSizey=5,
+        IntSlider_width="500px",
+        title="",
+    ):
         """
         This function is a preview wrapper for calling various PSF localization methods.
 
@@ -781,13 +902,18 @@ class PSFsExtraction:
             self.video = np.expand_dims(self.video, axis=0)
 
         if "JPY_PARENT_PID" in os.environ:
+            display_ = display_jupyter.JupyterPSFs_localizationPreviewDisplay(
+                video=self.video,
+                df_PSFs=None,
+                frame_num=self.frame_number,
+                title=self.title,
+                median_filter_flag=self.median_filter_flag,
+                color=self.color,
+                imgSizex=self.imgSizex,
+                imgSizey=self.imgSizey,
+                IntSlider_width=self.IntSlider_width,
+            )
 
-            display_ = display_jupyter.JupyterPSFs_localizationPreviewDisplay(video=self.video, df_PSFs=None,
-                                                              frame_num=self.frame_number, title=self.title,
-                                                               median_filter_flag=self.median_filter_flag,
-                                                               color=self.color, imgSizex=self.imgSizex,
-                                                               imgSizey=self.imgSizey,
-                                                               IntSlider_width=self.IntSlider_width)
             def _preview(threshold):
                 self.threshold = threshold
                 df_PSF = self.psf_preview_kernel()
@@ -796,14 +922,18 @@ class PSFsExtraction:
                 display_.display_run()
 
             selected_frame = self.video[self.frame_number, ...]
-            min_range_, max_range_ = dog_preview(images=selected_frame, min_sigma=self.min_sigma,
-                                                 max_sigma=self.max_sigma, sigma_ratio=self.sigma_ratio)
+            min_range_, max_range_ = dog_preview(
+                images=selected_frame,
+                min_sigma=self.min_sigma,
+                max_sigma=self.max_sigma,
+                sigma_ratio=self.sigma_ratio,
+            )
 
             max_range_ = np.max(np.asarray([max_range_, threshold]))
 
             max_range_0 = 1.5 * max_range_
             sci_num = lambda x: "{:.2e}".format(x)
-            tmp = sci_num(max_range_).split('e')
+            tmp = sci_num(max_range_).split("e")
             power = int(tmp[-1])
             if power >= 0:
                 step = 0.1
@@ -813,17 +943,26 @@ class PSFsExtraction:
                 p_ = power - 2
                 step = 10**p_
 
-            interact(_preview,
-                     threshold=widgets.FloatSlider(value=threshold, min=0, max=max_range_0, step=step,
-                                                   continuous_update=False, readout=True, readout_format='.7f',
-                                                    description='Threshold', layout=Layout(width=IntSlider_width)))
+            interact(
+                _preview,
+                threshold=widgets.FloatSlider(
+                    value=threshold,
+                    min=0,
+                    max=max_range_0,
+                    step=step,
+                    continuous_update=False,
+                    readout=True,
+                    readout_format=".7f",
+                    description="Threshold",
+                    layout=Layout(width=IntSlider_width),
+                ),
+            )
         else:
             self.threshold = threshold
             df_PSF = self.psf_preview_kernel()
             return df_PSF
 
     def psf_preview_kernel(self):
-
         if type(self.frame_number) == list:
             result = [self.psf_detection_kernel(f_) for f_ in self.frame_number]
         else:
@@ -837,106 +976,98 @@ class PSFsExtraction:
         i_ = int(i_)
 
         if len(self.video.shape) == 3 and self.video.shape[0] > 0:
-
-            if self.function == 'dog':
-
-                if self.mode == 'BOTH':
+            if self.function == "dog":
+                if self.mode == "BOTH":
                     positive_psf = self.dog(self.video[i_, :, :])
                     negative_psf = self.dog(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Bright':
+                elif self.mode == "Bright":
                     positive_psf = self.dog(self.video[i_, :, :])
                     negative_psf = []
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Dark':
+                elif self.mode == "Dark":
                     positive_psf = []
                     negative_psf = self.dog(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'doh':
-
-                if self.mode == 'BOTH':
+            elif self.function == "doh":
+                if self.mode == "BOTH":
                     positive_psf = self.doh(self.video[i_, :, :])
                     negative_psf = []
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'log':
-
-                if self.mode == 'BOTH':
+            elif self.function == "log":
+                if self.mode == "BOTH":
                     positive_psf = self.log(self.video[i_, :, :])
                     negative_psf = self.log(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Bright':
+                elif self.mode == "Bright":
                     positive_psf = self.log(self.video[i_, :, :])
                     negative_psf = []
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Dark':
+                elif self.mode == "Dark":
                     positive_psf = []
                     negative_psf = self.log(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'frst':
+            elif self.function == "frst":
                 b_psf = self.frst(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
-            elif self.function == 'frst_one_psf':
+            elif self.function == "frst_one_psf":
                 b_psf = self.frst_one_PSF(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
                 temp2 = np.expand_dims(temp2, axis=0)
 
-            elif self.function == 'RVT':
+            elif self.function == "RVT":
                 b_psf = self._rvt(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
         else:
-
-            if self.function == 'dog':
-
-                if self.mode == 'BOTH':
+            if self.function == "dog":
+                if self.mode == "BOTH":
                     positive_psf = self.dog(self.video)
                     negative_psf = self.dog(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Bright':
+                elif self.mode == "Bright":
                     positive_psf = self.dog(self.video)
                     negative_psf = []
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Dark':
+                elif self.mode == "Dark":
                     positive_psf = []
                     negative_psf = self.dog(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'doh':
-
-                if self.mode == 'BOTH':
+            elif self.function == "doh":
+                if self.mode == "BOTH":
                     positive_psf = self.doh(self.video)
                     negative_psf = []
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'log':
-
-                if self.mode == 'BOTH':
+            elif self.function == "log":
+                if self.mode == "BOTH":
                     positive_psf = self.log(self.video)
                     negative_psf = self.log(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Bright':
+                elif self.mode == "Bright":
                     positive_psf = self.log(self.video)
                     negative_psf = []
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-                elif self.mode == 'Dark':
+                elif self.mode == "Dark":
                     positive_psf = []
                     negative_psf = self.log(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == 'frst':
+            elif self.function == "frst":
                 b_psf = self.frst(self.video)
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
-            elif self.function == 'frst_one_psf':
+            elif self.function == "frst_one_psf":
                 b_psf = self.frst_one_PSF(self.video)
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
                 temp2 = np.expand_dims(temp2, axis=0)
 
-            elif self.function == 'RVT':
+            elif self.function == "RVT":
                 b_psf = self._rvt(self.video)
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
                 temp2 = np.expand_dims(temp2, axis=0)
@@ -966,7 +1097,3 @@ class PSFsExtraction:
         else:
             temp2 = None
         return temp2
-
-
-
-

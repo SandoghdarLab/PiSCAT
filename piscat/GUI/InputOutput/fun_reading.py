@@ -1,17 +1,15 @@
+import os
+
+import cv2
+import numpy as np
+from PySide6 import QtCore, QtWidgets
+
 from piscat.GUI.InputOutput import import_im2vid, import_RAW, video_cropping
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-from piscat.InputOutput import reading_videos, image_to_video, read_status_line
-
-from PySide6 import QtCore
-from PySide6 import QtWidgets
-
-import os
-import numpy as np
-import cv2
+from piscat.InputOutput import image_to_video, read_status_line, reading_videos
 
 
 class Reading(QtWidgets.QMainWindow):
-
     update_output = QtCore.Signal(object)
 
     def __init__(self):
@@ -23,16 +21,27 @@ class Reading(QtWidgets.QMainWindow):
     def askdir_file(self):
         self.filename = False
         dialog = QtWidgets.QFileDialog(self)
-        dialog.setWindowTitle('Open File')
+        dialog.setWindowTitle("Open File")
         dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             self.filename = dialog.selectedFiles()[0]
         if type(self.filename) is str:
-
             file_extention = os.path.splitext(self.filename)[1]
-            if file_extention == ".pf" or file_extention == ".raw" or file_extention == ".bin" or file_extention == ".PF" or file_extention == ".RAW" or file_extention == ".BIN":
+            if (
+                file_extention == ".pf"
+                or file_extention == ".raw"
+                or file_extention == ".bin"
+                or file_extention == ".PF"
+                or file_extention == ".RAW"
+                or file_extention == ".BIN"
+            ):
                 return "Raw"
-            elif file_extention == ".jpg" or file_extention == ".JPG" or file_extention == ".png" or file_extention == ".PNG":
+            elif (
+                file_extention == ".jpg"
+                or file_extention == ".JPG"
+                or file_extention == ".png"
+                or file_extention == ".PNG"
+            ):
                 return "PNG"
             elif file_extention == ".tiff" or file_extention == ".TIFF":
                 return "TIF"
@@ -48,8 +57,9 @@ class Reading(QtWidgets.QMainWindow):
                 return "Python"
 
     def askdir(self):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder:', '',
-                                                                 QtWidgets.QFileDialog.ShowDirsOnly)
+        folder = QtWidgets.QFileDialog.getExistingDirectory(
+            None, "Select a folder:", "", QtWidgets.QFileDialog.ShowDirsOnly
+        )
         return folder
 
     def read_video(self):
@@ -60,27 +70,39 @@ class Reading(QtWidgets.QMainWindow):
                 while self.info_image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
                 try:
-                    video = reading_videos.read_binary(self.filename, img_width=self.info_image.width_size,
-                                                       img_height=self.info_image.height_size,
-                                                       image_type=self.info_image.set_bit_order + self.info_image.type)
+                    video = reading_videos.read_binary(
+                        self.filename,
+                        img_width=self.info_image.width_size,
+                        img_height=self.info_image.height_size,
+                        image_type=self.info_image.set_bit_order + self.info_image.type,
+                    )
 
                     if self.info_image.groupBox_cropping.isChecked():
-
                         self.original_video = video[
-                                            self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
-                                            self.info_image.width_size_s:self.info_image.width_size_e,
-                                            self.info_image.height_size_s:self.info_image.height_size_e]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
 
                     else:
                         self.original_video = video
 
-                    self.original_video, status_line_info = self.status_line_remove(self.original_video)
+                    self.original_video, status_line_info = self.status_line_remove(
+                        self.original_video
+                    )
 
                     if self.info_image.flag_display is True:
                         self.visualization_ = Visulization_localization()
-                        self.visualization_.new_display(self.original_video, self.original_video, object=None, title='Raw video')
+                        self.visualization_.new_display(
+                            self.original_video,
+                            self.original_video,
+                            object=None,
+                            title="Raw video",
+                        )
 
-                    self.update_output.emit([self.original_video, title, self.filename, status_line_info])
+                    self.update_output.emit(
+                        [self.original_video, title, self.filename, status_line_info]
+                    )
                 except:
                     self.msg_box = QtWidgets.QMessageBox()
                     self.msg_box.setWindowTitle("Warning!")
@@ -92,7 +114,9 @@ class Reading(QtWidgets.QMainWindow):
                 self.original_video = png_img
 
                 self.visualization_ = Visulization_localization(self.filename)
-                self.visualization_.new_display(self.original_video, self.original_video, object=None, title='PNG')
+                self.visualization_.new_display(
+                    self.original_video, self.original_video, object=None, title="PNG"
+                )
 
                 self.update_output.emit([self.original_video, title, self.filename, None])
 
@@ -105,24 +129,28 @@ class Reading(QtWidgets.QMainWindow):
                     QtWidgets.QApplication.processEvents()
 
                 if self.info_image.frame_e is not None:
-
                     if self.info_image.frame_e != -1:
                         self.original_video = avi_video[
-                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
-                        self.original_video = avi_video[self.info_image.frame_s:-1:self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                        self.original_video = avi_video[
+                            self.info_image.frame_s : -1 : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = avi_video
 
-                self.original_video = self.original_video.copy(order='C')
+                self.original_video = self.original_video.copy(order="C")
 
                 if self.info_image.flag_display is True:
                     self.visualization_ = Visulization_localization()
-                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='AVI')
+                    self.visualization_.new_display(
+                        self.original_video, self.original_video, object=None, title="AVI"
+                    )
 
                 self.update_output.emit([self.original_video, title, self.filename, None])
 
@@ -139,24 +167,28 @@ class Reading(QtWidgets.QMainWindow):
                         tif_video = np.expand_dims(tif_video, axis=0)
 
                 if self.info_image.frame_e is not None:
-
                     if self.info_image.frame_e != -1:
                         self.original_video = tif_video[
-                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
-                        self.original_video = tif_video[self.info_image.frame_s::self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                        self.original_video = tif_video[
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = tif_video
 
-                self.original_video = self.original_video.copy(order='C')
+                self.original_video = self.original_video.copy(order="C")
 
                 if self.info_image.flag_display is True:
                     self.visualization_ = Visulization_localization()
-                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
+                    self.visualization_.new_display(
+                        self.original_video, self.original_video, object=None, title="TIF"
+                    )
 
                 self.update_output.emit([self.original_video, title, self.filename, None])
 
@@ -168,24 +200,28 @@ class Reading(QtWidgets.QMainWindow):
                     QtWidgets.QApplication.processEvents()
 
                 if self.info_image.frame_e is not None:
-
                     if self.info_image.frame_e != -1:
                         self.original_video = fits_video[
-                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
-                        self.original_video = fits_video[self.info_image.frame_s::self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                        self.original_video = fits_video[
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = fits_video
 
-                self.original_video = self.original_video.copy(order='C')
+                self.original_video = self.original_video.copy(order="C")
 
                 if self.info_image.flag_display is True:
                     self.visualization_ = Visulization_localization()
-                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
+                    self.visualization_.new_display(
+                        self.original_video, self.original_video, object=None, title="TIF"
+                    )
 
                 self.update_output.emit([self.original_video, title, self.filename])
 
@@ -197,27 +233,30 @@ class Reading(QtWidgets.QMainWindow):
                     QtWidgets.QApplication.processEvents()
 
                 if self.info_image.frame_e is not None:
-
                     if self.info_image.frame_e != -1:
                         self.original_video = fli_video[
-                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
-                        self.original_video = fli_video[self.info_image.frame_s::self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                        self.original_video = fli_video[
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = fli_video
 
-                self.original_video = self.original_video.copy(order='C')
+                self.original_video = self.original_video.copy(order="C")
 
                 if self.info_image.flag_display is True:
                     self.visualization_ = Visulization_localization()
-                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
+                    self.visualization_.new_display(
+                        self.original_video, self.original_video, object=None, title="TIF"
+                    )
 
                 self.update_output.emit([self.original_video, title, self.filename])
-
 
             else:
                 self.msg_box = QtWidgets.QMessageBox()
@@ -238,26 +277,26 @@ class Reading(QtWidgets.QMainWindow):
         while self.info_image.raw_data_update_flag:
             QtWidgets.QApplication.processEvents()
         try:
-            data_setting['path'] = self.filename
-            data_setting['title'] = "Raw"
-            data_setting['img_width'] = self.info_image.width_size
-            data_setting['img_height'] = self.info_image.height_size
-            data_setting['image_type'] = self.info_image.set_bit_order + self.info_image.type
-            data_setting['s_frame'] = self.info_image.frame_s
-            data_setting['e_frame'] = self.info_image.frame_e
+            data_setting["path"] = self.filename
+            data_setting["title"] = "Raw"
+            data_setting["img_width"] = self.info_image.width_size
+            data_setting["img_height"] = self.info_image.height_size
+            data_setting["image_type"] = self.info_image.set_bit_order + self.info_image.type
+            data_setting["s_frame"] = self.info_image.frame_s
+            data_setting["e_frame"] = self.info_image.frame_e
 
             if self.info_image.groupBox_cropping.isChecked():
-                data_setting['frame_stride'] = self.info_image.frame_jump
-                data_setting['width_size_s'] = self.info_image.width_size_s
-                data_setting['width_size_e'] = self.info_image.width_size_e
-                data_setting['height_size_s'] = self.info_image.height_size_s
-                data_setting['height_size_e'] = self.info_image.height_size_e
+                data_setting["frame_stride"] = self.info_image.frame_jump
+                data_setting["width_size_s"] = self.info_image.width_size_s
+                data_setting["width_size_e"] = self.info_image.width_size_e
+                data_setting["height_size_s"] = self.info_image.height_size_s
+                data_setting["height_size_e"] = self.info_image.height_size_e
             else:
-                data_setting['frame_stride'] = 1
-                data_setting['width_size_s'] = 0
-                data_setting['width_size_e'] = -1
-                data_setting['height_size_s'] = 0
-                data_setting['height_size_e'] = -1
+                data_setting["frame_stride"] = 1
+                data_setting["width_size_s"] = 0
+                data_setting["width_size_e"] = -1
+                data_setting["height_size_s"] = 0
+                data_setting["height_size_e"] = -1
             self.update_output.emit([data_setting])
         except:
             self.msg_box = QtWidgets.QMessageBox()
@@ -266,21 +305,21 @@ class Reading(QtWidgets.QMainWindow):
             self.msg_box.exec_()
 
     def im2video(self):
-
-        title = 'image2video'
+        title = "image2video"
         folder = self.askdir()
         self.info_image = import_im2vid.Image2Video(self)
         while self.info_image.raw_data_update_flag:
             QtWidgets.QApplication.processEvents()
         try:
-
             if self.info_image.im_type is not None:
-
-                im2vid = image_to_video.Image2Video(path=folder, file_format=self.info_image.im_type,
-                                                    width_size=self.info_image.width_size,
-                                                    height_size=self.info_image.height_size,
-                                                    image_type=np.dtype(self.info_image.set_bit_order + self.info_image.type),
-                                                    reader_type=self.info_image.video_reader_type)
+                im2vid = image_to_video.Image2Video(
+                    path=folder,
+                    file_format=self.info_image.im_type,
+                    width_size=self.info_image.width_size,
+                    height_size=self.info_image.height_size,
+                    image_type=np.dtype(self.info_image.set_bit_order + self.info_image.type),
+                    reader_type=self.info_image.video_reader_type,
+                )
                 video = im2vid()
 
                 video, status_line_info = self.status_line_remove(video)
@@ -289,9 +328,13 @@ class Reading(QtWidgets.QMainWindow):
 
                 if self.info_image.flag_display is True:
                     self.visualization_ = Visulization_localization()
-                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='im2video')
+                    self.visualization_.new_display(
+                        self.original_video, self.original_video, object=None, title="im2video"
+                    )
 
-                self.update_output.emit([self.original_video, title, self.folder, status_line_info])
+                self.update_output.emit(
+                    [self.original_video, title, self.folder, status_line_info]
+                )
             else:
                 self.msg_box = QtWidgets.QMessageBox()
                 self.msg_box.setWindowTitle("Warning!")
@@ -304,11 +347,9 @@ class Reading(QtWidgets.QMainWindow):
             self.msg_box.exec_()
 
     def tiff_video(self):
-
         title = self.askdir_file()
 
         if self.filename:
-
             if title == "TIF":
                 tif_video = reading_videos.read_tif_iterate(self.filename)
                 self.info_image = video_cropping.Cropping(self)
@@ -322,24 +363,28 @@ class Reading(QtWidgets.QMainWindow):
                         tif_video = np.expand_dims(tif_video, axis=0)
 
                 if self.info_image.frame_e is not None:
-
                     if self.info_image.frame_e != -1:
                         self.original_video = tif_video[
-                                              self.info_image.frame_s:self.info_image.frame_e:self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
-                        self.original_video = tif_video[self.info_image.frame_s::self.info_image.frame_jump,
-                                              self.info_image.width_size_s:self.info_image.width_size_e,
-                                              self.info_image.height_size_s:self.info_image.height_size_e]
+                        self.original_video = tif_video[
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = tif_video
 
-                self.original_video = self.original_video.copy(order='C')
+                self.original_video = self.original_video.copy(order="C")
 
                 if self.info_image.flag_display is True:
                     self.visualization_ = Visulization_localization()
-                    self.visualization_.new_display(self.original_video, self.original_video, object=None, title='TIF')
+                    self.visualization_.new_display(
+                        self.original_video, self.original_video, object=None, title="TIF"
+                    )
 
                 self.update_output.emit([self.original_video, title, self.filename, None])
 
@@ -366,10 +411,16 @@ class Reading(QtWidgets.QMainWindow):
         statusLine = read_status_line.StatusLine(video)
         cut_frames, axis_status_line = statusLine.find_status_line()
 
-        if axis_status_line == 'row' or axis_status_line == 'column':
+        if axis_status_line == "row" or axis_status_line == "column":
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
-            self.msg_box.setText("status line remove" + "\nold shape:" + str(video.shape) + "\nnew shape:" + str(cut_frames.shape))
+            self.msg_box.setText(
+                "status line remove"
+                + "\nold shape:"
+                + str(video.shape)
+                + "\nnew shape:"
+                + str(cut_frames.shape)
+            )
             self.msg_box.exec_()
 
         return cut_frames, axis_status_line
@@ -377,6 +428,3 @@ class Reading(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()
         print("closing PlaySetting")
-
-
-

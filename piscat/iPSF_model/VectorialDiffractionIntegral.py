@@ -1,12 +1,13 @@
 import cmath
-import numpy as np
 import math
+
+import numpy as np
 import scipy.special
+
 from piscat.iPSF_model.L_theta import L_theta
 
 
 class VectorialDiffractionIntegral:
-
     def __init__(self, p, Xp=[0, 0, 0], z_=0, nz=1, nx=513):
         """
         A vectorial diffraction formulation to model the scattered light from a nanoparticle.
@@ -42,7 +43,7 @@ class VectorialDiffractionIntegral:
         self.xp_ *= 1 / xystep_
         self.yp_ *= 1 / xystep_
 
-        rn = 1 + int(math.sqrt(self.xp_ ** 2 + self.yp_ ** 2))
+        rn = 1 + int(math.sqrt(self.xp_**2 + self.yp_**2))
         rn = int(rn)
 
         rmax_ = math.ceil(math.sqrt(2.0) * xymax_) + rn + 1
@@ -80,8 +81,7 @@ class VectorialDiffractionIntegral:
         ud = 3
         L_th = np.zeros((2), dtype=complex)
 
-        for k in (range(0, self.nz_)):  # defocusing loop
-
+        for k in range(0, self.nz_):  # defocusing loop
             L_th = L_theta(L_th, p.alpha, p, ci, self.z_[k], self.zp_)
             w_exp = np.abs(L_th[1])  # missing p.k0, multiply it into it later
             cst = 0.975
@@ -109,10 +109,16 @@ class VectorialDiffractionIntegral:
                 iconst = step / ud
 
                 # Odd and evens of Simpson's rule
-                sum_I0_even, sum_I1_even, sum_I2_even = self.simpsonsRuleVec(ci, constJ, k, nSamples, p, phC, step, 0)
-                sum_I0_odd, sum_I1_odd, sum_I2_odd = self.simpsonsRuleVec(ci, constJ, k, nSamples, p, phC, step, 1)
+                sum_I0_even, sum_I1_even, sum_I2_even = self.simpsonsRuleVec(
+                    ci, constJ, k, nSamples, p, phC, step, 0
+                )
+                sum_I0_odd, sum_I1_odd, sum_I2_odd = self.simpsonsRuleVec(
+                    ci, constJ, k, nSamples, p, phC, step, 1
+                )
 
-                sum_I0_edge, sum_I1_edge, sum_I2_edge = self.theta_equal_to_alpha(ci, constJ, k, p, phC)
+                sum_I0_edge, sum_I1_edge, sum_I2_edge = self.theta_equal_to_alpha(
+                    ci, constJ, k, p, phC
+                )
 
                 sum_I0 = sum_I0_even + sum_I0_odd + sum_I0_edge
                 sum_I1 = sum_I1_even + sum_I1_odd + sum_I1_edge
@@ -138,93 +144,115 @@ class VectorialDiffractionIntegral:
         pass
 
     def interpolation_xy_vec(self, k):
-
         x = np.arange(-self.xymax_, 1 + self.xymax_)
         y = np.arange(-self.xymax_, 1 + self.xymax_)
         X, Y = np.meshgrid(x, y)
-        xis = (X - self.xp_)
-        yis = (Y - self.yp_)
+        xis = X - self.xp_
+        yis = Y - self.yp_
         rxs = np.sqrt(xis * xis + yis * yis)
         r0s = np.int_(rxs)
         drs = rxs - r0s
         drs[((r0s + 1) >= self.rmax_)] = 0
 
-        I0_int_re_op_1Ds = drs * self.I0_int_re[k, r0s + 1] + (1.0 - drs) * self.I0_int_re[
-            k, r0s]
+        I0_int_re_op_1Ds = drs * self.I0_int_re[k, r0s + 1] + (1.0 - drs) * self.I0_int_re[k, r0s]
 
-        I1_int_re_op_1Ds = drs * self.I1_int_re[k, r0s + 1] + (1.0 - drs) * self.I1_int_re[
-            k, r0s]
-        I2_int_re_op_1Ds = drs * self.I2_int_re[k, r0s + 1] + (1.0 - drs) * self.I2_int_re[
-            k, r0s]
-        I0_int_im_op_1Ds = drs * self.I0_int_im[k, r0s + 1] + (1.0 - drs) * self.I0_int_im[
-            k, r0s]
-        I1_int_im_op_1Ds = drs * self.I1_int_im[k, r0s + 1] + (1.0 - drs) * self.I1_int_im[
-            k, r0s]
-        I2_int_im_op_1Ds = drs * self.I2_int_im[k, r0s + 1] + (1.0 - drs) * self.I2_int_im[
-            k, r0s]
+        I1_int_re_op_1Ds = drs * self.I1_int_re[k, r0s + 1] + (1.0 - drs) * self.I1_int_re[k, r0s]
+        I2_int_re_op_1Ds = drs * self.I2_int_re[k, r0s + 1] + (1.0 - drs) * self.I2_int_re[k, r0s]
+        I0_int_im_op_1Ds = drs * self.I0_int_im[k, r0s + 1] + (1.0 - drs) * self.I0_int_im[k, r0s]
+        I1_int_im_op_1Ds = drs * self.I1_int_im[k, r0s + 1] + (1.0 - drs) * self.I1_int_im[k, r0s]
+        I2_int_im_op_1Ds = drs * self.I2_int_im[k, r0s + 1] + (1.0 - drs) * self.I2_int_im[k, r0s]
 
         dims = np.shape(I0_int_re_op_1Ds)
-        self.I0_int_re_op_1D[(k*dims[0]*dims[1]):((k+1)*dims[0]*dims[1])] += np.ravel(I0_int_re_op_1Ds)
-        self.I1_int_re_op_1D[(k*dims[0]*dims[1]):((k+1)*dims[0]*dims[1])] += np.ravel(I1_int_re_op_1Ds)
-        self.I2_int_re_op_1D[(k*dims[0]*dims[1]):((k+1)*dims[0]*dims[1])] += np.ravel(I2_int_re_op_1Ds)
-        self.I0_int_im_op_1D[(k*dims[0]*dims[1]):((k+1)*dims[0]*dims[1])] += np.ravel(I0_int_im_op_1Ds)
-        self.I1_int_im_op_1D[(k*dims[0]*dims[1]):((k+1)*dims[0]*dims[1])] += np.ravel(I1_int_im_op_1Ds)
-        self.I2_int_im_op_1D[(k*dims[0]*dims[1]):((k+1)*dims[0]*dims[1])] += np.ravel(I2_int_im_op_1Ds)
+        self.I0_int_re_op_1D[(k * dims[0] * dims[1]) : ((k + 1) * dims[0] * dims[1])] += np.ravel(
+            I0_int_re_op_1Ds
+        )
+        self.I1_int_re_op_1D[(k * dims[0] * dims[1]) : ((k + 1) * dims[0] * dims[1])] += np.ravel(
+            I1_int_re_op_1Ds
+        )
+        self.I2_int_re_op_1D[(k * dims[0] * dims[1]) : ((k + 1) * dims[0] * dims[1])] += np.ravel(
+            I2_int_re_op_1Ds
+        )
+        self.I0_int_im_op_1D[(k * dims[0] * dims[1]) : ((k + 1) * dims[0] * dims[1])] += np.ravel(
+            I0_int_im_op_1Ds
+        )
+        self.I1_int_im_op_1D[(k * dims[0] * dims[1]) : ((k + 1) * dims[0] * dims[1])] += np.ravel(
+            I1_int_im_op_1Ds
+        )
+        self.I2_int_im_op_1D[(k * dims[0] * dims[1]) : ((k + 1) * dims[0] * dims[1])] += np.ravel(
+            I2_int_im_op_1Ds
+        )
 
     def theta_equal_to_alpha(self, ci, constJ, k, p, phC):
         # theta = alpha;
         sintheta = math.sin(p.alpha)
         costheta = math.cos(p.alpha)
         sqrtcostheta = math.sqrt(costheta)
-        nsroot = cmath.sqrt((p.ns ** 2 - p.NA ** 2))
-        ngroot = cmath.sqrt((p.ng ** 2 - p.NA ** 2))
+        nsroot = cmath.sqrt((p.ns**2 - p.NA**2))
+        ngroot = cmath.sqrt((p.ng**2 - p.NA**2))
         ts1ts2 = 4.0 * p.ni * costheta * ngroot
         tp1tp2 = ts1ts2
         tp1tp2 /= (p.ng * costheta + p.ni / p.ng * ngroot) * (
-                p.ns / p.ng * ngroot + p.ng / p.ns * nsroot)
+            p.ns / p.ng * ngroot + p.ng / p.ns * nsroot
+        )
         ts1ts2 /= (p.ni * costheta + ngroot) * (ngroot + nsroot)
         bessel_0 = scipy.special.j0(constJ * sintheta) * sintheta * sqrtcostheta
         bessel_1 = scipy.special.j1(constJ * sintheta) * sintheta * sqrtcostheta
-        if (constJ != 0.0):
+        if constJ != 0.0:
             bessel_2 = 2.0 * bessel_1 / (constJ * sintheta) - bessel_0
         else:
             bessel_2 = 0.0
-        bessel_0 *= (ts1ts2 + tp1tp2 / p.ns * nsroot)
-        bessel_1 *= (tp1tp2 * p.ni / p.ns * sintheta)
-        bessel_2 *= (ts1ts2 - tp1tp2 / p.ns * nsroot)
+        bessel_0 *= ts1ts2 + tp1tp2 / p.ns * nsroot
+        bessel_1 *= tp1tp2 * p.ni / p.ns * sintheta
+        bessel_2 *= ts1ts2 - tp1tp2 / p.ns * nsroot
 
         con_ti_up = p.tg0 / p.ng0 - p.tg / p.ng + p.ti0 / p.ni0 - self.zp_ / p.ns
         con_refOPD_up = p.ng0 * p.tg0 + p.ni0 * p.ti0
         ti_up = self.zp_ - self.z_[k] + p.ni * con_ti_up
         refOPD_up = -1 * ((p.ng * p.tg + p.ni * ti_up) - con_refOPD_up)
-        expW = cmath.exp(1j * p.k0 * p.ns * self.zp_ + 1j * phC + 1j * p.k0 * refOPD_up + 1j * p.k0 * (
-                (ci - self.z_[k]) * cmath.sqrt((p.ni ** 2 - p.NA ** 2)) + self.zp_ * nsroot + p.tg * ngroot
-                - p.tg0 * math.sqrt((p.ng0 ** 2 - p.NA ** 2)) - p.ti0 * cmath.sqrt(
-            (p.ni0 ** 2 - p.NA ** 2))))
+        expW = cmath.exp(
+            1j * p.k0 * p.ns * self.zp_
+            + 1j * phC
+            + 1j * p.k0 * refOPD_up
+            + 1j
+            * p.k0
+            * (
+                (ci - self.z_[k]) * cmath.sqrt((p.ni**2 - p.NA**2))
+                + self.zp_ * nsroot
+                + p.tg * ngroot
+                - p.tg0 * math.sqrt((p.ng0**2 - p.NA**2))
+                - p.ti0 * cmath.sqrt((p.ni0**2 - p.NA**2))
+            )
+        )
         sum_I0 = expW * bessel_0
         sum_I1 = expW * bessel_1
         sum_I2 = expW * bessel_2
         return sum_I0, sum_I1, sum_I2
 
     def simpsonsRuleVec(self, ci, constJ, k, nSamples, p, phC, step, oddVal):
-
-        ran_ = np.arange(1, int(nSamples / 2)+oddVal)
-        thetas = (2 * ran_-oddVal) * step
+        ran_ = np.arange(1, int(nSamples / 2) + oddVal)
+        thetas = (2 * ran_ - oddVal) * step
         sinthetas = np.sin(thetas)
         costhetas = np.cos(thetas)
         sqrtcosthetas = np.sqrt(costhetas)
-        ni2sin2thetas = p.ni ** 2 * sinthetas ** 2
-        nsroots = np.sqrt(p.ns ** 2 - ni2sin2thetas + 0j)
-        ngroots = np.sqrt(p.ng ** 2 - ni2sin2thetas + 0j)
+        ni2sin2thetas = p.ni**2 * sinthetas**2
+        nsroots = np.sqrt(p.ns**2 - ni2sin2thetas + 0j)
+        ngroots = np.sqrt(p.ng**2 - ni2sin2thetas + 0j)
 
         ts1ts2s = 4 * p.ni * costhetas * ngroots
         tp1tp2s = ts1ts2s
-        tp1tp2s = np.divide(tp1tp2s, (p.ng * costhetas + p.ni / p.ng * ngroots) * (
-                p.ns / p.ng * ngroots + p.ng / p.ns * nsroots))
+        tp1tp2s = np.divide(
+            tp1tp2s,
+            (p.ng * costhetas + p.ni / p.ng * ngroots)
+            * (p.ns / p.ng * ngroots + p.ng / p.ns * nsroots),
+        )
         ts1ts2s = np.divide(ts1ts2s, (p.ni * costhetas + ngroots) * (ngroots + nsroots))
 
-        bessel_0s = 2**(1+oddVal) * scipy.special.j0(constJ * sinthetas) * sinthetas * sqrtcosthetas
-        bessel_1s = 2**(1+oddVal) * scipy.special.j1(constJ * sinthetas) * sinthetas * sqrtcosthetas
+        bessel_0s = (
+            2 ** (1 + oddVal) * scipy.special.j0(constJ * sinthetas) * sinthetas * sqrtcosthetas
+        )
+        bessel_1s = (
+            2 ** (1 + oddVal) * scipy.special.j1(constJ * sinthetas) * sinthetas * sqrtcosthetas
+        )
         if constJ != 0:
             bessel_2s = 2 * bessel_1s / (constJ * sinthetas) - bessel_0s
         else:
@@ -239,9 +267,20 @@ class VectorialDiffractionIntegral:
         ti_up = self.zp_ - self.z_[k] + p.ni * con_ti_up
         refOPD_up = -1 * ((p.ng * p.tg + p.ni * ti_up) - con_refOPD_up)
 
-        expWs = np.exp(1j * p.k0 * p.ns * self.zp_ + 1j * phC + 1j * p.k0 * refOPD_up + 1j * p.k0 * (
-                (ci - self.z_[k]) * p.ni * costhetas + self.zp_ * nsroots + p.tg * ngroots
-                - p.tg0 * np.sqrt(p.ng0 ** 2 - ni2sin2thetas + 0j) - p.ti0 * np.sqrt(p.ni0 ** 2 - ni2sin2thetas + 0j)))
+        expWs = np.exp(
+            1j * p.k0 * p.ns * self.zp_
+            + 1j * phC
+            + 1j * p.k0 * refOPD_up
+            + 1j
+            * p.k0
+            * (
+                (ci - self.z_[k]) * p.ni * costhetas
+                + self.zp_ * nsroots
+                + p.tg * ngroots
+                - p.tg0 * np.sqrt(p.ng0**2 - ni2sin2thetas + 0j)
+                - p.ti0 * np.sqrt(p.ni0**2 - ni2sin2thetas + 0j)
+            )
+        )
 
         sum_I0 = np.sum(expWs * bessel_0s)
         sum_I1 = np.sum(expWs * bessel_1s)

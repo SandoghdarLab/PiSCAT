@@ -1,17 +1,15 @@
-from PySide6 import QtGui, QtCore, QtWidgets
-from PySide6.QtWidgets import *
-from PySide6 import QtCore, QtGui
-from PySide6.QtGui import *
-from PySide6.QtCore import *
-
 import psutil
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
 class CPU_Setting(QtWidgets.QMainWindow):
     update_CPU_Setting = QtCore.Signal()
 
     def __init__(self):
-        super(CPU_Setting,  self).__init__()
+        super(CPU_Setting, self).__init__()
         self.n_jobs = None
         self.backend = None
         self.verbose = None
@@ -20,7 +18,11 @@ class CPU_Setting(QtWidgets.QMainWindow):
         self.cpu_configuration_update_flag = True
         self.empty_value_box_flag = False
 
-        self.cpu_backend = {"loky": "loky", "multiprocessing": "multiprocessing", "threading": "threading"}
+        self.cpu_backend = {
+            "loky": "loky",
+            "multiprocessing": "multiprocessing",
+            "threading": "threading",
+        }
 
         self.window = QtWidgets.QWidget()
 
@@ -49,7 +51,7 @@ class CPU_Setting(QtWidgets.QMainWindow):
         # groupBox.isChecked(False)
         self.grid2 = QtWidgets.QGridLayout()
         self.add_line_edit1()
-        self.groupBox_CPU .setLayout(self.grid2)
+        self.groupBox_CPU.setLayout(self.grid2)
 
         return self.groupBox_CPU
 
@@ -68,7 +70,7 @@ class CPU_Setting(QtWidgets.QMainWindow):
                 self.parallel_active = True
                 self.get_values()
 
-                if self.n_jobs != '':
+                if self.n_jobs != "":
                     self.n_jobs = int(self.n_jobs)
                 else:
                     self.n_jobs = -1
@@ -77,7 +79,7 @@ class CPU_Setting(QtWidgets.QMainWindow):
                     self.msg_box.setText("all CPU cores are selected!")
                     self.msg_box.exec_()
 
-                if self.verbose != '':
+                if self.verbose != "":
                     self.verbose = int(self.verbose)
                 else:
                     self.verbose = 10
@@ -87,7 +89,7 @@ class CPU_Setting(QtWidgets.QMainWindow):
                     self.msg_box.exec_()
 
                 if self.backend is None:
-                    self.backend = 'multiprocessing'
+                    self.backend = "multiprocessing"
                     self.msg_box = QtWidgets.QMessageBox()
                     self.msg_box.setWindowTitle("Warning!")
                     self.msg_box.setText("Default backend is selected!")
@@ -119,11 +121,11 @@ class CPU_Setting(QtWidgets.QMainWindow):
         self.combo.currentIndexChanged.connect(self.on_select)
 
         self.le1_cpu_cores = QtWidgets.QLineEdit()
-        self.le1_cpu_cores.setPlaceholderText('Number of use CPU cores')
+        self.le1_cpu_cores.setPlaceholderText("Number of use CPU cores")
         self.le1_cpu_cores_label = QtWidgets.QLabel("Number cores:")
 
         self.le2_verbose = QtWidgets.QLineEdit()
-        self.le2_verbose.setPlaceholderText('Verbose')
+        self.le2_verbose.setPlaceholderText("Verbose")
         self.le2_verbose_label = QtWidgets.QLabel("Verbose:")
 
         self.grid2.addWidget(self.combo, 1, 0)

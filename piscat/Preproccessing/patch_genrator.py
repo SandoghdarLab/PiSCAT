@@ -1,12 +1,13 @@
 from __future__ import print_function
+
 import numpy as np
 from tqdm.autonotebook import tqdm
 
 
-class ImagePatching():
-
-    def __init__(self, depth=0, width=0, height=0, depth_overlap=0, width_overlap=0, height_overlap=0):
-
+class ImagePatching:
+    def __init__(
+        self, depth=0, width=0, height=0, depth_overlap=0, width_overlap=0, height_overlap=0
+    ):
         self.total_start_position = None
         self.weight_matrix = None
         self.patches = None
@@ -17,15 +18,17 @@ class ImagePatching():
         self.height_step = height - height_overlap
 
     def split_video(self, video):
-        return [video[f:f+self.depth_step, w:w+self.width_step, h:h+self.height_step]
-                for f in range(0, video.shape[0], self.depth_step)
-                for w in range(0, video.shape[1], self.width_step)
-                for h in range(0, video.shape[2], self.height_step)]
+        return [
+            video[f : f + self.depth_step, w : w + self.width_step, h : h + self.height_step]
+            for f in range(0, video.shape[0], self.depth_step)
+            for w in range(0, video.shape[1], self.width_step)
+            for h in range(0, video.shape[2], self.height_step)
+        ]
 
     def inverse_split(self, split_video, video_size):
-        number_d_patch = int(video_size[0]/self.size[0])
-        number_w_patch = int(video_size[1]/self.size[1])
-        number_h_patch = int(video_size[2]/self.size[2])
+        number_d_patch = int(video_size[0] / self.size[0])
+        number_w_patch = int(video_size[1] / self.size[1])
+        number_h_patch = int(video_size[2] / self.size[2])
         blocks = None
         index = 0
         for d_ in range(number_d_patch):
@@ -35,7 +38,6 @@ class ImagePatching():
                 temp0 = None
 
                 for w_ in range(number_w_patch):
-
                     if temp0 is None:
                         temp0 = split_video[index]
                     else:
@@ -44,7 +46,7 @@ class ImagePatching():
                     if index <= len(split_video):
                         index = index + 1
                     else:
-                        print('finsish!!!')
+                        print("finsish!!!")
                         break
                 if temp1 is None:
                     temp1 = temp0
@@ -71,7 +73,9 @@ class ImagePatching():
 
                 list_start_position = [sRow, eRow, sColumn, eColumn]
                 self.total_start_position.append(list_start_position)
-                self.weight_matrix[sRow:eRow, sColumn:eColumn] = self.weight_matrix[sRow:eRow, sColumn:eColumn] + 1
+                self.weight_matrix[sRow:eRow, sColumn:eColumn] = (
+                    self.weight_matrix[sRow:eRow, sColumn:eColumn] + 1
+                )
                 patch = video[:, sRow:eRow, sColumn:eColumn]
                 self.patches.append(patch)
         return self.patches
@@ -85,9 +89,14 @@ class ImagePatching():
             sColumn = self.total_start_position[i_][2]
             eColumn = self.total_start_position[i_][3]
 
-            self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] = self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] + new_patch[i_]
+            self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] = (
+                self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] + new_patch[i_]
+            )
 
-        self.weight_matrix_3D = np.broadcast_to(self.weight_matrix, (self.reconstruction_video.shape[0], video_shape[1], video_shape[2]))
+        self.weight_matrix_3D = np.broadcast_to(
+            self.weight_matrix,
+            (self.reconstruction_video.shape[0], video_shape[1], video_shape[2]),
+        )
         self.reconstruction_video = np.divide(self.reconstruction_video, self.weight_matrix_3D)
         return self.reconstruction_video
 
@@ -98,8 +107,6 @@ class ImagePatching():
         sColumn = self.total_start_position[i_][2]
         eColumn = self.total_start_position[i_][3]
 
-        self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] = self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] + self.patches[i_]
-
-
-
-
+        self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] = (
+            self.reconstruction_video[:, sRow:eRow, sColumn:eColumn] + self.patches[i_]
+        )

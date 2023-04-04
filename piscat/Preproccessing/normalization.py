@@ -1,15 +1,13 @@
 import numpy as np
 from joblib import Parallel, delayed
-from PySide6 import QtGui
-from PySide6 import QtCore
-from PySide6 import QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import *
-from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from tqdm.autonotebook import tqdm
+
+from piscat.InputOutput.cpu_configurations import CPUConfigurations
 
 
 class WorkerSignals(QObject):
-
     finished = Signal()
     error = Signal(tuple)
     result = Signal(object)
@@ -17,7 +15,6 @@ class WorkerSignals(QObject):
 
 
 class Normalization(QRunnable):
-
     def __init__(self, video, flag_pn=False, flag_global=False, flag_image_specific=False):
         """
         This class contains a different version of video/image normalization methods.
@@ -88,7 +85,7 @@ class Normalization(QRunnable):
         img2 = ((self.video - mins) * (new_max - new_min)) / (maxs - mins) + new_min
         return img2
 
-    def normalized_image_specific(self, scale=255, format='uint8'):
+    def normalized_image_specific(self, scale=255, format="uint8"):
         """
         This approach normalizes all pixels in the image between 0 and 1 based on the image min and max in the video frame.
 
@@ -106,7 +103,7 @@ class Normalization(QRunnable):
             Normalize video (3D-Numpy array).
         """
         if len(self.video.shape) == 3:
-            print('\nconverting video bin_type to ' + format + '--->', end=" ")
+            print("\nconverting video bin_type to " + format + "--->", end=" ")
 
             tmp_0 = np.reshape(self.video, (self.video.shape[0], -1))
 
@@ -116,12 +113,13 @@ class Normalization(QRunnable):
 
             tmp2 = np.subtract(tmp_0, min_tmp1)
             tmp3 = np.divide(tmp2, ptp_tmp1)
-            n_video_ = scale * np.reshape(tmp3, (self.video.shape[0], self.video.shape[1], self.video.shape[2]))
+            n_video_ = scale * np.reshape(
+                tmp3, (self.video.shape[0], self.video.shape[1], self.video.shape[2])
+            )
             n_video = n_video_.astype(format)
-            print('Done')
+            print("Done")
 
         elif len(self.video.shape) == 2:
-
             min_tmp1 = self.video.min()
 
             ptp_tmp1 = self.video.ptp()
@@ -134,12 +132,12 @@ class Normalization(QRunnable):
         return n_video
 
     def normalized_image_specific_by_max(self):
-        print('\nnormalize image by max --->', end=" ")
+        print("\nnormalize image by max --->", end=" ")
         n_video = np.empty_like(self.video, dtype=np.float64)
         for i in range(self.video.shape[0]):
             img = self.video[i, :, :]
             n_video[i, :, :] = np.divide(img, img.max())
-        print('Done')
+        print("Done")
         return n_video
 
     def normalized_image(self):
@@ -181,8 +179,11 @@ class Normalization(QRunnable):
             Temporal fluctuations of all pixels after power normalization.
         """
         if roi_x is not None or roi_y is not None:
-            roi_ = {'x_min': roi_x[0], 'x_max': roi_x[1], 'y_min': roi_y[0], 'y_max': roi_y[1]}
-            temp0 = np.sum(self.video[:, roi_['x_min']:roi_['x_max'], roi_['y_min']:roi_['y_max']], axis=1)
+            roi_ = {"x_min": roi_x[0], "x_max": roi_x[1], "y_min": roi_y[0], "y_max": roi_y[1]}
+            temp0 = np.sum(
+                self.video[:, roi_["x_min"] : roi_["x_max"], roi_["y_min"] : roi_["y_max"]],
+                axis=1,
+            )
 
         else:
             roi_ = None
@@ -191,8 +192,12 @@ class Normalization(QRunnable):
         sum_pixels = np.sum(temp0, axis=1)
         if inter_flag_parallel_active is True and self.cpu.parallel_active is True:
             print("\n---start power_normalized with parallel loop---")
-            result = Parallel(n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose)(
-                delayed(self.power_normalized_kernel)(f_, roi_) for f_ in tqdm(range(self.video.shape[0])))
+            result = Parallel(
+                n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose
+            )(
+                delayed(self.power_normalized_kernel)(f_, roi_)
+                for f_ in tqdm(range(self.video.shape[0]))
+            )
             normalized_power = np.asarray(result)
             normalized_power = normalized_power * np.mean(sum_pixels)
 
@@ -201,7 +206,9 @@ class Normalization(QRunnable):
         else:
             print("\nstart power_normalized without parallel loop--->", end=" ")
             tmp_ = np.repeat(sum_pixels, self.video.shape[1] * self.video.shape[2])
-            temp2 = np.reshape(tmp_, (self.video.shape[0], self.video.shape[1], self.video.shape[2]))
+            temp2 = np.reshape(
+                tmp_, (self.video.shape[0], self.video.shape[1], self.video.shape[2])
+            )
             normalized_power = np.divide(self.video, temp2) * np.mean(sum_pixels)
             power_fluctuation_percentage = np.divide(sum_pixels, np.mean(sum_pixels)) - 1
             print("Done")
@@ -209,5 +216,7 @@ class Normalization(QRunnable):
 
     def power_normalized_kernel(self, f_, roi_):
         if roi_ is not None:
-            sum_img_pixels = np.sum(self.video[f_, roi_['x_min']:roi_['x_max'],  roi_['y_min']:roi_['y_max']])
+            sum_img_pixels = np.sum(
+                self.video[f_, roi_["x_min"] : roi_["x_max"], roi_["y_min"] : roi_["y_max"]]
+            )
         return np.divide(self.video[f_], sum_img_pixels)

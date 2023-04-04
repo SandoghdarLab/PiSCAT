@@ -1,14 +1,22 @@
 from __future__ import print_function
 
-import pandas as pd
 import json
 import os
 import sys
 
+import pandas as pd
 
-class CPUConfigurations():
 
-    def __init__(self, n_jobs=-1, backend='multiprocessing', verbose=0, parallel_active=True, threshold_for_parallel_run=None, flag_report=False):
+class CPUConfigurations:
+    def __init__(
+        self,
+        n_jobs=-1,
+        backend="multiprocessing",
+        verbose=0,
+        parallel_active=True,
+        threshold_for_parallel_run=None,
+        flag_report=False,
+    ):
         """
         This class generates a JSON file based on the parallel loop setting on the CPU that the user prefers.
         This JSON was used by other functions and methods to set hyperparameters in a parallel loop.
@@ -62,16 +70,20 @@ class CPUConfigurations():
             self.parallel_active = parallel_active
             self.threshold_for_parallel_run = threshold_for_parallel_run
 
-            setting_dic = {'n_jobs': [self.n_jobs], 'backend': [self.backend], 'verbose': [self.verbose],
-                            'parallel_active': [self.parallel_active],
-                            'threshold_for_parallel_run': [self.threshold_for_parallel_run]}
+            setting_dic = {
+                "n_jobs": [self.n_jobs],
+                "backend": [self.backend],
+                "verbose": [self.verbose],
+                "parallel_active": [self.parallel_active],
+                "threshold_for_parallel_run": [self.threshold_for_parallel_run],
+            }
 
             self.save_cpu_setting(setting_dic)
 
     def save_cpu_setting(self, setting_dic):
-        name = 'cpu_configurations.json'
+        name = "cpu_configurations.json"
         here = os.path.dirname(os.getcwd())
-        subdir = 'piscat_configuration'
+        subdir = "piscat_configuration"
 
         try:
             dr_mk = os.path.join(here, subdir)
@@ -86,26 +98,24 @@ class CPUConfigurations():
 
     def read_cpu_setting(self, flag_report=False):
         """
-         flag_report: bool
-                This flag is set if you need to see the values that will be used for CPU configuration.
+        flag_report: bool
+               This flag is set if you need to see the values that will be used for CPU configuration.
         """
         subdir = "piscat_configuration"
         here = os.path.dirname(os.getcwd())
-        filepath = os.path.join(here, subdir, 'cpu_configurations.json')
+        filepath = os.path.join(here, subdir, "cpu_configurations.json")
 
         with open(filepath) as json_file:
             cpu_setting = json.load(json_file)
 
-        self.n_jobs = cpu_setting['n_jobs']['0']
-        self.backend = cpu_setting['backend']['0']
-        self.verbose = cpu_setting['verbose']['0']
-        self.parallel_active = cpu_setting['parallel_active']['0']
-        self.threshold_for_parallel_run = cpu_setting['threshold_for_parallel_run']['0']
+        self.n_jobs = cpu_setting["n_jobs"]["0"]
+        self.backend = cpu_setting["backend"]["0"]
+        self.verbose = cpu_setting["verbose"]["0"]
+        self.parallel_active = cpu_setting["parallel_active"]["0"]
+        self.threshold_for_parallel_run = cpu_setting["threshold_for_parallel_run"]["0"]
 
         if flag_report:
             print("PiSCAT's general parallel flag is set to {}".format(self.parallel_active))
             print("\nThe number of parallel jobs is set to {}".format(self.n_jobs))
-            print("\nThe backend is set to {}".format( self.backend ))
+            print("\nThe backend is set to {}".format(self.backend))
             print("\nThe verbose is set to {}".format(self.verbose))
-
-

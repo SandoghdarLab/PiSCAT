@@ -1,17 +1,17 @@
 from __future__ import print_function
 
+import os
 from glob import glob
-from joblib import Parallel, delayed
-from piscat.InputOutput.reading_videos import video_reader
-from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from tqdm.autonotebook import tqdm
 
 import numpy as np
-import os
+from joblib import Parallel, delayed
+from tqdm.autonotebook import tqdm
+
+from piscat.InputOutput.cpu_configurations import CPUConfigurations
+from piscat.InputOutput.reading_videos import video_reader
 
 
-class Image2Video():
-
+class Image2Video:
     def __init__(self, path, file_format, width_size, height_size, image_type, reader_type):
         """
         This class reads images of a particular kind from a folder and concatenates them into a single NumPy array.
@@ -55,24 +55,27 @@ class Image2Video():
 
         self.path_list = glob(self.path)
         self.img_bin = []
-        temp = Parallel(n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose)(delayed(
-            self.parallel_read_img)(x) for x in tqdm(self.path_list))
+        temp = Parallel(
+            n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose
+        )(delayed(self.parallel_read_img)(x) for x in tqdm(self.path_list))
         self.video = np.asarray(temp)
 
     def __call__(self):
         return self.video
 
     def parallel_read_img(self, x):
-        tmp = video_reader(file_name=x, type=self.reader_type,
-                            img_width=self.width_size, img_height=self.height_size,
-                            image_type=self.type, s_frame=0, e_frame=-1)
+        tmp = video_reader(
+            file_name=x,
+            type=self.reader_type,
+            img_width=self.width_size,
+            img_height=self.height_size,
+            image_type=self.type,
+            s_frame=0,
+            e_frame=-1,
+        )
         if tmp.ndim == 3:
             return tmp[0]
         elif tmp.ndim == 2:
             return tmp
         else:
-            raise ValueError('The shape {} does not correct'.format(tmp.shape))
-
-
-
-
+            raise ValueError("The shape {} does not correct".format(tmp.shape))

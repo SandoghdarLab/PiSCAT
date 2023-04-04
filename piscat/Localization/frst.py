@@ -1,12 +1,13 @@
 from __future__ import print_function
-import numpy as np
-import math
 
+import math
 from math import sqrt
-from scipy import spatial
-from skimage.feature import peak_local_max
-from skimage import img_as_float
+
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy import spatial
+from skimage import img_as_float
+from skimage.feature import peak_local_max
 
 
 def _compute_disk_overlap(d, r1, r2):
@@ -31,11 +32,11 @@ def _compute_disk_overlap(d, r1, r2):
       Fraction of area of the overlap between the two disks.
     """
 
-    ratio1 = (d ** 2 + r1 ** 2 - r2 ** 2) / (2 * d * r1)
+    ratio1 = (d**2 + r1**2 - r2**2) / (2 * d * r1)
     ratio1 = np.clip(ratio1, -1, 1)
     acos1 = math.acos(ratio1)
 
-    ratio2 = (d ** 2 + r2 ** 2 - r1 ** 2) / (2 * d * r2)
+    ratio2 = (d**2 + r2**2 - r1**2) / (2 * d * r2)
     ratio2 = np.clip(ratio2, -1, 1)
     acos2 = math.acos(ratio2)
 
@@ -43,8 +44,7 @@ def _compute_disk_overlap(d, r1, r2):
     b = d - r2 + r1
     c = d + r2 - r1
     d = d + r2 + r1
-    area = (r1 ** 2 * acos1 + r2 ** 2 * acos2 -
-          0.5 * sqrt(abs(a * b * c * d)))
+    area = r1**2 * acos1 + r2**2 * acos2 - 0.5 * sqrt(abs(a * b * c * d))
     return area / (math.pi * (min(r1, r2) ** 2))
 
 
@@ -73,9 +73,14 @@ def _compute_sphere_overlap(d, r1, r2):
     See for example http://mathworld.wolfram.com/Sphere-SphereIntersection.html
     for more details.
     """
-    vol = (math.pi / (12 * d) * (r1 + r2 - d) ** 2 *
-           (d ** 2 + 2 * d * (r1 + r2) - 3 * (r1 ** 2 + r2 ** 2) + 6 * r1 * r2))
-    return vol / (4. / 3 * math.pi * min(r1, r2) ** 3)
+    vol = (
+        math.pi
+        / (12 * d)
+        * (r1 + r2 - d) ** 2
+        * (d**2 + 2 * d * (r1 + r2) - 3 * (r1**2 + r2**2) + 6 * r1 * r2)
+    )
+    return vol / (4.0 / 3 * math.pi * min(r1, r2) ** 3)
+
 
 def _blob_overlap(blob1, blob2):
     """Finds the overlapping area fraction between two blobs.
@@ -150,19 +155,31 @@ def _prune_blobs(blobs_array, overlap):
     if len(pairs) == 0:
         return blobs_array
     else:
-        for (i, j) in pairs:
-          blob1, blob2 = blobs_array[i], blobs_array[j]
-          if _blob_overlap(blob1, blob2) > overlap:
-            if blob1[-1] > blob2[-1]:
-              blob2[-1] = 0
-            else:
-              blob1[-1] = 0
+        for i, j in pairs:
+            blob1, blob2 = blobs_array[i], blobs_array[j]
+            if _blob_overlap(blob1, blob2) > overlap:
+                if blob1[-1] > blob2[-1]:
+                    blob2[-1] = 0
+                else:
+                    blob1[-1] = 0
 
     return np.array([b for b in blobs_array if b[-1] > 0])
 
 
-def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0, alpha=2, beta=1e-3, stdFactor=4,
-              mode='BOTH', overlap=.5, *, exclude_border=False):
+def blob_frst(
+    image,
+    min_radial=1,
+    max_radial=50,
+    radial_step=1.6,
+    threshold=2.0,
+    alpha=2,
+    beta=1e-3,
+    stdFactor=4,
+    mode="BOTH",
+    overlap=0.5,
+    *,
+    exclude_border=False,
+):
     """
     This function uses scikit-image's local maximum function to localize the PSFs using a ``_frst``.
 
@@ -219,31 +236,39 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
     # Gaussian filter requires that sequence-bin_type sigmas have same
     # dimensionality as image. This broadcasts scalar kernels
     if np.isscalar(max_radial):
-      max_radial = np.full(image.ndim, max_radial, dtype=float)
+        max_radial = np.full(image.ndim, max_radial, dtype=float)
     if np.isscalar(min_radial):
-      min_radial = np.full(image.ndim, min_radial, dtype=float)
+        min_radial = np.full(image.ndim, min_radial, dtype=float)
 
     # Convert sequence types to array
     min_radial = np.asarray(min_radial, dtype=float)
     max_radial = np.asarray(max_radial, dtype=float)
 
     # a geometric progression of standard deviations for gaussian kernels
-    radial_list = np.array([radial for radial in range(int(min_radial[0]), int(max_radial[0] + 1), int(radial_step))])
+    radial_list = np.array(
+        [radial for radial in range(int(min_radial[0]), int(max_radial[0] + 1), int(radial_step))]
+    )
 
-    frst_images = [frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode) for r in radial_list]
+    frst_images = [
+        frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode)
+        for r in radial_list
+    ]
 
     image_cube = np.stack(frst_images, axis=-1)
     image_cube = np.power(image_cube, 2)
     # image_cube = np.std(image_cube, axis=2)
 
     # local_maxima = get_local_maxima(image_cube, threshold_min)
-    local_maxima = peak_local_max(image_cube, threshold_abs=threshold,
-                                  footprint=np.ones((3,) * (image.ndim + 1)),
-                                  threshold_rel=0.0,
-                                  exclude_border=exclude_border)
+    local_maxima = peak_local_max(
+        image_cube,
+        threshold_abs=threshold,
+        footprint=np.ones((3,) * (image.ndim + 1)),
+        threshold_rel=0.0,
+        exclude_border=exclude_border,
+    )
     # Catch no peaks
     if local_maxima.size == 0:
-      return np.empty((0, 3))
+        return np.empty((0, 3))
 
     local_maxima_ = []
 
@@ -251,6 +276,3 @@ def blob_frst(image, min_radial=1, max_radial=50, radial_step=1.6, threshold=2.0
         local_maxima_.append([l_m[0], l_m[1], radial_list[l_m[2]]])
 
     return local_maxima_
-
-
-

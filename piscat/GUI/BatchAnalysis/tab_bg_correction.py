@@ -1,9 +1,9 @@
-from piscat.GUI.InputOutput import Reading
 from PySide6 import QtCore, QtWidgets
+
+from piscat.GUI.InputOutput import Reading
 
 
 class BgCorrection_GUI(QtWidgets.QWidget):
-
     output_setting_Tab_bgCorrection = QtCore.Signal(object)
     update_tab_index = QtCore.Signal(int)
 
@@ -30,7 +30,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
         self.strides = None
 
         self.resize(600, 600)
-        self.setWindowTitle('Background Correction')
+        self.setWindowTitle("Background Correction")
 
         self.combo_bg_filter = QtWidgets.QComboBox(self)
         self.combo_bg_filter.addItem("-Select the background correction methods-")
@@ -56,10 +56,9 @@ class BgCorrection_GUI(QtWidgets.QWidget):
         self.setLayout(self.grid)
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def createFirstExclusiveGroup(self):
-
         self.groupBox_update = QtWidgets.QGroupBox("Background correction Setting:")
         self.grid1 = QtWidgets.QGridLayout()
 
@@ -86,20 +85,20 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                     elif self.radio_axis_2.isChecked():
                         self.axis = 1
                     elif self.radio_axis_3.isChecked():
-                        self.axis = 'Both'
+                        self.axis = "Both"
 
                     if self.radio_cpFPN_mode.isChecked():
-                        self.mode_FPN = 'cpFPN'
+                        self.mode_FPN = "cpFPN"
                     elif self.radio_wFPN_mode.isChecked():
-                        self.mode_FPN = 'wFPN'
+                        self.mode_FPN = "wFPN"
                     elif self.radio_FFT2D_FPN_mode.isChecked():
-                        self.mode_FPN = 'fFPN'
+                        self.mode_FPN = "fFPN"
                     elif self.radio_median_FPN_mode.isChecked():
-                        self.mode_FPN = 'mFPN'
+                        self.mode_FPN = "mFPN"
                 else:
                     self.flag_FPN = False
                     self.axis = 0
-                    self.mode_FPN = 'fFPN'
+                    self.mode_FPN = "fFPN"
 
                 if self.checkbox_power_normalization.isChecked():
                     self.flag_power_normalization = True
@@ -111,16 +110,18 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                 else:
                     self.flag_hotPixels = False
 
-                if self.batch_size != '':
+                if self.batch_size != "":
                     self.batch_size = int(self.batch_size)
 
-                    self.setting_bg_correction['type_BGc'] = 'DRA'
-                    self.setting_bg_correction['mode_FPN'] = self.mode_FPN
-                    self.setting_bg_correction['Batch_size (frames)'] = self.batch_size
-                    self.setting_bg_correction['Power_Normalization'] = self.flag_power_normalization
-                    self.setting_bg_correction['FPNc'] = self.flag_FPN
-                    self.setting_bg_correction['FPNc_axis'] = self.axis
-                    self.setting_bg_correction['filter_hotPixels'] = self.flag_hotPixels
+                    self.setting_bg_correction["type_BGc"] = "DRA"
+                    self.setting_bg_correction["mode_FPN"] = self.mode_FPN
+                    self.setting_bg_correction["Batch_size (frames)"] = self.batch_size
+                    self.setting_bg_correction[
+                        "Power_Normalization"
+                    ] = self.flag_power_normalization
+                    self.setting_bg_correction["FPNc"] = self.flag_FPN
+                    self.setting_bg_correction["FPNc_axis"] = self.axis
+                    self.setting_bg_correction["filter_hotPixels"] = self.flag_hotPixels
 
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
 
@@ -132,12 +133,12 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
             elif self.combo_bg_filter.currentText() == "Spatial median Filter":
                 median_size = self.line_edit1.text()
-                if median_size != '':
-                    print("\nMedian is Applying--->", end='')
+                if median_size != "":
+                    print("\nMedian is Applying--->", end="")
                     median_size = int(self.line_edit1.text())
 
-                    self.setting_bg_correction['type_BGc'] = 'Spatial median Filter'
-                    self.setting_bg_correction['Spatial_median_kernel_size'] = median_size
+                    self.setting_bg_correction["type_BGc"] = "Spatial median Filter"
+                    self.setting_bg_correction["Spatial_median_kernel_size"] = median_size
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                     print("Done!")
                 else:
@@ -145,29 +146,29 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
             elif self.combo_bg_filter.currentText() == "Spatial gaussian Filter":
                 gaussian_sigma = self.line_edit2.text()
-                if gaussian_sigma != '':
-                    print("\nGaussian is applying--->", end='')
+                if gaussian_sigma != "":
+                    print("\nGaussian is applying--->", end="")
                     gaussian_sigma = float(self.line_edit2.text())
-                    self.setting_bg_correction['type_BGc'] = 'Spatial gaussian Filter'
-                    self.setting_bg_correction['Spatial_gaussian_sigma'] = gaussian_sigma
+                    self.setting_bg_correction["type_BGc"] = "Spatial gaussian Filter"
+                    self.setting_bg_correction["Spatial_gaussian_sigma"] = gaussian_sigma
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                     print("Done!")
                 else:
                     self.massage_filled()
 
             elif self.combo_bg_filter.currentText() == "Background correction temporal median":
-                print("\nBackground correction temporal median--->", end='')
-                self.setting_bg_correction['type_BGc'] = 'Background correction temporal median'
+                print("\nBackground correction temporal median--->", end="")
+                self.setting_bg_correction["type_BGc"] = "Background correction temporal median"
                 self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                 print("Done!")
 
             elif self.combo_bg_filter.currentText() == "Flat field (Gaussian filter)":
                 sigma = self.line_edit5.text()
-                if sigma != '':
-                    print("\nBackground correction Flat Field--->", end='')
+                if sigma != "":
+                    print("\nBackground correction Flat Field--->", end="")
                     sigma = int(self.line_edit5.text())
-                    self.setting_bg_correction['type_BGc'] = 'Flat field (Gaussian filter)'
-                    self.setting_bg_correction['Flat_field_sigma'] = sigma
+                    self.setting_bg_correction["type_BGc"] = "Flat field (Gaussian filter)"
+                    self.setting_bg_correction["Flat_field_sigma"] = sigma
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                     print("Done!")
                 else:
@@ -175,8 +176,10 @@ class BgCorrection_GUI(QtWidgets.QWidget):
 
             elif self.combo_bg_filter.currentText() == "Flat field (mean background subtraction)":
                 if self.original_video_bg is not None:
-                    print("\nBackground correction Flat Field back ground--->", end='')
-                    self.setting_bg_correction['type_BGc'] = 'Flat field (mean background subtraction)"'
+                    print("\nBackground correction Flat Field back ground--->", end="")
+                    self.setting_bg_correction[
+                        "type_BGc"
+                    ] = 'Flat field (mean background subtraction)"'
                     self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
                     print("Done!")
 
@@ -187,7 +190,7 @@ class BgCorrection_GUI(QtWidgets.QWidget):
                 self.msg_box.setWindowTitle("Warning!")
                 self.msg_box.setText("Continuing without using any filter!")
                 self.msg_box.exec_()
-                self.setting_bg_correction['type_BGc'] = 'RAW'
+                self.setting_bg_correction["type_BGc"] = "RAW"
                 self.output_setting_Tab_bgCorrection.emit(self.setting_bg_correction)
 
             self.update_tab_index.emit(2)
@@ -225,11 +228,13 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.groupBatchSize = QtWidgets.QGroupBox("Batch size:")
 
             self.le_batchSize = QtWidgets.QLineEdit()
-            self.le_batchSize.setPlaceholderText('radius')
+            self.le_batchSize.setPlaceholderText("radius")
             self.le_batchSize_label = QtWidgets.QLabel("Batch size (frames):")
             self.le_batchSize.setFixedWidth(50)
 
-            self.checkbox_power_normalization = QtWidgets.QCheckBox("Laser power normalization", self)
+            self.checkbox_power_normalization = QtWidgets.QCheckBox(
+                "Laser power normalization", self
+            )
             self.checkbox_hotPixels = QtWidgets.QCheckBox("Hot pixels correction", self)
 
             grid_batch = QtWidgets.QGridLayout()
@@ -287,7 +292,6 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.grid1.addWidget(self.groupBox_FPNc, 2, 0)
 
         elif self.combo_bg_filter.currentText() == "Spatial median Filter":
-
             while self.flag_remove_box:
                 self.remove_widgets()
 
@@ -301,7 +305,6 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.grid1.addWidget(self.line_edit1, 2, 1)
 
         elif self.combo_bg_filter.currentText() == "Spatial gaussian Filter":
-
             while self.flag_remove_box:
                 self.remove_widgets()
 
@@ -315,14 +318,12 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.grid1.addWidget(self.line_edit2, 2, 1)
 
         elif self.combo_bg_filter.currentText() == "Background correction temporal median":
-
             while self.flag_remove_box:
                 self.remove_widgets()
 
             self.flag_remove_box = True
 
         elif self.combo_bg_filter.currentText() == "Flat field (Gaussian filter)":
-
             while self.flag_remove_box:
                 self.remove_widgets()
 
@@ -336,7 +337,6 @@ class BgCorrection_GUI(QtWidgets.QWidget):
             self.grid1.addWidget(self.line_edit5, 2, 1)
 
         elif self.combo_bg_filter.currentText() == "Flat field (mean background subtraction)":
-
             while self.flag_remove_box:
                 self.remove_widgets()
 

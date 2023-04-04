@@ -1,14 +1,15 @@
 from __future__ import print_function
 
+import os
+
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 from matplotlib import pyplot as plt
-import matplotlib.cm as cm
 from matplotlib.animation import FuncAnimation
 
 
-def plot3(X, Y, Z, scale='(um)', title=''):
+def plot3(X, Y, Z, scale="(um)", title=""):
     """
     3D localization plotting
 
@@ -31,19 +32,19 @@ def plot3(X, Y, Z, scale='(um)', title=''):
 
     """
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    ax = fig.add_subplot(111, projection="3d")
 
     ax.scatter(X, Y, Z)
 
-    ax.set_xlabel('X' + scale)
-    ax.set_ylabel('Y' + scale)
-    ax.set_zlabel('Z' + scale)
+    ax.set_xlabel("X" + scale)
+    ax.set_ylabel("Y" + scale)
+    ax.set_zlabel("Z" + scale)
 
     plt.title(title)
     plt.show()
 
 
-def plot2df(df_PSFs, pixel_size=1, scale='(um)', title='', flag_label=False):
+def plot2df(df_PSFs, pixel_size=1, scale="(um)", title="", flag_label=False):
     """
     2D localization plotting with color code for each particle.
 
@@ -65,11 +66,13 @@ def plot2df(df_PSFs, pixel_size=1, scale='(um)', title='', flag_label=False):
 
 
     """
-    groups = df_PSFs.groupby('particle')
+    groups = df_PSFs.groupby("particle")
 
     fig, ax = plt.subplots()
     for name, group in groups:
-        ax.plot(group.x*pixel_size, group.y*pixel_size, marker='.', linestyle='', ms=3, label=name)
+        ax.plot(
+            group.x * pixel_size, group.y * pixel_size, marker=".", linestyle="", ms=3, label=name
+        )
     if flag_label:
         ax.legend()
     ax.set_xlabel(scale)
@@ -78,7 +81,7 @@ def plot2df(df_PSFs, pixel_size=1, scale='(um)', title='', flag_label=False):
     plt.show()
 
 
-def plot_bright_dark_psf(df_bright, df_dark, unit='nm'):
+def plot_bright_dark_psf(df_bright, df_dark, unit="nm"):
     """
     Plot heatmap of particle localization.
 
@@ -93,15 +96,15 @@ def plot_bright_dark_psf(df_bright, df_dark, unit='nm'):
     unit: str
         The axis unit.
     """
-    particle_ID_bright = df_bright['particle'].tolist()
-    particle_x_bright = df_bright['x'].tolist()
-    particle_y_bright = df_bright['y'].tolist()
-    particle_size_bright = df_bright['bubble_size'].tolist()
+    particle_ID_bright = df_bright["particle"].tolist()
+    particle_x_bright = df_bright["x"].tolist()
+    particle_y_bright = df_bright["y"].tolist()
+    particle_size_bright = df_bright["bubble_size"].tolist()
 
-    particle_ID_dark = df_dark['particle'].tolist()
-    particle_x_dark = df_dark['x'].tolist()
-    particle_y_dark = df_dark['y'].tolist()
-    particle_size_dark = df_dark['bubble_size'].tolist()
+    particle_ID_dark = df_dark["particle"].tolist()
+    particle_x_dark = df_dark["x"].tolist()
+    particle_y_dark = df_dark["y"].tolist()
+    particle_size_dark = df_dark["bubble_size"].tolist()
 
     particle_ID_bright_ = [str(l_b) for l_b in particle_ID_bright]
     particle_ID_dark_ = [str(l_b) for l_b in particle_ID_dark]
@@ -113,21 +116,26 @@ def plot_bright_dark_psf(df_bright, df_dark, unit='nm'):
 
     fig = plt.figure()
     ax1 = plt.subplot(1, 1, 1)
-    line1, = plt.plot(particle_x_bright, particle_y_bright, 'r.', markersize=15)
+    (line1,) = plt.plot(particle_x_bright, particle_y_bright, "r.", markersize=15)
 
     ax2 = ax1.twinx()
-    line2, = ax2.plot(particle_x_dark, particle_y_dark, 'b.', markersize=15)
-    ax2.tick_params(axis='y', labelcolor='black')
-    
-    ax1.set_xlabel('X-Position(' + unit + ')')
-    ax1.set_ylabel('Y-Position(' + unit + ')')
-    ax2.set_ylabel('Y-Position(' + unit + ')')
+    (line2,) = ax2.plot(particle_x_dark, particle_y_dark, "b.", markersize=15)
+    ax2.tick_params(axis="y", labelcolor="black")
+
+    ax1.set_xlabel("X-Position(" + unit + ")")
+    ax1.set_ylabel("Y-Position(" + unit + ")")
+    ax2.set_ylabel("Y-Position(" + unit + ")")
 
     annots = []
     for ax in [ax1, ax2]:
-        annot = ax1.annotate("", xy=(0, 0), xytext=(-20, 20), textcoords="offset points",
-                             bbox=dict(boxstyle="round", fc="w", alpha=0.4),
-                             arrowprops=dict(arrowstyle="->"))
+        annot = ax1.annotate(
+            "",
+            xy=(0, 0),
+            xytext=(-20, 20),
+            textcoords="offset points",
+            bbox=dict(boxstyle="round", fc="w", alpha=0.4),
+            arrowprops=dict(arrowstyle="->"),
+        )
         annot.set_visible(True)
         annots.append(annot)
 
@@ -141,7 +149,6 @@ def plot_bright_dark_psf(df_bright, df_dark, unit='nm'):
         annot.set_text(text)
 
     def hover(event):
-
         if event.inaxes in [ax1, ax2]:
             for ax in [ax1, ax2]:
                 cont, ind = line_dic[ax].contains(event)
@@ -180,15 +187,15 @@ def plot_bright_dark_psf_inTime(df_bright, df_dark, time_delay=0.1, dir_name=Non
     dir_name: str
         You can save time slap frames if you specify a save path.
     """
-    particle_ID_bright = df_bright['particle'].tolist()
-    particle_x_bright = df_bright['x'].tolist()
-    particle_y_bright = df_bright['y'].tolist()
-    particle_size_bright = df_bright['bubble_size'].tolist()
+    particle_ID_bright = df_bright["particle"].tolist()
+    particle_x_bright = df_bright["x"].tolist()
+    particle_y_bright = df_bright["y"].tolist()
+    particle_size_bright = df_bright["bubble_size"].tolist()
 
-    particle_ID_dark = df_dark['particle'].tolist()
-    particle_x_dark = df_dark['x'].tolist()
-    particle_y_dark = df_dark['y'].tolist()
-    particle_size_dark = df_dark['bubble_size'].tolist()
+    particle_ID_dark = df_dark["particle"].tolist()
+    particle_x_dark = df_dark["x"].tolist()
+    particle_y_dark = df_dark["y"].tolist()
+    particle_size_dark = df_dark["bubble_size"].tolist()
 
     if len(particle_ID_bright) > len(particle_ID_dark):
         diff_len = len(particle_ID_bright) - len(particle_ID_dark)
@@ -207,28 +214,41 @@ def plot_bright_dark_psf_inTime(df_bright, df_dark, time_delay=0.1, dir_name=Non
 
     fig, ax = plt.subplots(figsize=(5, 5))
     for i_ in range(len(particle_size_bright)):
-
-        ax.scatter(particle_x_bright[i_], particle_y_bright[i_], label='1', color='blue', s=100, alpha=0.5, marker='o')
-        ax.scatter(particle_x_dark[i_], particle_y_dark[i_], label='2', color='red', s=100, alpha=0.5, marker='o')
+        ax.scatter(
+            particle_x_bright[i_],
+            particle_y_bright[i_],
+            label="1",
+            color="blue",
+            s=100,
+            alpha=0.5,
+            marker="o",
+        )
+        ax.scatter(
+            particle_x_dark[i_],
+            particle_y_dark[i_],
+            label="2",
+            color="red",
+            s=100,
+            alpha=0.5,
+            marker="o",
+        )
 
         ax.set_xlim(-0.1, 5.1)
         ax.set_ylim(-0.1, 5.1)
 
         if dir_name is not None:
-            s_path = os.path.join(dir_name, 'bright_dark_psfs_frame' + str(i_) + '.png')
+            s_path = os.path.join(dir_name, "bright_dark_psfs_frame" + str(i_) + ".png")
             plt.savefig(s_path)
         else:
             plt.pause(time_delay)
     plt.show()
 
 
-def plot_histogram(data, title, fc='C1', ec='k'):
-
+def plot_histogram(data, title, fc="C1", ec="k"):
     plt.figure()
     plt.hist(data, alpha=0.7, bins=None, density=False, stacked=True, fc=fc, ec=ec)
-    plt.title(title + '\nMedian: ' + str(np.median(data)))
-    plt.ylabel('#Counts', fontsize=18)
-    plt.xlabel('Length of linking', fontsize=18)
+    plt.title(title + "\nMedian: " + str(np.median(data)))
+    plt.ylabel("#Counts", fontsize=18)
+    plt.xlabel("Length of linking", fontsize=18)
     plt.tight_layout()
     plt.show()
-

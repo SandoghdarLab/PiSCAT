@@ -1,7 +1,7 @@
-from piscat.Localization import particle_localization, localization_filtering
-from PySide6 import QtGui, QtCore, QtWidgets
-
 import pandas as pd
+from PySide6 import QtCore, QtGui, QtWidgets
+
+from piscat.Localization import localization_filtering, particle_localization
 
 
 class Localization_GUI(QtWidgets.QWidget):
@@ -42,7 +42,7 @@ class Localization_GUI(QtWidgets.QWidget):
         self.flag_remove_box = True
         self.mode = None
         self.resize(300, 300)
-        self.setWindowTitle('2D Localization')
+        self.setWindowTitle("2D Localization")
 
         self.next = QtWidgets.QPushButton("Next")
         self.next.clicked.connect(self.update_tab)
@@ -56,14 +56,19 @@ class Localization_GUI(QtWidgets.QWidget):
         self.btn_localizationUpdate.clicked.connect(self.do_localization)
         self.btn_localizationUpdate.setFixedWidth(150)
 
-        self.btn_filtering = QtWidgets.QPushButton('Filtering', self)
+        self.btn_filtering = QtWidgets.QPushButton("Filtering", self)
         self.btn_filtering.clicked.connect(self.do_Filtering)
         self.btn_filtering.setIconSize(QtCore.QSize(24, 24))
         self.btn_filtering.setMaximumSize(100, 70)
 
         self.mode_list = {"Bright PSF": "Bright", "Dark PSF": "Dark", "Bright & Dark PSF": "BOTH"}
-        self.method_list = {"Difference of Gaussian": "dog", "Laplacian of Gaussian": "log", "Determinant of Hessian": "doh",
-                            "Radial Symmetry": "frst_one_psf", 'RVT': 'RVT'}
+        self.method_list = {
+            "Difference of Gaussian": "dog",
+            "Laplacian of Gaussian": "log",
+            "Determinant of Hessian": "doh",
+            "Radial Symmetry": "frst_one_psf",
+            "RVT": "RVT",
+        }
 
         self.output_setting_Tab_Localization_internal.connect(self.update_setting)
 
@@ -86,7 +91,7 @@ class Localization_GUI(QtWidgets.QWidget):
         self.setLayout(self.grid)
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def createFirstExclusiveGroup(self):
         groupBox = QtWidgets.QGroupBox("PSF Localization")
@@ -97,7 +102,6 @@ class Localization_GUI(QtWidgets.QWidget):
         return groupBox
 
     def createSecondExclusiveGroup(self):
-
         self.le_win_size = QtWidgets.QLineEdit()
         self.le_win_size.setPlaceholderText("win_size")
         self.le_win_size_label = QtWidgets.QLabel("Neighborhood size (px):")
@@ -114,7 +118,6 @@ class Localization_GUI(QtWidgets.QWidget):
         return self.groupBox_fine_localization
 
     def createThirdExclusiveGroup(self):
-
         self.groupBox_update = QtWidgets.QGroupBox("Update:")
 
         self.grid_applyLocalization = QtWidgets.QGridLayout()
@@ -125,7 +128,6 @@ class Localization_GUI(QtWidgets.QWidget):
         return self.groupBox_update
 
     def createFourthExclusiveGroup(self):
-
         self.checkbox_filter_double_PSF = QtWidgets.QCheckBox("Filter dense PSFs", self)
         self.checkbox_filter_side_lobes_PSF = QtWidgets.QCheckBox("Filter side lobes PSFs", self)
         self.checkbox_filter_asymmetry_PSF = QtWidgets.QCheckBox("Filter asymmetry PSFs", self)
@@ -155,14 +157,13 @@ class Localization_GUI(QtWidgets.QWidget):
     def add_line_crappy_frames(self):
         if self.checkbox_crappy_frames.isChecked():
             self.line_edit_crappy = QtWidgets.QLineEdit(self)
-            self.line_edit_crappy.setPlaceholderText('Max number PSFs')
+            self.line_edit_crappy.setPlaceholderText("Max number PSFs")
             self.line_edit_crappy_label = QtWidgets.QLabel("Max number PSFs:")
 
             self.grid_filters.addWidget(self.line_edit_crappy_label, 0, 1)
             self.grid_filters.addWidget(self.line_edit_crappy, 0, 2)
 
         if not self.checkbox_crappy_frames.isChecked():
-
             for i_ in range(1, 5, 1):
                 layout = self.grid_filters.itemAtPosition(0, i_)
                 if layout is not None:
@@ -172,7 +173,7 @@ class Localization_GUI(QtWidgets.QWidget):
     def add_line_asymmetry_PSF(self):
         if self.checkbox_filter_asymmetry_PSF.isChecked():
             self.line_asymmetry_PSF = QtWidgets.QLineEdit(self)
-            self.line_asymmetry_PSF.setPlaceholderText('Scale based on sigma size')
+            self.line_asymmetry_PSF.setPlaceholderText("Scale based on sigma size")
             self.line_asymmetry_PSF_label = QtWidgets.QLabel("Win_size (px):")
 
             self.line_asymmetry_PSF_Thr = QtWidgets.QLineEdit(self)
@@ -187,7 +188,6 @@ class Localization_GUI(QtWidgets.QWidget):
             self.grid_filters.addWidget(self.line_asymmetry_PSF_Thr, 3, 4)
 
         if not self.checkbox_filter_asymmetry_PSF.isChecked():
-
             for i_ in range(1, 5, 1):
                 layout = self.grid_filters.itemAtPosition(3, i_)
                 if layout is not None:
@@ -197,14 +197,13 @@ class Localization_GUI(QtWidgets.QWidget):
     def add_line_2DFitting(self):
         if self.checkbox_2DFitting.isChecked():
             self.line_2DFitting = QtWidgets.QLineEdit(self)
-            self.line_2DFitting.setPlaceholderText('Scale based on sigma size')
+            self.line_2DFitting.setPlaceholderText("Scale based on sigma size")
             self.line_2DFitting_label = QtWidgets.QLabel("Win_size (px):")
 
             self.grid_filters.addWidget(self.line_2DFitting_label, 4, 1)
             self.grid_filters.addWidget(self.line_2DFitting, 4, 2)
 
         if not self.checkbox_2DFitting.isChecked():
-
             for i_ in range(1, 5, 1):
                 layout = self.grid_filters.itemAtPosition(4, i_)
                 if layout is not None:
@@ -212,9 +211,7 @@ class Localization_GUI(QtWidgets.QWidget):
                     self.grid_filters.removeItem(layout)
 
     def on_select(self):
-
         if self.combo.currentText() == "Difference of Gaussian":
-
             while self.flag_remove_box:
                 self.remove_extra_box()
 
@@ -224,7 +221,6 @@ class Localization_GUI(QtWidgets.QWidget):
             self.create_como_values()
 
         elif self.combo.currentText() == "Laplacian of Gaussian":
-
             while self.flag_remove_box:
                 self.remove_extra_box()
 
@@ -234,7 +230,6 @@ class Localization_GUI(QtWidgets.QWidget):
             self.create_como_values()
 
         elif self.combo.currentText() == "Determinant of Hessian":
-
             while self.flag_remove_box:
                 self.remove_extra_box()
 
@@ -243,7 +238,6 @@ class Localization_GUI(QtWidgets.QWidget):
             self.create_como_values()
 
         elif self.combo.currentText() == "Radial Symmetry":
-
             while self.flag_remove_box:
                 self.remove_extra_box()
 
@@ -251,11 +245,12 @@ class Localization_GUI(QtWidgets.QWidget):
             self.combo_item = self.method_list[self.combo.currentText()]
             self.msg_box2 = QtWidgets.QMessageBox()
             self.msg_box2.setWindowTitle("Warning!")
-            self.msg_box2.setText("This function only works when you have only one PSF in each frame!")
+            self.msg_box2.setText(
+                "This function only works when you have only one PSF in each frame!"
+            )
             self.msg_box2.exec_()
 
         elif self.combo.currentText() == "RVT":
-
             while self.flag_remove_box:
                 self.remove_extra_box()
 
@@ -419,8 +414,10 @@ class Localization_GUI(QtWidgets.QWidget):
 
     def get_localization_method_parameters(self):
         try:
-            if self.combo.currentText() != "Radial Symmetry" and self.combo.currentText() != "RVT":
-
+            if (
+                self.combo.currentText() != "Radial Symmetry"
+                and self.combo.currentText() != "RVT"
+            ):
                 self.min_sigma = eval(self.le_1.text())
                 self.max_sigma = eval(self.le_2.text())
                 self.sigma_ratio = float(self.le_3.text())
@@ -432,38 +429,38 @@ class Localization_GUI(QtWidgets.QWidget):
                 self.max_radial = eval(self.le_2.text())
 
                 if self.radio_kind_basic.isChecked():
-                    self.rvt_kind = 'basic'
+                    self.rvt_kind = "basic"
                 elif self.radio_kind_normalized.isChecked():
-                    self.rvt_kind = 'normalized'
+                    self.rvt_kind = "normalized"
 
                 self.highpass_size = self.le_3.text()
-                if self.highpass_size == '':
+                if self.highpass_size == "":
                     self.highpass_size = None
                 else:
                     self.highpass_size = float(self.highpass_size)
 
                 self.upsample = self.le_4.text()
-                if self.upsample == '':
+                if self.upsample == "":
                     self.upsample = 1
                 else:
                     self.upsample = int(self.upsample)
 
                 self.rweights = self.le_5.text()
-                if self.rweights == '':
+                if self.rweights == "":
                     self.rweights = None
                 else:
                     self.rweights = eval(self.rweights)
 
                 self.coarse_factor = self.le_6.text()
-                if self.coarse_factor == '':
+                if self.coarse_factor == "":
                     self.coarse_factor = 1
                 else:
                     self.coarse_factor = float(self.coarse_factor)
 
                 if self.radio_coarse_mode_add.isChecked():
-                    self.coarse_mode = 'add'
+                    self.coarse_mode = "add"
                 elif self.radio_coarse_mode_skip.isChecked():
-                    self.coarse_mode = 'skip'
+                    self.coarse_mode = "skip"
 
                 if self.radio_pad_mode_constant.isChecked():
                     self.pad_mode = "constant"
@@ -474,21 +471,27 @@ class Localization_GUI(QtWidgets.QWidget):
                 elif self.radio_pad_mode_fast.isChecked():
                     self.pad_mode = "fast"
 
-                if self.le_7.text() == '':
+                if self.le_7.text() == "":
                     self.threshold = 0
                 else:
                     self.threshold = float(self.le_7.text())
 
-            if self.groupBox_fine_localization.isChecked() and self.combo.currentText() != "Radial Symmetry":
-
+            if (
+                self.groupBox_fine_localization.isChecked()
+                and self.combo.currentText() != "Radial Symmetry"
+            ):
                 self.win_size = int(self.le_win_size.text())
 
-            elif self.combo.currentText() == "Radial Symmetry" and self.groupBox_fine_localization.isChecked():
-
+            elif (
+                self.combo.currentText() == "Radial Symmetry"
+                and self.groupBox_fine_localization.isChecked()
+            ):
                 self.win_size = int(self.le_win_size.text())
 
-            elif self.combo.currentText() == "Radial Symmetry" and not self.groupBox_fine_localization.isChecked():
-
+            elif (
+                self.combo.currentText() == "Radial Symmetry"
+                and not self.groupBox_fine_localization.isChecked()
+            ):
                 pass
 
             self.empty_value_box_flag = True
@@ -546,14 +549,17 @@ class Localization_GUI(QtWidgets.QWidget):
         try:
             del r[key]
         except:
-            print('there is no key with the name ' + key)
+            print("there is no key with the name " + key)
         return r
 
     @QtCore.Slot()
     def do_localization(self):
         layout_combo = self.grid_Localization.itemAtPosition(0, 1)
         if layout_combo is not None:
-            if self.combo.currentText() == "-Select the method-" or self.combo_mode.currentText() == "-Select the Mode-":
+            if (
+                self.combo.currentText() == "-Select the method-"
+                or self.combo_mode.currentText() == "-Select the Mode-"
+            ):
                 self.msg_box1 = QtWidgets.QMessageBox()
                 self.msg_box1.setWindowTitle("Warning!")
                 self.msg_box1.setText("Please select one of the methods and modes.")
@@ -573,107 +579,117 @@ class Localization_GUI(QtWidgets.QWidget):
                 flag_run = True
 
         if flag_run:
-                self.get_localization_method_parameters()
-                if self.empty_value_box_flag:
+            self.get_localization_method_parameters()
+            if self.empty_value_box_flag:
+                self.setting_localization["function"] = self.combo_item
+                self.setting_localization["min_sigma"] = self.min_sigma
+                self.setting_localization["max_sigma"] = self.max_sigma
+                self.setting_localization["sigma_ratio"] = self.sigma_ratio
+                self.setting_localization["threshold_min"] = self.threshold
+                self.setting_localization["overlap"] = self.overlap
+                self.setting_localization["mode"] = self.mode
+                self.setting_localization["min_radial"] = self.min_radial
+                self.setting_localization["max_radial"] = self.max_radial
+                self.setting_localization["highpass_size"] = self.highpass_size
+                self.setting_localization["upsample"] = self.upsample
+                self.setting_localization["rweights"] = self.rweights
+                self.setting_localization["coarse_factor"] = self.coarse_factor
+                self.setting_localization["coarse_mode"] = self.coarse_mode
+                self.setting_localization["pad_mode"] = self.pad_mode
+                self.setting_localization["rvt_kind"] = self.rvt_kind
 
-                    self.setting_localization['function'] = self.combo_item
-                    self.setting_localization['min_sigma'] = self.min_sigma
-                    self.setting_localization['max_sigma'] = self.max_sigma
-                    self.setting_localization['sigma_ratio'] = self.sigma_ratio
-                    self.setting_localization['threshold_min'] = self.threshold
-                    self.setting_localization['overlap'] = self.overlap
-                    self.setting_localization['mode'] = self.mode
-                    self.setting_localization['min_radial'] = self.min_radial
-                    self.setting_localization['max_radial'] = self.max_radial
-                    self.setting_localization['highpass_size'] = self.highpass_size
-                    self.setting_localization['upsample'] = self.upsample
-                    self.setting_localization['rweights'] = self.rweights
-                    self.setting_localization['coarse_factor'] = self.coarse_factor
-                    self.setting_localization['coarse_mode'] = self.coarse_mode
-                    self.setting_localization['pad_mode'] = self.pad_mode
-                    self.setting_localization['rvt_kind'] = self.rvt_kind
-
-                    self.output_setting_Tab_Localization_internal.emit([self.setting_localization, 'localization'])
-                    self.empty_value_box_flag = False
+                self.output_setting_Tab_Localization_internal.emit(
+                    [self.setting_localization, "localization"]
+                )
+                self.empty_value_box_flag = False
 
     @QtCore.Slot()
     def do_fineLocalization(self):
         if self.groupBox_fine_localization.isChecked():
             self.get_localization_method_parameters()
             if self.empty_value_box_flag:
-
-                self.setting_localization['Flag_fine_localization'] = True
-                self.setting_localization['Fine_localization_neighborhood_size (px)'] = self.win_size
-                self.output_setting_Tab_Localization_internal.emit([self.setting_localization, 'fineLocalization'])
+                self.setting_localization["Flag_fine_localization"] = True
+                self.setting_localization[
+                    "Fine_localization_neighborhood_size (px)"
+                ] = self.win_size
+                self.output_setting_Tab_Localization_internal.emit(
+                    [self.setting_localization, "fineLocalization"]
+                )
                 self.empty_value_box_flag = False
 
         else:
-            self.setting_localization['Flag_fine_localization'] = False
-            self.setting_localization['Fine_localization_neighborhood_size (px)'] = None
-            self.output_setting_Tab_Localization_internal.emit([self.setting_localization, 'fineLocalization'])
+            self.setting_localization["Flag_fine_localization"] = False
+            self.setting_localization["Fine_localization_neighborhood_size (px)"] = None
+            self.output_setting_Tab_Localization_internal.emit(
+                [self.setting_localization, "fineLocalization"]
+            )
 
     @QtCore.Slot()
     def do_Filtering(self):
-
         if self.checkbox_crappy_frames.isChecked():
             self.get_values_crappy_frames()
             if self.empty_value_box_flag:
-                self.setting_localization['outlier_frames_filter'] = True
-                self.setting_localization['Outlier_frames_filter_max_number_PSFs'] = self.crappy_thr
+                self.setting_localization["outlier_frames_filter"] = True
+                self.setting_localization[
+                    "Outlier_frames_filter_max_number_PSFs"
+                ] = self.crappy_thr
                 self.empty_value_box_flag = False
             else:
-                self.setting_localization['outlier_frames_filter'] = False
-                self.setting_localization['Outlier_frames_filter_max_number_PSFs'] = None
+                self.setting_localization["outlier_frames_filter"] = False
+                self.setting_localization["Outlier_frames_filter_max_number_PSFs"] = None
 
         if self.checkbox_filter_double_PSF.isChecked():
-            self.setting_localization['Dense_Filter'] = True
+            self.setting_localization["Dense_Filter"] = True
         else:
-            self.setting_localization['Dense_Filter'] = False
+            self.setting_localization["Dense_Filter"] = False
 
         if self.checkbox_filter_side_lobes_PSF.isChecked():
-            self.setting_localization['Side_lobes_Filter'] = True
+            self.setting_localization["Side_lobes_Filter"] = True
         else:
-            self.setting_localization['Side_lobes_Filter'] = False
+            self.setting_localization["Side_lobes_Filter"] = False
 
         if self.checkbox_2DFitting.isChecked():
             self.get_values_2DFitting()
             if self.empty_value_box_flag:
-                self.setting_localization['Flag_fit_2DGaussian'] = True
-                self.setting_localization['Fit_2DGaussian_win_size (px)'] = self.scale
+                self.setting_localization["Flag_fit_2DGaussian"] = True
+                self.setting_localization["Fit_2DGaussian_win_size (px)"] = self.scale
                 self.empty_value_box_flag = False
         else:
-            self.setting_localization['Flag_fit_2DGaussian'] = False
-            self.setting_localization['Fit_2DGaussian_win_size (px)'] = None
+            self.setting_localization["Flag_fit_2DGaussian"] = False
+            self.setting_localization["Fit_2DGaussian_win_size (px)"] = None
 
         if self.checkbox_filter_asymmetry_PSF.isChecked() and self.checkbox_2DFitting.isChecked():
             self.get_values_asymmetry_filtering()
             if self.empty_value_box_flag:
-
-                self.setting_localization['symmetric_PSFs_Filter'] = True
-                self.setting_localization['Asymmetry_PSFs_filtering_threshold'] = self.thr_sigma
-                self.setting_localization['Asymmetry_PSFs_filtering_win_size (px)'] = self.scale
+                self.setting_localization["symmetric_PSFs_Filter"] = True
+                self.setting_localization["Asymmetry_PSFs_filtering_threshold"] = self.thr_sigma
+                self.setting_localization["Asymmetry_PSFs_filtering_win_size (px)"] = self.scale
                 self.empty_value_box_flag = False
         else:
-            self.setting_localization['symmetric_PSFs_Filter'] = False
-            self.setting_localization['Asymmetry_PSFs_filtering_threshold'] = None
-            self.setting_localization['Asymmetry_PSFs_filtering_win_size (px)'] = None
+            self.setting_localization["symmetric_PSFs_Filter"] = False
+            self.setting_localization["Asymmetry_PSFs_filtering_threshold"] = None
+            self.setting_localization["Asymmetry_PSFs_filtering_win_size (px)"] = None
 
-        self.output_setting_Tab_Localization_internal.emit([self.setting_localization, 'sfilter'])
+        self.output_setting_Tab_Localization_internal.emit([self.setting_localization, "sfilter"])
 
     def update_setting(self, data_in):
         setting = data_in[0]
         key = data_in[1]
 
-        if key == 'localization':
+        if key == "localization":
             self.flag_localization_setting = True
-        elif key == 'fineLocalization':
+        elif key == "fineLocalization":
             self.flag_fineLocalization_setting = True
-        elif key == 'sfilter':
+        elif key == "sfilter":
             self.flag_sfilter_setting = True
 
     @QtCore.Slot()
     def update_tab(self):
-        if self.flag_localization_setting and self.flag_fineLocalization_setting and self.flag_sfilter_setting:
+        if (
+            self.flag_localization_setting
+            and self.flag_fineLocalization_setting
+            and self.flag_sfilter_setting
+        ):
             self.update_tab_index.emit(3)
             self.output_setting_Tab_Localization_external.emit(self.setting_localization)
         else:
@@ -684,4 +700,3 @@ class Localization_GUI(QtWidgets.QWidget):
 
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()
-

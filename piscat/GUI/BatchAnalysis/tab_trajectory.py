@@ -1,7 +1,7 @@
+from PySide6 import QtCore, QtGui, QtWidgets
+
 from piscat.Trajectory import particle_linking, temporal_filtering
 from piscat.Visualization import plot, plot_histogram
-
-from PySide6 import QtGui, QtCore, QtWidgets
 
 
 class Tracking_GUI(QtWidgets.QWidget):
@@ -23,7 +23,7 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.empty_value_optional_box_flag_2 = False
 
         self.resize(300, 300)
-        self.setWindowTitle('PSFs Tracking')
+        self.setWindowTitle("PSFs Tracking")
 
         self.btn_filterLinking = QtWidgets.QPushButton("Next")
         self.btn_filterLinking.setFixedWidth(120)
@@ -48,10 +48,9 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.setLayout(self.grid)
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def createFirstExclusiveGroup(self):
-
         groupBox = QtWidgets.QGroupBox("Linking")
         self.checkbox_sorting_based_lenght = QtWidgets.QCheckBox("Sorting", self)
 
@@ -76,12 +75,11 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.get_values_1()
         self.get_values_2()
         if self.empty_value_box_flag:
-            self.setting_tracking['Memory (frame)'] = self.memory
-            self.setting_tracking['Neighborhood_size (px)'] = self.search_range
-            self.setting_tracking['Minimum_temporal_length (frame)'] = self.temporal_length
+            self.setting_tracking["Memory (frame)"] = self.memory
+            self.setting_tracking["Neighborhood_size (px)"] = self.search_range
+            self.setting_tracking["Minimum_temporal_length (frame)"] = self.temporal_length
             self.output_setting_Tab_tracking.emit(self.setting_tracking)
             self.update_tab_index.emit(4)
-
 
     def get_values_1(self):
         try:

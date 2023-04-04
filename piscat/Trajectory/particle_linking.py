@@ -1,13 +1,13 @@
 from __future__ import print_function
 
+import pandas as pd
+import trackpy as tp
+from PySide6.QtCore import *
+from tqdm.autonotebook import tqdm
+
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
 from piscat.Localization import data_handeling
 
-from tqdm.autonotebook import tqdm
-from PySide6.QtCore import *
-
-import trackpy as tp
-import pandas as pd
 
 class WorkerSignals(QObject):
     updateProgress = Signal(int)
@@ -15,17 +15,15 @@ class WorkerSignals(QObject):
     finished = Signal()
 
 
-class Linking():
-
-
+class Linking:
     def __init__(self):
         """
-        To obtain the temporal activity of each iPSF, we use the Trackpy packages' algorithm.
+         To obtain the temporal activity of each iPSF, we use the Trackpy packages' algorithm.
 
-       References
-       ----------
-       [1] http://soft-matter.github.io/trackpy/v0.4.2/
-       """
+        References
+        ----------
+        [1] http://soft-matter.github.io/trackpy/v0.4.2/
+        """
 
         self.cpu = CPUConfigurations()
 
@@ -69,12 +67,12 @@ class Linking():
             The sort version of data frame contains PSFs locations(x, y, frame, sigma, particle, ...)
 
         """
-        his_all_particles = df_PSFs['particle'].value_counts()
+        his_all_particles = df_PSFs["particle"].value_counts()
         index_particles = his_all_particles.index
         total_sort_df_PSFs = None
 
         for index_ in tqdm(index_particles):
-            sort_df_PSFs = df_PSFs.loc[df_PSFs['particle'] == index_]
+            sort_df_PSFs = df_PSFs.loc[df_PSFs["particle"] == index_]
             if total_sort_df_PSFs is None:
                 total_sort_df_PSFs = sort_df_PSFs
             else:
@@ -97,9 +95,8 @@ class Linking():
             Returns the number of particles in data frame
         """
         if df_PSFs.shape[0] != 0:
-            particles_label = df_PSFs['particle'].tolist()
+            particles_label = df_PSFs["particle"].tolist()
             unique_list = set(particles_label)
             return len(unique_list)
         else:
             return 0
-

@@ -1,18 +1,20 @@
-from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
-import scipy.io
-import h5py
 import json
-import time
 import os
-import numpy as np
+import time
 import zipfile
-import wget
+
+import h5py
 import ipywidgets as widgets
-from ipywidgets import interact, interactive, fixed, interact_manual
+import numpy as np
+import scipy.io
+import wget
 from IPython.display import display
+from ipywidgets import fixed, interact, interact_manual, interactive
+
+from piscat.Trajectory.data_handeling import protein_trajectories_list2dic
 
 
-def save_mat(data, path, name=''):
+def save_mat(data, path, name=""):
     """
     This function saves the array as matlab format.
 
@@ -28,12 +30,12 @@ def save_mat(data, path, name=''):
         Name of the save file.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = name + '_' + timestr + '.mat'
+    name = name + "_" + timestr + ".mat"
     filepath = os.path.join(path, name)
-    scipy.io.savemat(filepath, {'data': data}, do_compression=True)
+    scipy.io.savemat(filepath, {"data": data}, do_compression=True)
 
 
-def read_mat(path, name=''):
+def read_mat(path, name=""):
     """
     This function reads the array with matlab format.
 
@@ -48,10 +50,10 @@ def read_mat(path, name=''):
     filepath = os.path.join(path, name)
     particles = scipy.io.loadmat(filepath)
 
-    if particles['data'].shape[1] != 1:
-        p_ = particles['data']
+    if particles["data"].shape[1] != 1:
+        p_ = particles["data"]
     else:
-        p_ = particles['data']
+        p_ = particles["data"]
     return p_
 
 
@@ -71,10 +73,10 @@ def save_dic_to_hdf5(dic_data, path, name):
         Name of the save file
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = name + '_' + timestr + '.h5'
+    name = name + "_" + timestr + ".h5"
     filepath = os.path.join(path, name)
     with h5py.File(filepath, "w") as h5file:
-        recursively_save_dict_contents_to_group(h5file, '/', dic_data)
+        recursively_save_dict_contents_to_group(h5file, "/", dic_data)
 
 
 def save_list_to_hdf5(list_data, path, name):
@@ -94,10 +96,10 @@ def save_list_to_hdf5(list_data, path, name):
     """
     dic_data = protein_trajectories_list2dic(list_data)
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = name + '_' + timestr + '.h5'
+    name = name + "_" + timestr + ".h5"
     filepath = os.path.join(path, name)
     with h5py.File(filepath, "w") as h5file:
-        recursively_save_dict_contents_to_group(h5file, '/', dic_data)
+        recursively_save_dict_contents_to_group(h5file, "/", dic_data)
 
 
 def recursively_save_dict_contents_to_group(h5file, path, dic):
@@ -105,9 +107,9 @@ def recursively_save_dict_contents_to_group(h5file, path, dic):
         if isinstance(item, (np.ndarray, np.int64, np.float64, str, bytes, list)):
             h5file[path + key] = item
         elif isinstance(item, dict):
-            recursively_save_dict_contents_to_group(h5file, path + key + '/', item)
+            recursively_save_dict_contents_to_group(h5file, path + key + "/", item)
         else:
-            raise ValueError('Cannot save %s bin_type' % type(item))
+            raise ValueError("Cannot save %s bin_type" % type(item))
 
 
 def load_dict_from_hdf5(filename):
@@ -120,12 +122,11 @@ def load_dict_from_hdf5(filename):
        Path and name of the hdf5 file.
     """
 
-    with h5py.File(filename, 'r') as h5file:
+    with h5py.File(filename, "r") as h5file:
         return recursively_load_dict_contents_from_group(h5file, None)
 
 
 def recursively_load_dict_contents_from_group(data_hdf5, key_group=None):
-
     ans = {}
 
     if key_group is None:
@@ -144,7 +145,7 @@ def recursively_load_dict_contents_from_group(data_hdf5, key_group=None):
     return ans
 
 
-def save_df2csv(df, path, name=''):
+def save_df2csv(df, path, name=""):
     """
     This function writes the panda data frame to CSV file
 
@@ -158,14 +159,14 @@ def save_df2csv(df, path, name=''):
 
     name: str
         Name of the save file
-   """
+    """
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = name + '_' + timestr + '.csv'
+    name = name + "_" + timestr + ".csv"
     filepath = os.path.join(path, name)
     df.to_csv(filepath)
 
 
-def save_dic2json(data_dictionary, path, name=''):
+def save_dic2json(data_dictionary, path, name=""):
     """
     This function writes the dictionary data to JSON file
 
@@ -181,13 +182,13 @@ def save_dic2json(data_dictionary, path, name=''):
         Name of the save file.
     """
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = name + '_' + timestr + '.json'
+    name = name + "_" + timestr + ".json"
     filepath = os.path.join(path, name)
-    with open(filepath, 'w') as file:
+    with open(filepath, "w") as file:
         file.write(json.dumps(data_dictionary))
 
 
-def read_json2dic(path, name=''):
+def read_json2dic(path, name=""):
     """
     This function reads the JSON file and converts it to dictionary.
 
@@ -195,7 +196,7 @@ def read_json2dic(path, name=''):
     ----------
     path: str
         Path of the directory that data load from it.
-        
+
     name: str
         Name of the JSON file.
     """
@@ -211,7 +212,7 @@ def download_url(url, save_path):
     # change directory from working dir to dir with files
     os.chdir(save_path)
     filename = wget.download(url)
-    print('\nStart unzip files --->', end='')
+    print("\nStart unzip files --->", end="")
     for item in os.listdir(save_path):  # loop through items in dir
         if item.endswith(extension):  # check for ".zip" extension
             file_name = os.path.abspath(item)  # get full path of files
@@ -219,16 +220,15 @@ def download_url(url, save_path):
             zip_ref.extractall(save_path)  # extract file to dir
             zip_ref.close()  # close file
             os.remove(file_name)  # delete zipped file
-    print('Done')
+    print("Done")
 
 
-class download_tutorial_data():
-
-    def __init__(self, tutorial_id, flag_status='JPY'):
+class download_tutorial_data:
+    def __init__(self, tutorial_id, flag_status="JPY"):
         self.flag_status = flag_status
-        current_path = os.path.abspath(os.path.join('..'))
+        current_path = os.path.abspath(os.path.join(".."))
         save_path = os.path.dirname(current_path)
-        save_path = os.path.join(save_path, 'Tutorials')
+        save_path = os.path.join(save_path, "Tutorials")
 
         try:
             os.mkdir(save_path)
@@ -237,34 +237,55 @@ class download_tutorial_data():
             print("\nDirectory ", save_path, " already exists")
 
         try:
-            name_mkdir_1 = 'Demo data'
+            name_mkdir_1 = "Demo data"
             dr_mk = os.path.join(save_path, name_mkdir_1)
             os.mkdir(dr_mk)
-            print("\nThe directory with the name ", name_mkdir_1, " is created in the following path:", save_path)
+            print(
+                "\nThe directory with the name ",
+                name_mkdir_1,
+                " is created in the following path:",
+                save_path,
+            )
         except FileExistsError:
-            print("\nThe directory with the name ", name_mkdir_1, " already exists in the following path:", save_path)
+            print(
+                "\nThe directory with the name ",
+                name_mkdir_1,
+                " already exists in the following path:",
+                save_path,
+            )
 
-        if tutorial_id == 'control_video':
-            name_mkdir_1 = 'Demo data'
-            name_mkdir_2 = 'Control'
+        if tutorial_id == "control_video":
+            name_mkdir_1 = "Demo data"
+            name_mkdir_2 = "Control"
             dr_ = os.path.join(save_path, name_mkdir_1, name_mkdir_2)
             if os.path.isdir(dr_):
-                print("\nThe data file named ", name_mkdir_2, " already exists in the following path:", os.path.join(save_path, name_mkdir_1))
+                print(
+                    "\nThe data file named ",
+                    name_mkdir_2,
+                    " already exists in the following path:",
+                    os.path.join(save_path, name_mkdir_1),
+                )
             else:
                 dr_ = os.path.join(save_path, name_mkdir_1)
-                self.run_download(url='https://owncloud.gwdg.de/index.php/s/XgYOcvABZs9cD2Q/download', save_path=dr_)
+                self.run_download(
+                    url="https://owncloud.gwdg.de/index.php/s/XgYOcvABZs9cD2Q/download",
+                    save_path=dr_,
+                )
 
-        elif tutorial_id == 'Tutorial3_video':
-            name_mkdir_1 = 'Demo data'
-            name_mkdir_2 = 'Tutorial3'
-            name_mkdir_3 = 'Histogram'
+        elif tutorial_id == "Tutorial3_video":
+            name_mkdir_1 = "Demo data"
+            name_mkdir_2 = "Tutorial3"
+            name_mkdir_3 = "Histogram"
 
             dr_ = os.path.join(save_path, name_mkdir_1, name_mkdir_2)
             if os.path.isdir(dr_):
                 print("Directory ", name_mkdir_2, " already exists!")
             else:
                 dr_ = os.path.join(save_path, name_mkdir_1)
-                self.run_download(url='https://owncloud.gwdg.de/index.php/s/p2WVZq7gtqOe6ZY/download', save_path=dr_)
+                self.run_download(
+                    url="https://owncloud.gwdg.de/index.php/s/p2WVZq7gtqOe6ZY/download",
+                    save_path=dr_,
+                )
 
             dr_mk = os.path.join(save_path, name_mkdir_1, name_mkdir_3)
 
@@ -274,36 +295,38 @@ class download_tutorial_data():
             except FileExistsError:
                 print("\nDirectory ", name_mkdir_3, " already exists")
 
-        elif tutorial_id == 'Tutorial_UAI':
-            name_mkdir_1 = 'Demo data'
-            name_mkdir_2 = 'UAI'
+        elif tutorial_id == "Tutorial_UAI":
+            name_mkdir_1 = "Demo data"
+            name_mkdir_2 = "UAI"
             dr_ = os.path.join(save_path, name_mkdir_1, name_mkdir_2)
             if os.path.isdir(dr_):
-                print("\nThe data file named ", name_mkdir_2, " already exists in the following path:",
-                      os.path.join(save_path, name_mkdir_1))
+                print(
+                    "\nThe data file named ",
+                    name_mkdir_2,
+                    " already exists in the following path:",
+                    os.path.join(save_path, name_mkdir_1),
+                )
             else:
                 dr_ = os.path.join(save_path, name_mkdir_1)
-                self.run_download(url='https://owncloud.gwdg.de/index.php/s/jDQvhykhxsdHeBc/download', save_path=dr_)
+                self.run_download(
+                    url="https://owncloud.gwdg.de/index.php/s/jDQvhykhxsdHeBc/download",
+                    save_path=dr_,
+                )
 
     def run_download(self, url, save_path):
         self.url = url
         self.save_path = save_path
 
-        if "JPY_PARENT_PID" in os.environ and self.flag_status == 'JPY':
-            self.button = widgets.Button(description='Download', disabled=False, icon='fa-cloud-download')
+        if "JPY_PARENT_PID" in os.environ and self.flag_status == "JPY":
+            self.button = widgets.Button(
+                description="Download", disabled=False, icon="fa-cloud-download"
+            )
             self.out = widgets.Output()
 
             self.button.on_click(self.on_button_clicked)
             display(self.button)
-        elif self.flag_status == 'HTML':
+        elif self.flag_status == "HTML":
             download_url(self.url, self.save_path)
 
     def on_button_clicked(self, _):
         download_url(self.url, self.save_path)
-
-
-
-
-
-
-

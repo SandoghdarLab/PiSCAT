@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
+from PySide6 import QtCore, QtWidgets
+
 from piscat.InputOutput import reading_videos
-from PySide6 import QtCore
-from PySide6 import QtWidgets
 
 
 class RawImage(QtWidgets.QMainWindow):
-
     def __init__(self, fileName):
         super(RawImage, self).__init__()
         self.fileName = fileName
@@ -31,8 +30,19 @@ class RawImage(QtWidgets.QMainWindow):
         self.little_endian_flag = False
         self.big_endian_flag = False
 
-        self.image_format = {"int_8": "i1", "int_16": "i2", "int_32": "i4", "int_64": "i8", "uint_8": "u1", "uint_16": "u2", "uint_32": "u4",
-                             "uint_64": "u8", "float_16": "f2", "float_32": "f4", "float_64": "f8"}
+        self.image_format = {
+            "int_8": "i1",
+            "int_16": "i2",
+            "int_32": "i4",
+            "int_64": "i8",
+            "uint_8": "u1",
+            "uint_16": "u2",
+            "uint_32": "u4",
+            "uint_64": "u8",
+            "float_16": "f2",
+            "float_32": "f4",
+            "float_64": "f8",
+        }
         self.raw_data_update_flag = True
 
         self.window = QtWidgets.QWidget()
@@ -55,12 +65,12 @@ class RawImage(QtWidgets.QMainWindow):
         self.combo.currentIndexChanged.connect(self.on_select)
 
         self.le1 = QtWidgets.QLineEdit()
-        self.le1.setPlaceholderText('width')
+        self.le1.setPlaceholderText("width")
         self.le_1_label = QtWidgets.QLabel("Image size width(px):")
         self.le1.setFixedWidth(50)
 
         self.le2 = QtWidgets.QLineEdit()
-        self.le2.setPlaceholderText('height')
+        self.le2.setPlaceholderText("height")
         self.le_2_label = QtWidgets.QLabel("Image size height(px):")
         self.le2.setFixedWidth(50)
 
@@ -114,7 +124,7 @@ class RawImage(QtWidgets.QMainWindow):
         self.groupBox_cropping.setChecked(False)
         self.grid2 = QtWidgets.QGridLayout()
         self.info_cut_edith()
-        self.groupBox_cropping .setLayout(self.grid2)
+        self.groupBox_cropping.setLayout(self.grid2)
 
         return self.groupBox_cropping
 
@@ -123,14 +133,13 @@ class RawImage(QtWidgets.QMainWindow):
             self.on_select()
             self.get_values()
             self.check_button()
-            if self.height_size != '' and self.width_size != '':
+            if self.height_size != "" and self.width_size != "":
                 self.width_size = int(self.width_size)
                 self.height_size = int(self.height_size)
                 self.frame_s = int(0)
 
             if self.groupBox_cropping.isChecked():
-
-                if self.width_size_s != '' and self.width_size_e != '':
+                if self.width_size_s != "" and self.width_size_e != "":
                     self.width_size_s = int(self.width_size_s)
                     self.width_size_e = int(self.width_size_e)
                 else:
@@ -141,7 +150,7 @@ class RawImage(QtWidgets.QMainWindow):
                     self.width_size_s = 0
                     self.width_size_e = self.width_size
 
-                if self.height_size_s != '' and self.height_size_e != '':
+                if self.height_size_s != "" and self.height_size_e != "":
                     self.height_size_s = int(self.height_size_s)
                     self.height_size_e = int(self.height_size_e)
                 else:
@@ -152,8 +161,8 @@ class RawImage(QtWidgets.QMainWindow):
                     self.height_size_s = 0
                     self.height_size_e = self.height_size
 
-                if self.frame_s != '' and self.frame_e != '':
-                    if self.frame_jump != '':
+                if self.frame_s != "" and self.frame_e != "":
+                    if self.frame_jump != "":
                         self.frame_s = int(self.frame_s)
                         self.frame_e = int(self.frame_e)
                         self.frame_jump = int(self.frame_jump)
@@ -173,13 +182,20 @@ class RawImage(QtWidgets.QMainWindow):
 
                 # self.check_cut_size_odd()
             try:
-                video = reading_videos.read_binary(self.fileName, img_height=self.height_size, img_width=self.width_size,
-                                                    image_type=self.set_bit_order + self.type,
-                                                    s_frame=self.frame_s, e_frame=self.frame_s+2)
+                video = reading_videos.read_binary(
+                    self.fileName,
+                    img_height=self.height_size,
+                    img_width=self.width_size,
+                    image_type=self.set_bit_order + self.type,
+                    s_frame=self.frame_s,
+                    e_frame=self.frame_s + 2,
+                )
                 if self.groupBox_cropping.isChecked():
-
-                    video = video[0:-1, self.width_size_s:self.width_size_e,
-                                    self.height_size_s:self.height_size_e]
+                    video = video[
+                        0:-1,
+                        self.width_size_s : self.width_size_e,
+                        self.height_size_s : self.height_size_e,
+                    ]
                 plt.figure()
                 plt.imshow(video[0, :, :])
                 plt.show()
@@ -197,12 +213,12 @@ class RawImage(QtWidgets.QMainWindow):
             if self.checkbox_display.isChecked():
                 self.flag_display = True
 
-            if self.height_size != '' and self.width_size != '':
+            if self.height_size != "" and self.width_size != "":
                 self.width_size = int(self.width_size)
                 self.height_size = int(self.height_size)
 
-                if self.groupBox_cropping .isChecked():
-                    if self.width_size_s != '' and self.width_size_e != '':
+                if self.groupBox_cropping.isChecked():
+                    if self.width_size_s != "" and self.width_size_e != "":
                         self.width_size_s = int(self.width_size_s)
                         self.width_size_e = int(self.width_size_e)
                     else:
@@ -213,7 +229,7 @@ class RawImage(QtWidgets.QMainWindow):
                         self.width_size_s = 0
                         self.width_size_e = self.width_size
 
-                    if self.height_size_s != '' and self.height_size_e != '':
+                    if self.height_size_s != "" and self.height_size_e != "":
                         self.height_size_s = int(self.height_size_s)
                         self.height_size_e = int(self.height_size_e)
                     else:
@@ -224,8 +240,8 @@ class RawImage(QtWidgets.QMainWindow):
                         self.height_size_s = 0
                         self.height_size_e = self.height_size
 
-                    if self.frame_s != '' and self.frame_e != '':
-                        if self.frame_jump != '':
+                    if self.frame_s != "" and self.frame_e != "":
+                        if self.frame_jump != "":
                             self.frame_s = int(self.frame_s)
                             self.frame_e = int(self.frame_e)
                             self.frame_jump = int(self.frame_jump)
@@ -257,7 +273,6 @@ class RawImage(QtWidgets.QMainWindow):
                 self.msg_box.exec_()
 
     def check_cut_size_odd(self):
-
         if (self.width_size_s % 2) != 0:
             self.width_size_s = self.width_size_s + 1
 
@@ -280,7 +295,7 @@ class RawImage(QtWidgets.QMainWindow):
             self.type = self.image_format[self.combo.currentText()]
 
     def check_button(self):
-        bit_order = {'native': '=', 'little_endian': '<', 'big_endian': '>'}
+        bit_order = {"native": "=", "little_endian": "<", "big_endian": ">"}
 
         if self.little_endian_flag:
             self.set_bit_order = bit_order["little_endian"]
@@ -291,31 +306,31 @@ class RawImage(QtWidgets.QMainWindow):
 
     def info_cut_edith(self):
         self.le3 = QtWidgets.QLineEdit()
-        self.le3.setPlaceholderText('width_start')
+        self.le3.setPlaceholderText("width_start")
         self.le_3_label = QtWidgets.QLabel("start width pixel:")
 
         self.le4 = QtWidgets.QLineEdit()
-        self.le4.setPlaceholderText('width_end')
+        self.le4.setPlaceholderText("width_end")
         self.le_4_label = QtWidgets.QLabel("end width pixel:")
 
         self.le5 = QtWidgets.QLineEdit()
-        self.le5.setPlaceholderText('height_start')
+        self.le5.setPlaceholderText("height_start")
         self.le_5_label = QtWidgets.QLabel("start height pixel:")
 
         self.le6 = QtWidgets.QLineEdit()
-        self.le6.setPlaceholderText('height_end')
+        self.le6.setPlaceholderText("height_end")
         self.le_6_label = QtWidgets.QLabel("end height pixel:")
 
         self.le7 = QtWidgets.QLineEdit()
-        self.le7.setPlaceholderText('frame_start')
+        self.le7.setPlaceholderText("frame_start")
         self.le_7_label = QtWidgets.QLabel("start frame:")
 
         self.le8 = QtWidgets.QLineEdit()
-        self.le8.setPlaceholderText('frame_end')
+        self.le8.setPlaceholderText("frame_end")
         self.le_8_label = QtWidgets.QLabel("end frame:")
 
         self.le9 = QtWidgets.QLineEdit()
-        self.le9.setPlaceholderText('frame_jump')
+        self.le9.setPlaceholderText("frame_jump")
         self.le_9_label = QtWidgets.QLabel("frame stride:")
 
         self.grid2.addWidget(self.le_3_label, 1, 0)
@@ -339,7 +354,6 @@ class RawImage(QtWidgets.QMainWindow):
         self.height_size = self.le2.text()
 
         if self.groupBox_cropping.isChecked():
-
             self.width_size_s = self.le3.text()
             self.width_size_e = self.le4.text()
 
@@ -351,7 +365,6 @@ class RawImage(QtWidgets.QMainWindow):
             self.frame_jump = self.le9.text()
 
     def btnstate(self, b):
-
         if b.text() == "little-endian byte order":
             if b.isChecked() == True:
                 self.little_endian_flag = True

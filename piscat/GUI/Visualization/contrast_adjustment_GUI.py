@@ -1,9 +1,9 @@
-from piscat.Visualization.contrast_adjustment import ContrastAdjustment
-
-from PySide6 import QtGui, QtCore, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
+
+from piscat.Visualization.contrast_adjustment import ContrastAdjustment
 
 
 class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
@@ -23,7 +23,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
         self.window = QtWidgets.QWidget()
 
         # Min hist
-        self.slider_min_label = QLabel('Minimum:')
+        self.slider_min_label = QLabel("Minimum:")
         self.slider_min = QSlider(Qt.Horizontal)
         self.slider_min.setRange(min_intensity, max_intensity)
         self.slider_min.setValue(min_intensity)
@@ -32,7 +32,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
         self.slider_min.valueChanged.connect(self.apply)
 
         # Max hist
-        self.slider_max_label = QLabel('Maximum:')
+        self.slider_max_label = QLabel("Maximum:")
         self.slider_max = QSlider(Qt.Horizontal)
         self.slider_max.setRange(min_intensity, max_intensity)
         self.slider_max.setValue(max_intensity)
@@ -41,7 +41,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
         self.slider_max.valueChanged.connect(self.apply)
 
         # Brightness
-        self.slider_alpha_label = QLabel('Brightness:')
+        self.slider_alpha_label = QLabel("Brightness:")
         self.slider_alpha = QSlider(Qt.Horizontal)
         self.slider_alpha.setRange(1.0, 10.0)
         self.slider_alpha.setValue(alpha)
@@ -50,7 +50,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
         self.slider_alpha.valueChanged.connect(self.apply)
 
         # Contrast
-        self.slider_beta_label = QLabel('Contrast:')
+        self.slider_beta_label = QLabel("Contrast:")
         self.slider_beta = QSlider(Qt.Horizontal)
         self.slider_beta.setRange(0, 100)
         self.slider_beta.setValue(beta)
@@ -98,7 +98,9 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
         return self.groupBox_slideBar
 
     def valueHandler(self, value):
-        scaledValue = float(value) / 100  # bin_type of "value" is int so you need to convert it to float in order to get float bin_type for "scaledValue"
+        scaledValue = (
+            float(value) / 100
+        )  # bin_type of "value" is int so you need to convert it to float in order to get float bin_type for "scaledValue"
 
     def frame_getter(self, image):
         self.image = image
@@ -128,4 +130,3 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
 
     def closeEvent(self, **kwargs):
         QtCore.QCoreApplication.instance().quit()
-

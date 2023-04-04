@@ -1,18 +1,19 @@
-from piscat.Trajectory.particle_linking import Linking
-from piscat.Localization import localization_filtering
-from piscat.Trajectory import TemporalFilter
-import numpy as np
-
-import unittest
 import os
 import pickle
+import unittest
 
-current_path = os.path.abspath(os.path.join('.'))
+import numpy as np
+
+from piscat.Localization import localization_filtering
+from piscat.Trajectory import TemporalFilter
+from piscat.Trajectory.particle_linking import Linking
+
+current_path = os.path.abspath(os.path.join("."))
 
 
 def load_fixture(filename):
     """Loads a fixture from file."""
-    with open(filename, 'rb') as file:
+    with open(filename, "rb") as file:
         return pickle.load(file)
 
 
@@ -40,8 +41,8 @@ def check_list(calculated_list, loaded_list):
 
 class TemporalFilterTest(unittest.TestCase):
     def setUp(self):
-        self.directory_path = os.path.join(current_path, 'TestData/Video/')
-        file_name_save = os.path.join(self.directory_path, 'test_fit_Gaussian2D_wrapper.pck')
+        self.directory_path = os.path.join(current_path, "TestData/Video/")
+        file_name_save = os.path.join(self.directory_path, "test_fit_Gaussian2D_wrapper.pck")
         psf_dataframe = load_fixture(file_name_save)
         linking_ = Linking()
         linked_psf = linking_.create_link(psf_position=psf_dataframe, search_range=2, memory=10)
@@ -49,24 +50,28 @@ class TemporalFilterTest(unittest.TestCase):
         psf_filtered = spatial_filters.outlier_frames(linked_psf, threshold=20)
         psf_filtered = spatial_filters.dense_PSFs(psf_filtered, threshold=0)
         self.psf_filtered = spatial_filters.symmetric_PSFs(psf_filtered, threshold=0.7)
-        file_name_save = os.path.join(self.directory_path, 'test_localization_input_video.pck')
+        file_name_save = os.path.join(self.directory_path, "test_localization_input_video.pck")
         video = load_fixture(file_name_save)
         self.batch_size = 3
         self.test_obj = TemporalFilter(video=video, batchSize=self.batch_size)
 
     def test_v_trajectory(self):
-        all_trajectories, linked_PSFs_filter, his_all_particles = self.test_obj.v_trajectory(df_PSFs=self.psf_filtered,
-                                                                                             threshold_min=2,
-                                                                                             threshold_max=2 * self.batch_size)
-        file_name_save = os.path.join(self.directory_path, 'test_v_trajectory_all_trajectories.pck')
+        all_trajectories, linked_PSFs_filter, his_all_particles = self.test_obj.v_trajectory(
+            df_PSFs=self.psf_filtered, threshold_min=2, threshold_max=2 * self.batch_size
+        )
+        file_name_save = os.path.join(
+            self.directory_path, "test_v_trajectory_all_trajectories.pck"
+        )
         loaded_file = load_fixture(file_name_save)
         check_result = check_list(all_trajectories, loaded_file)
         self.assertTrue(check_result)
-        file_name_save = os.path.join(self.directory_path, 'test_v_trajectory_linked_PSFs_filter.pck')
+        file_name_save = os.path.join(
+            self.directory_path, "test_v_trajectory_linked_PSFs_filter.pck"
+        )
         loaded_file = load_fixture(file_name_save)
         result = loaded_file.replace(np.nan, 0) - linked_PSFs_filter.replace(np.nan, 0)
         result_bool = result.all() == 0
         self.assertTrue(result_bool.all())
-        file_name_save = os.path.join(self.directory_path, 'his_all_particles.pck')
+        file_name_save = os.path.join(self.directory_path, "his_all_particles.pck")
         loaded_file = load_fixture(file_name_save)
         self.assertTrue(his_all_particles.equals(loaded_file))

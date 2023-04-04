@@ -1,15 +1,13 @@
-from piscat.Preproccessing.normalization import Normalization
-from piscat.BackgroundCorrection.DRA import DifferentialRollingAverage
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import *
 
+from piscat.BackgroundCorrection.DRA import DifferentialRollingAverage
 from piscat.GUI.BackgroundCorrection import DRA
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-from PySide6 import QtWidgets
-from PySide6 import QtCore
-from PySide6.QtCore import *
+from piscat.Preproccessing.normalization import Normalization
 
 
 class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
-
     update_output = QtCore.Signal(object)
     update_pn_roi = QtCore.Signal(object)
     set_new_text = QtCore.Signal(object)
@@ -31,7 +29,7 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
     @Slot()
     def thread_DRA_complete(self):
         self.object_update_progressBar.setRange(self.p_max)
-        self.object_update_progressBar.setLabel('')
+        self.object_update_progressBar.setLabel("")
         self.thread_DRA.signals.DRA_complete_signal.emit(False)
         self.flag_thread_dra = False
         print("THREAD DRA COMPLETE!")
@@ -56,24 +54,34 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
     @Slot()
     def startProgressBar(self, instance, **kwargs):
         self.thread_DRA = instance(**kwargs)
-        self.thread_DRA.signals.updateProgress_DRA.connect(self.object_update_progressBar.setProgress)
+        self.thread_DRA.signals.updateProgress_DRA.connect(
+            self.object_update_progressBar.setProgress
+        )
         self.thread_DRA.signals.result_final.connect(self.result_tread_DRA)
         self.thread_DRA.signals.finished_DRA.connect(self.thread_DRA_complete)
 
         self.threadpool.start(self.thread_DRA)
 
     def dra_wrapper(self):
-        title = ''
+        title = ""
 
-        if self.original_video is not None and self.original_video.shape[0] - (2 * self.info_DRA.batch_size) <= 0:
+        if (
+            self.original_video is not None
+            and self.original_video.shape[0] - (2 * self.info_DRA.batch_size) <= 0
+        ):
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
             self.msg_box.setText(
-                "The batch size bigger than the video length (#frame" + str(self.original_video.shape[0]) + ")!")
+                "The batch size bigger than the video length (#frame"
+                + str(self.original_video.shape[0])
+                + ")!"
+            )
             self.msg_box.exec_()
 
-        if self.original_video is not None and self.original_video.shape[0] - (2 * self.info_DRA.batch_size) > 0:
-
+        if (
+            self.original_video is not None
+            and self.original_video.shape[0] - (2 * self.info_DRA.batch_size) > 0
+        ):
             if self.info_DRA.flag_power_normalization:
                 self.set_new_text.emit("Start PN -->")
 
@@ -86,7 +94,7 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
                     QtCore.QCoreApplication.processEvents()
 
                 self.flag_update_original_video = True
-                title = title + 'PN_'
+                title = title + "PN_"
                 self.set_plain_text.emit(" Done")
 
             self.p_max = self.original_video.shape[0] - (2 * self.info_DRA.batch_size) - 1
@@ -94,29 +102,56 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.object_update_progressBar.setRange(self.p_max)
 
             if self.info_DRA.flag_FPN:
-                self.set_new_text.emit("Start DRA + " + self.info_DRA.mode_FPN + '-->')
+                self.set_new_text.emit("Start DRA + " + self.info_DRA.mode_FPN + "-->")
                 if self.info_DRA.flag_power_normalization:
-                    d_arg = {'video': self.original_video_pn, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
-                             'instance': DifferentialRollingAverage, 'FPN_flag': True, 'select_correction_axis': self.info_DRA.axis,
-                             'object_update_progressBar': self.object_update_progressBar, 'mode_FPN': self.info_DRA.mode_FPN}
+                    d_arg = {
+                        "video": self.original_video_pn,
+                        "batchSize": self.info_DRA.batch_size,
+                        "flag_GUI": True,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag": True,
+                        "select_correction_axis": self.info_DRA.axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                        "mode_FPN": self.info_DRA.mode_FPN,
+                    }
                 else:
-                    d_arg = {'video': self.original_video, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
-                             'instance': DifferentialRollingAverage, 'FPN_flag': True, 'select_correction_axis': self.info_DRA.axis,
-                             'object_update_progressBar': self.object_update_progressBar, 'mode_FPN': self.info_DRA.mode_FPN}
+                    d_arg = {
+                        "video": self.original_video,
+                        "batchSize": self.info_DRA.batch_size,
+                        "flag_GUI": True,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag": True,
+                        "select_correction_axis": self.info_DRA.axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                        "mode_FPN": self.info_DRA.mode_FPN,
+                    }
 
-                title = title + self.info_DRA.mode_FPN + '_'
+                title = title + self.info_DRA.mode_FPN + "_"
 
             else:
                 self.set_new_text.emit("Start DRA -->")
                 if self.info_DRA.flag_power_normalization:
-                    d_arg = {'video': self.original_video_pn, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
-                             'instance': DifferentialRollingAverage, 'FPN_flag': False, 'select_correction_axis': self.info_DRA.axis,
-                             'object_update_progressBar': self.object_update_progressBar, 'mode_FPN': self.info_DRA.mode_FPN}
+                    d_arg = {
+                        "video": self.original_video_pn,
+                        "batchSize": self.info_DRA.batch_size,
+                        "flag_GUI": True,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag": False,
+                        "select_correction_axis": self.info_DRA.axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                        "mode_FPN": self.info_DRA.mode_FPN,
+                    }
                 else:
-
-                    d_arg = {'video': self.original_video, 'batchSize': self.info_DRA.batch_size, 'flag_GUI': True,
-                             'instance': DifferentialRollingAverage, 'FPN_flag': False, 'select_correction_axis': self.info_DRA.axis,
-                             'object_update_progressBar': self.object_update_progressBar, 'mode_FPN': self.info_DRA.mode_FPN}
+                    d_arg = {
+                        "video": self.original_video,
+                        "batchSize": self.info_DRA.batch_size,
+                        "flag_GUI": True,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag": False,
+                        "select_correction_axis": self.info_DRA.axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                        "mode_FPN": self.info_DRA.mode_FPN,
+                    }
 
             self.flag_thread_dra = True
             self.flag_update_dra = True
@@ -130,11 +165,13 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
 
             self.set_plain_text.emit(" Done")
 
-            title = title + 'DRA'
+            title = title + "DRA"
 
             if self.info_DRA.flag_display:
                 self.visualization_ = Visulization_localization()
-                self.visualization_.new_display(self.DRA_video, self.DRA_video, object=None, title=title)
+                self.visualization_.new_display(
+                    self.DRA_video, self.DRA_video, object=None, title=title
+                )
 
             self.update_output.emit([self.DRA_video, title, None, self.info_DRA.batch_size])
 
@@ -153,18 +190,28 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.info_DRA.window.close()
             self.dra_wrapper()
 
-    def run_DRA_from_bgtabs(self, mode_FPN, batch_size, flag_power_normalization, roi_x_pn, roi_y_pn, flag_FPN, axis):
-        title = ''
+    def run_DRA_from_bgtabs(
+        self, mode_FPN, batch_size, flag_power_normalization, roi_x_pn, roi_y_pn, flag_FPN, axis
+    ):
+        title = ""
 
-        if self.original_video is not None and self.original_video.shape[0] - (2 * batch_size) <= 0:
+        if (
+            self.original_video is not None
+            and self.original_video.shape[0] - (2 * batch_size) <= 0
+        ):
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
             self.msg_box.setText(
-                "The batch size bigger than the video length (#frame" + str(self.original_video.shape[0]) + ")!")
+                "The batch size bigger than the video length (#frame"
+                + str(self.original_video.shape[0])
+                + ")!"
+            )
             self.msg_box.exec_()
 
-        if self.original_video is not None and self.original_video.shape[0] - (2 * batch_size) > 0:
-
+        if (
+            self.original_video is not None
+            and self.original_video.shape[0] - (2 * batch_size) > 0
+        ):
             if flag_power_normalization:
                 self.set_new_text.emit("Start PN -->")
                 self.flag_update_original_video = True
@@ -179,7 +226,7 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
                     QtCore.QCoreApplication.processEvents()
 
                 self.flag_update_original_video = True
-                title = title + 'PN_'
+                title = title + "PN_"
                 self.set_plain_text.emit(" Done")
 
             self.p_max = self.original_video.shape[0] - (2 * batch_size) - 1
@@ -187,32 +234,56 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
             self.object_update_progressBar.setRange(self.p_max)
 
             if flag_FPN:
-                self.set_new_text.emit("Start DRA + " + mode_FPN + '-->')
+                self.set_new_text.emit("Start DRA + " + mode_FPN + "-->")
                 if flag_power_normalization:
-                    d_arg = {'video': self.original_video_pn, 'batchSize': batch_size, 'flag_GUI': True,
-                             'instance': DifferentialRollingAverage, 'FPN_flag_GUI': True,
-                             'gui_select_correction_axis': axis,
-                             'object_update_progressBar': self.object_update_progressBar,
-                             'mode_FPN': mode_FPN}
+                    d_arg = {
+                        "video": self.original_video_pn,
+                        "batchSize": batch_size,
+                        "flag_GUI": True,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag_GUI": True,
+                        "gui_select_correction_axis": axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                        "mode_FPN": mode_FPN,
+                    }
                 else:
-                    d_arg = {'video': self.original_video, 'batchSize': batch_size, 'flag_GUI': True,
-                             'instance': DifferentialRollingAverage, 'FPN_flag_GUI': True,
-                             'gui_select_correction_axis': axis,
-                             'object_update_progressBar': self.object_update_progressBar,
-                             'mode_FPN': mode_FPN}
+                    d_arg = {
+                        "video": self.original_video,
+                        "batchSize": batch_size,
+                        "flag_GUI": True,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag_GUI": True,
+                        "gui_select_correction_axis": axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                        "mode_FPN": mode_FPN,
+                    }
 
-                title = title + mode_FPN + '_'
+                title = title + mode_FPN + "_"
 
             else:
                 self.set_new_text.emit("Start DRA -->")
                 if flag_power_normalization:
-                    d_arg = {'video': self.original_video_pn, 'batchSize': batch_size, 'flag_GUI': True, 'mode_FPN': mode_FPN,
-                             'instance': DifferentialRollingAverage, 'FPN_flag_GUI': False, 'gui_select_correction_axis': axis,
-                             'object_update_progressBar': self.object_update_progressBar}
+                    d_arg = {
+                        "video": self.original_video_pn,
+                        "batchSize": batch_size,
+                        "flag_GUI": True,
+                        "mode_FPN": mode_FPN,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag_GUI": False,
+                        "gui_select_correction_axis": axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                    }
                 else:
-                    d_arg = {'video': self.original_video, 'batchSize': batch_size, 'flag_GUI': True, 'mode_FPN': mode_FPN,
-                             'instance': DifferentialRollingAverage, 'FPN_flag_GUI': False, 'gui_select_correction_axis': axis,
-                             'object_update_progressBar': self.object_update_progressBar}
+                    d_arg = {
+                        "video": self.original_video,
+                        "batchSize": batch_size,
+                        "flag_GUI": True,
+                        "mode_FPN": mode_FPN,
+                        "instance": DifferentialRollingAverage,
+                        "FPN_flag_GUI": False,
+                        "gui_select_correction_axis": axis,
+                        "object_update_progressBar": self.object_update_progressBar,
+                    }
 
             self.flag_thread_dra = True
             self.flag_update_dra = True
@@ -226,14 +297,12 @@ class FUN_DRA(QtWidgets.QMainWindow, QtCore.QObject):
 
             self.set_plain_text.emit(" Done")
 
-            title = title + 'DRA'
+            title = title + "DRA"
 
             return self.DRA_video
-
 
         else:
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
             self.msg_box.setText("Please load one video!")
             self.msg_box.exec_()
-
