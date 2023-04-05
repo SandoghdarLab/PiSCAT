@@ -1,9 +1,10 @@
-from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-from piscat.GUI.InputOutput import Reading
-
-from PySide6 import QtCore, QtWidgets
 from functools import partial
+
 import numpy as np
+from PySide6 import QtCore, QtWidgets
+
+from piscat.GUI.InputOutput import Reading
+from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 
 
 class AnalysisConstant(QtWidgets.QMainWindow):
@@ -57,27 +58,22 @@ class AnalysisConstant(QtWidgets.QMainWindow):
 
         self.window = QtWidgets.QWidget()
         self.setWindowTitle("Video calculator")
-        self.setStyleSheet('QMainWindow{background-color: darkgray;}')
+        self.setStyleSheet("QMainWindow{background-color: darkgray;}")
         self.window.setGeometry(450, 90, 600, 50)
         self.window.setLayout(self.grid)
         self.window.show()
 
     def on_select(self):
-
         if self.combo.currentText() == "Subtraction":
-
             self.load1.setEnabled(True)
 
         elif self.combo.currentText() == "ADD":
-
             self.load1.setEnabled(True)
 
         elif self.combo.currentText() == "Divide":
-
             self.load1.setEnabled(True)
 
         elif self.combo.currentText() == "Multiplication":
-
             self.load1.setEnabled(True)
 
     def updata_input_video(self, data_in, label):
@@ -102,7 +98,6 @@ class AnalysisConstant(QtWidgets.QMainWindow):
         visualization_.new_display(input_video, input_video, object=None, title=headr_name)
 
     def do_update(self):
-
         if self.ok.clicked:
             flag_read_number = self.get_values()
             if flag_read_number:
@@ -143,7 +138,6 @@ class AnalysisConstant(QtWidgets.QMainWindow):
                         self.msg_box.exec_()
 
                 elif self.combo.currentText() == "Multiplication":
-
                     if self.original_video_1 is not None:
                         self.out_video = np.multiply(self.original_video_1, self.constant_number)
                         self.display_result(self.out_video, "Multiplication")
@@ -171,4 +165,3 @@ class AnalysisConstant(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()
         print("closing PlaySetting")
-

@@ -1,14 +1,12 @@
 import cv2 as cv
 import numpy as np
-
 from skimage import exposure
 
 
-class ContrastAdjustment():
-
+class ContrastAdjustment:
     def __init__(self, video):
-        """
-        This class is used in the GUI to change the visualization's brightness and contrast.
+        """ This class is used in the GUI to change the visualization's
+        brightness and contrast.
 
         Parameters
         ----------
@@ -18,8 +16,8 @@ class ContrastAdjustment():
         self.video = video
 
     def pixel_transforms(self, image, alpha, beta, min_intensity, max_intensity):
-        """
-        Using the value of the hyperparameters, adjust the brightness and contrast of the current image.
+        """ Using the value of the hyperparameters, adjust the brightness and
+        contrast of the current image.
 
         Parameters
         ----------
@@ -43,7 +41,9 @@ class ContrastAdjustment():
         image_: NDArray
             Output image (2D-Numpy)
         """
-        video_rescale = exposure.rescale_intensity(image, out_range=(min_intensity, max_intensity))
+        video_rescale = exposure.rescale_intensity(
+            image, out_range=(min_intensity, max_intensity)
+        )
         image_ = cv.convertScaleAbs(video_rescale, alpha=alpha, beta=beta)
         return image_
 
@@ -66,5 +66,3 @@ class ContrastAdjustment():
         alpha = 255 / (max_intensity - min_intensity)
         beta = -min_intensity * alpha
         return self.pixel_transforms(image, alpha, beta, min_intensity, max_intensity)
-
-

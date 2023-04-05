@@ -1,9 +1,9 @@
-import shutil
-from pathlib import Path
-from os.path import exists
 import os
+import shutil
 import subprocess
 import sys
+from os.path import exists
+from pathlib import Path
 
 
 def parse_args():
@@ -24,14 +24,17 @@ def parse_args():
     """
 
     if len(sys.argv) <= 1:
-        if confirm('No location given. Shall the tutorials be copied to '
-                   'the current working directory? [y/n] '):
+        if confirm(
+            "No location given. Shall the tutorials be copied to "
+            "the current working directory? [y/n] "
+        ):
             target_root = Path.cwd()
         else:
-            raise Exception('Exiting.')
+            raise Exception("Exiting.")
     elif len(sys.argv) > 2:
-        raise Exception('ERROR! Too many arguments!\n\n'
-                        'USAGE: python -m piscat.Tutorials TARGET_DIRECTORY')
+        raise Exception(
+            "ERROR! Too many arguments!\n\n" "USAGE: python -m piscat.Tutorials TARGET_DIRECTORY"
+        )
     else:
         target_root = Path(sys.argv[1])
 
@@ -52,15 +55,15 @@ def find_jupyter():
         if no jupyter executable is found on the system.
     """
 
-    jupyter = shutil.which('jupyter')
+    jupyter = shutil.which("jupyter")
     if jupyter:
-        jupyter += ' notebook'
+        jupyter += " notebook"
 
     if not jupyter:
-        jupyter = shutil.which('jupyter-notebook')
+        jupyter = shutil.which("jupyter-notebook")
 
     if not jupyter:
-        raise Exception('Jupyter not found on your system. Please start it manually.')
+        raise Exception("Jupyter not found on your system. Please start it manually.")
 
     return jupyter
 
@@ -78,7 +81,7 @@ def start_server(root, jupyter):
 
     """
     os.chdir(root)
-    subprocess.run('jupyter nbextension enable --py widgetsnbextension', shell=True)
+    subprocess.run("jupyter nbextension enable --py widgetsnbextension", shell=True)
     subprocess.run(jupyter, shell=True)
 
 
@@ -94,10 +97,10 @@ def confirm(prompt):
     -------
     True or false depending on whether the user has answered with yes or no.
     """
-    answer = ''
-    while answer.lower() != 'y' and answer.lower() != 'n':
+    answer = ""
+    while answer.lower() != "y" and answer.lower() != "n":
         answer = input(prompt)
-    return answer == 'y'
+    return answer == "y"
 
 
 def copy_tutorials(target_root):
@@ -115,13 +118,13 @@ def copy_tutorials(target_root):
         The path to the directory with the tutorials.
     """
 
-    target = target_root / 'Tutorials/JupyterFiles'
-    src = Path(__file__).parent / 'JupyterFiles'
+    target = target_root / "Tutorials/JupyterFiles"
+    src = Path(__file__).parent / "JupyterFiles"
 
     if exists(target):
-        Warning('Warning! Target directory %s already exists.' % str(target))
+        Warning("Warning! Target directory %s already exists." % str(target))
     else:
-        print('Copying tutorials to ' + str(target))
+        print("Copying tutorials to " + str(target))
         shutil.copytree(src, target)
 
     return target

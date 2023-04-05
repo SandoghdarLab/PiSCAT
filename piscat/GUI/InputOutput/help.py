@@ -1,14 +1,6 @@
-# from PySide2.QtCore import *
-# from PySide2.QtWidgets import *
-# from PySide2.QtGui import *
-# from PySide2.QtWebEngineWidgets import *
-
 from PySide6.QtCore import QUrl
-from PySide6.QtWidgets import QMainWindow, QApplication
 from PySide6.QtWebEngineWidgets import QWebEngineView
-
-import os
-import sys
+from PySide6.QtWidgets import QMainWindow
 
 
 class Help(QMainWindow):

@@ -1,29 +1,25 @@
-from PySide6 import QtCore
-from PySide6 import QtWidgets
-from PySide6 import QtGui
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import *
 
+from piscat.GUI.InputOutput import save_GUI
+from piscat.GUI.Visualization import slice_view
+from piscat.GUI.Visualization.contrast_adjustment_GUI import Contrast_adjustment_GUI
+from piscat.GUI.Visualization.play_setting import PlaySetting
+from piscat.GUI.Visualization.temporal_annotation_setting import TemporalAnnotationSetting
 from piscat.InputOutput import write_video
 from piscat.Preproccessing.normalization import Normalization
 from piscat.Visualization.display import Display, DisplayPSFs_subplotLocalizationDisplay
 from piscat.Visualization.display_html import HTML_PSFs_subplotLocalizationDisplay
 
-from piscat.GUI.Visualization.contrast_adjustment_GUI import Contrast_adjustment_GUI
-from piscat.GUI.Visualization import slice_view
-from piscat.GUI.InputOutput import save_GUI
-from piscat.GUI.Visualization.play_setting import PlaySetting
-from piscat.GUI.Visualization.temporal_annotation_setting import TemporalAnnotationSetting
-
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import os
-
 play_flag = True
 
 
 class WorkerSignals(QObject):
-
     updateProgress = Signal(int)
     result = Signal(object)
     finished = Signal()
@@ -31,7 +27,6 @@ class WorkerSignals(QObject):
 
 
 class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
-
     progressChanged = QtCore.Signal(int)
     sliceNumber = QtCore.Signal(int)
     currentFrame = QtCore.Signal(int)
@@ -74,12 +69,12 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.sliceNumber.connect(self.Update_SliceNumber)
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def starter(self):
         self.setWindowIcon(QtGui.QIcon(QtCore.QDir.currentPath() + "/icons/mpl.png"))
         self.setWindowTitle(self.title)
-        self.setGeometry(490, 100,  512+124,  512+93)
+        self.setGeometry(490, 100, 512 + 124, 512 + 93)
         self.main_Viewer_frame = QtWidgets.QFrame()
         self.setCentralWidget(self.main_Viewer_frame)
         self.main_Viewer_frame_layout = QtWidgets.QGridLayout()
@@ -95,7 +90,9 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         # checkbox median Filter
         self.checkbox_medianFilter = QtWidgets.QRadioButton("Median Filter")
-        self.checkbox_medianFilter.toggled.connect(lambda: self.activeMedianFilter(self.checkbox_medianFilter))
+        self.checkbox_medianFilter.toggled.connect(
+            lambda: self.activeMedianFilter(self.checkbox_medianFilter)
+        )
 
         # Contrast
         self.con_adj = QtWidgets.QPushButton("Contrast adjustment")
@@ -182,12 +179,16 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
             self.progressChanged.connect(self.setProgress)
 
         # Create
-        self.connect(QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), self), QtCore.SIGNAL('activated()'), self.histogram)
+        self.connect(
+            QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), self),
+            QtCore.SIGNAL("activated()"),
+            self.histogram,
+        )
 
         if self.title != "PNG":
             self.slice_slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
             self.slice_slider.setMinimum(0)
-            self.slice_slider.setMaximum(self.image_series.shape[0]-1)
+            self.slice_slider.setMaximum(self.image_series.shape[0] - 1)
             self.slice_slider.setValue(0)
             self.slice_slider.valueChanged.connect(self.set_new_slice_num)
 
@@ -199,13 +200,12 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.show()
 
     def createSecondExclusiveGroup(self):
-
         self.groupBox_displayBtn = QtWidgets.QGroupBox("Video Display")
 
         self.grid_diplay = QtWidgets.QGridLayout()
         self.grid_diplay.addWidget(self.Display, 0, 0)
         self.grid_diplay.addWidget(self.annotation_s, 0, 1)
-        self.grid_diplay.addWidget(self.con_adj,  0, 2)
+        self.grid_diplay.addWidget(self.con_adj, 0, 2)
 
         if self.mask is True:
             self.grid_diplay.addWidget(self.Display_mask, 1, 0)
@@ -217,7 +217,6 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         return self.groupBox_displayBtn
 
     def createThirdExclusiveGroup(self):
-
         play = QtWidgets.QGroupBox()
 
         self.grid_play = QtWidgets.QGridLayout()
@@ -254,7 +253,9 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         else:
             self.annotation_t.setStyleSheet("background-color : lightgrey")
 
-        self.viewer.annotation_t.emit([self.window_size, self.flag_smooth_filter, self.marker_size])
+        self.viewer.annotation_t.emit(
+            [self.window_size, self.flag_smooth_filter, self.marker_size]
+        )
 
     def closeEvent(self, event):
         try:
@@ -277,7 +278,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
     @QtCore.Slot()
     def call_save(self):
-        if self.fps == '' or self.fps is None:
+        if self.fps == "" or self.fps is None:
             self.fps = 10
         else:
             self.fps = int(self.fps)
@@ -286,23 +287,46 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
             if self.info_image_save.bin_type is not None:
                 type = self.info_image_save.bin_type
             else:
-                type = 'original'
+                type = "original"
 
-            file_name = str(self.original_video.shape[0]) + '_' + str(self.original_video.shape[1]) +'_' + \
-                        str(self.original_video.shape[2]) + '_' + str(type) + '.raw'
-            write_video.write_binary(dir_path=self.file_path, file_name=file_name, data=self.original_video, type=type)
+            file_name = (
+                str(self.original_video.shape[0])
+                + "_"
+                + str(self.original_video.shape[1])
+                + "_"
+                + str(self.original_video.shape[2])
+                + "_"
+                + str(type)
+                + ".raw"
+            )
+            write_video.write_binary(
+                dir_path=self.file_path, file_name=file_name, data=self.original_video, type=type
+            )
 
         elif self.info_image_save.video_type == "MP4":
-
             self.flag_update_normalization = True
             worker = Normalization(video=self.original_video, flag_image_specific=True)
             worker.signals.result.connect(self.update_normalization)
             self.threadpool.start(worker)
             while self.flag_update_normalization:
                 QtCore.QCoreApplication.processEvents()
-            file_name = str(self.original_video.shape[0]) + '_' + str(self.original_video.shape[1]) + '_' + \
-                        str(self.original_video.shape[2]) + '_' + str(self.original_video.dtype) + '.mp4'
-            write_video.write_MP4(dir_path=self.file_path, file_name=file_name, data=self.save_video, jump=self.frame_strides, fps=self.fps)
+            file_name = (
+                str(self.original_video.shape[0])
+                + "_"
+                + str(self.original_video.shape[1])
+                + "_"
+                + str(self.original_video.shape[2])
+                + "_"
+                + str(self.original_video.dtype)
+                + ".mp4"
+            )
+            write_video.write_MP4(
+                dir_path=self.file_path,
+                file_name=file_name,
+                data=self.save_video,
+                jump=self.frame_strides,
+                fps=self.fps,
+            )
 
         elif self.info_image_save.video_type == "GIF":
             self.flag_update_normalization = True
@@ -311,10 +335,24 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
             self.threadpool.start(worker)
             while self.flag_update_normalization:
                 QtCore.QCoreApplication.processEvents()
-            file_name = str(self.original_video.shape[0]) + '_' + str(self.original_video.shape[1]) + '_' + \
-                        str(self.original_video.shape[2]) + '_' + str(self.original_video.dtype) + '.gif'
+            file_name = (
+                str(self.original_video.shape[0])
+                + "_"
+                + str(self.original_video.shape[1])
+                + "_"
+                + str(self.original_video.shape[2])
+                + "_"
+                + str(self.original_video.dtype)
+                + ".gif"
+            )
 
-            write_video.write_GIF(dir_path=self.file_path, file_name=file_name, data=self.save_video, jump=self.frame_strides, fps=self.fps)
+            write_video.write_GIF(
+                dir_path=self.file_path,
+                file_name=file_name,
+                data=self.save_video,
+                jump=self.frame_strides,
+                fps=self.fps,
+            )
 
     @Slot()
     def update_normalization(self, video):
@@ -337,31 +375,38 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
                 self.msg_box.exec_()
 
     def askdir(self):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(None, 'Select a folder:', '',
-                                                                 QtWidgets.QFileDialog.ShowDirsOnly)
+        folder = QtWidgets.QFileDialog.getExistingDirectory(
+            None, "Select a folder:", "", QtWidgets.QFileDialog.ShowDirsOnly
+        )
         return folder
 
     def matplotlib_display(self):
-
-        if self.time_delay == '' or self.time_delay is None:
+        if self.time_delay == "" or self.time_delay is None:
             self.time_delay = 0.1
         else:
             self.time_delay = float(self.time_delay)
 
         if self.Display.clicked:
-            if self.step_size != '' and self.step_size is not None:
-                Display(video=np.fliplr(self.original_video), time_delay=float(self.time_delay), median_filter_flag=self.flag_median_filter)
+            if self.step_size != "" and self.step_size is not None:
+                Display(
+                    video=np.fliplr(self.original_video),
+                    time_delay=float(self.time_delay),
+                    median_filter_flag=self.flag_median_filter,
+                )
             else:
-                Display(video=np.fliplr(self.original_video), time_delay=float(self.time_delay), median_filter_flag=self.flag_median_filter)
+                Display(
+                    video=np.fliplr(self.original_video),
+                    time_delay=float(self.time_delay),
+                    median_filter_flag=self.flag_median_filter,
+                )
 
     def matplotlib_display_mask(self):
-
-        if self.step_size == '' or self.step_size is None:
+        if self.step_size == "" or self.step_size is None:
             self.step_size = 1
         else:
             self.step_size = int(self.step_size)
 
-        if self.time_delay == '' or self.time_delay is None:
+        if self.time_delay == "" or self.time_delay is None:
             self.time_delay = 0.1
         else:
             self.time_delay = float(self.time_delay)
@@ -369,20 +414,33 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         if self.Display_mask.clicked:
             if self.df_PSFs is not None:
                 if type(self.df_PSFs) is pd.core.frame.DataFrame:
-                    if self.step_size != '':
-
-                        ani_ = DisplayPSFs_subplotLocalizationDisplay(list_videos=[self.original_video],
-                                                                                list_df_PSFs=[self.df_PSFs], list_titles=None,
-                                                                                numRows=1, numColumns=1, color='gray',
-                                                                                median_filter_flag=self.viewer.medianFilterFlag,
-                                                                                imgSizex=10, imgSizey=5, time_delay=self.time_delay)
+                    if self.step_size != "":
+                        ani_ = DisplayPSFs_subplotLocalizationDisplay(
+                            list_videos=[self.original_video],
+                            list_df_PSFs=[self.df_PSFs],
+                            list_titles=None,
+                            numRows=1,
+                            numColumns=1,
+                            color="gray",
+                            median_filter_flag=self.viewer.medianFilterFlag,
+                            imgSizex=10,
+                            imgSizey=5,
+                            time_delay=self.time_delay,
+                        )
 
                     else:
-                        ani_ = DisplayPSFs_subplotLocalizationDisplay(list_videos=[self.original_video],
-                                                                                list_df_PSFs=[self.df_PSFs], list_titles=None,
-                                                                                numRows=1, numColumns=1, color='gray',
-                                                                                median_filter_flag=self.viewer.medianFilterFlag,
-                                                                                imgSizex=10, imgSizey=5, time_delay=self.time_delay)
+                        ani_ = DisplayPSFs_subplotLocalizationDisplay(
+                            list_videos=[self.original_video],
+                            list_df_PSFs=[self.df_PSFs],
+                            list_titles=None,
+                            numRows=1,
+                            numColumns=1,
+                            color="gray",
+                            median_filter_flag=self.viewer.medianFilterFlag,
+                            imgSizex=10,
+                            imgSizey=5,
+                            time_delay=self.time_delay,
+                        )
 
             else:
                 self.msg_box = QtWidgets.QMessageBox()
@@ -391,21 +449,20 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
                 self.msg_box.exec_()
 
     def make_mp4(self):
-
         if self.mp4.clicked:
             self.file_path = self.askdir()
             try:
-                if self.step_size == '' or self.step_size is None:
+                if self.step_size == "" or self.step_size is None:
                     self.step_size = 1
                 else:
                     self.step_size = int(self.step_size)
 
-                if self.time_delay == '' or self.time_delay is None:
+                if self.time_delay == "" or self.time_delay is None:
                     self.time_delay = 0.1
                 else:
                     self.time_delay = float(self.time_delay)
 
-                if self.fps == '' or self.fps is None:
+                if self.fps == "" or self.fps is None:
                     self.fps = 10
                 else:
                     self.fps = int(self.fps)
@@ -417,14 +474,22 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
                 if self.df_PSFs is not None:
                     if type(self.df_PSFs) is pd.core.frame.DataFrame:
                         self.flag_mp4 = True
-                        save_path = os.path.join(self.file_path, 'PiSCAT_GUI_Localization.mp4')
+                        save_path = os.path.join(self.file_path, "PiSCAT_GUI_Localization.mp4")
 
-                        ani_ = HTML_PSFs_subplotLocalizationDisplay(list_videos=[self.original_video],
-                                                                          list_df_PSFs=[self.df_PSFs], list_titles=None,
-                                                                          numRows=1, numColumns=1, cmap='gray',
-                                                                          median_filter_flag=self.viewer.medianFilterFlag,
-                                                                          imgSizex=10, imgSizey=5, time_delay=self.time_delay,
-                                                                          save_path=save_path, fps=self.fps)
+                        ani_ = HTML_PSFs_subplotLocalizationDisplay(
+                            list_videos=[self.original_video],
+                            list_df_PSFs=[self.df_PSFs],
+                            list_titles=None,
+                            numRows=1,
+                            numColumns=1,
+                            cmap="gray",
+                            median_filter_flag=self.viewer.medianFilterFlag,
+                            imgSizex=10,
+                            imgSizey=5,
+                            time_delay=self.time_delay,
+                            save_path=save_path,
+                            fps=self.fps,
+                        )
                         ani_.signals.finished.connect(self.finish_mp4)
                         self.threadpool.start(ani_)
                         while self.flag_mp4:
@@ -493,20 +558,19 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
     def histogram(self):
         tmp = self.original_video[self.viewer.slice_num]
         plt.figure(figsize=(6, 6), dpi=100)
-        plt.hist(tmp.ravel(), fc='g', ec='k')
+        plt.hist(tmp.ravel(), fc="g", ec="k")
         plt.title("Histogram of pixel intensity")
         plt.ylabel("#Counts")
         plt.show()
 
     @QtCore.Slot()
     def run_play(self):
-
-        if self.step_size == '' or self.step_size is None:
+        if self.step_size == "" or self.step_size is None:
             self.frame_strides = 1
         else:
             self.frame_strides = int(self.step_size)
 
-        if self.time_delay == '' or self.time_delay is None:
+        if self.time_delay == "" or self.time_delay is None:
             self.time_delay = 0.1
         else:
             self.time_delay = float(self.time_delay)
@@ -521,7 +585,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         slice_num = self.slice_slider.value()
         self.playBtn.setDisabled(True)
 
-        while slice_num < self.image_series.shape[0]-1 and play_flag:
+        while slice_num < self.image_series.shape[0] - 1 and play_flag:
             slice_num += self.frame_strides
             self.slice_slider.setValue(slice_num)
             self.viewer.slice_num = self.slice_slider.value()
@@ -536,7 +600,6 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
     @QtCore.Slot()
     def stop_video(self):
-
         global play_flag
         play_flag = False
 
@@ -553,7 +616,9 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
     def annotation_context_menu(self):
         self.temporal_annotation = TemporalAnnotationSetting()
-        self.temporal_annotation.temporalAnnotation_signal.connect(self.update_temporal_annotation)
+        self.temporal_annotation.temporalAnnotation_signal.connect(
+            self.update_temporal_annotation
+        )
         self.temporal_annotation.show()
 
     def frame_read(self, frame_num):
@@ -563,7 +628,9 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
     def photoClicked(self, pos):
         if self.viewer.dragMode() == QtWidgets.QGraphicsView.NoDrag:
             value = self.original_video[self.frame_num, pos[0], pos[1]]
-            self.statusbar.showMessage('X:%d, Y:%d, Frame:%d, Value:%f' % (pos[0], pos[1], self.frame_num, value))
+            self.statusbar.showMessage(
+                "X:%d, Y:%d, Frame:%d, Value:%f" % (pos[0], pos[1], self.frame_num, value)
+            )
 
     @QtCore.Slot(int)
     def setProgress(self, val):
@@ -600,15 +667,12 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         self.con_adj_setting.max_intensity_signal.connect(self.set_max_intensity)
 
     def updata_viewer(self):
-        self.viewer.current_pixmap = self.viewer.create_pixmap(self.image_series[self.viewer.slice_num])
+        self.viewer.current_pixmap = self.viewer.create_pixmap(
+            self.image_series[self.viewer.slice_num]
+        )
         self.viewer.update_slice(self.viewer.current_pixmap)
         if self.viewer.mask_is_set is True:
             self.viewer.current_mask_pixmap = self.viewer.create_mask_pixmap(
-                self.viewer.maskArray[self.viewer.slice_num, :, :])
+                self.viewer.maskArray[self.viewer.slice_num, :, :]
+            )
             self.viewer.update_overlay(self.viewer.current_mask_pixmap)
-
-
-
-
-
-

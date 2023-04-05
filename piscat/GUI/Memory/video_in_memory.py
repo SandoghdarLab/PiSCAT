@@ -1,12 +1,11 @@
-import psutil
 import gc
-
-from PySide6 import QtGui, QtCore, QtWidgets
-from PySide6.QtWidgets import *
-from PySide6 import QtCore, QtGui
-from PySide6.QtGui import *
-from PySide6.QtCore import *
 from functools import partial
+
+import psutil
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
 class VideoInMemory(QtWidgets.QMainWindow):
@@ -34,16 +33,16 @@ class VideoInMemory(QtWidgets.QMainWindow):
         self.Display_1.setAutoDefault(False)
         self.Display_1.setDisabled(True)
         self.Display_1.clicked.connect(partial(self.do_update_display, mode="original_video"))
-        if 'original_video' in self.list_available_video.keys():
-            if self.list_available_video['original_video']:
+        if "original_video" in self.list_available_video.keys():
+            if self.list_available_video["original_video"]:
                 self.Display_1.setDisabled(False)
 
         self.Display_2 = QtWidgets.QPushButton("Display")
         self.Display_2.setAutoDefault(False)
         self.Display_2.setDisabled(True)
         self.Display_2.clicked.connect(partial(self.do_update_display, mode="DRA_video"))
-        if 'DRA_video' in self.list_available_video.keys():
-            if self.list_available_video['DRA_video']:
+        if "DRA_video" in self.list_available_video.keys():
+            if self.list_available_video["DRA_video"]:
                 self.Display_2.setDisabled(False)
 
         # clear
@@ -51,16 +50,16 @@ class VideoInMemory(QtWidgets.QMainWindow):
         self.Clear_1.setAutoDefault(False)
         self.Clear_1.setDisabled(True)
         self.Clear_1.clicked.connect(partial(self.do_update_clear, mode="original_video"))
-        if 'original_video' in self.list_available_video.keys():
-            if self.list_available_video['original_video']:
+        if "original_video" in self.list_available_video.keys():
+            if self.list_available_video["original_video"]:
                 self.Clear_1.setDisabled(False)
 
         self.Clear_2 = QtWidgets.QPushButton("Clear")
         self.Clear_2.setAutoDefault(False)
         self.Clear_2.setDisabled(True)
         self.Clear_2.clicked.connect(partial(self.do_update_clear, mode="DRA_video"))
-        if 'DRA_video' in self.list_available_video.keys():
-            if self.list_available_video['DRA_video']:
+        if "DRA_video" in self.list_available_video.keys():
+            if self.list_available_video["DRA_video"]:
                 self.Clear_2.setDisabled(False)
 
         self._ProgressBar = QtWidgets.QProgressBar(self)
@@ -85,7 +84,7 @@ class VideoInMemory(QtWidgets.QMainWindow):
         self.window.show()
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def get_in(self, list_available_video):
         self.list_available_video = list_available_video
@@ -100,27 +99,27 @@ class VideoInMemory(QtWidgets.QMainWindow):
 
         # Display
         self.Display_1.setDisabled(True)
-        if self.list_available_video['original_video']:
+        if self.list_available_video["original_video"]:
             self.Display_1.setDisabled(False)
 
         self.Display_2.setDisabled(True)
-        if self.list_available_video['DRA_video']:
+        if self.list_available_video["DRA_video"]:
             self.Display_2.setDisabled(False)
 
         # clear
         self.Clear_1.setDisabled(True)
-        if self.list_available_video['original_video']:
+        if self.list_available_video["original_video"]:
             self.Clear_1.setDisabled(False)
 
         self.Clear_2.setDisabled(True)
-        if self.list_available_video['DRA_video']:
+        if self.list_available_video["DRA_video"]:
             self.Clear_2.setDisabled(False)
 
     # @QtCore.Slot(int)
     def setProgress(self, step=1000):
         gc.collect()
         memory = dict(psutil.virtual_memory()._asdict())
-        value = memory['percent']
+        value = memory["percent"]
         # print(Memory)
         self._ProgressBar.setMaximum(step * 100)
         self._ProgressBar.setValue(step * value)
@@ -128,25 +127,24 @@ class VideoInMemory(QtWidgets.QMainWindow):
         self._ProgressBar.setAlignment(Qt.AlignCenter)
 
     def do_update_display(self, mode):
-        if mode == 'original_video':
+        if mode == "original_video":
             self.display_flag_original = True
             self.display_flag_memory = False
-            self.display_trigger.emit('original_video')
+            self.display_trigger.emit("original_video")
 
-        elif mode == 'DRA_video':
+        elif mode == "DRA_video":
             self.display_flag_DRA = True
             self.display_flag_memory = False
-            self.display_trigger.emit('DRA_video')
+            self.display_trigger.emit("DRA_video")
 
     def do_update_clear(self, mode):
-        if mode == 'original_video':
+        if mode == "original_video":
             self.clear_flag_original = True
             self.clear_flag_memory = False
 
-        elif mode == 'DRA_video':
+        elif mode == "DRA_video":
             self.clear_flag_DRA = True
             self.clear_flag_memory = False
 
     def closeEvent(self, **kwargs):
         QtCore.QCoreApplication.instance().quit()
-

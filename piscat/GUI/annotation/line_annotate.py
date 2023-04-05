@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QWidget, QApplication, QLabel
-from PySide6.QtCore import QRect, Qt, QLine
-from PySide6.QtGui import QImage, QPixmap, QPainter, QPen, QGuiApplication
+from PySide6.QtCore import QLine, Qt
+from PySide6.QtGui import QPainter, QPen
+from PySide6.QtWidgets import QLabel
 
 from piscat.Localization.directional_intensity import DirectionalIntensity
 
@@ -37,9 +37,14 @@ class Line_Annotated(QLabel):
 
     def read_pixel_valus(self):
         DI = DirectionalIntensity()
-        radial_index = DI.interpolate_pixels_along_line(x0=int(self.x0), y0=int(self.y0), x1=int(self.x1),
-                                                        y1=int(self.y1))
+        radial_index = DI.interpolate_pixels_along_line(
+            x0=int(self.x0), y0=int(self.y0), x1=int(self.x1), y1=int(self.y1)
+        )
 
         for idx_ in radial_index:
-            self.ori_X = int((self.orginal_video.shape[1] / self.pixmap_video.size().toTuple()[0]) * idx_[0])
-            self.ori_Y = int((self.orginal_video.shape[2] / self.pixmap_video.size().toTuple()[1]) * idx_[1])
+            self.ori_X = int(
+                (self.orginal_video.shape[1] / self.pixmap_video.size().toTuple()[0]) * idx_[0]
+            )
+            self.ori_Y = int(
+                (self.orginal_video.shape[2] / self.pixmap_video.size().toTuple()[1]) * idx_[1]
+            )

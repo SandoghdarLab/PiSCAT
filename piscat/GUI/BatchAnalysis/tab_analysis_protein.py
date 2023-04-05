@@ -1,19 +1,10 @@
-from piscat.GUI.InputOutput import Reading
-from functools import partial
+from PySide6 import QtCore, QtWidgets
 
-from piscat.InputOutput import reading_videos
 from piscat.Analysis.analysis_protein_videos import protein_analysis
-
-
-from PySide6 import QtCore
-from PySide6 import QtWidgets
-
-import os
-import numpy as np
+from piscat.InputOutput import reading_videos
 
 
 class ProteinAnalysis_GUI(QtWidgets.QWidget):
-
     update_output_internal = QtCore.Signal(object)
     update_output_external = QtCore.Signal(object)
 
@@ -71,29 +62,23 @@ class ProteinAnalysis_GUI(QtWidgets.QWidget):
 
     def run_analysis_scr(self):
         if self.hyperparameters is not None and self.flags is not None:
-            type_file = self.hyperparameters['type_file']
-            dirName = self.hyperparameters['path']
-            name_mkdir = self.hyperparameters['name_mkdir']
+            type_file = self.hyperparameters["type_file"]
+            dirName = self.hyperparameters["path"]
+            name_mkdir = self.hyperparameters["name_mkdir"]
 
             df_video = reading_videos.DirectoryType(dirName, type_file).return_df()
 
-            paths = df_video['Directory'].tolist()
-            video_names = df_video['File'].tolist()
-            protein_analysis(paths=paths, video_names=video_names, hyperparameters=self.hyperparameters, flags=self.flags,
-                             name_mkdir=name_mkdir)
+            paths = df_video["Directory"].tolist()
+            video_names = df_video["File"].tolist()
+            protein_analysis(
+                paths=paths,
+                video_names=video_names,
+                hyperparameters=self.hyperparameters,
+                flags=self.flags,
+                name_mkdir=name_mkdir,
+            )
         else:
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
             self.msg_box.setText("Hyperparameters or Flags is not defined!")
             self.msg_box.exec_()
-
-
-
-
-
-
-
-
-
-
-

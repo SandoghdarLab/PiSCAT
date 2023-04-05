@@ -1,4 +1,4 @@
-from PySide6 import QtGui, QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 
 #############Define MyWindow Class Here ############
@@ -27,8 +27,19 @@ class SaveVideo(QtWidgets.QMainWindow):
 
         self.flag_display = False
 
-        self.image_format = {"int_8": "i1", "int_16": "i2", "int_32": "i4", "int_64": "i8", "uint_8": "u1", "uint_16": "u2", "uint_32": "u4",
-                             "uint_64": "u8", "float_16": "f2", "float_32": "f4", "float_64": "f8"}
+        self.image_format = {
+            "int_8": "i1",
+            "int_16": "i2",
+            "int_32": "i4",
+            "int_64": "i8",
+            "uint_8": "u1",
+            "uint_16": "u2",
+            "uint_32": "u4",
+            "uint_64": "u8",
+            "float_16": "f2",
+            "float_32": "f4",
+            "float_64": "f8",
+        }
 
         self.raw_data_update_flag = True
 
@@ -67,7 +78,7 @@ class SaveVideo(QtWidgets.QMainWindow):
         self.grid.addWidget(self.ok, 6, 0)
 
         self.setWindowTitle("Saving video")
-        self.setStyleSheet('QMainWindow{background-color: darkgray;}')
+        self.setStyleSheet("QMainWindow{background-color: darkgray;}")
         self.window.setLayout(self.grid)
 
     def createFirstExclusiveGroup(self):
@@ -79,7 +90,7 @@ class SaveVideo(QtWidgets.QMainWindow):
         self.grid1 = QtWidgets.QGridLayout()
         self.grid1.addWidget(self.combo_video, 0, 0)
         self.grid1.addWidget(self.combo_bin, 0, 1)
-        self.groupBox_cropping .setLayout(self.grid1)
+        self.groupBox_cropping.setLayout(self.grid1)
 
         return self.groupBox_cropping
 
@@ -87,15 +98,15 @@ class SaveVideo(QtWidgets.QMainWindow):
         if self.ok.clicked:
             self.on_select()
             if self.video_type is not None:
-                if self.video_type == 'RAW':
+                if self.video_type == "RAW":
                     if self.bin_type is None:
                         self.signal_save_Done.emit()
                     else:
                         self.signal_save_Done.emit()
                     self.raw_data_update_flag = False
-                elif self.video_type == 'MP4':
+                elif self.video_type == "MP4":
                     self.signal_save_Done.emit()
-                elif self.video_type == 'GIF':
+                elif self.video_type == "GIF":
                     self.signal_save_Done.emit()
 
     def on_select(self):
@@ -103,7 +114,7 @@ class SaveVideo(QtWidgets.QMainWindow):
             self.bin_type = None
         else:
             self.bin_type = self.image_format[self.combo_bin.currentText()]
-            
+
         if self.combo_video.currentText() == "-Select the video type-":
             self.video_type = None
             self.msg_box = QtWidgets.QMessageBox()

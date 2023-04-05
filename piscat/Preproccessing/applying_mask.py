@@ -1,11 +1,9 @@
-from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from joblib import Parallel, delayed
-
-import numpy as np
 import cv2 as cv
+import numpy as np
+from joblib import Parallel, delayed
 from tqdm.autonotebook import tqdm
-import matplotlib as mpl
-import matplotlib.pylab as plt
+
+from piscat.InputOutput.cpu_configurations import CPUConfigurations
 
 
 class Mask2Video:
@@ -24,26 +22,27 @@ class Mask2Video:
          internal_parallel_flag: bool
             Internal flag for activating parallel computation. Default is True!
         """
-        
+
         self.video = video
         self.cpu = CPUConfigurations()
         self.inter_flag_parallel_active = inter_flag_parallel_active
         if mask is not None:
             if mask.ndim == 2:
-                print('--- Same mask is used for all frame! ---')
+                print("--- Same mask is used for all frame! ---")
                 self.mask_repeater(mask)
 
             elif video.shape == mask.shape:
-                print('--- Mask has same shape with video! ---')
+                print("--- Mask has same shape with video! ---")
                 self.mask = mask
             else:
-                print('--- Mask does not have same shape with video! ---')
+                print("--- Mask does not have same shape with video! ---")
         else:
-            print('--- Mask is not define! ---')
+            print("--- Mask is not define! ---")
 
     def apply_mask(self, flag_nan=True):
-        """
-        This method is used to apply a mask on a video. The masked values might be defined as nan, or they can be chosen from the median values of each frame.
+        """This method is used to apply a mask on a video. The masked values
+        might be defined as nan, or they can be chosen from the median values
+        of each frame.
 
         Parameters
         ----------
@@ -59,8 +58,9 @@ class Mask2Video:
         mask_video = []
         if self.inter_flag_parallel_active and self.cpu.parallel_active:
             print("\n---apply mask with Parallel---")
-            mask_video = Parallel(n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose)(delayed(
-                self.apply_mask_kernel)(f_) for f_ in tqdm(range(self.video.shape[0])))
+            mask_video = Parallel(
+                n_jobs=self.cpu.n_jobs, backend=self.cpu.backend, verbose=self.cpu.verbose
+            )(delayed(self.apply_mask_kernel)(f_) for f_ in tqdm(range(self.video.shape[0])))
             mask_video_ = np.asarray(mask_video)
 
         else:
@@ -72,8 +72,8 @@ class Mask2Video:
         if flag_nan:
             mask_video_[mask_video_ == 0] = np.nan
         else:
-            mask_video_ = mask_video_.astype('float64')
-            mask_video_[mask_video_ == 0.] = np.nan
+            mask_video_ = mask_video_.astype("float64")
+            mask_video_[mask_video_ == 0.0] = np.nan
 
             for f_ in tqdm(range(mask_video_.shape[0])):
                 img_mask = mask_video_[f_, ...]
@@ -118,5 +118,3 @@ class Mask2Video:
         cv.circle(mask, center, redius, 1, -1)
         self.mask_repeater(mask)
         return self.mask
-
-

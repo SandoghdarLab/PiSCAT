@@ -1,5 +1,4 @@
 class ImagingSetupParameters:
-
     ti0 = None
     ni0 = None
     ni = None

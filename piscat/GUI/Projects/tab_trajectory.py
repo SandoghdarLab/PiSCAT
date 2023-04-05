@@ -1,8 +1,8 @@
-from piscat.Trajectory import particle_linking, temporal_filtering
-from piscat.Visualization import plot, plot_histogram
-from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
+from PySide6 import QtCore, QtWidgets
 
-from PySide6 import QtGui, QtCore, QtWidgets
+from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
+from piscat.Trajectory import particle_linking, temporal_filtering
+from piscat.Visualization import plot_histogram
 
 
 class Tracking_GUI(QtWidgets.QWidget):
@@ -26,7 +26,7 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.temporal_length_max = None
         self.df_PSFs_link = None
         self.pixel_size = 1
-        self.axisScale = 'nm'
+        self.axisScale = "nm"
 
         self.setting_tracking = {}
         self.PSFs_Particels_num = {}
@@ -36,7 +36,7 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.empty_value_optional_box_flag_2 = False
 
         self.resize(300, 300)
-        self.setWindowTitle('PSFs Tracking')
+        self.setWindowTitle("PSFs Tracking")
 
         self.btn_hist_plot = QtWidgets.QPushButton("Plot Len histogram")
         self.btn_hist_plot.setFixedWidth(150)
@@ -81,13 +81,11 @@ class Tracking_GUI(QtWidgets.QWidget):
         self.setLayout(self.grid)
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def createFirstExclusiveGroup(self):
-
         groupBox = QtWidgets.QGroupBox("Linking")
         self.checkbox_sorting_based_lenght = QtWidgets.QCheckBox("Sorting", self)
-
 
         self.grid_linking = QtWidgets.QGridLayout()
 
@@ -113,7 +111,6 @@ class Tracking_GUI(QtWidgets.QWidget):
         return groupBox
 
     def createSecondExclusiveGroup(self):
-
         self.checkbox_display_label = QtWidgets.QCheckBox("Display label of particles", self)
 
         self.line_pixel_size = QtWidgets.QLineEdit()
@@ -148,7 +145,6 @@ class Tracking_GUI(QtWidgets.QWidget):
 
     @QtCore.Slot()
     def do_update(self):
-
         if self.df_psfs is None:
             self.msg_box2 = QtWidgets.QMessageBox()
             self.msg_box2.setWindowTitle("Warning!")
@@ -156,19 +152,22 @@ class Tracking_GUI(QtWidgets.QWidget):
             self.msg_box2.exec_()
 
         else:
-
             self.get_values_1()
             if self.empty_value_box_flag:
                 if self.df_psfs.shape[0] > 1:
                     linking_ = particle_linking.Linking()
-                    df_PSFs_link = linking_.create_link(psf_position=self.df_psfs,
-                                                        search_range=self.search_range,
-                                                        memory=self.memory)
+                    df_PSFs_link = linking_.create_link(
+                        psf_position=self.df_psfs,
+                        search_range=self.search_range,
+                        memory=self.memory,
+                    )
                     self.df_PSFs_link = df_PSFs_link
 
-                    self.his_all_particles = df_PSFs_link['particle'].value_counts()
-                    plot_histogram(self.his_all_particles, 'Lengths of linking')
-                    self.PSFs_Particels_num['Total_number_Particles'] = linking_.trajectory_counter(df_PSFs_link)
+                    self.his_all_particles = df_PSFs_link["particle"].value_counts()
+                    plot_histogram(self.his_all_particles, "Lengths of linking")
+                    self.PSFs_Particels_num[
+                        "Total_number_Particles"
+                    ] = linking_.trajectory_counter(df_PSFs_link)
                 else:
                     self.msg_box3 = QtWidgets.QMessageBox()
                     self.msg_box3.setWindowTitle("Warning!")
@@ -177,7 +176,7 @@ class Tracking_GUI(QtWidgets.QWidget):
 
     def plot_len_hist(self):
         if self.his_all_particles is not None:
-            plot_histogram(self.his_all_particles, 'Lengths of linking')
+            plot_histogram(self.his_all_particles, "Lengths of linking")
         else:
             self.msg_box3 = QtWidgets.QMessageBox()
             self.msg_box3.setWindowTitle("Warning!")
@@ -195,15 +194,24 @@ class Tracking_GUI(QtWidgets.QWidget):
             self.get_values_2()
             if self.empty_value_box_flag:
                 if self.df_PSFs_link.shape[0] > 1:
-                    t_filters = temporal_filtering.TemporalFilter(video=self.input_video,
-                                                                  batchSize=self.batch_size)
+                    t_filters = temporal_filtering.TemporalFilter(
+                        video=self.input_video, batchSize=self.batch_size
+                    )
 
-                    all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=self.df_PSFs_link,
-                                                                                                   threshold_min=self.temporal_length_min,
-                                                                                                   threshold_max=self.temporal_length_max)
+                    (
+                        all_trajectories,
+                        df_PSFs_t_filter,
+                        his_all_particles,
+                    ) = t_filters.v_trajectory(
+                        df_PSFs=self.df_PSFs_link,
+                        threshold_min=self.temporal_length_min,
+                        threshold_max=self.temporal_length_max,
+                    )
 
                     linking_ = particle_linking.Linking()
-                    self.PSFs_Particels_num['#Particles_after_temporal_filter'] = linking_.trajectory_counter(df_PSFs_t_filter)
+                    self.PSFs_Particels_num[
+                        "#Particles_after_temporal_filter"
+                    ] = linking_.trajectory_counter(df_PSFs_t_filter)
 
                     if self.checkbox_sorting_based_lenght.isChecked():
                         df_PSFs_t_filter = linking_.sorting_linking(df_PSFs=df_PSFs_t_filter)
@@ -211,10 +219,14 @@ class Tracking_GUI(QtWidgets.QWidget):
                     self.link_df_PSFS = df_PSFs_t_filter
                     self.all_trajectories = all_trajectories
 
-                    self.setting_tracking['Memory (frame)'] = self.memory
-                    self.setting_tracking['Neighborhood_size (px)'] = self.search_range
-                    self.setting_tracking['Minimum_temporal_length (frame)'] = self.temporal_length_min
-                    self.setting_tracking['Maximum_temporal_length (frame)'] = self.temporal_length_max
+                    self.setting_tracking["Memory (frame)"] = self.memory
+                    self.setting_tracking["Neighborhood_size (px)"] = self.search_range
+                    self.setting_tracking[
+                        "Minimum_temporal_length (frame)"
+                    ] = self.temporal_length_min
+                    self.setting_tracking[
+                        "Maximum_temporal_length (frame)"
+                    ] = self.temporal_length_max
 
                     self.update_tracking.emit(self.link_df_PSFS)
                     self.update_trajectories.emit(all_trajectories)
@@ -227,14 +239,12 @@ class Tracking_GUI(QtWidgets.QWidget):
                 self.msg_box3.exec_()
 
     def do_plot2D(self):
-
         if self.link_df_PSFS is None:
             self.msg_box3 = QtWidgets.QMessageBox()
             self.msg_box3.setWindowTitle("Warning!")
             self.msg_box3.setText("Please update the linking section!")
             self.msg_box3.exec_()
         else:
-
             try:
                 self.pixel_size = int(self.line_pixel_size.text())
             except:
@@ -253,19 +263,22 @@ class Tracking_GUI(QtWidgets.QWidget):
                 self.msg_box3.setText("axis scale set as default (nm)!")
                 self.msg_box3.exec_()
 
-                self.axisScale = '(nm)'
+                self.axisScale = "(nm)"
 
             if self.checkbox_display_label.isChecked():
                 label = True
             else:
                 label = False
 
-            # plot.plot2df(self.link_df_PSFS, pixel_size=self.pixel_size, scale=self.axisScale, title='', flag_label=label)
-
             his_ = PlotProteinHistogram(intersection_display_flag=False)
-            his_(folder_name='', particles=self.all_trajectories, batch_size=self.batch_size,
-                 video_frame_num=self.input_video.shape[0], MinPeakWidth=0,
-                 MinPeakProminence=0)
+            his_(
+                folder_name="",
+                particles=self.all_trajectories,
+                batch_size=self.batch_size,
+                video_frame_num=self.input_video.shape[0],
+                MinPeakWidth=0,
+                MinPeakProminence=0,
+            )
 
             his_.plot_localization_heatmap(pixel_size=self.pixel_size, unit=self.axisScale)
 

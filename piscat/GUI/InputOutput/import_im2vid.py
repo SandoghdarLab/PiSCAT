@@ -1,13 +1,11 @@
 import matplotlib.pyplot as plt
+from PySide6 import QtCore, QtWidgets
+
 from piscat.InputOutput import reading_videos
 from piscat.InputOutput.image_to_video import Image2Video
 
-from PySide6 import QtCore
-from PySide6 import QtWidgets
-
 
 class Image2Video(QtWidgets.QMainWindow):
-
     def __init__(self, fileName):
         super(Image2Video, self).__init__()
         self.fileName = fileName
@@ -35,8 +33,19 @@ class Image2Video(QtWidgets.QMainWindow):
         self.little_endian_flag = False
         self.big_endian_flag = False
 
-        self.image_format = {"int_8": "i1", "int_16": "i2", "int_32": "i4", "int_64": "i8", "uint_8": "u1", "uint_16": "u2", "uint_32": "u4",
-                             "uint_64": "u8", "float_16": "f2", "float_32": "f4", "float_64": "f8"}
+        self.image_format = {
+            "int_8": "i1",
+            "int_16": "i2",
+            "int_32": "i4",
+            "int_64": "i8",
+            "uint_8": "u1",
+            "uint_16": "u2",
+            "uint_32": "u4",
+            "uint_64": "u8",
+            "float_16": "f2",
+            "float_32": "f4",
+            "float_64": "f8",
+        }
 
         self.reader_format = {"binary": "binary", "tif": "tif", "avi": "avi", "png": "png"}
         self.raw_data_update_flag = True
@@ -69,17 +78,17 @@ class Image2Video(QtWidgets.QMainWindow):
         self.combo_reader_type.currentIndexChanged.connect(self.on_select_vid_reader)
 
         self.le1 = QtWidgets.QLineEdit()
-        self.le1.setPlaceholderText('width')
+        self.le1.setPlaceholderText("width")
         self.le_1_label = QtWidgets.QLabel("Image size width(px):")
         self.le1.setFixedWidth(50)
 
         self.le2 = QtWidgets.QLineEdit()
-        self.le2.setPlaceholderText('height')
+        self.le2.setPlaceholderText("height")
         self.le_2_label = QtWidgets.QLabel("Image size height(px):")
         self.le2.setFixedWidth(50)
 
         self.le_imType = QtWidgets.QLineEdit()
-        self.le_imType.setPlaceholderText('image_type')
+        self.le_imType.setPlaceholderText("image_type")
         self.le_imType_label = QtWidgets.QLabel("image_type(*.---):")
         self.le_imType.setFixedWidth(50)
 
@@ -130,7 +139,7 @@ class Image2Video(QtWidgets.QMainWindow):
         self.groupBox_cropping.setChecked(False)
         self.grid2 = QtWidgets.QGridLayout()
         self.info_cut_edith()
-        self.groupBox_cropping .setLayout(self.grid2)
+        self.groupBox_cropping.setLayout(self.grid2)
 
         return self.groupBox_cropping
 
@@ -143,16 +152,15 @@ class Image2Video(QtWidgets.QMainWindow):
             if self.checkbox_display.isChecked():
                 self.flag_display = True
 
-            if self.height_size != '' and self.width_size != '':
+            if self.height_size != "" and self.width_size != "":
                 self.width_size = int(self.width_size)
                 self.height_size = int(self.height_size)
                 self.frame_s = int(0)
                 self.frame_e = int(-1)
                 self.frame_jump = 1
 
-                if self.groupBox_cropping .isChecked():
-
-                    if self.width_size_s != '' and self.width_size_e != '':
+                if self.groupBox_cropping.isChecked():
+                    if self.width_size_s != "" and self.width_size_e != "":
                         self.width_size_s = int(self.width_size_s)
                         self.width_size_e = int(self.width_size_e)
                     else:
@@ -163,7 +171,7 @@ class Image2Video(QtWidgets.QMainWindow):
                         self.width_size_s = 0
                         self.width_size_e = self.width_size
 
-                    if self.height_size_s != '' and self.height_size_e != '':
+                    if self.height_size_s != "" and self.height_size_e != "":
                         self.height_size_s = int(self.height_size_s)
                         self.height_size_e = int(self.height_size_e)
                     else:
@@ -174,7 +182,7 @@ class Image2Video(QtWidgets.QMainWindow):
                         self.height_size_s = 0
                         self.height_size_e = self.height_size
 
-                    if self.frame_s != '' and self.frame_e != '' and self.frame_jump != '':
+                    if self.frame_s != "" and self.frame_e != "" and self.frame_jump != "":
                         self.frame_s = int(self.frame_s)
                         self.frame_e = int(self.frame_e)
                         self.frame_jump = int(self.frame_jump)
@@ -198,7 +206,6 @@ class Image2Video(QtWidgets.QMainWindow):
                 self.msg_box.exec_()
 
     def check_cut_size_odd(self):
-
         if (self.width_size_s % 2) != 0:
             self.width_size_s = self.width_size_s + 1
 
@@ -230,7 +237,7 @@ class Image2Video(QtWidgets.QMainWindow):
             self.video_reader_type = self.reader_format[self.combo_reader_type.currentText()]
 
     def check_button(self):
-        bit_order = {'native': '=', 'little_endian': '<', 'big_endian': '>'}
+        bit_order = {"native": "=", "little_endian": "<", "big_endian": ">"}
 
         if self.little_endian_flag:
             self.set_bit_order = bit_order["little_endian"]
@@ -241,31 +248,31 @@ class Image2Video(QtWidgets.QMainWindow):
 
     def info_cut_edith(self):
         self.le3 = QtWidgets.QLineEdit()
-        self.le3.setPlaceholderText('width_start')
+        self.le3.setPlaceholderText("width_start")
         self.le_3_label = QtWidgets.QLabel("start width pixel:")
 
         self.le4 = QtWidgets.QLineEdit()
-        self.le4.setPlaceholderText('width_end')
+        self.le4.setPlaceholderText("width_end")
         self.le_4_label = QtWidgets.QLabel("end width pixel:")
 
         self.le5 = QtWidgets.QLineEdit()
-        self.le5.setPlaceholderText('height_start')
+        self.le5.setPlaceholderText("height_start")
         self.le_5_label = QtWidgets.QLabel("start height pixel:")
 
         self.le6 = QtWidgets.QLineEdit()
-        self.le6.setPlaceholderText('height_end')
+        self.le6.setPlaceholderText("height_end")
         self.le_6_label = QtWidgets.QLabel("end height pixel:")
 
         self.le7 = QtWidgets.QLineEdit()
-        self.le7.setPlaceholderText('frame_start')
+        self.le7.setPlaceholderText("frame_start")
         self.le_7_label = QtWidgets.QLabel("start frame:")
 
         self.le8 = QtWidgets.QLineEdit()
-        self.le8.setPlaceholderText('frame_end')
+        self.le8.setPlaceholderText("frame_end")
         self.le_8_label = QtWidgets.QLabel("end frame:")
 
         self.le9 = QtWidgets.QLineEdit()
-        self.le9.setPlaceholderText('frame_jump')
+        self.le9.setPlaceholderText("frame_jump")
         self.le_9_label = QtWidgets.QLabel("frame stride:")
 
         self.grid2.addWidget(self.le_3_label, 1, 0)
@@ -290,7 +297,6 @@ class Image2Video(QtWidgets.QMainWindow):
         self.im_type = self.le_imType.text()
 
         if self.groupBox_cropping.isChecked():
-
             self.width_size_s = self.le3.text()
             self.width_size_e = self.le4.text()
 
@@ -302,7 +308,6 @@ class Image2Video(QtWidgets.QMainWindow):
             self.frame_jump = self.le9.text()
 
     def btnstate(self, b):
-
         if b.text() == "little-endian byte order":
             if b.isChecked() == True:
                 self.little_endian_flag = True

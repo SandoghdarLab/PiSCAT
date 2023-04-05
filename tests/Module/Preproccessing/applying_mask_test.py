@@ -1,7 +1,8 @@
+import unittest
+
 import numpy as np
 
 from piscat.Preproccessing.applying_mask import *
-import unittest
 
 
 class TestMask2Video(unittest.TestCase):
@@ -32,4 +33,3 @@ class TestMask2Video(unittest.TestCase):
         masked_video = self.test_obj.apply_mask(flag_nan=False)
         self.assertTrue(masked_video.shape == self.test_obj.video.shape)
         self.assertTrue(masked_video[0][2, 2] == 1)
-

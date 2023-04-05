@@ -1,23 +1,22 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
-import scipy.ndimage
-import math
 
 
 class DirectionalIntensity:
-
     def __init__(self):
         pass
 
     def interpolate_pixels_along_line(self, x0, y0, x1, y1):
-        """
-        Uses Xiaolin Wu's line algorithm to interpolate all of the pixels along a
+        """Uses Xiaolin Wu's line algorithm to interpolate all of the pixels along a
         straight line, given two points (x0, y0) and (x1, y1)
 
         References
         ----------
-        [1] Wikipedia article containing pseudo code that function was based off of: http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
+        [1] Wikipedia article containing pseudo code that function was based
+        off of: http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
         """
         pixels = []
         steep = abs(y1 - y0) > abs(x1 - x0)
@@ -63,13 +62,18 @@ class DirectionalIntensity:
         xpxl1 = x_end
         ypxl1 = round(y_end)
 
-        # Loop between the first x coordinate and the second x coordinate, interpolating the y coordinates
+        # Loop between the first x coordinate and the second x coordinate,
+        # interpolating the y coordinates
         for x in range(xpxl0 + 1, xpxl1):
             if steep:
-                pixels.extend([(math.floor(interpolated_y), x), (math.floor(interpolated_y) + 1, x)])
+                pixels.extend(
+                    [(math.floor(interpolated_y), x), (math.floor(interpolated_y) + 1, x)]
+                )
 
             else:
-                pixels.extend([(x, math.floor(interpolated_y)), (x, math.floor(interpolated_y) + 1)])
+                pixels.extend(
+                    [(x, math.floor(interpolated_y)), (x, math.floor(interpolated_y) + 1)]
+                )
 
             interpolated_y += gradient
 
@@ -84,7 +88,7 @@ class DirectionalIntensity:
     def radial_profile_app2(self, data, r):
         R = data.shape[0] // 2  # Radial profile radius
         range_arr = np.arange(-R, R + 1)
-        ids = (range_arr[:, None] ** 2 + range_arr ** 2).ravel()
+        ids = (range_arr[:, None] ** 2 + range_arr**2).ravel()
         count = np.bincount(ids)
 
         R0 = R + 1
@@ -106,7 +110,7 @@ class DirectionalIntensity:
             mean_intensity = map(np.mean, intensities)
             width = np.diff(theta_bins)[0]
             plt.bar(theta_bins, mean_intensity, width=width, color=color)
-            plt.xlabel(color + ' Band')
+            plt.xlabel(color + " Band")
             plt.yticks([])
 
         # Make cartesian coordinates for the pixel indicies
@@ -124,16 +128,16 @@ class DirectionalIntensity:
         # Plot...
         plt.figure()
 
-        plt.subplot(2, 2, 1, projection='polar')
-        intensity_rose(theta, red, 'Red')
+        plt.subplot(2, 2, 1, projection="polar")
+        intensity_rose(theta, red, "Red")
 
-        plt.subplot(2, 2, 2, projection='polar')
-        intensity_rose(theta, green, 'Green')
+        plt.subplot(2, 2, 2, projection="polar")
+        intensity_rose(theta, green, "Green")
 
-        plt.subplot(2, 1, 2, projection='polar')
-        intensity_rose(theta, blue, 'Blue')
+        plt.subplot(2, 1, 2, projection="polar")
+        intensity_rose(theta, blue, "Blue")
 
-        plt.suptitle('Average intensity as a function of direction')
+        plt.suptitle("Average intensity as a function of direction")
 
     def plot_polar_image(self, data, origin=None):
         """Plots an image reprojected into polar coordinages with the origin
@@ -141,11 +145,11 @@ class DirectionalIntensity:
         polar_grid, r, theta = self.reproject_image_into_polar(data, origin)
         plt.figure()
         plt.imshow(polar_grid, extent=(theta.min(), theta.max(), r.max(), r.min()))
-        plt.axis('auto')
+        plt.axis("auto")
         plt.ylim(plt.ylim()[::-1])
-        plt.xlabel('Theta Coordinate (radians)')
-        plt.ylabel('R Coordinate (pixels)')
-        plt.title('Image in Polar Coordinates')
+        plt.xlabel("Theta Coordinate (radians)")
+        plt.ylabel("R Coordinate (pixels)")
+        plt.title("Image in Polar Coordinates")
 
     def index_coords(self, data, origin=None):
         """Creates x & y coords for the indicies in a numpy array "data".
@@ -162,7 +166,7 @@ class DirectionalIntensity:
         return x, y
 
     def cart2polar(self, x, y):
-        r = np.sqrt(x ** 2 + y ** 2)
+        r = np.sqrt(x**2 + y**2)
         theta = np.arctan2(y, x)
         return r, theta
 

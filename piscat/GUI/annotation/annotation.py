@@ -4,14 +4,14 @@ __license__ = "GPL"
 __email__ = "hmirzaa@mpl.mpg.de
 """
 
-from base64 import b64encode, b64decode
 import json
 import re
-import pandas as pd
+from base64 import b64encode
 
+import pandas as pd
+from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
-from PySide6.QtCore import *
 
 CURSOR_DEFAULT = Qt.ArrowCursor
 CURSOR_POINT = Qt.PointingHandCursor
@@ -21,8 +21,7 @@ CURSOR_GRAB = Qt.OpenHandCursor
 
 
 class LineWidthDialog(QDialog):
-    '''A window with a slider to set line width of annotations
-    '''
+    """A window with a slider to set line width of annotations"""
 
     def __init__(self, allshapes=None, scene=None, parent=None):
         super(LineWidthDialog, self).__init__(parent)
@@ -42,7 +41,9 @@ class LineWidthDialog(QDialog):
         self.slider.setMaximum(10)
         self.slider.setValue(self.lwidth)
         self.form.addWidget(self.slider, 1, 0)
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal
+        )
 
         self.form.addWidget(self.buttonBox, 2, 0)
         self.buttonBox.accepted.connect(self.accept)
@@ -58,9 +59,9 @@ class LineWidthDialog(QDialog):
 
 
 class EpsilonSliderDialog(QDialog):
-    '''A window with a slider to set attraction epsilon, i.e. pull the cursor
+    """A window with a slider to set attraction epsilon, i.e. pull the cursor
     to the first point of the shape if epsilon close
-    '''
+    """
 
     def __init__(self, scene=None, parent=None):
         super(EpsilonSliderDialog, self).__init__(parent)
@@ -80,7 +81,9 @@ class EpsilonSliderDialog(QDialog):
         self.slider.setMaximum(2 * self.epsilon)
         self.slider.setValue(self.epsilon)
         self.form.addWidget(self.slider, 1, 0)
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal
+        )
 
         self.form.addWidget(self.buttonBox, 2, 0)
         self.buttonBox.accepted.connect(self.accept)
@@ -94,9 +97,9 @@ class EpsilonSliderDialog(QDialog):
 
 
 class PropertiesWindow(QDialog):
-    '''A window that pops up on right click (see mousepressevent in qscene).
+    """A window that pops up on right click (see mousepressevent in qscene).
     Lets the user reassign an annotated ("closed") shape to a different label class.
-    '''
+    """
 
     def __init__(self, shape=None, all_labels=[None], scene=None, parent=None):
         super(PropertiesWindow, self).__init__(parent)
@@ -122,15 +125,17 @@ class PropertiesWindow(QDialog):
         self.form.addWidget(QLabel("Label:"), 2, 0)
         self.form.addWidget(self.qbox, 2, 1)
 
-        copybutton = QPushButton('Copy', self)
+        copybutton = QPushButton("Copy", self)
         copybutton.clicked.connect(scene.copySelected)
 
-        self.editbutton = QPushButton('Set editable', self)
+        self.editbutton = QPushButton("Set editable", self)
         self.editbutton.setCheckable(True)
         self.editbutton.clicked.connect(self.updateCheckable)
         self.editableColor()
 
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal
+        )
         self.buttonBox.addButton(copybutton, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(self.editbutton, QDialogButtonBox.ActionRole)
         self.form.addWidget(self.buttonBox, 3, 0)
@@ -172,10 +177,10 @@ class PropertiesWindow(QDialog):
 
 
 class LabelDialog(QDialog):
-    '''Label editor form. Given # of new classes to initiate (nlabels) pops up
+    """Label editor form. Given # of new classes to initiate (nlabels) pops up
     a form with a line editor to name a class and a button to set label color.
     If nlabel=0, the form Features only already initialized labels for editing.
-    '''
+    """
 
     def __init__(self, nlabels=1, prelabels=None, parent=None):
         super(LabelDialog, self).__init__(parent)
@@ -187,15 +192,19 @@ class LabelDialog(QDialog):
 
         self.form = QGridLayout(self)
         self.form.addWidget(QLabel("Please give description of labels below:"), 0, 0)
-        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal)
+        self.buttonBox = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel, Qt.Horizontal
+        )
 
         if prelabels is not None:
             self.prenames = [label.name for label in prelabels]
             self.precolors = [label.fillColor for label in prelabels]
             nprelabels = len(prelabels)
             self.colors = self.colors + nprelabels * [None]
-            [self.addLabelInfo(index, prelabdata=[self.prenames[index], self.precolors[index]]) for index in
-             range(nprelabels)]
+            [
+                self.addLabelInfo(index, prelabdata=[self.prenames[index], self.precolors[index]])
+                for index in range(nprelabels)
+            ]
             [self.addLabelInfo(index) for index in range(nprelabels, nprelabels + nlabels)]
             self.form.addWidget(self.buttonBox, 2 * (nprelabels + nlabels) + 1, 0)
         else:
@@ -218,9 +227,9 @@ class LabelDialog(QDialog):
         return
 
     def fillemptynames(self):
-        indices = [i for i, name in enumerate(self.names) if name == '']
+        indices = [i for i, name in enumerate(self.names) if name == ""]
         for ind in indices:
-            self.names[ind] = 'class' + str(ind + 1)
+            self.names[ind] = "class" + str(ind + 1)
         return
 
     def extractInputs(self):
@@ -239,9 +248,9 @@ class LabelDialog(QDialog):
 
     def addLabelInfo(self, labelindex, prelabdata=2 * [None]):
         lineEdit = QLineEdit(self)
-        button = QPushButton('Select color', self)
-        labelname = QLabel('Label {} name'.format(labelindex + 1))
-        labelcolor = QLabel('Label {} color'.format(labelindex + 1))
+        button = QPushButton("Select color", self)
+        labelname = QLabel("Label {} name".format(labelindex + 1))
+        labelcolor = QLabel("Label {} color".format(labelindex + 1))
 
         if prelabdata[0] is not None:
             lineEdit.setText("{}".format(prelabdata[0]))
@@ -267,7 +276,7 @@ class LabelDialog(QDialog):
         color = dialogue.selectedColor()
         self.colors[labelindex] = color
 
-        button = QPushButton('Select color', self)
+        button = QPushButton("Select color", self)
         palette = button.palette()
         role = button.backgroundRole()
         palette.setColor(role, color)
@@ -279,8 +288,8 @@ class LabelDialog(QDialog):
 
 
 class ToolButton(QToolButton):
-    '''Overwrite QToolButton to ensure all buttons are of same size
-    '''
+    """Overwrite QToolButton to ensure all buttons are of same size"""
+
     minSize = (80, 80)
 
     def minimumSizeHint(self):
@@ -292,18 +301,18 @@ class ToolButton(QToolButton):
 
 
 def process(filename, default=None):
-    '''Return bytes for an image given its path
-    '''
+    """Return bytes for an image given its path"""
     try:
-        with open(filename, 'rb') as f:
+        with open(filename, "rb") as f:
             return f.read()
     except:
         return default
 
 
-def newAction(parent, text, slot=None, shortcut=None, icon=None,
-              tip=None, checkable=False, enabled=True):
-    '''Initialize an action with flags as requested'''
+def newAction(
+    parent, text, slot=None, shortcut=None, icon=None, tip=None, checkable=False, enabled=True
+):
+    """Initialize an action with flags as requested"""
     a = QAction(text, parent)
 
     if shortcut is not None:
@@ -322,15 +331,14 @@ def newAction(parent, text, slot=None, shortcut=None, icon=None,
 
 
 def distance(delta):
-    '''Squared euclidean distance as metric. Returns distance given an elementwise delta
-    '''
-    return (delta.x() ** 2 + delta.y() ** 2)
+    """Squared euclidean distance as metric. Returns distance given an elementwise delta"""
+    return delta.x() ** 2 + delta.y() ** 2
 
 
 class LabelClass(object):
-    '''Class to keep record of a label class characteristics with a method to
+    """Class to keep record of a label class characteristics with a method to
     assign shapes to it
-    '''
+    """
 
     def __init__(self):
         self.polygons = []
@@ -347,8 +355,7 @@ class LabelClass(object):
 
 
 class Annotationscene(object):
-    '''Class to store and save outputs as .csv and .json
-    '''
+    """Class to store and save outputs as .csv and .json"""
 
     def __init__(self, filename=None):
         self.polygons = None
@@ -363,54 +370,74 @@ class Annotationscene(object):
 
     def shapes_to_pandas(self):
         imsize, objects, types, labels = self.imsizes, self.shapes, self.object_types, self.labels
-        df = pd.DataFrame(columns=['width', 'height', 'Object', 'X', 'Y'])
+        df = pd.DataFrame(columns=["width", "height", "Object", "X", "Y"])
         for i, obj in enumerate(objects):
             X, Y = list(zip(*obj))
-            df = df.append(pd.DataFrame(
-                {'width': imsize[0], 'height': imsize[1], 'Object': i + 1, 'Type': types[i], 'Label': labels[i], 'X': X,
-                 'Y': Y}), ignore_index=True)
+            df = df.append(
+                pd.DataFrame(
+                    {
+                        "width": imsize[0],
+                        "height": imsize[1],
+                        "Object": i + 1,
+                        "Type": types[i],
+                        "Label": labels[i],
+                        "X": X,
+                        "Y": Y,
+                    }
+                ),
+                ignore_index=True,
+            )
         return df
 
     def save(self):
-
         self.shapes = [[(point.x(), point.y()) for point in poly] for poly in self.polygons]
-        self.shapes_to_pandas().to_csv(re.search(re.compile('(.+?)(\.[^.]*$|$)'), self.filename).group(1) + '.csv',
-                                       sep=',')
+        self.shapes_to_pandas().to_csv(
+            re.search(re.compile("(.+?)(\.[^.]*$|$)"), self.filename).group(1) + ".csv", sep=","
+        )
         if self.savebytes:
-            self.imData = b64encode(self.imageData).decode('utf-8')
+            self.imData = b64encode(self.imageData).decode("utf-8")
 
             try:
-                with open(self.filename, 'w') as f:
-
-                    json.dump({
-                        'objects': self.shapes,
-                        'bin_type': self.object_types,
-                        'label': self.labels,
-                        'width/height': self.imsizes,
-                        'lineColor': self.lineColor,
-                        'imagePath': self.imagePath,
-                        'imageData': self.imData},
-                        f, ensure_ascii=True, indent=2)
+                with open(self.filename, "w") as f:
+                    json.dump(
+                        {
+                            "objects": self.shapes,
+                            "bin_type": self.object_types,
+                            "label": self.labels,
+                            "width/height": self.imsizes,
+                            "lineColor": self.lineColor,
+                            "imagePath": self.imagePath,
+                            "imageData": self.imData,
+                        },
+                        f,
+                        ensure_ascii=True,
+                        indent=2,
+                    )
             except:
                 pass
         else:
             try:
-                with open(self.filename, 'w') as f:
-                    json.dump({
-                        'objects': self.shapes,
-                        'bin_type': self.object_types,
-                        'label': self.labels,
-                        'width/height': self.imsizes,
-                        'lineColor': self.lineColor,
-                        'imagePath': self.imagePath},
-                        f, ensure_ascii=True, indent=2)
+                with open(self.filename, "w") as f:
+                    json.dump(
+                        {
+                            "objects": self.shapes,
+                            "bin_type": self.object_types,
+                            "label": self.labels,
+                            "width/height": self.imsizes,
+                            "lineColor": self.lineColor,
+                            "imagePath": self.imagePath,
+                        },
+                        f,
+                        ensure_ascii=True,
+                        indent=2,
+                    )
             except:
                 pass
 
 
 class Shape(QGraphicsItem):
-    '''The main class controlling shape's points, its color, highlight behavior
-    '''
+    """The main class controlling shape's points, its color, highlight behavior"""
+
     line_color = QColor(0, 6, 255)
     select_line_color = QColor(255, 255, 255)
     vertex_fill_color = QColor(0, 255, 0, 255)
@@ -451,7 +478,6 @@ class Shape(QGraphicsItem):
         return None
 
     def paint(self, painter, option, widget):
-
         if self.points:
             self.prepareGeometryChange()
             color = self.select_line_color if self.selected else self.line_color
@@ -488,7 +514,7 @@ class Shape(QGraphicsItem):
         return self.shape().boundingRect()
 
     def moveBy(self, tomove, delta):
-        if tomove == 'all':
+        if tomove == "all":
             tomove = slice(0, len(self.points))
         else:
             tomove = slice(tomove, tomove + 1)
@@ -512,10 +538,11 @@ class Shape(QGraphicsItem):
 
 
 class SubQGraphicsScene(QGraphicsScene):
-    '''Overwrite QGraphicsScene to prescribe actions to mouse events,
+    """Overwrite QGraphicsScene to prescribe actions to mouse events,
     collect annotated shapes and label classes, tracks which mode the program is in
     at any moment (drawing, navigating, moving)
-    '''
+    """
+
     NAVIGATION, DRAWING, MOVING = 0, 1, 2
     POLYDRAWING, POLYREADY = 0, 1
     epsilon = 30.0
@@ -536,7 +563,7 @@ class SubQGraphicsScene(QGraphicsScene):
         self.objtypes = []
         self.labelclasses = []
         self.labelmode = 0  # the default class
-        self.initializeClass('default', QColor(0, 6, 255))  # initialize default class
+        self.initializeClass("default", QColor(0, 6, 255))  # initialize default class
         self.point_size = 1.5
 
     def drawing(self):
@@ -590,7 +617,7 @@ class SubQGraphicsScene(QGraphicsScene):
 
     def initializeClasses(self, names, colors):
         for c, name in enumerate(names):
-            if (c < len(self.labelclasses)):
+            if c < len(self.labelclasses):
                 self.initializeClass(name, colors[c], labelclass=self.labelclasses[c])
                 self.refreshShapestoLabels(labelclass=self.labelclasses[c])
             else:
@@ -626,7 +653,7 @@ class SubQGraphicsScene(QGraphicsScene):
         self.finalisepoly(premature=True)
 
     def mousePressEvent(self, event):
-        '''Draw, move vertices/shapes, open properties window'''
+        """Draw, move vertices/shapes, open properties window"""
         pos = event.scenePos()
 
         if (event.button() == Qt.RightButton) and not self.drawing():
@@ -634,7 +661,9 @@ class SubQGraphicsScene(QGraphicsScene):
                 all_labels = [None]
                 if len(self.labelclasses) > 0:
                     all_labels = self.labelclasses
-                propdialog = PropertiesWindow(shape=self.selectedShape, all_labels=all_labels, scene=self)
+                propdialog = PropertiesWindow(
+                    shape=self.selectedShape, all_labels=all_labels, scene=self
+                )
                 propdialog.move(event.screenPos())
                 propdialogexec = propdialog.exec()
 
@@ -679,9 +708,8 @@ class SubQGraphicsScene(QGraphicsScene):
                     self.QGitem.highlightVertex(0)
 
                 self.QGitem.addPoint(pos)
-                if (self.QGitem.points[0] == pos):
+                if self.QGitem.points[0] == pos:
                     self.finalisepoly()
-
 
             else:
                 self.polystatus = self.POLYDRAWING
@@ -706,14 +734,16 @@ class SubQGraphicsScene(QGraphicsScene):
             self.update()
 
     def mouseMoveEvent(self, event):
-        '''Track the movement of the cursor and update selections/drawings'''
+        """Track the movement of the cursor and update selections/drawings"""
         pos = event.scenePos()
 
         if self.drawing():
             self.overrideCursor(CURSOR_DRAW)
 
             if self.QGitem:
-                if len(self.QGitem.points) == 1:  # initialize the pointing line collapsed to a point
+                if (
+                    len(self.QGitem.points) == 1
+                ):  # initialize the pointing line collapsed to a point
                     self.line.points = [self.QGitem.points[0], self.QGitem.points[0]]
                 colorLine = self.lineColor
                 if len(self.QGitem) > 1 and self.closeEnough(pos, self.QGitem[0]):
@@ -736,7 +766,9 @@ class SubQGraphicsScene(QGraphicsScene):
             self.overrideCursor(CURSOR_GRAB)
             if self.vertexSelected():
                 self.selectedShape.prepareGeometryChange()
-                if (self.selectedShape.objtype == 'Line') and (QApplication.keyboardModifiers() == Qt.ShiftModifier):
+                if (self.selectedShape.objtype == "Line") and (
+                    QApplication.keyboardModifiers() == Qt.ShiftModifier
+                ):
                     self.moveShape(self.selectedShape, pos)
                 else:
                     self.moveVertex(pos)
@@ -749,8 +781,12 @@ class SubQGraphicsScene(QGraphicsScene):
 
         # update selections/highlights based on cursor location
 
-        # check if any vertex is epsilon close to the cursor position and find the corresponding shape
-        id_point = [[i for i, y in enumerate(poly.points) if distance(pos - y) <= self.epsilon] for poly in self.polys]
+        # check if any vertex is epsilon close to the cursor position and find
+        # the corresponding shape
+        id_point = [
+            [i for i, y in enumerate(poly.points) if distance(pos - y) <= self.epsilon]
+            for poly in self.polys
+        ]
         id_shape = [i for i, y in enumerate(id_point) if y != []]
 
         itemUnderMouse = self.itemAt(pos, QTransform())
@@ -762,7 +798,9 @@ class SubQGraphicsScene(QGraphicsScene):
             self.selectedShape.highlightVertex(self.selectedVertex)
             self.update()
             return
-        elif itemUnderMouse in self.items()[:-1]:  # if the cursor is inside of a shape, highlight it
+        elif (
+            itemUnderMouse in self.items()[:-1]
+        ):  # if the cursor is inside of a shape, highlight it
             self.selectedVertex = None
             self.selectShape(itemUnderMouse)
             self.selectedShape.hIndex = None
@@ -788,14 +826,14 @@ class SubQGraphicsScene(QGraphicsScene):
         if self.QGitem:
             if premature:
                 if len(self.QGitem.points) == 1:
-                    self.objtypes.append('Point')
-                    self.QGitem.objtype = 'Point'
+                    self.objtypes.append("Point")
+                    self.QGitem.objtype = "Point"
                 else:
-                    self.objtypes.append('Line')
-                    self.QGitem.objtype = 'Line'
+                    self.objtypes.append("Line")
+                    self.QGitem.objtype = "Line"
             else:
-                self.objtypes.append('Polygon')
-                self.QGitem.objtype = 'Polygon'
+                self.objtypes.append("Polygon")
+                self.QGitem.objtype = "Polygon"
             if self.line:
                 self.removeItem(self.line)
                 self.line.popPoint()
@@ -814,7 +852,6 @@ class SubQGraphicsScene(QGraphicsScene):
         QApplication.setOverrideCursor(cursor)
 
     def copySelected(self):
-
         if self.selectedShape:
             shape = self.selectedShape
             c, o, s = [shape.closed, shape.objtype, shape.point_size]
@@ -833,7 +870,7 @@ class SubQGraphicsScene(QGraphicsScene):
             labelid = [label.name for label in self.labelclasses].index(shape.label)
             self.labelclasses[labelid].assignObject(newshape)
 
-            print('Shape copied')
+            print("Shape copied")
             self.clearShapeSelections()
             self.selectShape(newshape)
             self.update()
@@ -858,14 +895,16 @@ class SubQGraphicsScene(QGraphicsScene):
             self.selectedShape = None
             self.QGitem = None
             self.clearShapeSelections()
-            print('Shape deleted')
+            print("Shape deleted")
             self.update()
             return
 
     def findShapeInLabel(self, shape):
         if len(self.labelclasses) > 0:
             labelpolys = [l.polygons for l in self.labelclasses]
-            return ([(i, label.index(shape)) for i, label in enumerate(labelpolys) if shape in label])
+            return [
+                (i, label.index(shape)) for i, label in enumerate(labelpolys) if shape in label
+            ]
         else:
             return 2 * [None]
 
@@ -901,13 +940,15 @@ class SubQGraphicsScene(QGraphicsScene):
 
     def moveVertex(self, pos):
         self.selectedShape.prepareGeometryChange()
-        self.selectedShape.moveBy(self.selectedVertex, pos - self.selectedShape[self.selectedVertex])
+        self.selectedShape.moveBy(
+            self.selectedVertex, pos - self.selectedShape[self.selectedVertex]
+        )
 
     def moveShape(self, shape, pos):
         delta = pos - self.prevPoint
         if delta:
             shape.prepareGeometryChange()
-            shape.moveBy('all', delta)
+            shape.moveBy("all", delta)
             self.prevPoint = pos
             self.update()
             return True

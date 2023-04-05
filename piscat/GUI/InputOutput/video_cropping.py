@@ -1,8 +1,7 @@
-from PySide6 import QtGui, QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 
 class Cropping(QtWidgets.QMainWindow):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.width_size_s = None
@@ -42,7 +41,7 @@ class Cropping(QtWidgets.QMainWindow):
         self.grid.addWidget(self.ok, 7, 0)
 
         self.setWindowTitle("Reading video")
-        self.setStyleSheet('QMainWindow{background-color: darkgray;}')
+        self.setStyleSheet("QMainWindow{background-color: darkgray;}")
         self.window.setLayout(self.grid)
         self.window.show()
 
@@ -50,7 +49,6 @@ class Cropping(QtWidgets.QMainWindow):
         QtCore.QCoreApplication.instance().quit()
 
     def createSecondExclusiveGroup(self):
-
         self.groupBox_cropping = QtWidgets.QGroupBox("Video Cropping")
         self.groupBox_cropping.setCheckable(True)
         self.groupBox_cropping.setChecked(False)
@@ -70,7 +68,7 @@ class Cropping(QtWidgets.QMainWindow):
                 self.flag_RGB2GRAY = True
 
             if self.groupBox_cropping.isChecked():
-                if self.width_size_s != '' and self.width_size_e != '':
+                if self.width_size_s != "" and self.width_size_e != "":
                     self.width_size_s = int(self.width_size_s)
                     self.width_size_e = int(self.width_size_e)
                 else:
@@ -81,7 +79,7 @@ class Cropping(QtWidgets.QMainWindow):
                     self.width_size_s = 0
                     self.width_size_e = self.width_size
 
-                if self.height_size_s != '' and self.height_size_e != '':
+                if self.height_size_s != "" and self.height_size_e != "":
                     self.height_size_s = int(self.height_size_s)
                     self.height_size_e = int(self.height_size_e)
                 else:
@@ -92,8 +90,8 @@ class Cropping(QtWidgets.QMainWindow):
                     self.height_size_s = 0
                     self.height_size_e = self.height_size
 
-                if self.frame_s != '' and self.frame_e != '' :
-                    if self.frame_jump != '':
+                if self.frame_s != "" and self.frame_e != "":
+                    if self.frame_jump != "":
                         self.frame_s = int(self.frame_s)
                         self.frame_e = int(self.frame_e)
                         self.frame_jump = int(self.frame_jump)
@@ -110,12 +108,10 @@ class Cropping(QtWidgets.QMainWindow):
                     self.frame_e = -1
                     self.frame_jump = 1
 
-
             self.raw_data_update_flag = False
             self.window.close()
 
     def check_cut_size_odd(self):
-
         if (self.width_size_s % 2) != 0:
             self.width_size_s = self.width_size_s + 1
 
@@ -130,31 +126,31 @@ class Cropping(QtWidgets.QMainWindow):
 
     def info_cut_edith(self):
         self.le3 = QtWidgets.QLineEdit()
-        self.le3.setPlaceholderText('width_start')
+        self.le3.setPlaceholderText("width_start")
         self.le_3_label = QtWidgets.QLabel("start width pixel:")
 
         self.le4 = QtWidgets.QLineEdit()
-        self.le4.setPlaceholderText('width_end')
+        self.le4.setPlaceholderText("width_end")
         self.le_4_label = QtWidgets.QLabel("end width pixel:")
 
         self.le5 = QtWidgets.QLineEdit()
-        self.le5.setPlaceholderText('height_start')
+        self.le5.setPlaceholderText("height_start")
         self.le_5_label = QtWidgets.QLabel("start height pixel:")
 
         self.le6 = QtWidgets.QLineEdit()
-        self.le6.setPlaceholderText('height_end')
+        self.le6.setPlaceholderText("height_end")
         self.le_6_label = QtWidgets.QLabel("end height pixel:")
 
         self.le7 = QtWidgets.QLineEdit()
-        self.le7.setPlaceholderText('frame_start')
+        self.le7.setPlaceholderText("frame_start")
         self.le_7_label = QtWidgets.QLabel("start frame:")
 
         self.le8 = QtWidgets.QLineEdit()
-        self.le8.setPlaceholderText('frame_end')
+        self.le8.setPlaceholderText("frame_end")
         self.le_8_label = QtWidgets.QLabel("end frame:")
 
         self.le9 = QtWidgets.QLineEdit()
-        self.le9.setPlaceholderText('frame_jump')
+        self.le9.setPlaceholderText("frame_jump")
         self.le_9_label = QtWidgets.QLabel("frame stride:")
 
         self.grid2.addWidget(self.le_3_label, 1, 0)

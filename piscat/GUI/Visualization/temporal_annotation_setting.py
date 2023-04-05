@@ -1,4 +1,4 @@
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtCore, QtWidgets
 
 
 class TemporalAnnotationSetting(QtWidgets.QWidget):
@@ -16,12 +16,12 @@ class TemporalAnnotationSetting(QtWidgets.QWidget):
         self.ok.setFixedWidth(100)
 
         self.le1 = QtWidgets.QLineEdit()
-        self.le1.setPlaceholderText('Temporal window (#frames)')
+        self.le1.setPlaceholderText("Temporal window (#frames)")
         self.le_1_label = QtWidgets.QLabel("Temporal window:")
         self.le1.setFixedWidth(100)
 
         self.marker_size = QtWidgets.QLineEdit()
-        self.marker_size.setPlaceholderText('Marker size (default=5))')
+        self.marker_size.setPlaceholderText("Marker size (default=5))")
         self.marker_size_label = QtWidgets.QLabel("Marker size:")
         self.marker_size.setFixedWidth(100)
 
@@ -41,13 +41,14 @@ class TemporalAnnotationSetting(QtWidgets.QWidget):
 
     @QtCore.Slot()
     def do_update(self):
-
         try:
             self.window_size = int(self.le1.text())
         except:
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
-            self.msg_box.setText("Incorrect input_video for step size! \nThe default value will be selected")
+            self.msg_box.setText(
+                "Incorrect input_video for step size! \nThe default value will be selected"
+            )
             self.msg_box.exec_()
             self.window_size = 1
 
@@ -56,7 +57,9 @@ class TemporalAnnotationSetting(QtWidgets.QWidget):
         except:
             self.msg_box = QtWidgets.QMessageBox()
             self.msg_box.setWindowTitle("Warning!")
-            self.msg_box.setText("Incorrect input_video for step size! \nThe default value will be selected")
+            self.msg_box.setText(
+                "Incorrect input_video for step size! \nThe default value will be selected"
+            )
             self.msg_box.exec_()
             self.marker_size = 5
 
@@ -65,5 +68,7 @@ class TemporalAnnotationSetting(QtWidgets.QWidget):
         else:
             self.flag_smooth_filter = False
 
-        self.temporalAnnotation_signal.emit([self.window_size, self.flag_smooth_filter, self.marker_size])
+        self.temporalAnnotation_signal.emit(
+            [self.window_size, self.flag_smooth_filter, self.marker_size]
+        )
         self.close()

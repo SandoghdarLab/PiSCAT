@@ -1,5 +1,6 @@
+from PySide6 import QtCore, QtGui, QtWidgets
+
 from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
-from PySide6 import QtGui, QtCore, QtWidgets
 
 
 class Histogram_GUI(QtWidgets.QWidget):
@@ -22,7 +23,7 @@ class Histogram_GUI(QtWidgets.QWidget):
         self.setting_tracking = {}
 
         self.resize(300, 300)
-        self.setWindowTitle('Histogram')
+        self.setWindowTitle("Histogram")
 
         self.plot_hist = QtWidgets.QPushButton("plot_histogram")
         self.plot_hist.clicked.connect(self.do_hist)
@@ -72,10 +73,9 @@ class Histogram_GUI(QtWidgets.QWidget):
         self.setLayout(self.grid)
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     def createFirstExclusiveGroup(self):
-
         self.groupBox_hist = QtWidgets.QGroupBox("Histogram setting")
 
         self.grid3 = QtWidgets.QGridLayout()
@@ -95,7 +95,6 @@ class Histogram_GUI(QtWidgets.QWidget):
         return self.groupBox_hist
 
     def createSecondExclusiveGroup(self):
-
         self.groupBox_gmm = QtWidgets.QGroupBox("Gaussian mixture models (GMM):")
         self.groupBox_gmm.setCheckable(True)
         self.groupBox_gmm.setChecked(False)
@@ -116,26 +115,48 @@ class Histogram_GUI(QtWidgets.QWidget):
         if self.empty_value_box_flag:
             if self.groupBox_gmm.isChecked():
                 his_ = PlotProteinHistogram(intersection_display_flag=False)
-                his_(folder_name='', particles=self.input_data, batch_size=self.batch_size,
-                          video_frame_num=self.number_frames, MinPeakWidth=self.minPeak_width,
-                          MinPeakProminence=0)
+                his_(
+                    folder_name="",
+                    particles=self.input_data,
+                    batch_size=self.batch_size,
+                    video_frame_num=self.number_frames,
+                    MinPeakWidth=self.minPeak_width,
+                    MinPeakProminence=0,
+                )
 
-                his_.plot_histogram(bins=self.n_bins, upper_limitation=self.upper_limit, lower_limitation=self.lower_limit, step_range=self.step_limit,
-                                    face='g',
-                                    edge='k', Flag_GMM_fit=True, max_n_components=self.max_n_components)
+                his_.plot_histogram(
+                    bins=self.n_bins,
+                    upper_limitation=self.upper_limit,
+                    lower_limitation=self.lower_limit,
+                    step_range=self.step_limit,
+                    face="g",
+                    edge="k",
+                    Flag_GMM_fit=True,
+                    max_n_components=self.max_n_components,
+                )
             else:
                 his_ = PlotProteinHistogram(intersection_display_flag=False)
-                his_(folder_name='', particles=self.input_data, batch_size=self.batch_size,
-                     video_frame_num=self.number_frames, MinPeakWidth=self.minPeak_width,
-                     MinPeakProminence=0)
-                his_.plot_histogram(bins=self.n_bins, upper_limitation=self.upper_limit,
-                                    lower_limitation=self.lower_limit, step_range=self.step_limit,
-                                    face='g',
-                                    edge='k', Flag_GMM_fit=False, max_n_components=self.max_n_components)
+                his_(
+                    folder_name="",
+                    particles=self.input_data,
+                    batch_size=self.batch_size,
+                    video_frame_num=self.number_frames,
+                    MinPeakWidth=self.minPeak_width,
+                    MinPeakProminence=0,
+                )
+                his_.plot_histogram(
+                    bins=self.n_bins,
+                    upper_limitation=self.upper_limit,
+                    lower_limitation=self.lower_limit,
+                    step_range=self.step_limit,
+                    face="g",
+                    edge="k",
+                    Flag_GMM_fit=False,
+                    max_n_components=self.max_n_components,
+                )
             self.empty_value_box_flag = False
 
     def get_values_histogram_plot(self):
-
         try:
             self.minPeak_width = float(self.min_peak_width.text())
             self.lower_limit = float(self.le_lower_contrast_trim.text())

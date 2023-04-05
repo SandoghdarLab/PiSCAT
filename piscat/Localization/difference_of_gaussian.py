@@ -1,13 +1,9 @@
 import numpy as np
-from scipy.ndimage import gaussian_filter, gaussian_laplace
-import math
-from math import sqrt, log
-from scipy import spatial
+from scipy.ndimage import gaussian_filter
 from skimage.util import img_as_float
 
 
 def dog_preview(images, min_sigma, max_sigma, sigma_ratio):
-
     min_range = []
     max_range = []
 
@@ -33,15 +29,16 @@ def dog_preview(images, min_sigma, max_sigma, sigma_ratio):
         k = int(np.mean(np.log(max_sigma / min_sigma) / np.log(sigma_ratio) + 1))
 
         # a geometric progression of standard deviations for gaussian kernels
-        sigma_list = np.array([min_sigma * (sigma_ratio ** i)
-                               for i in range(k + 1)])
+        sigma_list = np.array([min_sigma * (sigma_ratio**i) for i in range(k + 1)])
 
         gaussian_images = [gaussian_filter(image, s) for s in sigma_list]
 
         # computing difference between two successive Gaussian blurred images
         # multiplying with average standard deviation provides scale invariance
-        dog_images = [(gaussian_images[i] - gaussian_images[i + 1])
-                      * np.mean(sigma_list[i]) for i in range(k)]
+        dog_images = [
+            (gaussian_images[i] - gaussian_images[i + 1]) * np.mean(sigma_list[i])
+            for i in range(k)
+        ]
 
         image_cube = np.stack(dog_images, axis=-1)
         min_range.append(image_cube.min())

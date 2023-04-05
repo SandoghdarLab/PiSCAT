@@ -1,15 +1,14 @@
-from PySide6 import QtGui, QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 
 class DRA(QtWidgets.QMainWindow):
-
     signal_finish = QtCore.Signal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.batch_size = None
         self.axis = 1
-        self.mode_FPN = 'cpFPN'
+        self.mode_FPN = "cpFPN"
 
         self.flag_display = False
         self.flag_FPN = False
@@ -18,7 +17,7 @@ class DRA(QtWidgets.QMainWindow):
         self.window = QtWidgets.QWidget()
 
         self.le1 = QtWidgets.QLineEdit()
-        self.le1.setPlaceholderText('radius')
+        self.le1.setPlaceholderText("radius")
 
         self.ok = QtWidgets.QPushButton("Ok")
         self.ok.setAutoDefault(False)
@@ -36,12 +35,11 @@ class DRA(QtWidgets.QMainWindow):
         self.grid.addWidget(self.ok, 2, 0)
 
         self.window.setWindowTitle("Rolling Average")
-        self.setStyleSheet('QMainWindow{background-color: darkgray;}')
+        self.setStyleSheet("QMainWindow{background-color: darkgray;}")
         self.window.setLayout(self.grid)
         self.window.show()
 
     def createFirstExclusiveGroup(self):
-
         self.groupBox_FPNc = QtWidgets.QGroupBox("FPNc:")
         self.groupBox_FPNc.setCheckable(True)
         self.groupBox_FPNc.setChecked(False)
@@ -93,19 +91,19 @@ class DRA(QtWidgets.QMainWindow):
                 elif self.radio_axis_2.isChecked():
                     self.axis = 1
                 elif self.radio_axis_3.isChecked():
-                    self.axis = 'Both'
+                    self.axis = "Both"
 
                 if self.radio_cpFPN_mode.isChecked():
-                    self.mode_FPN = 'cpFPN'
+                    self.mode_FPN = "cpFPN"
                 elif self.radio_wFPN_mode.isChecked():
-                    self.mode_FPN = 'wFPN'
+                    self.mode_FPN = "wFPN"
                 elif self.radio_wf_FPN_mode.isChecked():
-                    self.mode_FPN = 'fFPN'
+                    self.mode_FPN = "fFPN"
 
             if self.checkbox_power_normalization.isChecked():
                 self.flag_power_normalization = True
 
-            if self.batch_size != '':
+            if self.batch_size != "":
                 self.batch_size = int(self.batch_size)
                 self.signal_finish.emit(True)
 
@@ -120,4 +118,3 @@ class DRA(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         QtCore.QCoreApplication.instance().quit()
-

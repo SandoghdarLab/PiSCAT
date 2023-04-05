@@ -1,11 +1,11 @@
 import os
 import time
-import cv2
+
 import imageio
 from tqdm.autonotebook import tqdm
 
 
-def write_binary(dir_path, file_name, data, type='original'):
+def write_binary(dir_path, file_name, data, type="original"):
     """
     This function writes video as a binary.
 
@@ -21,7 +21,8 @@ def write_binary(dir_path, file_name, data, type='original'):
         Video with numpy format.
 
     type: str or bin_type
-        The video bin type is not changed by 'original,' but the user can convert it (e.g. float --> int16).
+        The video bin type is not changed by 'original,' but the user can
+        convert it (e.g. float --> int16).
 
     Returns
     -------
@@ -38,13 +39,13 @@ def write_binary(dir_path, file_name, data, type='original'):
     save_path = os.path.join(dir_path, timestr, file_name)
     save_path_ = os.path.join(dir_path, timestr)
 
-    if type == 'original':
+    if type == "original":
         data = data
     else:
         data = data.astype(type)
 
-    data = data.copy(order='C')
-    with open(save_path, 'wb') as outfile:
+    data = data.copy(order="C")
+    with open(save_path, "wb") as outfile:
         outfile.write(data)
 
     return save_path_
@@ -86,12 +87,12 @@ def write_MP4(dir_path, file_name, data, jump=0, fps=10):
     save_path = os.path.join(dir_path, timestr, file_name)
     save_path_ = os.path.join(dir_path, timestr)
 
-    data = data.copy(order='C')
+    data = data.copy(order="C")
     image_ = []
     for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
         image_.append(data[frame_number, ...])
 
-    imageio.mimsave(save_path, image_, format='MP4', fps=fps)
+    imageio.mimsave(save_path, image_, format="MP4", fps=fps)
 
     return save_path_
 
@@ -132,10 +133,10 @@ def write_GIF(dir_path, file_name, data, jump=0, fps=10):
     save_path = os.path.join(dir_path, timestr, file_name)
     save_path_ = os.path.join(dir_path, timestr)
 
-    data = data.copy(order='C')
+    data = data.copy(order="C")
     image_ = []
     for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
         image_.append(data[frame_number, ...])
 
-    imageio.mimsave(save_path, image_, format='GIF', fps=fps)
+    imageio.mimsave(save_path, image_, format="GIF", fps=fps)
     return save_path_

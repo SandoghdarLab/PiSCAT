@@ -1,5 +1,6 @@
-from piscat.Preproccessing.normalization import *
 import unittest
+
+from piscat.Preproccessing.normalization import *
 
 
 class TestNormalization(unittest.TestCase):
@@ -19,11 +20,11 @@ class TestNormalization(unittest.TestCase):
 
     def test_normalized_image_specific(self):
         normalized_image = self.test_obj.normalized_image_specific()
-        self.assertTrue(normalized_image.dtype == 'uint8')
+        self.assertTrue(normalized_image.dtype == "uint8")
         self.assertTrue(normalized_image.max() == 255)
         self.assertTrue(normalized_image.shape == self.test_obj.video.shape)
-        normalized_image = self.test_obj.normalized_image_specific(scale=64, format='float')
-        self.assertTrue(normalized_image.dtype == 'float')
+        normalized_image = self.test_obj.normalized_image_specific(scale=64, format="float")
+        self.assertTrue(normalized_image.dtype == "float")
         self.assertTrue(normalized_image.max() == 64)
         self.assertTrue(normalized_image.shape == self.test_obj.video.shape)
 
@@ -31,17 +32,17 @@ class TestNormalization(unittest.TestCase):
         sample_image = np.arange(0, 10, 0.1, dtype=float).reshape((10, 10))
         test_obj = Normalization(sample_image)
         normalized_image = test_obj.normalized_image_specific()
-        self.assertTrue(normalized_image.dtype == 'uint8')
+        self.assertTrue(normalized_image.dtype == "uint8")
         self.assertTrue(normalized_image.max() == 255)
         self.assertTrue(normalized_image.shape == test_obj.video.shape)
-        normalized_image = test_obj.normalized_image_specific(scale=64, format='float')
-        self.assertTrue(normalized_image.dtype == 'float')
+        normalized_image = test_obj.normalized_image_specific(scale=64, format="float")
+        self.assertTrue(normalized_image.dtype == "float")
         self.assertTrue(normalized_image.max() == 64)
         self.assertTrue(normalized_image.shape == test_obj.video.shape)
 
     def test_normalized_image_specific_by_max(self):
         normalized_image = self.test_obj.normalized_image_specific_by_max()
-        self.assertTrue(normalized_image.dtype == 'float64')
+        self.assertTrue(normalized_image.dtype == "float64")
         self.assertTrue(normalized_image.max() == 1.0)
         self.assertTrue(normalized_image.shape == self.test_obj.video.shape)
 
@@ -63,5 +64,5 @@ class TestNormalization(unittest.TestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

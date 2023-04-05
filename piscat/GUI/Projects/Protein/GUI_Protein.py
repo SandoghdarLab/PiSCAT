@@ -1,22 +1,21 @@
-from piscat.InputOutput import read_write_data
-from piscat.GUI.Projects.tab_bg_correction import BgCorrection_GUI
-from piscat.GUI.Projects.tab_localization import Localization_GUI
-from piscat.GUI import Tracking_GUI
-from piscat.GUI.Projects.tab_plot_histogram import Histogram_GUI
-from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
-from piscat.InputOutput.read_write_data import load_dict_from_hdf5
-
-from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import *
-from functools import partial
-import pandas as pd
-import numpy as np
 import os
 import time
+from functools import partial
+
+import numpy as np
+import pandas as pd
+from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import *
+
+from piscat.GUI.Projects.tab_bg_correction import BgCorrection_GUI
+from piscat.GUI.Projects.tab_localization import Localization_GUI
+from piscat.GUI.Projects.tab_plot_histogram import Histogram_GUI
+from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
+from piscat.InputOutput import read_write_data
+from piscat.InputOutput.read_write_data import load_dict_from_hdf5
 
 
 class ProteinTabs(QtWidgets.QMainWindow):
-
     new_update_df_PSFs = QtCore.Signal(object)
     new_update_bg_video = QtCore.Signal(object)
     new_update_trajectories = QtCore.Signal(object)
@@ -36,10 +35,14 @@ class ProteinTabs(QtWidgets.QMainWindow):
         self.current_frame = 0
         self.object_update_progressBar = object_update_progressBar
 
-        self.history = {'Type_bg_correction': None, 'bg_setting': None,
-                        'PSFs_Localization_setting': None, 'PSFs_Tracking_setting': None}
+        self.history = {
+            "Type_bg_correction": None,
+            "bg_setting": None,
+            "PSFs_Localization_setting": None,
+            "PSFs_Tracking_setting": None,
+        }
 
-        self.PSFs_Particels_num = {'#PSFs': None, '#Particles': None}
+        self.PSFs_Particels_num = {"#PSFs": None, "#Particles": None}
 
         self.initUI()
 
@@ -49,33 +52,57 @@ class ProteinTabs(QtWidgets.QMainWindow):
         self.window.show()
 
     def initUI(self):
+        from piscat.GUI import Tracking_GUI
         self.resize(400, 200)
-        self.setWindowTitle('PSF Tracking')
+        self.setWindowTitle("PSF Tracking")
         self.setGeometry(1140, 100, 400, 200)
 
         # Tabs
-        self.all_tabs = {"Bg_correction": BgCorrection_GUI(input_video=self.input_video, object_update_progressBar=self.object_update_progressBar),
-                         "PSFs_Localization": Localization_GUI(),
-                         "PSFs_Tracking": Tracking_GUI(self.batch_size),
-                         "Histogram": Histogram_GUI()}
+        self.all_tabs = {
+            "Bg_correction": BgCorrection_GUI(
+                input_video=self.input_video,
+                object_update_progressBar=self.object_update_progressBar,
+            ),
+            "PSFs_Localization": Localization_GUI(),
+            "PSFs_Tracking": Tracking_GUI(self.batch_size),
+            "Histogram": Histogram_GUI(),
+        }
 
-        self.all_tabs["Bg_correction"].output_Tab_bgCorrection.connect(self.Update_tab_bgCorrection)
-        self.all_tabs["Bg_correction"].output_batchSize_Tab_bgCorrection.connect(self.Update_batchSize)
-        self.all_tabs["Bg_correction"].output_setting_Tab_bgCorrection.connect(partial(self.history_update, key='bg_setting'))
+        self.all_tabs["Bg_correction"].output_Tab_bgCorrection.connect(
+            self.Update_tab_bgCorrection
+        )
+        self.all_tabs["Bg_correction"].output_batchSize_Tab_bgCorrection.connect(
+            self.Update_batchSize
+        )
+        self.all_tabs["Bg_correction"].output_setting_Tab_bgCorrection.connect(
+            partial(self.history_update, key="bg_setting")
+        )
         self.all_tabs["Bg_correction"].update_tab_index.connect(self.update_tab)
 
-        self.all_tabs["PSFs_Localization"].preview_localization.connect(partial(self.Update_tab_localization, flag_preview=True))
-        self.all_tabs["PSFs_Localization"].update_localization.connect(partial(self.Update_tab_localization, flag_preview=False))
-        self.all_tabs["PSFs_Localization"].output_setting_Tab_Localization.connect(partial(self.history_update, key='PSFs_Localization_setting'))
-        self.all_tabs["PSFs_Localization"].output_number_PSFs_tracking.connect(partial(self.number_PSFs, key='#PSFs'))
+        self.all_tabs["PSFs_Localization"].preview_localization.connect(
+            partial(self.Update_tab_localization, flag_preview=True)
+        )
+        self.all_tabs["PSFs_Localization"].update_localization.connect(
+            partial(self.Update_tab_localization, flag_preview=False)
+        )
+        self.all_tabs["PSFs_Localization"].output_setting_Tab_Localization.connect(
+            partial(self.history_update, key="PSFs_Localization_setting")
+        )
+        self.all_tabs["PSFs_Localization"].output_number_PSFs_tracking.connect(
+            partial(self.number_PSFs, key="#PSFs")
+        )
         self.all_tabs["PSFs_Localization"].update_tab_index.connect(self.update_tab)
 
         self.new_update_bg_video.connect(self.all_tabs["PSFs_Localization"].update_in_data)
 
         self.all_tabs["PSFs_Tracking"].update_tracking.connect(self.Update_tab_localization)
         self.all_tabs["PSFs_Tracking"].update_trajectories.connect(self.Update_tab_trajectories)
-        self.all_tabs["PSFs_Tracking"].output_setting_Tab_tracking.connect(partial(self.history_update, key='PSFs_Tracking_setting'))
-        self.all_tabs["PSFs_Tracking"].output_number_Particels_tracking.connect(partial(self.number_PSFs, key='#Particles'))
+        self.all_tabs["PSFs_Tracking"].output_setting_Tab_tracking.connect(
+            partial(self.history_update, key="PSFs_Tracking_setting")
+        )
+        self.all_tabs["PSFs_Tracking"].output_number_Particels_tracking.connect(
+            partial(self.number_PSFs, key="#Particles")
+        )
         self.new_update_df_PSFs.connect(self.all_tabs["PSFs_Tracking"].update_in_data)
 
         self.new_update_trajectories.connect(self.all_tabs["Histogram"].update_in_data)
@@ -120,7 +147,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
         self.input_video = video_in
 
     def __del__(self):
-        print('Destructor called, Employee deleted.')
+        print("Destructor called, Employee deleted.")
 
     @Slot(int)
     def update_tab(self, idx_):
@@ -143,14 +170,20 @@ class ProteinTabs(QtWidgets.QMainWindow):
             else:
                 self.bgCorrectedVideo = data[0]
             self.type_bgCorrection = data[1]
-            self.history['Type_bg_correction'] = data[1]
+            self.history["Type_bg_correction"] = data[1]
             self.new_update_bg_video.emit(self.bgCorrectedVideo)
 
-            if data[1] == 'DRA':
-                self.new_update_DRA_video.emit([self.bgCorrectedVideo, 'DRA', None, self.batch_size])
+            if data[1] == "DRA":
+                self.new_update_DRA_video.emit(
+                    [self.bgCorrectedVideo, "DRA", None, self.batch_size]
+                )
 
             self.visualization_ = Visulization_localization()
-            self.visualization_.bg_correction_update(in_video=self.bgCorrectedVideo, label=self.type_bgCorrection, object=self.all_tabs["PSFs_Localization"])
+            self.visualization_.bg_correction_update(
+                in_video=self.bgCorrectedVideo,
+                label=self.type_bgCorrection,
+                object=self.all_tabs["PSFs_Localization"],
+            )
         else:
             self.msg_box2 = QtWidgets.QMessageBox()
             self.msg_box2.setWindowTitle("Warning!")
@@ -162,14 +195,25 @@ class ProteinTabs(QtWidgets.QMainWindow):
         self.df_PSFs = df_psfs
         if self.bgCorrectedVideo is not None and self.df_PSFs is not None:
             if type(self.df_PSFs) is np.ndarray:
-                self.visualization_.get_sliceNumber(frame_num=self.all_tabs["PSFs_Localization"].frame_num)
-                self.visualization_.update_localization_onMask(video_in=self.bgCorrectedVideo,
-                                                               title=self.type_bgCorrection, df_PSFs=self.df_PSFs)
+                self.visualization_.get_sliceNumber(
+                    frame_num=self.all_tabs["PSFs_Localization"].frame_num
+                )
+                self.visualization_.update_localization_onMask(
+                    video_in=self.bgCorrectedVideo,
+                    title=self.type_bgCorrection,
+                    df_PSFs=self.df_PSFs,
+                )
 
             elif type(self.df_PSFs) is pd.core.frame.DataFrame:
-                self.visualization_.get_sliceNumber(frame_num=self.all_tabs["PSFs_Localization"].frame_num)
-                self.visualization_.update_localization_onMask(video_in=self.bgCorrectedVideo, title=self.type_bgCorrection,
-                                                               df_PSFs=self.df_PSFs, flag_preview=flag_preview)
+                self.visualization_.get_sliceNumber(
+                    frame_num=self.all_tabs["PSFs_Localization"].frame_num
+                )
+                self.visualization_.update_localization_onMask(
+                    video_in=self.bgCorrectedVideo,
+                    title=self.type_bgCorrection,
+                    df_PSFs=self.df_PSFs,
+                    flag_preview=flag_preview,
+                )
 
                 self.new_update_df_PSFs.emit([self.bgCorrectedVideo, self.df_PSFs])
 
@@ -188,7 +232,9 @@ class ProteinTabs(QtWidgets.QMainWindow):
     @QtCore.Slot()
     def Update_tab_trajectories(self, trajectories):
         self.trajectories = trajectories
-        self.new_update_trajectories.emit([trajectories, self.input_video.shape[0], self.batch_size])
+        self.new_update_trajectories.emit(
+            [trajectories, self.input_video.shape[0], self.batch_size]
+        )
 
     @QtCore.Slot()
     def history_update(self, history, key):
@@ -200,7 +246,9 @@ class ProteinTabs(QtWidgets.QMainWindow):
 
     def save_data(self):
         self.file_path = False
-        self.file_path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder', os.path.expanduser("~"), QtWidgets.QFileDialog.ShowDirsOnly)
+        self.file_path = QtWidgets.QFileDialog.getExistingDirectory(
+            self, "Select Folder", os.path.expanduser("~"), QtWidgets.QFileDialog.ShowDirsOnly
+        )
         timestr = time.strftime("%Y%m%d-%H%M%S")
         name_mkdir = timestr
         try:
@@ -215,20 +263,24 @@ class ProteinTabs(QtWidgets.QMainWindow):
 
         if self.file_path:
             if self.df_PSFs is not None:
-                read_write_data.save_df2csv(self.df_PSFs, path=self.file_path, name='df_PSFs')
+                read_write_data.save_df2csv(self.df_PSFs, path=self.file_path, name="df_PSFs")
 
-            fout = os.path.join(self.file_path, 'history.txt')
+            fout = os.path.join(self.file_path, "history.txt")
             fo = open(fout, "w")
             for k, v in self.history.items():
-                fo.write(str(k) + ' >>> ' + str(v) + '\n\n')
+                fo.write(str(k) + " >>> " + str(v) + "\n\n")
 
             for k, v in self.PSFs_Particels_num.items():
-                fo.write(str(k) + ' >>> ' + str(v) + '\n\n')
+                fo.write(str(k) + " >>> " + str(v) + "\n\n")
             fo.close()
 
             if self.trajectories is not None:
-                read_write_data.save_mat(data=self.trajectories, path=self.file_path, name='all_trajectories')
-                read_write_data.save_list_to_hdf5(list_data=self.trajectories, path=self.file_path, name='histData')
+                read_write_data.save_mat(
+                    data=self.trajectories, path=self.file_path, name="all_trajectories"
+                )
+                read_write_data.save_list_to_hdf5(
+                    list_data=self.trajectories, path=self.file_path, name="histData"
+                )
 
     def load_hdf5_data(self):
         if self.bgCorrectedVideo is not None:
@@ -238,7 +290,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
                 data_dic = load_dict_from_hdf5(filePath)
                 self.Update_tab_trajectories(data_dic)
             except:
-                print('HDF5 can not load!')
+                print("HDF5 can not load!")
         elif self.bgCorrectedVideo is None:
             self.msg_box1 = QtWidgets.QMessageBox()
             self.msg_box1.setWindowTitle("Warning!")
@@ -253,7 +305,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
                 df_PSFs = pd.read_csv(filePath)
                 self.Update_tab_localization(df_PSFs)
             except:
-                print('CSV can not load!')
+                print("CSV can not load!")
         elif self.bgCorrectedVideo is None:
             self.msg_box1 = QtWidgets.QMessageBox()
             self.msg_box1.setWindowTitle("Warning!")
