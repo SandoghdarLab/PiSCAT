@@ -515,7 +515,7 @@ class HTML_subplotDisplay:
 
     def animate(self, i_):
         if i_ < self.list_video[0].shape[0]:
-            for idx_, (ax_, vid_, tit_) in enumerate(
+            for idx_, (_, vid_, tit_) in enumerate(
                 zip(self.imgGrid_list, self.list_video, self.list_titles)
             ):
                 arr = vid_[i_, :, :]

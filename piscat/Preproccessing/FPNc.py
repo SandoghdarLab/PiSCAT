@@ -6,7 +6,6 @@ from joblib import Parallel, delayed
 from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
 from skimage import filters
 from skimage.morphology import rectangle
-from tqdm.autonotebook import tqdm
 from tqdm.notebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
@@ -456,7 +455,7 @@ class FrequencyFPNc:
             selem = rectangle(nrows=5, ncols=1)
 
         filter_img = im_noise.copy()
-        for i_ in range(self.max_iterations):
+        for _ in range(self.max_iterations):
             try:
                 filter_img = filters.gaussian(filter_img, sigma=1.2, preserve_range=True)
                 # filter_img = rank.mean(filter_img, selem=selem)

@@ -1,7 +1,5 @@
 from PySide6 import QtCore, QtWidgets
 
-from piscat.InputOutput.image_to_video import Image2Video
-
 
 class Image2Video(QtWidgets.QMainWindow):
     def __init__(self, fileName):
@@ -307,13 +305,13 @@ class Image2Video(QtWidgets.QMainWindow):
 
     def btnstate(self, b):
         if b.text() == "little-endian byte order":
-            if b.isChecked() == True:
+            if b.isChecked():
                 self.little_endian_flag = True
             else:
                 self.little_endian_flag = False
 
         if b.text() == "big-endian byte order":
-            if b.isChecked() == True:
+            if b.isChecked():
                 self.big_endian_flag = True
             else:
                 self.big_endian_flag = False

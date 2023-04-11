@@ -323,7 +323,7 @@ class PSFsExtraction:
         scale=5,
         flag_init=False,
         image=None,
-        start_sigma=[None, None],
+        start_sigma=(None, None),
         display_flag=False,
     ):
         if flag_init:
@@ -492,7 +492,7 @@ class PSFsExtraction:
                 )
 
             except:
-                warnings.warn("switch backend to threading", DeprecationWarning)
+                warnings.warn("switch backend to threading", DeprecationWarning, stacklevel=1)
                 result0 = Parallel(
                     n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose
                 )(
@@ -757,7 +757,7 @@ class PSFsExtraction:
                     )
                     result = [x for x in result0 if x is not None]
                 except:
-                    warnings.warn("switch backend to threading", DeprecationWarning)
+                    warnings.warn("switch backend to threading", DeprecationWarning, stacklevel=1)
 
                     result0 = Parallel(
                         n_jobs=self.cpu.n_jobs, backend="threading", verbose=self.cpu.verbose
@@ -1007,7 +1007,8 @@ class PSFsExtraction:
             max_range_ = np.max(np.asarray([max_range_, threshold]))
 
             max_range_0 = 1.5 * max_range_
-            sci_num = lambda x: "{:.2e}".format(x)
+            def sci_num(x):
+                return "{:.2e}".format(x)
             tmp = sci_num(max_range_).split("e")
             power = int(tmp[-1])
             if power >= 0:

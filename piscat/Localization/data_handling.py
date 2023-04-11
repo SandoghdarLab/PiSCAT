@@ -81,21 +81,17 @@ def list2dataframe(feature_position, video):
     """
     if feature_position is not None:
         if type(feature_position) is list:
-            try:
-                feature_position = [l_ for l_ in feature_position if l_ is not None]
-                if len(feature_position) >= 1:
-                    feature_position = np.concatenate(feature_position, axis=0)
-                    df_features = feature2df(feature_position, video)
-                else:
-                    df_features = None
-            except:
+            if len(feature_position) == 0:
                 raise Exception("---List is empty!---")
+            feature_position = [l_ for l_ in feature_position if l_ is not None]
+            if len(feature_position) >= 1:
+                feature_position = np.concatenate(feature_position, axis=0)
+                df_features = feature2df(feature_position, video)
+            else:
+                df_features = None
 
         elif type(feature_position) is np.ndarray:
-            try:
-                df_features = feature2df(feature_position, video)
-            except:
-                raise Exception("---List is empty!---")
+            df_features = feature2df(feature_position, video)
         else:
             df_features = None
 

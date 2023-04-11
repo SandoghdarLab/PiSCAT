@@ -115,7 +115,7 @@ class PropertiesWindow(QDialog):
     Lets the user reassign an annotated ("closed") shape to a different label class.
     """
 
-    def __init__(self, shape=None, all_labels=[None], scene=None, parent=None):
+    def __init__(self, shape=None, all_labels=(None,), scene=None, parent=None):
         super(PropertiesWindow, self).__init__(parent)
         self.shape = shape
         self.points = self.shape.points
@@ -499,7 +499,7 @@ class Shape(QGraphicsItem):
             pen.setWidth(self.point_size / 2)
             painter.setPen(pen)
             path = self.shape()
-            if self.closed == True:
+            if self.closed:
                 path.closeSubpath()
             painter.drawPath(path)
             vertex_path = QPainterPath()
@@ -707,7 +707,7 @@ class SubQGraphicsScene(QGraphicsScene):
                 self.line.points[0] = pos
                 self.line.setPos(pos)
             # initialize a pointing line for a new polygon
-            elif self.line == None or self.polygonfinished():
+            elif self.line is None or self.polygonfinished():
                 self.line = Shape(point_size=self.point_size)
                 self.addItem(self.line)
                 self.line.setPos(pos)
@@ -915,7 +915,7 @@ class SubQGraphicsScene(QGraphicsScene):
 
     def findShapeInLabel(self, shape):
         if len(self.labelclasses) > 0:
-            labelpolys = [l.polygons for l in self.labelclasses]
+            labelpolys = [lc.polygons for lc in self.labelclasses]
             return [
                 (i, label.index(shape)) for i, label in enumerate(labelpolys) if shape in label
             ]

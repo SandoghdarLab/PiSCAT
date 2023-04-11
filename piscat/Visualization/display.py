@@ -545,7 +545,7 @@ class DisplayDataFramePSFsLocalization(QRunnable):
             particle_Y = all_particle_["y"].tolist()
             particle_sigma = all_particle_["sigma"].tolist()
             list_center = None
-            for f, x, y, sigma in zip(particle_f, particle_X, particle_Y, particle_sigma):
+            for f, x, y, _ in zip(particle_f, particle_X, particle_Y, particle_sigma):
                 if list_center is None:
                     center_position = [[x, y]]
                     list_center = center_position
@@ -605,7 +605,7 @@ class DisplayDataFramePSFsLocalization(QRunnable):
 
             while flag_loop:
                 list_line = []
-                for f, x, y, sigma in zip(particle_f, particle_X, particle_Y, particle_sigma):
+                for f, x, y, _ in zip(particle_f, particle_X, particle_Y, particle_sigma):
                     if list_center is None:
                         center_position = [[x, y]]
                         list_center = center_position

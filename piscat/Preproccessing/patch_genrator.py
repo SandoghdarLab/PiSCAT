@@ -31,13 +31,13 @@ class ImagePatching:
         number_h_patch = int(video_size[2] / self.size[2])
         blocks = None
         index = 0
-        for d_ in range(number_d_patch):
+        for _ in range(number_d_patch):
             temp1 = None
 
-            for h_ in range(number_h_patch):
+            for _ in range(number_h_patch):
                 temp0 = None
 
-                for w_ in range(number_w_patch):
+                for _ in range(number_w_patch):
                     if temp0 is None:
                         temp0 = split_video[index]
                     else:

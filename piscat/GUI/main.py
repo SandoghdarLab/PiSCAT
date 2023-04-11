@@ -427,7 +427,7 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
 
 def main():
     if sys.argv[0][-4:] == ".exe":
-        setattr(sys, "frozen", True)
+        sys.frozen = True
 
     multiprocessing.freeze_support()
     app = QtWidgets.QApplication(sys.argv)

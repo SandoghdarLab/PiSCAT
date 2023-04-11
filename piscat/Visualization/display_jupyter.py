@@ -710,7 +710,7 @@ class JupyterPSFs_TrackingDisplay:
                 particle_X_ = all_particle_["x"].tolist()
                 particle_Y_ = all_particle_["y"].tolist()
                 particle_sigma_ = all_particle_["sigma"].tolist()
-                for f_, x_, y_, sigma_ in zip(
+                for f_, x_, y_, _ in zip(
                     particle_f_, particle_X_, particle_Y_, particle_sigma_
                 ):
                     if f_ <= frame_number:
@@ -887,7 +887,7 @@ class JupyterSelectedPSFs_localizationDisplay:
 
         list_one_frame_fit = []
         if particle.shape[0] > 0:
-            for p_x, p_y, sigma_0, c_0, i_ in zip(
+            for p_x, p_y, sigma_0, _, i_ in zip(
                 particle_X, particle_Y, particle_sigma, particle_center_intensity, index_list
             ):
                 window_size = scale * np.sqrt(2) * sigma_0

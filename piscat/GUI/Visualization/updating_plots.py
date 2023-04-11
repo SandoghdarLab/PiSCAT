@@ -4,7 +4,6 @@ import numpy as np
 import pyqtgraph as pg
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from pyqtgraph.Qt import QtCore, QtGui
 from PySide6 import QtCore, QtGui, QtWidgets
 
 matplotlib.use("Qt5Agg")

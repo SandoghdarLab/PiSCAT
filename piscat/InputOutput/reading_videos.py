@@ -312,7 +312,7 @@ class DirectoryType:
         fileNames = []
         dirPaths = []
         dirnames = []
-        for dirpath, dirname, filenames in os.walk(dirName):
+        for dirpath, _, filenames in os.walk(dirName):
             for file in filenames:
                 if file.endswith(self.type):
                     dirPaths.append(dirpath)
