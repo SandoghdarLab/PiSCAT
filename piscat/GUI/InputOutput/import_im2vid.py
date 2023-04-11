@@ -1,7 +1,5 @@
-import matplotlib.pyplot as plt
 from PySide6 import QtCore, QtWidgets
 
-from piscat.InputOutput import reading_videos
 from piscat.InputOutput.image_to_video import Image2Video
 
 

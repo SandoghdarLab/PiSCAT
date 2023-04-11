@@ -1,8 +1,7 @@
 import math
 
-import matplotlib.pylab as plt
 import numpy as np
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from piscat.GUI.Visualization.updating_plots import UpdatingPlots_Image
 from piscat.iPSF_model import ImagingSetupParameters

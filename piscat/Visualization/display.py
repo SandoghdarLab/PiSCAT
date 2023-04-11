@@ -3,7 +3,6 @@ from __future__ import print_function
 import imageio
 import matplotlib
 import matplotlib.animation as animation
-import matplotlib.animation as manimation
 import matplotlib.cm as cm
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
@@ -11,12 +10,11 @@ import matplotlib.ticker as ticker
 import numpy as np
 import pylab as pl
 from joblib import Parallel, delayed
-from matplotlib.patches import Arrow, Circle, Rectangle
+from matplotlib.patches import Circle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PySide6 import QtCore
 from PySide6.QtCore import *
 from scipy.ndimage import median_filter
-from skimage.draw import circle_perimeter
 from tqdm import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations

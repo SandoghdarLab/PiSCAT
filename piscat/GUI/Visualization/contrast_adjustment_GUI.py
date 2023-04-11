@@ -1,9 +1,7 @@
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
-
-from piscat.Visualization.contrast_adjustment import ContrastAdjustment
 
 
 class Contrast_adjustment_GUI(QtWidgets.QMainWindow):

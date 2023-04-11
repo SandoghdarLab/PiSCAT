@@ -1,16 +1,13 @@
 import numpy as np
-import scipy.optimize
 from ipywidgets import Layout, interact, widgets
 from matplotlib import cm as cm
 from matplotlib import pyplot as plt
-from matplotlib.patches import Arrow, Circle, Rectangle
+from matplotlib.patches import Circle, Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.ndimage import median_filter
-from skimage.filters import median
-from skimage.morphology import disk
 
 from piscat.InputOutput import read_status_line
-from piscat.Localization import directional_intensity, gaussian_2D_fit
+from piscat.Localization import gaussian_2D_fit
 from piscat.Trajectory.data_handling import protein_trajectories_list2dic
 
 

@@ -4,14 +4,11 @@ __author__ = "Houman Mirzaalian D., xxxx"
 
 from __future__ import print_function
 
-import matplotlib.ticker as ticker
 import numpy as np
-import pylab as pl
 from matplotlib import animation
 from matplotlib import pyplot as plt
-from matplotlib.patches import Arrow, Circle, Rectangle
+from matplotlib.patches import Circle, Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import *
 from scipy.ndimage import median_filter
 

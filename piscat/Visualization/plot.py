@@ -2,11 +2,9 @@ from __future__ import print_function
 
 import os
 
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 
 def plot3(X, Y, Z, scale="(um)", title=""):
