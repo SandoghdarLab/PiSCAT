@@ -13,7 +13,7 @@ from joblib import Parallel, delayed
 from matplotlib.patches import Circle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PySide6 import QtCore
-from PySide6.QtCore import *
+from PySide6.QtCore import QRunnable, Signal, Slot
 from scipy.ndimage import median_filter
 from tqdm import tqdm
 

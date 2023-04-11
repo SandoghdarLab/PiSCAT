@@ -1,7 +1,7 @@
 import numpy as np
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
-from PySide6.QtGui import *
+from PySide6.QtCore import QRunnable, Signal
+from PySide6.QtGui import QPen, Qt
 from scipy.ndimage import median_filter
 from scipy.signal import savgol_filter
 

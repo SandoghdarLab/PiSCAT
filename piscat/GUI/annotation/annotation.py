@@ -9,9 +9,23 @@ import re
 from base64 import b64encode
 
 import pandas as pd
-from PySide6.QtCore import *
-from PySide6.QtGui import *
-from PySide6.QtWidgets import *
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QAction, QColor, QPainter, QPainterPath, QPen, QPolygonF, QTransform, Qt
+from PySide6.QtWidgets import (
+    QApplication,
+    QColorDialog,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QGraphicsItem,
+    QGraphicsScene,
+    QGridLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QSlider,
+    QToolButton,
+)
 
 CURSOR_DEFAULT = Qt.ArrowCursor
 CURSOR_POINT = Qt.PointingHandCursor

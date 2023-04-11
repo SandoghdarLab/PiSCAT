@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import trackpy as tp
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, Signal
 from tqdm.autonotebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations

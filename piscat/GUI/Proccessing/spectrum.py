@@ -1,5 +1,5 @@
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import *
+from PySide6.QtCore import QThreadPool
 
 from piscat.GUI.Visualization.fun_display_localization import Visulization_localization
 from piscat.Preproccessing.filtering import FFT2D

@@ -3,7 +3,7 @@ from __future__ import print_function
 import numpy as np
 import pywt
 from joblib import Parallel, delayed
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
 from skimage import filters
 from skimage.morphology import rectangle
 from tqdm.autonotebook import tqdm

@@ -6,7 +6,7 @@ import scipy.fftpack
 import scipy.ndimage
 import scipy.signal
 from joblib import Parallel, delayed
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, QRunnable, Signal, Slot
 from scipy.ndimage import median_filter
 from skimage import filters
 from tqdm.autonotebook import tqdm

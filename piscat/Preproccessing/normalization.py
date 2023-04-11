@@ -1,6 +1,6 @@
 import numpy as np
 from joblib import Parallel, delayed
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, QRunnable, Signal, Slot
 from tqdm.autonotebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations

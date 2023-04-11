@@ -9,8 +9,7 @@ from functools import partial
 
 import pkg_resources
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
-from PySide6.QtWebEngineWidgets import *
+from PySide6.QtCore import QThreadPool
 
 from piscat import version
 from piscat.GUI.BatchAnalysis.batch_data import BatchAnalysis
