@@ -78,13 +78,11 @@ class Reading(QtWidgets.QMainWindow):
                     )
 
                     if self.info_image.groupBox_cropping.isChecked():
-                        self.original_video = video[ self.info_image.frame_s :
-                                                     self.info_image.frame_e :
-                                                     self.info_image.frame_jump,
-                                                     self.info_image.width_size_s :
-                                                     self.info_image.width_size_e,
-                                                     self.info_image.height_size_s :
-                                                     self.info_image.height_size_e, ]
+                        self.original_video = video[
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
 
                     else:
                         self.original_video = video
@@ -133,20 +131,16 @@ class Reading(QtWidgets.QMainWindow):
                 if self.info_image.frame_e is not None:
                     if self.info_image.frame_e != -1:
                         self.original_video = avi_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
                         self.original_video = avi_video[
-                            self.info_image.frame_s : -1 :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s : -1 : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = avi_video
 
@@ -175,20 +169,16 @@ class Reading(QtWidgets.QMainWindow):
                 if self.info_image.frame_e is not None:
                     if self.info_image.frame_e != -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = tif_video
 
@@ -212,20 +202,16 @@ class Reading(QtWidgets.QMainWindow):
                 if self.info_image.frame_e is not None:
                     if self.info_image.frame_e != -1:
                         self.original_video = fits_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
                         self.original_video = fits_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = fits_video
 
@@ -249,20 +235,16 @@ class Reading(QtWidgets.QMainWindow):
                 if self.info_image.frame_e is not None:
                     if self.info_image.frame_e != -1:
                         self.original_video = fli_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
                         self.original_video = fli_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = fli_video
 
@@ -383,20 +365,16 @@ class Reading(QtWidgets.QMainWindow):
                 if self.info_image.frame_e is not None:
                     if self.info_image.frame_e != -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s : self.info_image.frame_e : self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                     elif self.info_image.frame_e == -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.info_image.frame_s :: self.info_image.frame_jump,
+                            self.info_image.width_size_s : self.info_image.width_size_e,
+                            self.info_image.height_size_s : self.info_image.height_size_e,
+                        ]
                 else:
                     self.original_video = tif_video
 

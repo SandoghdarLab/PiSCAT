@@ -170,7 +170,7 @@ class MedianProjectionFPNc(QRunnable):
 
 class ColumnProjectionFPNc(QRunnable):
     def __init__(self, video, select_correction_axis, flag_GUI=False):
-        """ This class uses a heuristic procedure called Column Projection FPN
+        """This class uses a heuristic procedure called Column Projection FPN
         (cpFPN) to reduce fixed pattern noise (FPN).
 
         Parameters

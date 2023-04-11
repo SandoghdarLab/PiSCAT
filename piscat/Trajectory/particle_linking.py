@@ -15,7 +15,7 @@ class WorkerSignals(QObject):
 
 class Linking:
     def __init__(self):
-        """ To obtain the temporal activity of each iPSF, we use the Trackpy
+        """To obtain the temporal activity of each iPSF, we use the Trackpy
          packages' algorithm.
 
         References

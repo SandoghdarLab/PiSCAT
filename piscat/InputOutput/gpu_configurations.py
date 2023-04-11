@@ -114,6 +114,4 @@ class GPUConfigurations(PrintColors):
                 print(str(gpu_[0]) + ", memory:" + str(gpu_[1]))
 
         if count_ == 0:
-            print(
-                f"{self.WARNING}\nNo GPU found, TensorFlow will use CPU only!!{self.ENDC}"
-            )
+            print(f"{self.WARNING}\nNo GPU found, TensorFlow will use CPU only!!{self.ENDC}")

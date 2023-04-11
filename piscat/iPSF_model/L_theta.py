@@ -1,5 +1,6 @@
 import cmath
 
+
 def L_theta(L, theta, p, ci, z, z_p):
     ni2sin2theta = p.ni**2 * cmath.sin(theta) ** 2
     sroot = cmath.sqrt(p.ns**2 - ni2sin2theta)

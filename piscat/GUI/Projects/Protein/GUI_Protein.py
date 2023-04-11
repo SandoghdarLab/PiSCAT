@@ -53,6 +53,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
 
     def initUI(self):
         from piscat.GUI import Tracking_GUI
+
         self.resize(400, 200)
         self.setWindowTitle("PSF Tracking")
         self.setGeometry(1140, 100, 400, 200)
