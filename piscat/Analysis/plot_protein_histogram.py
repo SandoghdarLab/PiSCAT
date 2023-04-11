@@ -1036,6 +1036,7 @@ class PlotProteinHistogram(PrintColors):
             means_ = means.tolist()
             stdevs_ = stdevs.tolist()
             weights_ = weights.tolist()
+
             def sci_num(x):
                 return "{:.2e}".format(x)
 

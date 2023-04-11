@@ -1007,8 +1007,10 @@ class PSFsExtraction:
             max_range_ = np.max(np.asarray([max_range_, threshold]))
 
             max_range_0 = 1.5 * max_range_
+
             def sci_num(x):
                 return "{:.2e}".format(x)
+
             tmp = sci_num(max_range_).split("e")
             power = int(tmp[-1])
             if power >= 0:

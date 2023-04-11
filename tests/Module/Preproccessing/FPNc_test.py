@@ -1,6 +1,8 @@
 import unittest
 
-from piscat.Preproccessing.FPNc import *
+import numpy as np
+
+from piscat.Preproccessing.FPNc import ColumnProjectionFPNc, FrequencyFPNc, MedianProjectionFPNc
 
 
 class TestMedianProjectionFPNc(unittest.TestCase):

@@ -59,6 +59,7 @@ dev = [
     "typing_extensions",
     "pycodestyle",
     "ruff",
+    "pre-commit",
 ]
 test = [
     "coverage",
@@ -99,7 +100,11 @@ known_first_party = ["piscat"]
 
 [tool.ruff]
 line-length = 98
-select = ["E", "F", "B"]
+select = [
+    "F",  # pyflakes
+    "E",  # pycodestyle
+    "B",  # bugbear
+]
 src = ["piscat", "tests"]
 target-version = "py39"
 ignore = [

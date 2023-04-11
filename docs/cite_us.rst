@@ -43,23 +43,3 @@ Bibtex entry:
       numpages = {4},
       year = {2004},
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

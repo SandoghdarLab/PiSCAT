@@ -40,17 +40,3 @@ PiSCAT publications
 [2] Mirzaalian Dastjerdi, Houman, et al. "PiSCAT: A Python Package for Interferometric Scattering Microscopy." The Journal of Open Source Software 7.71 (2022). (`Journal <https://doi.org/10.21105/joss.04024>`_)
 
 [3] Dahmardeh, M., Mirzaalian Dastjerdi, H., Mazal, H. et al. Self-supervised machine learning pushes the sensitivity limit in label-free detection of single proteins below 10kDa. Nat Methods (2023).(`Journal <https://www.nature.com/articles/s41592-023-01778-2>`_)
-
-
-
-
-
-
-
-
-
-
-
-
-
-

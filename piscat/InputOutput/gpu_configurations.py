@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 import pandas as pd
 from tensorflow.python.client import device_lib
@@ -7,6 +7,7 @@ from tensorflow.python.client import device_lib
 from piscat.Visualization.print_colors import PrintColors
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+
 
 class GPUConfigurations(PrintColors):
     def __init__(self, gpu_device=None, gpu_active_flag=True, flag_report=False):

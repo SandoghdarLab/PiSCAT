@@ -1,6 +1,8 @@
 import unittest
 
-from piscat.Preproccessing.normalization import *
+import numpy as np
+
+from piscat.Preproccessing.normalization import Normalization
 
 
 class TestNormalization(unittest.TestCase):
@@ -57,11 +59,6 @@ class TestNormalization(unittest.TestCase):
         self.assertTrue(normalized_image.dtype == self.test_obj.video.dtype)
         self.assertTrue(normalized_image.shape == self.test_obj.video.shape)
         self.assertAlmostEqual(normalized_image[0, -1, -1], self.test_obj.video[-1, -1, -1])
-
-    def test_power_normalized_parallel(self):
-        # normalized_image, power_fluctuation_percentage = self.test_obj.power_normalized(inter_flag_parallel_active=True)
-        # self.assertTrue(normalized_image.dtype == self.test_obj.video.dtype)
-        pass
 
 
 if __name__ == "__main__":

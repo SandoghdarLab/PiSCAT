@@ -710,9 +710,7 @@ class JupyterPSFs_TrackingDisplay:
                 particle_X_ = all_particle_["x"].tolist()
                 particle_Y_ = all_particle_["y"].tolist()
                 particle_sigma_ = all_particle_["sigma"].tolist()
-                for f_, x_, y_, _ in zip(
-                    particle_f_, particle_X_, particle_Y_, particle_sigma_
-                ):
+                for f_, x_, y_, _ in zip(particle_f_, particle_X_, particle_Y_, particle_sigma_):
                     if f_ <= frame_number:
                         ax.add_patch(
                             Circle(

@@ -2,7 +2,13 @@ import unittest
 
 import numpy as np
 
-from piscat.Preproccessing.filtering import *
+from piscat.Preproccessing.filtering import (
+    FFT2D,
+    FastRadialSymmetryTransform,
+    Filters,
+    GuidedFilter,
+    RadialVarianceTransform,
+)
 
 
 class TestFilters(unittest.TestCase):

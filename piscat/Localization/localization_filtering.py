@@ -169,10 +169,10 @@ class SpatialFilter:
                 return df_PSF_thr
 
             else:
-                raise Exception("---Sigma ratio does not exist in data frames---")
+                raise RuntimeError("---Sigma ratio does not exist in data frames---")
 
         else:
-            raise Exception("---data frames is empty!---")
+            raise RuntimeError("---data frames is empty!---")
 
     def remove_side_lobes_artifact(self, df_PSFs, threshold=0):
         """This filter removes false detections on side lobes of PSFs caused
