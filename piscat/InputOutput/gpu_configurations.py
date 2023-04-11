@@ -1,12 +1,12 @@
-import os
-
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import json
+import os
 
 import pandas as pd
 from tensorflow.python.client import device_lib
 
 from piscat.Visualization.print_colors import PrintColors
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 
 class GPUConfigurations(PrintColors):
@@ -114,6 +114,4 @@ class GPUConfigurations(PrintColors):
                 print(str(gpu_[0]) + ", memory:" + str(gpu_[1]))
 
         if count_ == 0:
-            print(
-                f"{self.WARNING}\nNo GPU found, TensorFlow will use CPU only!!{self.ENDC}"
-            )
+            print(f"{self.WARNING}\nNo GPU found, TensorFlow will use CPU only!!{self.ENDC}")

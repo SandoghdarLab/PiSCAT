@@ -2,11 +2,8 @@ from __future__ import print_function
 
 import os
 
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib.animation import FuncAnimation
 
 
 def plot3(X, Y, Z, scale="(um)", title=""):
@@ -128,7 +125,7 @@ def plot_bright_dark_psf(df_bright, df_dark, unit="nm"):
 
     annots = []
     for ax in [ax1, ax2]:
-        annot = ax1.annotate(
+        annot = ax.annotate(
             "",
             xy=(0, 0),
             xytext=(-20, 20),

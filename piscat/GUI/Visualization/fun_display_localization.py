@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
+from PySide6.QtCore import QThreadPool
 from skimage.draw import circle_perimeter
 from tqdm import tqdm
 

@@ -1,6 +1,6 @@
 # How to build the documentation
 
-The documentation uses `Sphinx` including some extensions. 
+The documentation uses `Sphinx` including some extensions.
 
 ## Install requirements
 
@@ -15,9 +15,8 @@ Linux/Mac os --> make clean html
 Windows 10 --> 1. make clean, 2. make html
 ```
 
-Starting point for output is found at 
+Starting point for output is found at
 
 ```
 ./_build/html/index.html
 ```
-

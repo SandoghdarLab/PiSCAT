@@ -2,7 +2,8 @@ import os
 import pickle
 import unittest
 
-from piscat.BackgroundCorrection.DRA import *
+import numpy as np
+
 from piscat.Localization import data_handling, difference_of_gaussian, particle_localization
 
 current_path = os.path.abspath(os.path.join("."))

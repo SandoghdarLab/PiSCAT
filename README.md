@@ -16,7 +16,7 @@ In this first release, we provide analysis tools for the sensitive detection of 
 The documentation webpage of PiSCAT modules can be found
 [here](https://piscat.readthedocs.io).
 
-The outputs from most of the PiSCAT localization and tracking methods are of [Panda data frame type](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html). This data structure has the ability to be easily appended/extended with more information based on different levels of analysis. The data structures containing the results of localization and tracking routines can be saved as csv, mat and HDF5 files. This helps users to work with the analyzed information using different softwares namely, MATLAB and Microsoft Excel. HDF5 is a well-known format that is readable in different programming languages and supports large, complex, heterogeneous data. HDF5 uses a "file directory" like structure that allows users to organize data within the file in structured ways and to embed metadata as well, making it self-describing. 
+The outputs from most of the PiSCAT localization and tracking methods are of [Panda data frame type](https://pandas.pydata.org/pandas-docs/stable/reference/frame.html). This data structure has the ability to be easily appended/extended with more information based on different levels of analysis. The data structures containing the results of localization and tracking routines can be saved as csv, mat and HDF5 files. This helps users to work with the analyzed information using different softwares namely, MATLAB and Microsoft Excel. HDF5 is a well-known format that is readable in different programming languages and supports large, complex, heterogeneous data. HDF5 uses a "file directory" like structure that allows users to organize data within the file in structured ways and to embed metadata as well, making it self-describing.
 
 
 ## Installation
@@ -88,11 +88,8 @@ python setup.py test
 
 1.	Follow the hyper links and the install [ Python 3.9](https://www.python.org/downloads/) and [PyCharm](https://www.jetbrains.com/pycharm/download/#section=windows).
 2.	Create a virtual environment based on the instructions provided [here](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html).
-3.  Follow [this link](https://www.jetbrains.com/help/pycharm/creating-and-running-setup-py.html) to select PiSCAT venv as the interpreter, to install the setup.py file and then to run a setup.py task. 
+3.  Follow [this link](https://www.jetbrains.com/help/pycharm/creating-and-running-setup-py.html) to select PiSCAT venv as the interpreter, to install the setup.py file and then to run a setup.py task.
 
 # Contributing
 
 Contributions to PiSCAT are always welcome, and they are greatly appreciated! Our contribution policy can be found [here](https://github.com/SandoghdarLab/PiSCAT/blob/main/CONTRIBUTING.md).
-
-
-

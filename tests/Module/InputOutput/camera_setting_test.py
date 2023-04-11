@@ -1,9 +1,7 @@
 import os
 import unittest
 
-from read_write_data_test import delete_directory
-
-from piscat.InputOutput.camera_setting import *
+from piscat.InputOutput.camera_setting import CameraParameters
 
 current_path = os.path.abspath(os.path.join("."))
 

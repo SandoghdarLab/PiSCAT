@@ -1,8 +1,8 @@
-# Detection & contrast estimation of the proteins in iSCAT videos 
+# Detection & contrast estimation of the proteins in iSCAT videos
 
 ## Previously on PiSCAT tutorials...
-Previously, we demonstrated how to use PiSCAT's APIs 
-for [setting up the PiSCAT modules and downloading a demo iSCAT video](Tutorial1.ipynb#Setting-up-the-PiSCAT-modules-and-downloading-a-demo-iSCAT-video), [performing basic checks on the acquisition process](Tutorial1.ipynb#Examining-the-status-line-&-removing-it) and [basic data visualization](Tutorial1.ipynb#Display-and-inspect-a-loaded-video). Based on the number 
+Previously, we demonstrated how to use PiSCAT's APIs
+for [setting up the PiSCAT modules and downloading a demo iSCAT video](Tutorial1.ipynb#Setting-up-the-PiSCAT-modules-and-downloading-a-demo-iSCAT-video), [performing basic checks on the acquisition process](Tutorial1.ipynb#Examining-the-status-line-&-removing-it) and [basic data visualization](Tutorial1.ipynb#Display-and-inspect-a-loaded-video). Based on the number
 of available CPU cores for parallel processing, this tutorial needs 12-20 GB of computer memory (RAM) to run.
 
 
@@ -19,14 +19,14 @@ dir_path = os.path.dirname(current_path)
 module_path = os.path.join(dir_path)
 if module_path not in sys.path:
     sys.path.append(module_path)
-     
-# Downloading a measurement video for this tutorial 
+
+# Downloading a measurement video for this tutorial
 from piscat.InputOutput import download_tutorial_data
 download_tutorial_data('Tutorial3_video')
 
 # Examining the status line in a loaded/downloaded video and removing the line
 from piscat.InputOutput import reading_videos
-from piscat.Visualization import JupyterDisplay,JupyterSubplotDisplay 
+from piscat.Visualization import JupyterDisplay,JupyterSubplotDisplay
 from piscat.InputOutput import read_status_line
 from piscat.Preproccessing import normalization
 from piscat.BackgroundCorrection import DifferentialRollingAverage
@@ -37,7 +37,7 @@ df_video = reading_videos.DirectoryType(data_path, type_file='raw').return_df()
 paths = df_video['Directory'].tolist()
 video_names = df_video['File'].tolist()
 demo_video_path = os.path.join(paths[0], video_names[0])#Selecting the first entry in the list
-video = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=128, img_height=128, 
+video = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=128, img_height=128,
                                     image_type=np.dtype('<u2'), s_frame=0, e_frame=-1)#Loading the video
 status_ = read_status_line.StatusLine(video)#Reading the status line
 video_remove_status, status_information  = status_.find_status_line()#Examining the status line & removing it
@@ -47,16 +47,16 @@ video_remove_status, status_information  = status_.find_status_line()#Examining 
 ```lang-none
     The directory with the name  Demo data  already exists in the following path: F:\PiSCAT_GitHub_public\PiSCAT\piscat\Tutorials
     Directory  Tutorial3  already exists!
-    
+
     Directory  Histogram  already exists
     ---Status line detected in column---
 ```
-    
+
 
 ## Dark frame correction
 The gray values of an iSCAT image can be directly used to quantitatively estimate the mass of the detected proteins.
  The read-out digital value of a pixel, however, is not entirely built from the collected photons. Part of the recorded signal stems from an extra offset voltage that exists even in imaging under no light condition. It might be helpful to perform an additional preprocessing step on iSCAT videos to subtract a calibrating dark frame from every recorded frame. The dark count in the read-out value of a pixel is a function of acquisition parameters such as exposure time, frame rate and etc. The dark frame correction of iSCAT videos would allow us to obtain the accurate contrasts of the proteins i.e. the true contrast value in
-an absolute sense which is independent of the acquisition parameters. In the following cell, we first compute the pixel-wise average of a calibrating dark video to form the mean dark frame and then subtract this frame from the protein measurement videos. 
+an absolute sense which is independent of the acquisition parameters. In the following cell, we first compute the pixel-wise average of a calibrating dark video to form the mean dark frame and then subtract this frame from the protein measurement videos.
 
 
 ```python
@@ -65,7 +65,7 @@ df_video = reading_videos.DirectoryType(data_path, type_file='raw').return_df()
 paths = df_video['Directory'].tolist()
 video_names = df_video['File'].tolist()
 demo_video_path = os.path.join(paths[0], video_names[0])#Selecting the first entry in the list
-video_darkFrames = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=128, img_height=128, 
+video_darkFrames = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=128, img_height=128,
                                     image_type=np.dtype('<u2'), s_frame=0, e_frame=-1)#Loading the video
 status_ = read_status_line.StatusLine(video_darkFrames)#Reading the status line
 video_darkFrames_remove_status, status_information  = status_.find_status_line()#Examining the status line & removing it
@@ -75,30 +75,30 @@ mean_dark_frame = np.mean(video_darkFrames_remove_status, axis=0)
 #Alternatively, the mean dark count could also be a good measure of the global offset due to dark counts, given as below,
 #mean_dark_frame = np.mean(video_darkFrames_remove_status)
 
-#Subtracting the mean dark frame from the measurement 
+#Subtracting the mean dark frame from the measurement
 video_remove_status_dc = np.subtract(video_remove_status, mean_dark_frame)
 
 #Visualization of iSCAT frames before and after correction of dark counts
-list_titles=['Raw video', 
+list_titles=['Raw video',
              'Video after \ndark frame correction',
             'Difference']
 
 from piscat.Visualization.display_jupyter import JupyterSubplotDisplay
 # For Jupyter notebooks only:
 %matplotlib inline
-JupyterSubplotDisplay(list_videos=[video_remove_status, video_remove_status_dc, 
-                                       video_remove_status - video_remove_status_dc], 
+JupyterSubplotDisplay(list_videos=[video_remove_status, video_remove_status_dc,
+                                       video_remove_status - video_remove_status_dc],
                     numRows=1, numColumns=3, list_titles=list_titles, imgSizex=15, imgSizey=5, IntSlider_width='500px',
                     median_filter_flag=False, color='gray')
 ```
 
-```lang-none 
+```lang-none
     ---Status line detected in column---
 ```
 
 ![](../Fig/tu4_vid1.png)
 
-Next, we perform [power normalization to suppress the temporal instability of the laser light](Tutorial1.ipynb#Normalization-of-the-power-in-the-frames-of-a-video) and [DRA](Tutorial2.ipynb#Frame-averaging-to-boost-SNR-of-imaged-proteins,-followed-by-visualization-of-their-signal-via-differential-imaging) with a batch size of 500 frames.  
+Next, we perform [power normalization to suppress the temporal instability of the laser light](Tutorial1.ipynb#Normalization-of-the-power-in-the-frames-of-a-video) and [DRA](Tutorial2.ipynb#Frame-averaging-to-boost-SNR-of-imaged-proteins,-followed-by-visualization-of-their-signal-via-differential-imaging) with a batch size of 500 frames.
 
 
 ```python
@@ -111,7 +111,7 @@ RVideo_PN, _ = DRA_PN.differential_rolling(FFT_flag=False)
 
 ```lang-none
     start power_normalized without parallel loop---> Done
-    
+
     --- start DRA ---
       100%|#########| 18999/18999 [00:00<?, ?it/s]
 ```
@@ -119,30 +119,30 @@ RVideo_PN, _ = DRA_PN.differential_rolling(FFT_flag=False)
 ## Localization of proteins:
 In this section, we directly work with the dynamic features that are remained in the DRA videos. As mentioned earlier the system response of a wide-field microscope for weakly scattering objects can be well approximated with a 2D Gaussian function. There exist a variety of localization algorithms available in the localization toolbox of PiSCAT. Difference of Gaussian ([DoG](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.PSFsExtraction.psf_detection)) algorithm, for example, is suitable to perform a very efficient localization of proteins with pixel precision particle localization [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)].
 
-In the following cell, a DRA video is being processed with a suitable set of parameters. The minima and maxima of the sigma values for the DoG kernels are lower and upper limits of the point spread function (PSF) size (in pixels) that one expects once the microscope response function is approximated with a 2D Gaussian function. The sigma ratio and the threshold values in this cell are set with respect to the contrast of the particles we are seeking to detect. We begin this analysis by presenting an interactive PiSCAT class that enables us to tune the DoG detection parameter and visualizes the localized particles dynamically.   
+In the following cell, a DRA video is being processed with a suitable set of parameters. The minima and maxima of the sigma values for the DoG kernels are lower and upper limits of the point spread function (PSF) size (in pixels) that one expects once the microscope response function is approximated with a 2D Gaussian function. The sigma ratio and the threshold values in this cell are set with respect to the contrast of the particles we are seeking to detect. We begin this analysis by presenting an interactive PiSCAT class that enables us to tune the DoG detection parameter and visualizes the localized particles dynamically.
 
 
 ```python
 from piscat.Localization import particle_localization
 
 PSF_l = particle_localization.PSFsExtraction(video=RVideo_PN)
-PSFs = PSF_l.psf_detection_preview(function='dog',  
+PSFs = PSF_l.psf_detection_preview(function='dog',
                             min_sigma=1.6, max_sigma=1.8, sigma_ratio=1.1, threshold=8.5e-4,
                             overlap=0, mode='BOTH', frame_number=[600, 7380])
 ```
 
 ![](../Fig/tu4_vid2.png)
 
-Once we get to a working set of parameters for our localization algorithm we run the detection algorithm for all the frames of the video. 
+Once we get to a working set of parameters for our localization algorithm we run the detection algorithm for all the frames of the video.
 
 
 ```python
-PSFs_dog = PSF_l.psf_detection(function='dog', 
+PSFs_dog = PSF_l.psf_detection(function='dog',
                             min_sigma=1.6, max_sigma=1.8, sigma_ratio=1.1, threshold=8e-4,
                             overlap=0, mode='BOTH')
 ```
 
-```lang-none 
+```lang-none
     ---start PSF detection with parallel loop---
       100%|#########| 19000/19000 [00:00<?, ?it/s]
 ```
@@ -278,40 +278,40 @@ PSFs_dog
 ### Filtering of DRA frames prior to the localization of particles with band-pass filters and/or Radial Variance Transform ([2](https://doi.org/10.1364/OE.420670))
 Further filtering of DRA frames would facilitate even more robust localization of particles.
 This could be, for example, a simple image conditioning routine such as a high-pass Fourier filter which can easily remove large features in the image due to lateral instability of the illumination profile.
-In some other cases, while imaging relatively large proteins (bigger than 120KDa), we would have prominent sidelobes in the recorded PSFs. Such proteins have a very strong radially symmetric signature 
+In some other cases, while imaging relatively large proteins (bigger than 120KDa), we would have prominent sidelobes in the recorded PSFs. Such proteins have a very strong radially symmetric signature
 that can be exploited in order to tell the particles apart from the other features in the image. In the following cell, we demonstrate the application of [Radial Variance Treansform (RVT) filtering functionality](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.RadialVarianceTransform) on the iSCAT images together with the DoG particle localizer.
-As demonstrated in the following cell, with the application of such filters to the images one would need to re-tune the DoG localization parameters.  
+As demonstrated in the following cell, with the application of such filters to the images one would need to re-tune the DoG localization parameters.
 
 
 ```python
-# Step1- Localize particles one more time with RVT. 
+# Step1- Localize particles one more time with RVT.
 from piscat.Preproccessing import filtering
 rvt_ = filtering.RadialVarianceTransform(inter_flag_parallel_active=False)
 filtered_video = rvt_.rvt_video(video=RVideo_PN, rmin=2, rmax=3, kind="basic", highpass_size=None,
             upsample=1, rweights=None, coarse_factor=1, coarse_mode='add',
             pad_mode='constant')
-    
-# Step2- Just as before we deploy DoG localization algorithm but this time on the filtered DRA video 
+
+# Step2- Just as before we deploy DoG localization algorithm but this time on the filtered DRA video
 PSF_localized_rvt = particle_localization.PSFsExtraction(video=filtered_video, flag_transform=True)
-PSFs_RVT_dog = PSF_localized_rvt.psf_detection(function='dog',  
+PSFs_RVT_dog = PSF_localized_rvt.psf_detection(function='dog',
                             min_sigma=1.6, max_sigma=1.8, sigma_ratio=1.1, threshold=1.2e-8,
                             overlap=0, mode='BOTH')
 
-# Step3- Visualization of Localized proteins in the DRA videos with DoG with and without RVT filtering on the left and right correspondingly  
+# Step3- Visualization of Localized proteins in the DRA videos with DoG with and without RVT filtering on the left and right correspondingly
 from piscat.Visualization import JupyterPSFs_subplotLocalizationDisplay
-JupyterPSFs_subplotLocalizationDisplay(list_videos=[RVideo_PN, filtered_video], list_df_PSFs=[PSFs_dog, PSFs_RVT_dog], 
-                                    numRows=1, numColumns=2, list_titles=['DoG', 'RVT'], median_filter_flag=False, 
+JupyterPSFs_subplotLocalizationDisplay(list_videos=[RVideo_PN, filtered_video], list_df_PSFs=[PSFs_dog, PSFs_RVT_dog],
+                                    numRows=1, numColumns=2, list_titles=['DoG', 'RVT'], median_filter_flag=False,
                                        color='gray', imgSizex=15, imgSizey=15, IntSlider_width='400px', step=1, value=11931)
 
 # Alternatively: We can perform both the processes of steps 1 and 2 together efficiently:
 PSF_l = particle_localization.PSFsExtraction(video=RVideo_PN, flag_transform=False)
-PSFs_RVT = PSF_l.psf_detection(function='RVT', 
-                            min_radial=2, max_radial=3,  rvt_kind="basic", 
+PSFs_RVT = PSF_l.psf_detection(function='RVT',
+                            min_radial=2, max_radial=3,  rvt_kind="basic",
                             highpass_size=None, upsample=1, rweights=None, coarse_factor=1, coarse_mode="add",
                             pad_mode="constant", threshold=1.5e-7)
 ```
 
-```lang-none 
+```lang-none
     ---start RVT without Parallel---
     100%|#########| 19000/19000 [00:00<?, ?it/s]
 
@@ -329,21 +329,21 @@ Often times it is beneficial to localize the proteins with several localization 
 
 
 ```python
-PSFs = PSF_l.fit_Gaussian2D_wrapper(PSF_List=PSFs_dog, scale=5, internal_parallel_flag=True)  
+PSFs = PSF_l.fit_Gaussian2D_wrapper(PSF_List=PSFs_dog, scale=5, internal_parallel_flag=True)
 PSFs.info()
 ```
 
-    
-```lang-none 
-  
+
+```lang-none
+
     ---Fitting 2D gaussian with parallel loop---
     100%|#########| 131856/131856 [00:00<?, ?it/s]
 
     <class 'pandas.core.frame.DataFrame'>
     RangeIndex: 205306 entries, 0 to 205305
     Data columns (total 18 columns):
-     #   Column                Non-Null Count   Dtype  
-    ---  ------                --------------   -----  
+     #   Column                Non-Null Count   Dtype
+    ---  ------                --------------   -----
      0   y                     205306 non-null  float64
      1   x                     205306 non-null  float64
      2   frame                 205306 non-null  float64
@@ -364,7 +364,7 @@ PSFs.info()
      17  Fit_errors_Bias       199198 non-null  float64
     dtypes: float64(18)
     memory usage: 28.2 MB
-```    
+```
 
 ## Tracking proteins
 Since we perform rolling average analysis before forming differential images, a landing event of a protein would span over multiple frames. So far the proteins are individually localized per frame. In this step, the localization events will be linked together in order to obtain protein trajectories by employing the particle linking routines from [trackpy](http://soft-matter.github.io/trackpy/v0.4.2/index.html). [Linking](https://piscat.readthedocs.io/code_reference.html#piscat.Trajectory.Linking) between the localized proteins is formed when two PSFs are not further than 2 pixels apart (`search_range`) and not more than 10 frames distant temporally (`Memory`).
@@ -379,7 +379,7 @@ linked_PSFs = linking_.create_link(psf_position=PSFs, search_range=2, memory=10)
 print("Number of Particles {}".format(linking_.trajectory_counter(linked_PSFs)))
 ```
 
-```lang-none   
+```lang-none
     Frame 18999: 11 trajectories present.
     Number of Particles 735
 ```
@@ -407,7 +407,7 @@ fig = plt.figure(figsize=(12, 4))
 plt.hist(his_all_particles, bins=50, fc='C1', ec='k', density=False)
 plt.ylabel('#Counts', fontsize=18)
 plt.xlabel('Length of linking', fontsize=18)
-plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))  
+plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 plt.title('Linking', fontsize=18)
 print('Median of linking length is {}'.format(np.median(his_all_particles)))
 plt.show()
@@ -416,9 +416,9 @@ plt.show()
     Median of linking length is 223.0
 
 ![png](output_20_1.png)
-    
 
-Spatial filtering of PSFs and temporal filtering of linked trajectories are done and the resultant data structure is printed below. 
+
+Spatial filtering of PSFs and temporal filtering of linked trajectories are done and the resultant data structure is printed below.
 
 
 ```python
@@ -434,26 +434,26 @@ PSFs_filtered = spatial_filters.symmetric_PSFs(PSFs_filtered, threshold=0.7)
 from piscat.Trajectory import TemporalFilter
 
 t_filters = TemporalFilter(video=RVideo_PN, batchSize=batchSize)
-all_trajectories, linked_PSFs_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=PSFs_filtered, 
-                                                                                 threshold_min=270, 
+all_trajectories, linked_PSFs_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=PSFs_filtered,
+                                                                                 threshold_min=270,
                                                                                  threshold_max=2*batchSize)
-    
+
 # Printing results
 PSFs.info()
 ```
 
-```lang-none   
-   
+```lang-none
+
     start removing crappy frames ---> Done!
-    
+
     ---Cleaning the df_PSFs that have drift without parallel loop---
     100%|#########| 18359/18359 [00:00<?, ?it/s]
 
     Number of PSFs before filters = 115112
-    
+
     Number of PSFs after filters = 105370
-    
-    start V_trajectories without parallel loop---> 
+
+    start V_trajectories without parallel loop--->
 
     100%|#########| 140/140 [00:00<?, ?it/s]
 
@@ -462,8 +462,8 @@ PSFs.info()
     <class 'pandas.core.frame.DataFrame'>
     RangeIndex: 205306 entries, 0 to 205305
     Data columns (total 18 columns):
-     #   Column                Non-Null Count   Dtype  
-    ---  ------                --------------   -----  
+     #   Column                Non-Null Count   Dtype
+    ---  ------                --------------   -----
      0   y                     205306 non-null  float64
      1   x                     205306 non-null  float64
      2   frame                 205306 non-null  float64
@@ -484,17 +484,17 @@ PSFs.info()
      17  Fit_errors_Bias       199198 non-null  float64
     dtypes: float64(18)
     memory usage: 28.2 MB
-```  
+```
 
 ### Visualization of detected proteins before and after spatiotemporal filtering
 
 
 ```python
 from piscat.Visualization import JupyterPSFs_subplotLocalizationDisplay
-JupyterPSFs_subplotLocalizationDisplay(list_videos=[RVideo_PN, RVideo_PN], list_df_PSFs=[PSFs_dog, linked_PSFs_filter], 
-                                        numRows=1, numColumns=2, 
-                                        list_titles=['Before Spatiotemporal filtering', 'After Spatiotemporal filtering'], 
-                                        median_filter_flag=False, color='gray', imgSizex=15, imgSizey=15, 
+JupyterPSFs_subplotLocalizationDisplay(list_videos=[RVideo_PN, RVideo_PN], list_df_PSFs=[PSFs_dog, linked_PSFs_filter],
+                                        numRows=1, numColumns=2,
+                                        list_titles=['Before Spatiotemporal filtering', 'After Spatiotemporal filtering'],
+                                        median_filter_flag=False, color='gray', imgSizex=15, imgSizey=15,
                                         IntSlider_width='400px', step=1, value=0)
 ```
 
@@ -524,7 +524,7 @@ loading_directory = os.path.join(dir_path, 'Tutorials', 'Demo data','Histogram')
 df_video = reading_videos.DirectoryType(loading_directory, type_file='h5').return_df()
 paths = df_video['Directory'].tolist()
 HDF5_names = df_video['File'].tolist()
-# Choosing the first entry in the list to load 
+# Choosing the first entry in the list to load
 hist_data_path = os.path.join(paths[0], HDF5_names[0])
 
 from piscat.InputOutput import read_write_data
@@ -532,7 +532,7 @@ all_trajectories = read_write_data.load_dict_from_hdf5(hist_data_path)
 ```
 
 ## Estimation of the protein contrast [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)]
-Once the trajectory of a protein landing or take-off event is built from the individual localization events, the central intensity value of the protein signal in each frame of the DRA video is extracted. This temporal trace can be used to estimate the contrast of the proteins. In the following, we provide two cells to demonstrate this analysis. The contrast estimation of a protein is illustrated in the first cell using the temporal intensity trace of the protein. The same protein is marked and visualized in the second cell where this overlay is done on the DRA videos. 
+Once the trajectory of a protein landing or take-off event is built from the individual localization events, the central intensity value of the protein signal in each frame of the DRA video is extracted. This temporal trace can be used to estimate the contrast of the proteins. In the following, we provide two cells to demonstrate this analysis. The contrast estimation of a protein is illustrated in the first cell using the temporal intensity trace of the protein. The same protein is marked and visualized in the second cell where this overlay is done on the DRA videos.
 
 In the [contrast estimation class](https://piscat.readthedocs.io/code_reference.html#piscat.Analysis.PlotProteinHistogram), we first extend the trace from the detected region (sandwiched between two vertical dashed lines) to grow to twice the batch size if possible. This extended trace is then smoothed using a windowing average which corresponds to 5% of the length of the trace. The mean of the signal at the detected region is computed. A positive mean value would mean the extremum is a maximum and vice versa. We then make sure that the extremum is always a peak from which we separate left and right arms of the signal. Each side of the arms is then separately fitted with a line. The intersection point of these lines can be used to read off the contrast value of the protein in addition to simply reading the peak value of the signal. In case the baseline of the intensity profiles are not symmetric or not zero-valued, one can take Prominence of the extrema as a measure of the contrast which is shown here with a vertical orange line.
 
@@ -541,7 +541,7 @@ In the [contrast estimation class](https://piscat.readthedocs.io/code_reference.
 # The contrast estimation cell
 from piscat.Analysis import PlotProteinHistogram
 his_ = PlotProteinHistogram(intersection_display_flag=True, imgSizex=10, imgSizey=5)
-his_.plot_contrast_extraction(particles=all_trajectories, batch_size=batchSize, video_frame_num=RVideo_PN.shape[0], 
+his_.plot_contrast_extraction(particles=all_trajectories, batch_size=batchSize, video_frame_num=RVideo_PN.shape[0],
                               MinPeakWidth=100,
                               MinPeakProminence=0, pixel_size=0.66, particles_num='#16')
 ```
@@ -558,14 +558,14 @@ from piscat.Analysis import PlotProteinHistogram
 %matplotlib inline
 
 his_ = PlotProteinHistogram(intersection_display_flag=False)
-his_(folder_name='', particles=all_trajectories, batch_size=batchSize, video_frame_num=RVideo_PN.shape[0], 
+his_(folder_name='', particles=all_trajectories, batch_size=batchSize, video_frame_num=RVideo_PN.shape[0],
      MinPeakWidth=200, MinPeakProminence=0, pixel_size=0.66)
-his_.plot_histogram(bins=12, upper_limitation=9e-3, lower_limitation=-9e-3, step_range=1e-6, face='g', 
+his_.plot_histogram(bins=12, upper_limitation=9e-3, lower_limitation=-9e-3, step_range=1e-6, face='g',
                     edge='k', Flag_GMM_fit=True, max_n_components=3, scale=1e1, external_GMM=False)
 ```
-    
+
 ![png](output_32_0.png)
-    
+
 
 ### Bibliography
 1. [Mirzaalian Dastjerdi, Houman, et al. "Optimized analysis for sensitive detection and analysis of single proteins via interferometric scattering microscopy." Journal of Physics D: Applied Physics (2021).](http://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)

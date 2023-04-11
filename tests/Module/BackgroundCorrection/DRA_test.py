@@ -2,7 +2,9 @@ import os
 import pickle
 import unittest
 
-from piscat.BackgroundCorrection.DRA import *
+import numpy as np
+
+from piscat.BackgroundCorrection.DRA import DifferentialRollingAverage
 from piscat.InputOutput.reading_videos import video_reader
 
 current_path = os.path.abspath(os.path.join("."))

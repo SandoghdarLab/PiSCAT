@@ -1,9 +1,7 @@
 import os
 import unittest
 
-from read_write_data_test import delete_directory
-
-from piscat.InputOutput.image_to_video import *
+from piscat.InputOutput.image_to_video import Image2Video
 
 current_path = os.path.abspath(os.path.join("."))
 

@@ -8,6 +8,8 @@ from scipy import spatial
 from skimage import img_as_float
 from skimage.feature import peak_local_max
 
+from piscat.Preproccessing.filtering import FastRadialSymmetryTransform
+
 
 def _compute_disk_overlap(d, r1, r2):
     """
@@ -252,6 +254,7 @@ def blob_frst(
         [radial for radial in range(int(min_radial[0]), int(max_radial[0] + 1), int(radial_step))]
     )
 
+    frst = FastRadialSymmetryTransform()._frst
     frst_images = [
         frst(image, radii=r, alpha=alpha, beta=beta, stdFactor=stdFactor, mode=mode)
         for r in radial_list
@@ -275,7 +278,7 @@ def blob_frst(
 
     local_maxima_ = []
 
-    for idx, l_m in enumerate(local_maxima):
+    for _, l_m in enumerate(local_maxima):
         local_maxima_.append([l_m[0], l_m[1], radial_list[l_m[2]]])
 
     return local_maxima_

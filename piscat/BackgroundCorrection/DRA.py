@@ -4,7 +4,8 @@ import numpy as np
 from joblib import Parallel, delayed
 from numba import njit
 from PySide6 import QtCore
-#from PySide6.QtCore import *
+
+# from PySide6.QtCore import *
 from scipy.ndimage import uniform_filter1d
 from tqdm.autonotebook import tqdm
 

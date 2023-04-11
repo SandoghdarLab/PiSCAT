@@ -4,15 +4,12 @@ __author__ = "Houman Mirzaalian D., xxxx"
 
 from __future__ import print_function
 
-import matplotlib.ticker as ticker
 import numpy as np
-import pylab as pl
 from matplotlib import animation
 from matplotlib import pyplot as plt
-from matplotlib.patches import Arrow, Circle, Rectangle
+from matplotlib.patches import Circle, Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, QRunnable, Signal, Slot
 from scipy.ndimage import median_filter
 
 from piscat.InputOutput import read_status_line
@@ -518,7 +515,7 @@ class HTML_subplotDisplay:
 
     def animate(self, i_):
         if i_ < self.list_video[0].shape[0]:
-            for idx_, (ax_, vid_, tit_) in enumerate(
+            for idx_, (_, vid_, tit_) in enumerate(
                 zip(self.imgGrid_list, self.list_video, self.list_titles)
             ):
                 arr = vid_[i_, :, :]

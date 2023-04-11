@@ -78,18 +78,3 @@ References
 [2] `Dastjerdi, H. M., Dahmardeh, M., Gemeinhardt, A., Mahmoodabadi, R. G., Köstler, H., & Sandoghdar, V. (2021). Optimized analysis for sensitive detection and analysis of single proteins via interferometric scattering microscopy. Journal of Physics D: Applied Physics, 55, 054002. <https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68>`_
 
 [3] `Dahmardeh, M., Mirzaalian Dastjerdi, H., Mazal, H. et al. Self-supervised machine learning pushes the sensitivity limit in label-free detection of single proteins below 10kDa. Nat Methods (2023). <https://www.nature.com/articles/s41592-023-01778-2>`_
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,16 +1,13 @@
 import numpy as np
-import scipy.optimize
 from ipywidgets import Layout, interact, widgets
 from matplotlib import cm as cm
 from matplotlib import pyplot as plt
-from matplotlib.patches import Arrow, Circle, Rectangle
+from matplotlib.patches import Circle, Rectangle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.ndimage import median_filter
-from skimage.filters import median
-from skimage.morphology import disk
 
 from piscat.InputOutput import read_status_line
-from piscat.Localization import directional_intensity, gaussian_2D_fit
+from piscat.Localization import gaussian_2D_fit
 from piscat.Trajectory.data_handling import protein_trajectories_list2dic
 
 
@@ -713,9 +710,7 @@ class JupyterPSFs_TrackingDisplay:
                 particle_X_ = all_particle_["x"].tolist()
                 particle_Y_ = all_particle_["y"].tolist()
                 particle_sigma_ = all_particle_["sigma"].tolist()
-                for f_, x_, y_, sigma_ in zip(
-                    particle_f_, particle_X_, particle_Y_, particle_sigma_
-                ):
+                for f_, x_, y_, _ in zip(particle_f_, particle_X_, particle_Y_, particle_sigma_):
                     if f_ <= frame_number:
                         ax.add_patch(
                             Circle(
@@ -890,7 +885,7 @@ class JupyterSelectedPSFs_localizationDisplay:
 
         list_one_frame_fit = []
         if particle.shape[0] > 0:
-            for p_x, p_y, sigma_0, c_0, i_ in zip(
+            for p_x, p_y, sigma_0, _, i_ in zip(
                 particle_X, particle_Y, particle_sigma, particle_center_intensity, index_list
             ):
                 window_size = scale * np.sqrt(2) * sigma_0

@@ -3,10 +3,9 @@ from __future__ import print_function
 import numpy as np
 import pywt
 from joblib import Parallel, delayed
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
 from skimage import filters
 from skimage.morphology import rectangle
-from tqdm.autonotebook import tqdm
 from tqdm.notebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
@@ -170,7 +169,7 @@ class MedianProjectionFPNc(QRunnable):
 
 class ColumnProjectionFPNc(QRunnable):
     def __init__(self, video, select_correction_axis, flag_GUI=False):
-        """ This class uses a heuristic procedure called Column Projection FPN
+        """This class uses a heuristic procedure called Column Projection FPN
         (cpFPN) to reduce fixed pattern noise (FPN).
 
         Parameters
@@ -456,7 +455,7 @@ class FrequencyFPNc:
             selem = rectangle(nrows=5, ncols=1)
 
         filter_img = im_noise.copy()
-        for i_ in range(self.max_iterations):
+        for _ in range(self.max_iterations):
             try:
                 filter_img = filters.gaussian(filter_img, sigma=1.2, preserve_range=True)
                 # filter_img = rank.mean(filter_img, selem=selem)

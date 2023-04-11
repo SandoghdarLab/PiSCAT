@@ -166,7 +166,7 @@ class StatusLine:
             ROIy_start = (
                 sum(np.multiply(StatusLine[40:44], converter)) / NrAcc
             )  # Vertical start position of ROI (Window.Y). In MROI-mode this
-               # parameter is the start position of the first ROI
+            # parameter is the start position of the first ROI
             self.camera_info["ROIy_start"] = ROIy_start
 
         if width >= 48:
@@ -217,5 +217,5 @@ class StatusLine:
             TrgLvl = self.decimalToBinary(
                 int(np.sum(np.multiply(StatusLine[92:96], converter))) / NrAcc, 4
             )  # Trigger Level: signals level of the trigger input signals. Bit
-               # 0: ExSync (CC1): Bit 1: I/O Trigger; Bit 2: CC3; Bit 3: CC4
+            # 0: ExSync (CC1): Bit 1: I/O Trigger; Bit 2: CC3; Bit 3: CC4
             self.camera_info["TrgLvl"] = TrgLvl

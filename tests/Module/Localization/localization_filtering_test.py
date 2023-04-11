@@ -52,11 +52,11 @@ class SpatialFilter(unittest.TestCase):
         self.assertTrue(np.all(np.nan_to_num(filtered_psf - loaded_data_frame) < 1e-6))
 
     def test_symmetric_PSFs_value_error(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(RuntimeError):
             self.test_obj.symmetric_PSFs(pd.DataFrame(), threshold=20)
 
     def test_symmetric_PSFs_value_error_empty(self):
-        with self.assertRaises(Exception):
+        with self.assertRaises(RuntimeError):
             self.test_obj.symmetric_PSFs(None, threshold=20)
 
     def test_remove_side_lobes_artifact(self):

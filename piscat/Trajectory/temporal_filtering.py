@@ -4,7 +4,7 @@ from tqdm.autonotebook import tqdm
 
 class TemporalFilter:
     def __init__(self, video, batchSize):
-        """ Filters to be applied to temporal features are included in this
+        """Filters to be applied to temporal features are included in this
         class.
 
         Parameters

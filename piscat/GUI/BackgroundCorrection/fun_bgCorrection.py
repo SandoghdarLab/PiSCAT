@@ -1,5 +1,5 @@
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import *
+from PySide6.QtCore import QThreadPool, Slot
 
 from piscat.BackgroundCorrection.DRA import DifferentialRollingAverage
 from piscat.GUI.BackgroundCorrection import DRA

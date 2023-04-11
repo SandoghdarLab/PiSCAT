@@ -5,7 +5,7 @@ from functools import partial
 import numpy as np
 import pandas as pd
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtCore import *
+from PySide6.QtCore import Slot
 
 from piscat.GUI.Projects.tab_bg_correction import BgCorrection_GUI
 from piscat.GUI.Projects.tab_localization import Localization_GUI
@@ -53,6 +53,7 @@ class ProteinTabs(QtWidgets.QMainWindow):
 
     def initUI(self):
         from piscat.GUI import Tracking_GUI
+
         self.resize(400, 200)
         self.setWindowTitle("PSF Tracking")
         self.setGeometry(1140, 100, 400, 200)

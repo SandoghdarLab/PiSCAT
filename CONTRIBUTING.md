@@ -73,4 +73,3 @@ Before you submit a Merge Request, check that it meets these guidelines:
 1. All functionality that is implemented through this Merge Request should be covered by unit tests. These are implemented in `PiSCAT\tests`. It would be necessary to add your unit test if the new implementation has some features that are not covered by our unit tests.
 2. If the Merge Request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring.
 3. If you have a maintainer status for `PiSCAT`, you can merge Merge Requests to the master branch. However, every Merge Request needs to be reviewed by another developer. Thus it is not allowed to merge a Merge Request, which is submitted by oneself.
-

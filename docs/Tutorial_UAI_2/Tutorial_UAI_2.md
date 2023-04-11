@@ -1,4 +1,4 @@
-# Tutorial for anomaly detection (DNN feature matrix) 
+# Tutorial for anomaly detection (DNN feature matrix)
 
 We use the FastDVDNet model to extract suitable features for anomaly detection [[1](https://openaccess.thecvf.com/content_CVPR_2020/html/Tassano_FastDVDnet_Towards_Real-Time_Deep_Video_Denoising_Without_Flow_Estimation_CVPR_2020_paper.html)]. The outcome
 is a predicted frame that is subtracted from the target frame to construct a feature map that is
@@ -31,14 +31,14 @@ dir_path = os.path.dirname(current_path)
 module_path = os.path.join(dir_path)
 if module_path not in sys.path:
     sys.path.append(module_path)
-    
-# Downloading a measurement video for this tutorial 
+
+# Downloading a measurement video for this tutorial
 from piscat.InputOutput import download_tutorial_data
 download_tutorial_data('Tutorial_UAI')
-     
+
 # Examining the status line in a loaded/downloaded video and removing the line
 from piscat.InputOutput import reading_videos
-from piscat.Visualization import JupyterDisplay,JupyterSubplotDisplay 
+from piscat.Visualization import JupyterDisplay,JupyterSubplotDisplay
 from piscat.InputOutput import read_status_line
 from piscat.Preproccessing import normalization
 from piscat.BackgroundCorrection import DifferentialRollingAverage
@@ -49,7 +49,7 @@ df_video = reading_videos.DirectoryType(data_path, type_file='bin').return_df()
 paths = df_video['Directory'].tolist()
 video_names = df_video['File'].tolist()
 demo_video_path = os.path.join(paths[0], video_names[0])#Selecting the first entry in the list
-video_ = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=72, img_height=72, 
+video_ = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=72, img_height=72,
                                     image_type=np.dtype('<u2'), s_frame=0, e_frame=-1)#Loading the video
 
 video = video_[1000:90000, ...]# Trimming the data and setting it to where iSCAT measurement is started.
@@ -74,38 +74,38 @@ from piscat.Visualization.display_jupyter import JupyterSubplotDisplay
 # For Jupyter notebooks only:
 %matplotlib inline
 
-# Display 
+# Display
 list_titles = ['Filter hot pixel (raw iSCAT video)', 'Filter hot pixel (DRA video)']
-JupyterSubplotDisplay(list_videos=[video_pn_hotPixel, RVideo_PN_FPN_hotPixel], 
-                        numRows=1, numColumns=2, list_titles=list_titles, 
+JupyterSubplotDisplay(list_videos=[video_pn_hotPixel, RVideo_PN_FPN_hotPixel],
+                        numRows=1, numColumns=2, list_titles=list_titles,
                         imgSizex=10, imgSizey=5, IntSlider_width='500px',
                         median_filter_flag=False, color='gray', value=40909)
 ```
 
- ```lang-none     
+ ```lang-none
     Directory  F:\PiSCAT_GitHub_public\PiSCAT\Tutorials  already exists
-    
+
     The directory with the name  Demo data  already exists in the following path: F:\PiSCAT_GitHub_public\PiSCAT\Tutorials
-    
+
     The data file named  UAI  already exists in the following path: F:\PiSCAT_GitHub_public\PiSCAT\Tutorials\Demo data
     ---Status line detected in column---
-    
+
     start power_normalized without parallel loop---> Done
-    
+
     --- start DRA + mFPN_axis: Both---
       100%|#########| 74999/74999 [00:00<?, ?it/s]
 
-    median FPN correction without parallel loop ---> 
+    median FPN correction without parallel loop --->
       100%|#########| 75000/75000 [00:00<?, ?it/s]
 
     Done
-    
-    median FPN correction without parallel loop ---> 
+
+    median FPN correction without parallel loop --->
       100%|#########| 75000/75000 [00:00<?, ?it/s]
     Done
-    
+
     ---start median filter without Parallel---
-    
+
     ---start median filter without Parallel---
 ```
 
@@ -140,7 +140,7 @@ dnn_.train(video_input_array=batch_original_array,
            path_save=save_DNN_path, name_weights="anomaly_weights_new.h5", flag_warm_train=False)
 ```
 
-```lang-none  
+```lang-none
     --- model tarin on CPU---!
     Epoch 1/100
      49/662 [=>............................] - ETA: 35:08 - loss: 0.0644
@@ -178,7 +178,7 @@ circlur_mask = M2Vid.mask_generating_circle(center=(int(diff_vid.shape[1] / 2), 
                                             redius=30)
 video_mask = M2Vid.apply_mask(flag_nan=False)
 
-# Display 
+# Display
 list_titles = ['DNN_output', 'probability map', 'masked probability map']
 JupyterSubplotDisplay(list_videos=[feature_DNN, diff_vid, video_mask],
                       numRows=1, numColumns=3, list_titles=list_titles,
@@ -186,12 +186,12 @@ JupyterSubplotDisplay(list_videos=[feature_DNN, diff_vid, video_mask],
                       median_filter_flag=True, color='gray', value=17681)
 ```
 
-```lang-none  
+```lang-none
     ---Loaded model weights from disk!---
     --- model test on CPU---!
     625/625 [==============================] - 673s 1s/step
     --- Mask is not define! ---
-    
+
     ---apply mask without Parallel---
       100%|#########| 19996/19996 [00:00<?, ?it/s]
       100%|#########| 19996/19996 [00:00<?, ?it/s]
@@ -224,22 +224,22 @@ result_anomaly_ = mask_video_pad.copy()
 result_anomaly_[mask_video_pad == -1] = 0
 result_anomaly_ = Normalization(video=result_anomaly_.astype(int)).normalized_image_specific()
 
-# Display 
+# Display
 JupyterSubplotDisplay(list_videos=[video_norm, result_anomaly_],
                       numRows=1, numColumns=2, list_titles=['DRA', 'Anomaly'],
                       imgSizex=10, imgSizey=10, IntSlider_width='500px',
                       median_filter_flag=False, color='gray', value=17681)
 ```
 
-```lang-none      
+```lang-none
     ---start DOG feature without parallel loop---
       100%|#########| 19996/19996 [00:00<?, ?it/s]
-    
-    ---start anomaly with Parallel---    
+
+    ---start anomaly with Parallel---
       100%|#########| 19996/19996 [00:00<?, ?it/s]
-    
+
     converting video bin_type to uint8---> Done
-   
+
 ```
 
 ![](img_3.png)
@@ -265,28 +265,28 @@ df_PSFs = binery_localization.gaussian2D_fit_iSCAT(scale=1, internal_parallel_fl
 df_PSFs.info()
 ```
 
-```lang-none      
+```lang-none
     ---start area closing without Parallel---
       100%|#########| 19996/19996 [00:00<?, ?it/s]
-      
+
     ---start gaussian filter without Parallel---
-    
+
     ---start area local_minima without Parallel---
       100%|#########| 19996/19996 [00:00<?, ?it/s]
-    
+
     ---Cleaning the df_PSFs that have side lobs without parallel loop---
       100%|#########| 10680/10680 [00:00<?, ?it/s]
 
-    Number of PSFs before filters = 16813    
+    Number of PSFs before filters = 16813
     Number of PSFs after filters = 12071
-    
+
     ---Fitting 2D gaussian without parallel loop---
       100%|#########| 12071/12071 [00:00<?, ?it/s]
 
     RangeIndex: 12071 entries, 0 to 12070
     Data columns (total 18 columns):
-     #   Column                Non-Null Count  Dtype  
-    ---  ------                --------------  -----  
+     #   Column                Non-Null Count  Dtype
+    ---  ------                --------------  -----
      0   y                     12071 non-null  float64
      1   x                     12071 non-null  float64
      2   frame                 12071 non-null  float64
@@ -307,17 +307,17 @@ df_PSFs.info()
      17  Fit_errors_Bias       11612 non-null  float64
     dtypes: float64(18)
     memory usage: 1.7 MB
-```    
+```
 
 
 ```python
 # Localization Display
 from piscat.Visualization import JupyterPSFs_subplotLocalizationDisplay
-JupyterPSFs_subplotLocalizationDisplay(list_videos=[test_video, binery_localization.blure_video], 
-                                       list_df_PSFs=[df_PSFs, df_PSFs], 
-                                        numRows=1, numColumns=2, 
-                                        list_titles=['DRA localization', 'Anomaly Mask'], 
-                                        median_filter_flag=False, color='gray', imgSizex=10, imgSizey=10, 
+JupyterPSFs_subplotLocalizationDisplay(list_videos=[test_video, binery_localization.blure_video],
+                                       list_df_PSFs=[df_PSFs, df_PSFs],
+                                        numRows=1, numColumns=2,
+                                        list_titles=['DRA localization', 'Anomaly Mask'],
+                                        median_filter_flag=False, color='gray', imgSizex=10, imgSizey=10,
                                         IntSlider_width='400px', step=1, value=17681)
 ```
 
@@ -334,7 +334,7 @@ df_video_Flo = reading_videos.DirectoryType(data_path_Flo, type_file='raw').retu
 paths_Flo = df_video_Flo['Directory'].tolist()
 video_names_Flo = df_video_Flo['File'].tolist()
 demo_video_path_Flo = os.path.join(paths_Flo[0], video_names_Flo[0])#Selecting the first entry in the list
-video_Flo = reading_videos.video_reader(file_name=demo_video_path_Flo, type='binary', img_width=72, img_height=72, 
+video_Flo = reading_videos.video_reader(file_name=demo_video_path_Flo, type='binary', img_width=72, img_height=72,
                                     image_type=np.dtype('<f8'), s_frame=0, e_frame=-1)#Loading the video
 
 from piscat.Preproccessing import filtering
@@ -344,15 +344,15 @@ video_flo_hotPixel_ = filtering.Filters(video_Flo, inter_flag_parallel_active=Fa
 video_flo_hotPixel = filtering.Filters(video_flo_hotPixel_, inter_flag_parallel_active=False).gaussian(1.8)
 
 
-JupyterSubplotDisplay(list_videos=[video_flo_hotPixel], 
+JupyterSubplotDisplay(list_videos=[video_flo_hotPixel],
                     numRows=1, numColumns=1, list_titles=['TIRF'], imgSizex=5, imgSizey=5, IntSlider_width='500px',
                     median_filter_flag=False, color='hot', value=14, vmin=-0.05, vmax=0.03)
 
 ```
 
- ```lang-none     
+ ```lang-none
     ---start median filter without Parallel---
-    
+
     ---start gaussian filter without Parallel---
 ```
 
@@ -372,7 +372,7 @@ plt.show()
 ```
 
 ![png](output_13_0.png)
-    
+
 
 ### Bibliography
 1. [Tassano, Matias, Julie Delon, and Thomas Veit. "Fastdvdnet: Towards real-time deep video denoising without flow estimation." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2020.](https://openaccess.thecvf.com/content_CVPR_2020/html/Tassano_FastDVDnet_Towards_Real-Time_Deep_Video_Denoising_Without_Flow_Estimation_CVPR_2020_paper.html)

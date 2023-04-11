@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 
-from piscat.InputOutput.read_status_line import *
+from piscat.InputOutput.read_status_line import StatusLine
 from piscat.InputOutput.reading_videos import video_reader
 
 current_path = os.path.abspath(os.path.join("."))

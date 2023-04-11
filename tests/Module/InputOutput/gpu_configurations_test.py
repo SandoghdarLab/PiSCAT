@@ -1,9 +1,7 @@
 import os
 import unittest
 
-from read_write_data_test import delete_directory
-
-from piscat.InputOutput.gpu_configurations import *
+from piscat.InputOutput.gpu_configurations import GPUConfigurations
 
 current_path = os.path.abspath(os.path.join("."))
 

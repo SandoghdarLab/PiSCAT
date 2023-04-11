@@ -1,8 +1,8 @@
 # Tutorial for the correction of the fixed pattern noise in iSCAT images recorded using a sCMOS camera
 
 The weak residual stripes [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)] remaining after
-Differential Rolling Average ([DRA](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage)) are called fixed pattern noise (FPN). A modern CMOS camera typically uses multiple ADCs to improve the imaging speed. The mismatch between the gain and bias of the ADCs [[2](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4014637)] however leaves a FPN on the recorded images. The problem is that the gain and bias parameters temporally fluctuate and therefore FPN is visible even after the subtraction of two consecutive images from each other. The periodicity of such a pattern in our [imaging condition](https://piscat.readthedocs.io/tutorials.html) is about ten pixels which is in the order of the size of a diffraction-limited spot (DLS) of a nano-scatterer. We therefore discuss the effect of FPN on the noise floor behaviour as well as point spread function (PSF) detection sensitivity. We then use a variety of PiSCAT algorithmic approaches based on 
-[wavelet transform](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.FrequencyFPNc.update_wFPN) 
+Differential Rolling Average ([DRA](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage)) are called fixed pattern noise (FPN). A modern CMOS camera typically uses multiple ADCs to improve the imaging speed. The mismatch between the gain and bias of the ADCs [[2](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4014637)] however leaves a FPN on the recorded images. The problem is that the gain and bias parameters temporally fluctuate and therefore FPN is visible even after the subtraction of two consecutive images from each other. The periodicity of such a pattern in our [imaging condition](https://piscat.readthedocs.io/tutorials.html) is about ten pixels which is in the order of the size of a diffraction-limited spot (DLS) of a nano-scatterer. We therefore discuss the effect of FPN on the noise floor behaviour as well as point spread function (PSF) detection sensitivity. We then use a variety of PiSCAT algorithmic approaches based on
+[wavelet transform](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.FrequencyFPNc.update_wFPN)
 [[3](https://www.sciencedirect.com/science/article/abs/pii/S0923596517301522)], [Fourier transform](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.FrequencyFPNc.update_fFPN)[[4](https://www.mdpi.com/1424-8220/18/12/4299)] and [column projection FPN filtering](https://piscat.readthedocs.io/code_reference.html#piscat.Preproccessing.MedianProjectionFPNc) in order to correct for the FPN in the DRA frames.
 
 ### Previously ...
@@ -12,7 +12,7 @@ In the previous tutorials, we demonstrated how to use PiSCAT's APIs for [setting
 
 
 ```python
-# Only to ignore warnings 
+# Only to ignore warnings
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -25,10 +25,10 @@ module_path = os.path.join(dir_path)
 data_path = os.path.join(dir_path, 'Tutorials', 'Demo data')#The path to the demo data
 if module_path not in sys.path:
     sys.path.append(module_path)
-    
-# Downloading a control video for this tutorial 
+
+# Downloading a control video for this tutorial
 from piscat.InputOutput import download_tutorial_data
-download_tutorial_data('control_video')    
+download_tutorial_data('control_video')
 
 # Examining the status line in a loaded/downloaded video and removing the status line, PN+DRA
 from piscat.InputOutput import reading_videos
@@ -42,7 +42,7 @@ df_video = reading_videos.DirectoryType(data_path, type_file='raw').return_df()
 paths = df_video['Directory'].tolist()
 video_names = df_video['File'].tolist()
 demo_video_path = os.path.join(paths[0], video_names[0])#Selecting the first entry in the list
-video = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=128, img_height=128, 
+video = reading_videos.video_reader(file_name=demo_video_path, type='binary', img_width=128, img_height=128,
                                     image_type=np.dtype('<u2'), s_frame=0, e_frame=-1)#Loading the video
 status_ = read_status_line.StatusLine(video)#Reading the status line
 video_remove_status, status_information  = status_.find_status_line()#Examining the status line & removing it
@@ -51,11 +51,11 @@ DRA_PN = DifferentialRollingAverage(video=video_pn, batchSize=120)
 RVideo_PN_, gainMap1D_DRA = DRA_PN.differential_rolling(FPN_flag=False, FFT_flag=False)
 ```
 
-```lang-none    
+```lang-none
     ---Status line detected in column---
-    
+
     start power_normalized without parallel loop---> Done
-    
+
     --- start DRA ---
     100%|#########| 4758/4758 [00:00<?, ?it/s]
 ```
@@ -70,24 +70,24 @@ To optimize the computational performance, FPNc algorithms and [DifferentialRoll
 
 ```python
 DRA_PN_mFPNc = DifferentialRollingAverage(video=video_pn, batchSize=120, mode_FPN='mFPN')
-RVideo_PN_mFPNc, gainMap1D_mFPN = DRA_PN_mFPNc.differential_rolling(FPN_flag=True, 
-                                                                  select_correction_axis='Both', 
+RVideo_PN_mFPNc, gainMap1D_mFPN = DRA_PN_mFPNc.differential_rolling(FPN_flag=True,
+                                                                  select_correction_axis='Both',
                                                                   FFT_flag=False)
 ```
 
-```lang-none    
+```lang-none
     --- start DRA + mFPN_axis: Both---
     100%|#########| 4758/4758 [00:00<?, ?it/s]
 
     median FPN correction without parallel loop --->
     100%|#########| 4759/4759 [00:00<?, ?it/s]
     Done
-    
-    median FPN correction without parallel loop ---> 
+
+    median FPN correction without parallel loop --->
     100%|#########| 4759/4759 [00:00<?, ?it/s]
 
     Done
-```    
+```
 
 ### mFPN mean-signature
 
@@ -113,30 +113,30 @@ plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
 This is a heuristic algorithm in which we first extract the median signature of the column noise by just calculating the median of the image columns as shown in the figure below (subfigure (a)). The image that we work on is a differential image made from two batches B_1 and B_2 of raw frames using the [Differential Rolling Average](https://piscat.readthedocs.io/code_reference.html#piscat.BackgroundCorrection.DifferentialRollingAverage) processing. We note that the median value of pixels in a column will not contain the signal of a particle present in the field of view. This is demonstrated using the blue circles in the figure which encircle the particle's signal in all the steps. The 1D projection plot shows the pixel values with blue dots, the median profile with a red trace and the two upper and lower Median Absolute Deviation (MAD) profiles with black traces. The pixel values corresponding to the blue circle region are above the median and the MAD bands. We then build a binary mask per column, with a threshold value similar to the MAD value. Multiplying the binary mask by the differential image results in a Masked Difference (MD) image. In this manner, we end up partitioning a group of pixels in a column which has values close to their median value, thus omitting the particle's signal. The region marked with the blue circle in the binary mask has zero values and therefore the particle signal is missing in the MD image.
 
-As illustrated in subfigure (b), we compute the column-wise mean of the MD image to obtain the FPN mean-signature with sub-gray level precision. Replicating the 1D mean signature gives us a 2D-FPN map. Finally as shown in subfigure (c), we remove 2D-FPN map from the difference image to get the FPN corrected differential image. 
+As illustrated in subfigure (b), we compute the column-wise mean of the MD image to obtain the FPN mean-signature with sub-gray level precision. Replicating the 1D mean signature gives us a 2D-FPN map. Finally as shown in subfigure (c), we remove 2D-FPN map from the difference image to get the FPN corrected differential image.
 
 ![](../Fig/cpFPN.png)
 
 
 ```python
 DRA_PN_cpFPNc = DifferentialRollingAverage(video=video_pn, batchSize=120, mode_FPN='cpFPN')
-RVideo_PN_cpFPNc, gainMap1D_cpFPN = DRA_PN_cpFPNc.differential_rolling(FPN_flag=True, 
-                                                                      select_correction_axis='Both', 
+RVideo_PN_cpFPNc, gainMap1D_cpFPN = DRA_PN_cpFPNc.differential_rolling(FPN_flag=True,
+                                                                      select_correction_axis='Both',
                                                                       FFT_flag=False)
 ```
 
-```lang-none        
+```lang-none
     --- start DRA + cpFPN_axis: Both---
     100%|#########| 4758/4758 [00:00<?, ?it/s]
 
-    cpFPN correction without parallel loop ---> 
+    cpFPN correction without parallel loop --->
     100%|#########| 4759/4759 [00:00<?, ?it/s]
     Done
-    
-    cpFPN correction without parallel loop ---> 
+
+    cpFPN correction without parallel loop --->
     100%|#########| 4759/4759 [00:00<?, ?it/s]
     Done
-```    
+```
 
 ### FFT fixed pattern noise correction (fFPNc):
 
@@ -148,12 +148,12 @@ The new method introduced by Zeng, Qingjie, et al.[[3](https://www.mdpi.com/1424
 
 ```python
 DRA_PN_wFPN = DifferentialRollingAverage(video=video_pn, batchSize=120, mode_FPN='fFPN')
-RVideo_PN_fFPN, gainMap1D_fFPN = DRA_PN_wFPN.differential_rolling(FPN_flag=True, select_correction_axis='Both', 
+RVideo_PN_fFPN, gainMap1D_fFPN = DRA_PN_wFPN.differential_rolling(FPN_flag=True, select_correction_axis='Both',
                                                                  FFT_flag=False, inter_flag_parallel_active=False,
                                                                     max_iterations=30)
 ```
 
-```lang-none            
+```lang-none
     --- start DRA + fFPN_axis: Both---
     100%|#########| 4758/4758 [00:00<?, ?it/s]
 
@@ -174,7 +174,7 @@ from piscat.Visualization import JupyterFPNcDisplay
 list_videos = [RVideo_PN_, RVideo_PN_mFPNc, RVideo_PN_cpFPNc, RVideo_PN_fFPN]
 list_titles = ['DRA_PN', 'mFPNc', 'cpFPNc', 'fFPNc']
 %matplotlib inline
-JupyterFPNcDisplay(list_videos=list_videos, list_titles=list_titles, correction_axis=1, 
+JupyterFPNcDisplay(list_videos=list_videos, list_titles=list_titles, correction_axis=1,
                      numRows=1, numColumns=4, imgSizex=15, imgSizey=15, median_filter_flag=False, color='gray')
 ```
 
@@ -182,22 +182,22 @@ JupyterFPNcDisplay(list_videos=list_videos, list_titles=list_titles, correction_
 
 ### FPNc spatial benchmarking
 
-The lateral extent of the microscope PSF is a key spatial feature for detecting nanoparticles, as we discuss it thoroughly in [the protein localization section](https://piscat.readthedocs.io/Tutorial4/Tutorial4.html). The spatial periodicity of the FPN is sometimes in the order of the PSF size. Therefore, in the presence of FPN some PSF-like features are added to the detected signals. Therefore we can also compare the quality of FPN correction simply by considering the number of false particle detections in the blank videos with FPNc being done with different methods but with the same hyperparameters of localization algorithm. The following interactive displays depict mFPNc and cpFPNc that have 8 and 7 false detections while fFPN video has 2 false detection for the same threshold of 6e-5 on the frame number 1000. 
+The lateral extent of the microscope PSF is a key spatial feature for detecting nanoparticles, as we discuss it thoroughly in [the protein localization section](https://piscat.readthedocs.io/Tutorial4/Tutorial4.html). The spatial periodicity of the FPN is sometimes in the order of the PSF size. Therefore, in the presence of FPN some PSF-like features are added to the detected signals. Therefore we can also compare the quality of FPN correction simply by considering the number of false particle detections in the blank videos with FPNc being done with different methods but with the same hyperparameters of localization algorithm. The following interactive displays depict mFPNc and cpFPNc that have 8 and 7 false detections while fFPN video has 2 false detection for the same threshold of 6e-5 on the frame number 1000.
 
 
 ```python
 from piscat.Localization import PSFsExtraction
 %matplotlib inline
 PSF_1 = PSFsExtraction(video=RVideo_PN_mFPNc)
-PSFs = PSF_1.psf_detection_preview(function='dog', 
+PSFs = PSF_1.psf_detection_preview(function='dog',
                             min_sigma=1.6, max_sigma=1.7, sigma_ratio=1.1, threshold=6e-5,
-                            overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px', 
+                            overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px',
                                    title='Localization threshold_min on mFPNc')
 
 PSF_l = PSFsExtraction(video=RVideo_PN_cpFPNc)
-PSFs = PSF_l.psf_detection_preview(function='dog', 
+PSFs = PSF_l.psf_detection_preview(function='dog',
                             min_sigma=1.6, max_sigma=1.7, sigma_ratio=1.1, threshold=6e-5,
-                            overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px', 
+                            overlap=0, mode='BOTH', frame_number=[1000], IntSlider_width='400px',
                                    title='Localization threshold_min on cpFPNc')
 
 PSF_l = PSFsExtraction(video=RVideo_PN_fFPN)
@@ -245,7 +245,7 @@ plt.xlabel("Batch size", fontsize=18)
 plt.ylabel("Noise floor", fontsize=18)
 plt.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 plt.legend()
-``` 
+```
 
 ![png](output_21_1.png)
 

@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from piscat.Preproccessing.applying_mask import *
+from piscat.Preproccessing.applying_mask import Mask2Video
 
 
 class TestMask2Video(unittest.TestCase):

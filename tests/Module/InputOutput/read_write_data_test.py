@@ -5,9 +5,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from piscat.InputOutput import download_tutorial_data
 from piscat.InputOutput.read_write_data import (
-    download_url,
     load_dict_from_hdf5,
     read_json2dic,
     read_mat,

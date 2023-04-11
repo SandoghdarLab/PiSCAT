@@ -66,25 +66,23 @@ class Reading(QtWidgets.QMainWindow):
         title = self.askdir_file()
         if self.filename:
             if title == "Raw":
-                self.info_image = import_RAW.RawImage(self.filename)
-                while self.info_image.raw_data_update_flag:
+                self.image = import_RAW.RawImage(self.filename)
+                while self.image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
                 try:
                     video = reading_videos.read_binary(
                         self.filename,
-                        img_width=self.info_image.width_size,
-                        img_height=self.info_image.height_size,
-                        image_type=self.info_image.set_bit_order + self.info_image.type,
+                        img_width=self.image.width_size,
+                        img_height=self.image.height_size,
+                        image_type=self.image.set_bit_order + self.image.type,
                     )
 
-                    if self.info_image.groupBox_cropping.isChecked():
-                        self.original_video = video[ self.info_image.frame_s :
-                                                     self.info_image.frame_e :
-                                                     self.info_image.frame_jump,
-                                                     self.info_image.width_size_s :
-                                                     self.info_image.width_size_e,
-                                                     self.info_image.height_size_s :
-                                                     self.info_image.height_size_e, ]
+                    if self.image.groupBox_cropping.isChecked():
+                        self.original_video = video[
+                            self.image.frame_s : self.image.frame_e : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
 
                     else:
                         self.original_video = video
@@ -93,7 +91,7 @@ class Reading(QtWidgets.QMainWindow):
                         self.original_video
                     )
 
-                    if self.info_image.flag_display is True:
+                    if self.image.flag_display is True:
                         self.visualization_ = Visulization_localization()
                         self.visualization_.new_display(
                             self.original_video,
@@ -125,34 +123,30 @@ class Reading(QtWidgets.QMainWindow):
             elif title == "AVI":
                 avi_video = reading_videos.read_avi(self.filename)
 
-                self.info_image = video_cropping.Cropping(self)
+                self.image = video_cropping.Cropping(self)
 
-                while self.info_image.raw_data_update_flag:
+                while self.image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
 
-                if self.info_image.frame_e is not None:
-                    if self.info_image.frame_e != -1:
+                if self.image.frame_e is not None:
+                    if self.image.frame_e != -1:
                         self.original_video = avi_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
-                    elif self.info_image.frame_e == -1:
+                            self.image.frame_s : self.image.frame_e : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
+                    elif self.image.frame_e == -1:
                         self.original_video = avi_video[
-                            self.info_image.frame_s : -1 :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.image.frame_s : -1 : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
                 else:
                     self.original_video = avi_video
 
                 self.original_video = self.original_video.copy(order="C")
 
-                if self.info_image.flag_display is True:
+                if self.image.flag_display is True:
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(
                         self.original_video, self.original_video, object=None, title="AVI"
@@ -162,39 +156,35 @@ class Reading(QtWidgets.QMainWindow):
 
             elif title == "TIF":
                 tif_video = reading_videos.read_tif(self.filename)
-                self.info_image = video_cropping.Cropping(self)
+                self.image = video_cropping.Cropping(self)
 
-                while self.info_image.raw_data_update_flag:
+                while self.image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
 
-                if self.info_image.flag_RGB2GRAY:
+                if self.image.flag_RGB2GRAY:
                     if tif_video.shape[2] == 4:
                         tif_video = cv2.cvtColor(tif_video, cv2.COLOR_BGR2GRAY)
                         tif_video = np.expand_dims(tif_video, axis=0)
 
-                if self.info_image.frame_e is not None:
-                    if self.info_image.frame_e != -1:
+                if self.image.frame_e is not None:
+                    if self.image.frame_e != -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
-                    elif self.info_image.frame_e == -1:
+                            self.image.frame_s : self.image.frame_e : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
+                    elif self.image.frame_e == -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.image.frame_s :: self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
                 else:
                     self.original_video = tif_video
 
                 self.original_video = self.original_video.copy(order="C")
 
-                if self.info_image.flag_display is True:
+                if self.image.flag_display is True:
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(
                         self.original_video, self.original_video, object=None, title="TIF"
@@ -204,34 +194,30 @@ class Reading(QtWidgets.QMainWindow):
 
             elif title == "Fits":
                 fits_video = reading_videos.read_fits(self.filename)
-                self.info_image = video_cropping.Cropping(self)
+                self.image = video_cropping.Cropping(self)
 
-                while self.info_image.raw_data_update_flag:
+                while self.image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
 
-                if self.info_image.frame_e is not None:
-                    if self.info_image.frame_e != -1:
+                if self.image.frame_e is not None:
+                    if self.image.frame_e != -1:
                         self.original_video = fits_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
-                    elif self.info_image.frame_e == -1:
+                            self.image.frame_s : self.image.frame_e : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
+                    elif self.image.frame_e == -1:
                         self.original_video = fits_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.image.frame_s :: self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
                 else:
                     self.original_video = fits_video
 
                 self.original_video = self.original_video.copy(order="C")
 
-                if self.info_image.flag_display is True:
+                if self.image.flag_display is True:
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(
                         self.original_video, self.original_video, object=None, title="TIF"
@@ -241,34 +227,30 @@ class Reading(QtWidgets.QMainWindow):
 
             elif title == "Fli":
                 fli_video = reading_videos.read_fli(self.filename)
-                self.info_image = video_cropping.Cropping(self)
+                self.image = video_cropping.Cropping(self)
 
-                while self.info_image.raw_data_update_flag:
+                while self.image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
 
-                if self.info_image.frame_e is not None:
-                    if self.info_image.frame_e != -1:
+                if self.image.frame_e is not None:
+                    if self.image.frame_e != -1:
                         self.original_video = fli_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
-                    elif self.info_image.frame_e == -1:
+                            self.image.frame_s : self.image.frame_e : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
+                    elif self.image.frame_e == -1:
                         self.original_video = fli_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.image.frame_s :: self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
                 else:
                     self.original_video = fli_video
 
                 self.original_video = self.original_video.copy(order="C")
 
-                if self.info_image.flag_display is True:
+                if self.image.flag_display is True:
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(
                         self.original_video, self.original_video, object=None, title="TIF"
@@ -291,24 +273,24 @@ class Reading(QtWidgets.QMainWindow):
     def load_batch_data(self):
         data_setting = {}
         self.filename = self.askdir()
-        self.info_image = import_RAW.RawImage(self.filename)
-        while self.info_image.raw_data_update_flag:
+        self.image = import_RAW.RawImage(self.filename)
+        while self.image.raw_data_update_flag:
             QtWidgets.QApplication.processEvents()
         try:
             data_setting["path"] = self.filename
             data_setting["title"] = "Raw"
-            data_setting["img_width"] = self.info_image.width_size
-            data_setting["img_height"] = self.info_image.height_size
-            data_setting["image_type"] = self.info_image.set_bit_order + self.info_image.type
-            data_setting["s_frame"] = self.info_image.frame_s
-            data_setting["e_frame"] = self.info_image.frame_e
+            data_setting["img_width"] = self.image.width_size
+            data_setting["img_height"] = self.image.height_size
+            data_setting["image_type"] = self.image.set_bit_order + self.image.type
+            data_setting["s_frame"] = self.image.frame_s
+            data_setting["e_frame"] = self.image.frame_e
 
-            if self.info_image.groupBox_cropping.isChecked():
-                data_setting["frame_stride"] = self.info_image.frame_jump
-                data_setting["width_size_s"] = self.info_image.width_size_s
-                data_setting["width_size_e"] = self.info_image.width_size_e
-                data_setting["height_size_s"] = self.info_image.height_size_s
-                data_setting["height_size_e"] = self.info_image.height_size_e
+            if self.image.groupBox_cropping.isChecked():
+                data_setting["frame_stride"] = self.image.frame_jump
+                data_setting["width_size_s"] = self.image.width_size_s
+                data_setting["width_size_e"] = self.image.width_size_e
+                data_setting["height_size_s"] = self.image.height_size_s
+                data_setting["height_size_e"] = self.image.height_size_e
             else:
                 data_setting["frame_stride"] = 1
                 data_setting["width_size_s"] = 0
@@ -325,18 +307,18 @@ class Reading(QtWidgets.QMainWindow):
     def im2video(self):
         title = "image2video"
         folder = self.askdir()
-        self.info_image = import_im2vid.Image2Video(self)
-        while self.info_image.raw_data_update_flag:
+        self.image = import_im2vid.Image2Video(self)
+        while self.image.raw_data_update_flag:
             QtWidgets.QApplication.processEvents()
         try:
-            if self.info_image.im_type is not None:
+            if self.image.im_type is not None:
                 im2vid = image_to_video.Image2Video(
                     path=folder,
-                    file_format=self.info_image.im_type,
-                    width_size=self.info_image.width_size,
-                    height_size=self.info_image.height_size,
-                    image_type=np.dtype(self.info_image.set_bit_order + self.info_image.type),
-                    reader_type=self.info_image.video_reader_type,
+                    file_format=self.image.im_type,
+                    width_size=self.image.width_size,
+                    height_size=self.image.height_size,
+                    image_type=np.dtype(self.image.set_bit_order + self.image.type),
+                    reader_type=self.image.video_reader_type,
                 )
                 video = im2vid()
 
@@ -344,7 +326,7 @@ class Reading(QtWidgets.QMainWindow):
 
                 self.original_video = video
 
-                if self.info_image.flag_display is True:
+                if self.image.flag_display is True:
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(
                         self.original_video, self.original_video, object=None, title="im2video"
@@ -370,39 +352,35 @@ class Reading(QtWidgets.QMainWindow):
         if self.filename:
             if title == "TIF":
                 tif_video = reading_videos.read_tif_iterate(self.filename)
-                self.info_image = video_cropping.Cropping(self)
+                self.image = video_cropping.Cropping(self)
 
-                while self.info_image.raw_data_update_flag:
+                while self.image.raw_data_update_flag:
                     QtWidgets.QApplication.processEvents()
 
-                if self.info_image.flag_RGB2GRAY:
+                if self.image.flag_RGB2GRAY:
                     if tif_video.shape[2] == 4:
                         tif_video = cv2.cvtColor(tif_video, cv2.COLOR_BGR2GRAY)
                         tif_video = np.expand_dims(tif_video, axis=0)
 
-                if self.info_image.frame_e is not None:
-                    if self.info_image.frame_e != -1:
+                if self.image.frame_e is not None:
+                    if self.image.frame_e != -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s : self.info_image.frame_e :
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
-                    elif self.info_image.frame_e == -1:
+                            self.image.frame_s : self.image.frame_e : self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
+                    elif self.image.frame_e == -1:
                         self.original_video = tif_video[
-                            self.info_image.frame_s ::
-                            self.info_image.frame_jump,
-                            self.info_image.width_size_s :
-                            self.info_image.width_size_e,
-                            self.info_image.height_size_s :
-                            self.info_image.height_size_e, ]
+                            self.image.frame_s :: self.image.frame_jump,
+                            self.image.width_size_s : self.image.width_size_e,
+                            self.image.height_size_s : self.image.height_size_e,
+                        ]
                 else:
                     self.original_video = tif_video
 
                 self.original_video = self.original_video.copy(order="C")
 
-                if self.info_image.flag_display is True:
+                if self.image.flag_display is True:
                     self.visualization_ = Visulization_localization()
                     self.visualization_.new_display(
                         self.original_video, self.original_video, object=None, title="TIF"

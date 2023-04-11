@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, QThreadPool, Signal, Slot
 
 from piscat.GUI.InputOutput import save_GUI
 from piscat.GUI.Visualization import slice_view

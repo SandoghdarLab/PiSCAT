@@ -2,7 +2,6 @@ import os
 import subprocess
 import sys
 from os.path import exists
-from pathlib import Path
 
 from git import Repo
 

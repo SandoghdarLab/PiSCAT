@@ -1,7 +1,7 @@
 import numpy as np
 from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import *
-from PySide6.QtGui import *
+from PySide6.QtCore import QRunnable, Signal
+from PySide6.QtGui import QPen, Qt
 from scipy.ndimage import median_filter
 from scipy.signal import savgol_filter
 
@@ -289,7 +289,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
             elif self.parent().parent().title != "PNG":
                 steps = event.angleDelta().y() // 120
                 vector = steps and steps // abs(steps)  # 0, 1, or -1
-                for step in range(1, abs(steps) + 1):
+                for _ in range(1, abs(steps) + 1):
                     self.slice_num -= vector
                     if self.slice_num >= 0 and self.slice_num <= self.input_video.shape[0] - 1:
                         self.parent().parent().slice_slider.setValue(self.slice_num)

@@ -57,8 +57,3 @@ and `PyCharm <https://www.jetbrains.com/pycharm/download/#section=windows>`_.
 
 3.  Follow `this link <https://www.jetbrains.com/help/pycharm/creating-and-running-setup-py.html>`_
 to select PiSCAT venv as the interpreter, to install the setup.py file and then to run a setup.py task.
-
-
-
-
-

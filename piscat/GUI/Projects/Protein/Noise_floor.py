@@ -3,7 +3,7 @@ import os
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import pandas as pd
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from piscat.BackgroundCorrection.noise_floor import NoiseFloor
 from piscat.Preproccessing import Normalization

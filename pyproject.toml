@@ -59,6 +59,7 @@ dev = [
     "typing_extensions",
     "pycodestyle",
     "ruff",
+    "pre-commit",
 ]
 test = [
     "coverage",
@@ -99,9 +100,20 @@ known_first_party = ["piscat"]
 
 [tool.ruff]
 line-length = 98
-select = ["E", "F", "B"]
+select = [
+    "F",  # pyflakes
+    "E",  # pycodestyle
+    "B",  # bugbear
+]
 src = ["piscat", "tests"]
-target-version = "py38"
+target-version = "py39"
+ignore = [
+    "F841", # local variable assigned but never used
+    "F403", # from ... import * in __init__.py
+    "B008", # function calls in argument defaults
+    "E722", # bare exception
+    "E741", # variables named I, O, or l
+]
 
 # [tool.pytest.ini_options]
 # addopts = ["--import-mode=importlib"]

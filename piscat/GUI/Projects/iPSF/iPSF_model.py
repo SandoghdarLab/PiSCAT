@@ -1,8 +1,7 @@
 import math
 
-import matplotlib.pylab as plt
 import numpy as np
-from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtWidgets
 
 from piscat.GUI.Visualization.updating_plots import UpdatingPlots_Image
 from piscat.iPSF_model import ImagingSetupParameters
@@ -89,12 +88,16 @@ class GUI_iPSF(QtWidgets.QWidget):
 
         self.pixel_size = QtWidgets.QLineEdit()
         self.pixel_size.setToolTip(
-            ("Imaging pixel size in meters."
-             "Related to the physical pixel size through the magnification of the setup.")
+            (
+                "Imaging pixel size in meters."
+                "Related to the physical pixel size through the magnification of the setup."
+            )
         )
         self.pixel_size.setPlaceholderText(
-            ("Imaging pixel size in meters."
-             "Related to the physical pixel size through the magnification of the setup.")
+            (
+                "Imaging pixel size in meters."
+                "Related to the physical pixel size through the magnification of the setup."
+            )
         )
         self.pixel_size_label = QtWidgets.QLabel("Pixel size:")
         self.pixel_size.setFixedWidth(150)

@@ -170,7 +170,7 @@ class PlotProteinHistogram(PrintColors):
             particles = np.asarray(particles)
 
         if type(particles) is dict:
-            for key, item in particles.items():
+            for _, item in particles.items():
                 intensity_horizontal = item["intensity_horizontal"]
                 intensity_vertical = item["intensity_vertical"]
                 center_int = item["center_int"]
@@ -787,7 +787,8 @@ class PlotProteinHistogram(PrintColors):
         mean_intersection, std_intersection = self.mean_std(t_contrast_intersection)
         mean_peak, std_peak = self.mean_std(t_contrast_peaks)
 
-        sci_num = lambda x: "{:.2e}".format(x)
+        def sci_num(x):
+            return "{:.2e}".format(x)
 
         if con_proms is not None:
             list_data = [
@@ -963,20 +964,20 @@ class PlotProteinHistogram(PrintColors):
                                 dic[key].append(s_)
                                 dic[key].append(w_)
 
-                            for i_ in range(diff_):
+                            for _ in range(diff_):
                                 dic[key].append(None)
                                 dic[key].append(None)
                                 dic[key].append(None)
                     else:
                         diff_ = max_num_gmm_mean
 
-                        for i_ in range(diff_):
+                        for _ in range(diff_):
                             dic[key].append(None)
                             dic[key].append(None)
                             dic[key].append(None)
 
                 else:
-                    for i_ in range(max_num_gmm_mean):
+                    for _ in range(max_num_gmm_mean):
                         dic[key].append(None)
                         dic[key].append(None)
                         dic[key].append(None)
@@ -1035,7 +1036,9 @@ class PlotProteinHistogram(PrintColors):
             means_ = means.tolist()
             stdevs_ = stdevs.tolist()
             weights_ = weights.tolist()
-            sci_num = lambda x: "{:.2e}".format(x)
+
+            def sci_num(x):
+                return "{:.2e}".format(x)
 
             means = [sci_num(m_[0]) for m_ in means_]
             stdevs = [sci_num(s_[0][0]) for s_ in stdevs_]

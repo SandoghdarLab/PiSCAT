@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import trackpy as tp
-from PySide6.QtCore import *
+from PySide6.QtCore import QObject, Signal
 from tqdm.autonotebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
@@ -15,7 +15,7 @@ class WorkerSignals(QObject):
 
 class Linking:
     def __init__(self):
-        """ To obtain the temporal activity of each iPSF, we use the Trackpy
+        """To obtain the temporal activity of each iPSF, we use the Trackpy
          packages' algorithm.
 
         References

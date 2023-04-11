@@ -12,10 +12,8 @@ Using the following commands in the main directory of the package. The coverage 
 be accessible at htmlcov/index.html
 
 ```
-Windows/Linux/Mac os: 
+Windows/Linux/Mac os:
 1- coverage run -m pytest
 2- coverage html
 
 ```
-
-

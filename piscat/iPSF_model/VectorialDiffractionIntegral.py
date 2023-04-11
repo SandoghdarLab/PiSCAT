@@ -8,7 +8,7 @@ from piscat.iPSF_model.L_theta import L_theta
 
 
 class VectorialDiffractionIntegral:
-    def __init__(self, p, Xp=[0, 0, 0], z_=0, nz=1, nx=513):
+    def __init__(self, p, Xp=(0, 0, 0), z_=0, nz=1, nx=513):
         """A vectorial diffraction formulation to model the scattered light
         from a nanoparticle.
 

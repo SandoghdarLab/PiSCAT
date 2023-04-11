@@ -3,7 +3,6 @@ from __future__ import print_function
 import imageio
 import matplotlib
 import matplotlib.animation as animation
-import matplotlib.animation as manimation
 import matplotlib.cm as cm
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
@@ -11,12 +10,11 @@ import matplotlib.ticker as ticker
 import numpy as np
 import pylab as pl
 from joblib import Parallel, delayed
-from matplotlib.patches import Arrow, Circle, Rectangle
+from matplotlib.patches import Circle
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PySide6 import QtCore
-from PySide6.QtCore import *
+from PySide6.QtCore import QRunnable, Signal, Slot
 from scipy.ndimage import median_filter
-from skimage.draw import circle_perimeter
 from tqdm import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
@@ -547,7 +545,7 @@ class DisplayDataFramePSFsLocalization(QRunnable):
             particle_Y = all_particle_["y"].tolist()
             particle_sigma = all_particle_["sigma"].tolist()
             list_center = None
-            for f, x, y, sigma in zip(particle_f, particle_X, particle_Y, particle_sigma):
+            for f, x, y, _ in zip(particle_f, particle_X, particle_Y, particle_sigma):
                 if list_center is None:
                     center_position = [[x, y]]
                     list_center = center_position
@@ -607,7 +605,7 @@ class DisplayDataFramePSFsLocalization(QRunnable):
 
             while flag_loop:
                 list_line = []
-                for f, x, y, sigma in zip(particle_f, particle_X, particle_Y, particle_sigma):
+                for f, x, y, _ in zip(particle_f, particle_X, particle_Y, particle_sigma):
                     if list_center is None:
                         center_position = [[x, y]]
                         list_center = center_position

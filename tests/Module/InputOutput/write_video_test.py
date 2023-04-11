@@ -4,7 +4,7 @@ import unittest
 from read_write_data_test import delete_directory
 
 from piscat.InputOutput.reading_videos import video_reader
-from piscat.InputOutput.write_video import *
+from piscat.InputOutput.write_video import write_binary, write_GIF, write_MP4
 
 current_path = os.path.abspath(os.path.join("."))
 
