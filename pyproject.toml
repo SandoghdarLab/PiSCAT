@@ -25,7 +25,7 @@ dependencies = [
     "flifile",
     "GitPython",
     "h5py",
-    "imageio-ffmpeg",
+    "imageio-ffmpeg==0.4.5",
     "ipywidgets",
     "joblib",
     "matplotlib",
