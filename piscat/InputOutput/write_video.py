@@ -51,7 +51,7 @@ def write_binary(dir_path, file_name, data, type="original"):
     return save_path_
 
 
-def write_MP4(dir_path, file_name, data, jump=0, fps=10):
+def write_MP4(dir_path, file_name, data, jump=0, fps=100):
     """
     This function writes video as a MP4.
 
@@ -97,7 +97,7 @@ def write_MP4(dir_path, file_name, data, jump=0, fps=10):
     return save_path_
 
 
-def write_GIF(dir_path, file_name, data, jump=0, fps=10):
+def write_GIF(dir_path, file_name, data, jump=0, duration=100):
     """
     This function writes video as a GIF.
 
@@ -138,5 +138,5 @@ def write_GIF(dir_path, file_name, data, jump=0, fps=10):
     for frame_number in tqdm(range(0, data.shape[0] - jump, jump)):
         image_.append(data[frame_number, ...])
 
-    imageio.mimsave(save_path, image_, format="GIF", fps=fps)
+    imageio.mimsave(save_path, image_, format="GIF", duration=duration)
     return save_path_

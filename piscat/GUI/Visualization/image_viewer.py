@@ -351,7 +351,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
                 file_name=file_name,
                 data=self.save_video,
                 jump=self.frame_strides,
-                fps=self.fps,
+                duration=1000/self.fps,
             )
 
     @Slot()
