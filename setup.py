@@ -61,7 +61,7 @@ setup(
         "requests",
         "wget",
         "h5py",
-        "imageio-ffmpeg",
+        "imageio-ffmpeg==0.4.5",
         "astropy",
         "tifffile",
         "flifile",
