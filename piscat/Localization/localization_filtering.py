@@ -57,20 +57,28 @@ class SpatialFilter:
 
     def dense_PSFs(self, df_PSFs, threshold=0):
         """
+        Remove PSFs from the dataframe that have an overlap greater than the specified portion.
+
         Parameters
         ----------
-        df_PSFs: pandas dataframe
-            The data frame contains PSFs locations( x, y, frame, sigma)
+        df_PSFs : pandas DataFrame
+            The dataframe containing PSF locations (x, y, frame, sigma).
 
-        threshold: float
-            It specifies the portion of the overlay that two PSFs must have to
-            remove from the list.
+        threshold : float
+            The threshold specifies the maximum allowable portion of overlap between two PSFs.
+            It should be a value between 0 and 1.
 
         Returns
         -------
-        filter_df_PSFs: pandas dataframe
-                    The filter data frame contains PSFs locations( x, y, frame, sigma)
+        filter_df_PSFs : pandas DataFrame
+            The filtered dataframe containing PSF locations (x, y, frame, sigma).
 
+        Equation:
+        ---------
+        - The radius of PSF1 and PSF2 are calculated as sqrt(2) * sigma1 and sqrt(2) * sigma2, respectively.
+        - The distance between two PSFs is calculated as d = sqrt((x1 - x2)^2 + (y1 - y2)^2).
+        - The minimum acceptable distance (without overlap) is calculated as l = sqrt(2) * (sigma1 + sigma2).
+        - PSFs are removed if d <= l * (1 - threshold).
         """
         if df_PSFs.shape[0] == 0 or df_PSFs is None:
             print("---data frames is empty!---")
@@ -120,8 +128,8 @@ class SpatialFilter:
                             ((self.point_1[0, 0] - self.point_2[0, 0]) ** 2)
                             + ((self.point_1[0, 1] - self.point_2[0, 1]) ** 2)
                         )
-                        tmp = math.sqrt(2) * (sigma_1 + sigma_2)
-                        if distance <= ((math.sqrt(2) * (sigma_1 + sigma_2)) - (threshold * tmp)):
+                        min_d = math.sqrt(2) * (sigma_1 + sigma_2)
+                        if distance <= (min_d*(1 - threshold)):
                             self.remove_list_close.append(index_list[i_])
                             self.remove_list_close.append(index_list[count_])
 
