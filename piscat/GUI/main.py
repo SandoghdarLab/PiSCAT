@@ -138,7 +138,7 @@ class PiSCAT_GUI(QtWidgets.QMainWindow):
             "Template_matching": False,
         }
 
-        Display_video_in_memory = QtGui.QAction(QtGui.QIcon("folder.ico"), "Load videos", self)
+        Display_video_in_memory = QtGui.QAction(QtGui.QIcon("folder.ico"), "Loaded videos", self)
         # open_file.setShortcut('Ctrl+S')
         Display_video_in_memory.setStatusTip("Display")
         view_menu.addAction(Display_video_in_memory)
