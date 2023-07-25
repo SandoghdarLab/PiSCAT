@@ -68,7 +68,7 @@ class SliceView(QtWidgets.QGraphicsView, QRunnable):
         self.annotation_s.connect(self.active_spatial_live_paint)
         self.annotation_t.connect(self.active_temporal_live_paint)
 
-        self.setBackgroundBrush(QtGui.QColor(0, 0, 0))
+        self.setBackgroundBrush(QtWidgets.QColor(0, 0, 0))
         self.setScene(self.scene)
 
         self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)

@@ -21,7 +21,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
 
         # Min hist
         self.slider_min_label = QLabel("Minimum:")
-        self.slider_min = QSlider(Qt.Horizontal)
+        self.slider_min = QSlider(QtWidgets.Horizontal)
         self.slider_min.setRange(min_intensity, max_intensity)
         self.slider_min.setValue(min_intensity)
         self.slider_min.setTracking(True)
@@ -30,7 +30,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
 
         # Max hist
         self.slider_max_label = QLabel("Maximum:")
-        self.slider_max = QSlider(Qt.Horizontal)
+        self.slider_max = QSlider(QtWidgets.Horizontal)
         self.slider_max.setRange(min_intensity, max_intensity)
         self.slider_max.setValue(max_intensity)
         self.slider_max.setTracking(True)
@@ -39,7 +39,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
 
         # Brightness
         self.slider_alpha_label = QLabel("Brightness:")
-        self.slider_alpha = QSlider(Qt.Horizontal)
+        self.slider_alpha = QSlider(QtWidgets.Horizontal)
         self.slider_alpha.setRange(1.0, 10.0)
         self.slider_alpha.setValue(alpha)
         self.slider_alpha.setTracking(True)
@@ -48,7 +48,7 @@ class Contrast_adjustment_GUI(QtWidgets.QMainWindow):
 
         # Contrast
         self.slider_beta_label = QLabel("Contrast:")
-        self.slider_beta = QSlider(Qt.Horizontal)
+        self.slider_beta = QSlider(QtWidgets.Horizontal)
         self.slider_beta.setRange(0, 100)
         self.slider_beta.setValue(beta)
         self.slider_beta.setTracking(True)

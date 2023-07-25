@@ -72,7 +72,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
         print("Destructor called, Employee deleted.")
 
     def starter(self):
-        self.setWindowIcon(QtGui.QIcon(QtCore.QDir.currentPath() + "/icons/mpl.png"))
+        self.setWindowIcon(QtWidgets.QIcon(QtCore.QDir.currentPath() + "/icons/mpl.png"))
         self.setWindowTitle(self.title)
         self.setGeometry(490, 100, 512 + 124, 512 + 93)
         self.main_Viewer_frame = QtWidgets.QFrame()
@@ -180,7 +180,7 @@ class ImageViewer(QtWidgets.QMainWindow, QtCore.QObject):
 
         # Create
         self.connect(
-            QtGui.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), self),
+            QtWidgets.QShortcut(QtWidgets.QKeySequence(QtCore.Qt.Key_H), self),
             QtCore.SIGNAL("activated()"),
             self.histogram,
         )
