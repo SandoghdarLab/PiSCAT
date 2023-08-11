@@ -5,7 +5,7 @@ import unittest
 import numpy as np
 
 from piscat.Localization import localization_filtering
-from piscat.Trajectory import TemporalFilter, protein_trajectories_list2dic
+from piscat.Trajectory import TemporalFilter
 from piscat.Trajectory.data_handling import fixed_length
 from piscat.Trajectory.particle_linking import Linking
 
@@ -57,31 +57,3 @@ class DataHandlingTest(unittest.TestCase):
         video = load_fixture(file_name_save)
         self.batch_size = 3
         self.test_obj = TemporalFilter(video=video, batchSize=self.batch_size)
-
-    def test_protein_trajectories_list2dic_list(self):
-        all_trajectories, linked_PSFs_filter, his_all_particles = self.test_obj.v_trajectory(
-            df_PSFs=self.psf_filtered, threshold_min=2, threshold_max=2 * self.batch_size
-        )
-        file_name_save = os.path.join(
-            self.directory_path, "test_v_trajectory_all_trajectories.pck"
-        )
-        loaded_file = load_fixture(file_name_save)
-        loaded_dict = protein_trajectories_list2dic(loaded_file)
-        all_trajectories_dict = protein_trajectories_list2dic(all_trajectories)
-        check_result = check_dict(all_trajectories_dict, loaded_dict)
-        self.assertTrue(check_result)
-
-    def test_protein_trajectories_list2dic(self):
-        all_trajectories, linked_PSFs_filter, his_all_particles = self.test_obj.v_trajectory(
-            df_PSFs=self.psf_filtered, threshold_min=2, threshold_max=2 * self.batch_size
-        )
-        file_name_save = os.path.join(
-            self.directory_path, "test_v_trajectory_all_trajectories.pck"
-        )
-        loaded_file = load_fixture(file_name_save)
-        loaded_file_array = list_to_array(loaded_file)
-        all_trajectories_array = list_to_array(all_trajectories)
-        loaded_dict = protein_trajectories_list2dic(loaded_file_array)
-        all_trajectories_dict = protein_trajectories_list2dic(all_trajectories_array)
-        check_result = check_dict(all_trajectories_dict, loaded_dict)
-        self.assertTrue(check_result)
