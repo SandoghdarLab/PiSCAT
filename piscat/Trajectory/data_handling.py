@@ -1,23 +1,25 @@
 import numpy as np
 
 
-def fixed_length(in_list):
+def fixed_length(list_of_lists):
     """
-    This function create the list with same length for all sub list.
+    This function takes a list of lists of length N, pads all but the longest
+    sublists with trailing zeros so that they have the same length K, and returns
+    an array with shape (N, K) containing all the data of these lists.
 
     Parameters
     ----------
-    in_list: list
-        List contains some sublist.
+    list_of_lists: list[list]
+        A list of lists.
 
     Returns
     -------
-    tmp: list
+    array: np.ndarray
     """
-    tmp = np.empty([len(in_list), len(max(in_list, key=lambda x: len(x)))])
-    for i, j in enumerate(in_list):
-        tmp[i][0 : len(j)] = j
-    return tmp
+    array = np.zeros((len(list_of_lists), max(len(l) for l in list_of_lists)))
+    for index, row in enumerate(list_of_lists):
+        array[index][0 : len(row)] = row
+    return array
 
 
 def protein_trajectories_list2dic(v_shape_list):
