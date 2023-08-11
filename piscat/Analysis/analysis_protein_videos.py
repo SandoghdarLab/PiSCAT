@@ -217,9 +217,6 @@ def protein_analysis(paths, video_names, hyperparameters, flags, name_mkdir):
                     "#Particles_after_V_shapeFilter"
                 ] = linking_.trajectory_counter(df_PSFs_t_filter)
 
-                read_write_data.save_mat(
-                    data=all_trajectories, path=s_dir_, name="all_trajectories"
-                )
                 read_write_data.save_df2csv(df_PSFs_t_filter, path=s_dir_, name="position_PSFs")
                 read_write_data.save_list_to_hdf5(
                     list_data=all_trajectories, path=s_dir_, name="histData"
