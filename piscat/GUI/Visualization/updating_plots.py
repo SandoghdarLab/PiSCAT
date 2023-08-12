@@ -107,7 +107,7 @@ class UpdatingPlotsPyqtGraphTemporal(QtWidgets.QWidget):
 #         self.canvas.draw()
 
 
-class UpdatingPlots_Image(QtGui.QMainWindow):
+class UpdatingPlots_Image(QtWidgets.QMainWindow):
     def __init__(
         self, list_img, list_titles, x_axis_labels, y_axis_labels, title, *args, **kwargs
     ):
@@ -117,13 +117,13 @@ class UpdatingPlots_Image(QtGui.QMainWindow):
         self.x_axis_labels = x_axis_labels
         self.y_axis_labels = y_axis_labels
 
-        self.mainbox = QtGui.QWidget()
+        self.mainbox = QtWidgets.QWidget()
         self.setCentralWidget(self.mainbox)
 
         self.canvas = pg.GraphicsLayoutWidget(size=(100, 100), title=title)
-        self.label = QtGui.QLabel()
+        self.label = QtWidgets.QLabel()
 
-        lay = QtGui.QVBoxLayout(self.mainbox)
+        lay = QtWidgets.QVBoxLayout(self.mainbox)
         lay.addWidget(self.canvas)
         lay.addWidget(self.label)
 

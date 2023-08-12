@@ -162,7 +162,7 @@ class Visulization_localization(QtWidgets.QMainWindow):
         worker.signals.result.connect(self.update_display_video)
         self.threadpool.start(worker)
         while self.flag_update_display_video:
-            QtGui.qApp.processEvents()
+            QtWidgets.qApp.processEvents()
 
         self.flag_update_display_video = True
 
