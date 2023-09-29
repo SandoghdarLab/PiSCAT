@@ -40,7 +40,7 @@ setup(
     long_description=open("README.md").read() if exists("README.md") else "",
     long_description_content_type="text/markdown",
     install_requires=[
-        "numpy>=1.22.0",
+        "numpy==1.23.5",
         "scipy>=0.14.0",
         "matplotlib",
         "opencv-python",
