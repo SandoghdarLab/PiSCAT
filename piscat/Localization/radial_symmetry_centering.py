@@ -16,6 +16,7 @@ class RadialCenter:
 
         References
         ----------
+        The Radial Center localization algorithm code has been adopted from this paper.
 
         Parthasarathy, R. Rapid, accurate particle tracking by calculation of
         radial symmetry centers. Nat Methods 9, 724–726 (2012).

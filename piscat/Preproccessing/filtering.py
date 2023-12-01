@@ -975,6 +975,12 @@ class GrayGuidedFilter:
 
         eps: float
             Value controlling sharpness
+
+         References
+        ----------
+        The guided filter for gray guided image code has been adopted from the GitHub repository mentioned below.
+
+        [1] https://github.com/lisabug/guided-filter
         """
         self.I = np.float32(I)
         self.radius = radius
@@ -1027,6 +1033,13 @@ class MultiDimGuidedFilter:
 
         eps: float
             Value controlling sharpness
+
+         References
+        ----------
+
+        The guided filter for color guided image code has been adopted from the GitHub repository mentioned below.
+
+        [1] https://github.com/lisabug/guided-filter
         """
         self.I = np.float32(I)
         self.radius = radius
