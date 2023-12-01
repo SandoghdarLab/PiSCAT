@@ -97,8 +97,6 @@ piscat.Localization
 
 .. autofunction:: piscat.Localization.fit_2D_Gaussian_varAmp
 
-.. autofunction:: piscat.Localization.blob_frst
-
 .. autofunction:: piscat.Localization.feature2df
 
 .. autofunction:: piscat.Localization.list2dataframe
