@@ -119,24 +119,19 @@ RVideo_PN, _ = DRA_PN.differential_rolling(FFT_flag=False)
 ## Localization of proteins:
 In this section, we directly work with the dynamic features that are remained in the DRA videos. As mentioned earlier the system response of a wide-field microscope for weakly scattering objects can be well approximated with a 2D Gaussian function. There exist a variety of localization algorithms available in the localization toolbox of PiSCAT. Difference of Gaussian ([DoG](https://piscat.readthedocs.io/code_reference.html#piscat.Localization.PSFsExtraction.psf_detection)) algorithm, for example, is suitable to perform a very efficient localization of proteins with pixel precision particle localization [[1](https://iopscience.iop.org/article/10.1088/1361-6463/ac2f68)].
 
-In the following cell, a DRA video is being processed with a suitable set of parameters. The minima and maxima of the sigma values for the DoG kernels are lower and upper limits of the point spread function (PSF) size (in pixels) that one expects once the microscope response function is approximated with a 2D Gaussian function. The sigma ratio and the threshold values in this cell are set with respect to the contrast of the particles we are seeking to detect. We begin this analysis by presenting an interactive PiSCAT class that enables us to tune the DoG detection parameter and visualizes the localized particles dynamically.
+In the following cell, a DRA video is being processed with a suitable set of parameters. 
+The minima and maxima of the sigma values for the DoG kernels are lower and upper limits of the point 
+spread function (PSF) size (in pixels) that one expects once the microscope response function is approximated 
+with a 2D Gaussian function. The sigma ratio and the threshold values in this cell are set with respect to 
+the contrast of the particles we are seeking to detect. 
+
 
 
 ```python
 from piscat.Localization import particle_localization
 
 PSF_l = particle_localization.PSFsExtraction(video=RVideo_PN)
-PSFs = PSF_l.psf_detection_preview(function='dog',
-                            min_sigma=1.6, max_sigma=1.8, sigma_ratio=1.1, threshold=8.5e-4,
-                            overlap=0, mode='BOTH', frame_number=[600, 7380])
-```
 
-![](../Fig/tu4_vid2.png)
-
-Once we get to a working set of parameters for our localization algorithm we run the detection algorithm for all the frames of the video.
-
-
-```python
 PSFs_dog = PSF_l.psf_detection(function='dog',
                             min_sigma=1.6, max_sigma=1.8, sigma_ratio=1.1, threshold=8e-4,
                             overlap=0, mode='BOTH')

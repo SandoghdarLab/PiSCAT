@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from piscat.Localization import data_handling, difference_of_gaussian, particle_localization
+from piscat.Localization import data_handling, particle_localization
 
 current_path = os.path.abspath(os.path.join("."))
 
@@ -326,13 +326,6 @@ class TestPSFsExtraction(unittest.TestCase):
         appended_list = np.append(psf_list, append_list, axis=1)
         data_frame = data_handling.list2dataframe(appended_list, self.test_obj.video)
         self.assertTrue(data_frame.shape == (13, 7))
-
-    def test_difference_of_gaussian(self):
-        min_range, max_range = difference_of_gaussian.dog_preview(
-            self.video, min_sigma=1.6, max_sigma=1.8, sigma_ratio=1.1
-        )
-        self.assertAlmostEqual(max_range, 0.0002561082, 6)
-        self.assertAlmostEqual(min_range, -0.000269173, 6)
 
     def test_fit_2D_Gaussian_varAmp(self):
         psf_dataframe_p = psf_detection(self.test_obj, "dog", mode="Bright")

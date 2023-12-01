@@ -11,10 +11,8 @@ from skimage.feature import peak_local_max
 from tqdm.autonotebook import tqdm
 
 from piscat.InputOutput.cpu_configurations import CPUConfigurations
-from piscat.Localization import data_handling, frst, gaussian_2D_fit, radial_symmetry_centering
-from piscat.Localization.difference_of_gaussian import dog_preview
+from piscat.Localization import data_handling, gaussian_2D_fit, radial_symmetry_centering
 from piscat.Preproccessing import filtering, normalization
-from piscat.Visualization import display_jupyter
 
 
 class PSFsExtraction:
@@ -152,41 +150,6 @@ class PSFsExtraction:
             overlap=self.overlap,
             exclude_border=True,
         )
-
-    def frst(self, image):
-        """PSF localization using frst.
-
-        Parameters
-        ----------
-        image: NDArray
-            image is an input numpy array.
-
-        Returns
-        -------
-        tmp: list
-            [y, x, sigma]
-
-        References
-        ----------
-            [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry
-            transform for detecting points of interest. Computer Vision, ECCV
-            2002.
-        """
-
-        normaliz_image = normalization.Normalization(image).normalized_image()
-
-        tmp = frst.blob_frst(
-            normaliz_image,
-            min_radial=self.min_radial,
-            max_radial=self.max_radial,
-            radial_step=self.radial_step,
-            threshold=self.threshold,
-            alpha=self.alpha,
-            beta=self.beta,
-            stdFactor=self.stdFactor,
-            mode=self.mode,
-        )
-        return tmp
 
     def _rvt(self, image):
         """
@@ -591,7 +554,7 @@ class PSFsExtraction:
         ----------
         function: str
             PSF localization algorithm which should be selected from :
-            (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf'``,
+            (``'dog'``, ``'log'``, ``'doh'``, ``'frst_one_psf'``,
             ``'RVT'``)
 
         mode: str
@@ -634,26 +597,6 @@ class PSFsExtraction:
                 blobs are eliminated.
 
         optional_2:
-            These parameters are used when ``'frst'`` is defined as function.
-
-            * `min_radial`: int
-                integer value for radius size in pixels (n in the original
-                paper); also is used as gaussian kernel size
-
-            * `max_radial`: int
-                integer value for radius size in pixels (n in the original
-                paper); also is used as gaussian kernel size
-
-            * `alpha`: str
-                Strictness of symmetry transform (higher=more strict; 2 is good place to start)
-
-            * `beta`: float
-                gradient threshold_min parameter, float in range [0,1]
-
-            * `stdFactor`:
-                Standard deviation factor for gaussian kernel
-
-        optional_3:
             These parameters are used when ``"RVT"`` is defined as function.
 
             * `min_radial`:
@@ -816,7 +759,7 @@ class PSFsExtraction:
         ----------
         function: str
             PSF localization algorithm which should be selected from :
-            (``'dog'``, ``'log'``, ``'doh'``, ``'frst'``, ``'frst_one_psf``')
+            (``'dog'``, ``'log'``, ``'doh'``, ``'frst_one_psf``')
 
         mode: str
             Defines which PSFs will be detected (``'BRIGHT'``, ``'DARK'``, or ``'BOTH'``).
@@ -858,27 +801,6 @@ class PSFsExtraction:
                 blobs are eliminated.
 
         optional_2:
-            These parameters are used when ``'frst'`` is defined as function.
-
-            * `min_radial`: int
-                integer value for radius size in pixels (n in the original
-                paper); also is used as gaussian kernel size
-
-            * `max_radial`: int
-                integer value for radius size in pixels (n in the original
-                paper); also is used as gaussian kernel size
-
-            * `alpha`: str
-                Strictness of symmetry transform (higher=more strict; 2 is good
-                place to start)
-
-            * `beta`: float
-                gradient threshold_min parameter, float in range [0,1]
-
-            * `stdFactor`:
-                Standard deviation factor for gaussian kernel
-
-        optional_3:
             These parameters are used when ``'RVT'`` is defined as function.
 
             * `min_radial`:
@@ -976,69 +898,10 @@ class PSFsExtraction:
         if self.video.ndim != 3 and self.video.ndim == 2:
             self.video = np.expand_dims(self.video, axis=0)
 
-        if "JPY_PARENT_PID" in os.environ:
-            display_ = display_jupyter.JupyterPSFs_localizationPreviewDisplay(
-                video=self.video,
-                df_PSFs=None,
-                frame_num=self.frame_number,
-                title=self.title,
-                median_filter_flag=self.median_filter_flag,
-                color=self.color,
-                imgSizex=self.imgSizex,
-                imgSizey=self.imgSizey,
-                IntSlider_width=self.IntSlider_width,
-            )
 
-            def _preview(threshold):
-                self.threshold = threshold
-                df_PSF = self.psf_preview_kernel()
-
-                display_.set_df(df_PSF)
-                display_.display_run()
-
-            selected_frame = self.video[self.frame_number, ...]
-            min_range_, max_range_ = dog_preview(
-                images=selected_frame,
-                min_sigma=self.min_sigma,
-                max_sigma=self.max_sigma,
-                sigma_ratio=self.sigma_ratio,
-            )
-
-            max_range_ = np.max(np.asarray([max_range_, threshold]))
-
-            max_range_0 = 1.5 * max_range_
-
-            def sci_num(x):
-                return "{:.2e}".format(x)
-
-            tmp = sci_num(max_range_).split("e")
-            power = int(tmp[-1])
-            if power >= 0:
-                step = 0.1
-            elif power <= -3:
-                step = 1e-5
-            else:
-                p_ = power - 2
-                step = 10**p_
-
-            interact(
-                _preview,
-                threshold=widgets.FloatSlider(
-                    value=threshold,
-                    min=0,
-                    max=max_range_0,
-                    step=step,
-                    continuous_update=False,
-                    readout=True,
-                    readout_format=".7f",
-                    description="Threshold",
-                    layout=Layout(width=IntSlider_width),
-                ),
-            )
-        else:
-            self.threshold = threshold
-            df_PSF = self.psf_preview_kernel()
-            return df_PSF
+        self.threshold = threshold
+        df_PSF = self.psf_preview_kernel()
+        return df_PSF
 
     def psf_preview_kernel(self):
         if type(self.frame_number) == list:
@@ -1088,10 +951,6 @@ class PSFsExtraction:
                     negative_psf = self.log(-1 * self.video[i_, :, :])
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
 
-            elif self.function == "frst":
-                b_psf = self.frst(self.video[i_, :, :])
-                temp2 = self.concatenateBrightDark(b_psf, [], i_)
-
             elif self.function == "frst_one_psf":
                 b_psf = self.frst_one_PSF(self.video[i_, :, :])
                 temp2 = self.concatenateBrightDark(b_psf, [], i_)
@@ -1135,10 +994,6 @@ class PSFsExtraction:
                     positive_psf = []
                     negative_psf = self.log(-1 * self.video)
                     temp2 = self.concatenateBrightDark(positive_psf, negative_psf, i_)
-
-            elif self.function == "frst":
-                b_psf = self.frst(self.video)
-                temp2 = self.concatenateBrightDark(b_psf, [], i_)
 
             elif self.function == "frst_one_psf":
                 b_psf = self.frst_one_PSF(self.video)
