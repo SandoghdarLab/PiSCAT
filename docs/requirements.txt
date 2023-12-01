@@ -14,6 +14,7 @@ pyqtgraph
 scikit_learn
 scikit-image
 tqdm
+pywt
 trackpy
 joblib
 psutil
