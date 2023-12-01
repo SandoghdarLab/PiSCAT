@@ -50,6 +50,7 @@ dependencies = [
     "tqdm",
     "trackpy",
     "wget",
+    "PyWavelets",
 ]
 
 [project.optional-dependencies]

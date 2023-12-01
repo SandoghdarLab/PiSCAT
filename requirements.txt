@@ -27,3 +27,4 @@ tifffile
 tqdm
 trackpy
 wget
+PyWavelets

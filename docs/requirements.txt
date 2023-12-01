@@ -14,7 +14,7 @@ pyqtgraph
 scikit_learn
 scikit-image
 tqdm
-pywt
+PyWavelets
 trackpy
 joblib
 psutil
