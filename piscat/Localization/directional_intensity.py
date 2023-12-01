@@ -15,7 +15,9 @@ class DirectionalIntensity:
 
         References
         ----------
-        [1] Wikipedia article containing pseudo code that function was based
+        Adapted from:
+        [1] https://stackoverflow.com/questions/3798333/image-information-along-a-polar-coordinate-system
+        [2] Wikipedia article containing pseudo code that function was based
         off of: http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
         """
         pixels = []
