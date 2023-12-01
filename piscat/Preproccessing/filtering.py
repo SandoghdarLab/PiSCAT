@@ -217,9 +217,13 @@ class RadialVarianceTransform:
 
         References
         ----------
+        The Radial Variance Transform code has been adopted from the GitHub repository mentioned below.
+
         [1] Kashkanova, Anna D., et al. "Precision single-particle localization
         using radial variance transform." Optics Express 29.7 (2021):
         11070-11083.
+
+        [2] https://github.com/SandoghdarLab/rvt
 
         """
         self.cpu = CPUConfigurations()
