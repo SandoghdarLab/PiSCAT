@@ -219,11 +219,11 @@ class RadialVarianceTransform:
         ----------
         The Radial Variance Transform code has been adopted from the GitHub repository mentioned below.
 
-        [1] Kashkanova, Anna D., et al. "Precision single-particle localization
-        using radial variance transform." Optics Express 29.7 (2021):
-        11070-11083.
+            [1] Kashkanova, Anna D., et al. "Precision single-particle localization
+            using radial variance transform." Optics Express 29.7 (2021):
+            11070-11083.
 
-        [2] https://github.com/SandoghdarLab/rvt
+            [2] https://github.com/SandoghdarLab/rvt
 
         """
         self.cpu = CPUConfigurations()
@@ -790,11 +790,12 @@ class FastRadialSymmetryTransform:
 
         References
         ----------
+        The fast radial symmetry transform code has been adopted from the GitHub repository mentioned below.
 
-        [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry transform
-        for detecting points of interest. Computer Vision, ECCV 2002.
+            [1] Loy, G., & Zelinsky, A. (2002). A fast radial symmetry transform
+            for detecting points of interest. Computer Vision, ECCV 2002.
 
-        [2] https://github.com/Xonxt/frst
+            [2] https://github.com/Xonxt/frst
 
         """
         pass
@@ -976,11 +977,11 @@ class GrayGuidedFilter:
         eps: float
             Value controlling sharpness
 
-         References
+        References
         ----------
         The guided filter for gray guided image code has been adopted from the GitHub repository mentioned below.
 
-        [1] https://github.com/lisabug/guided-filter
+            [1] https://github.com/lisabug/guided-filter
         """
         self.I = np.float32(I)
         self.radius = radius
@@ -1034,12 +1035,12 @@ class MultiDimGuidedFilter:
         eps: float
             Value controlling sharpness
 
-         References
+        References
         ----------
 
         The guided filter for color guided image code has been adopted from the GitHub repository mentioned below.
 
-        [1] https://github.com/lisabug/guided-filter
+            [1] https://github.com/lisabug/guided-filter
         """
         self.I = np.float32(I)
         self.radius = radius
