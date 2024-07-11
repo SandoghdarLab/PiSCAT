@@ -48,6 +48,7 @@ setup(
         "PyQt6==6.2",
         "Pyside6==6.2",
         "pyqtgraph==0.12",
+        "PyWavelets",
         "PyQtWebEngine",
         "scikit_learn",
         "scikit-image",

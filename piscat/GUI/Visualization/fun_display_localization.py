@@ -107,7 +107,7 @@ class Visulization_localization(QtWidgets.QMainWindow):
                 input_mask = self.input_mask
             else:
                 psf_current_frame = position_df.loc[
-                    position_df["frame"] == self.current_frame_number
+                    position_df["frame"].astype(int) == self.current_frame_number
                 ]
                 frames = psf_current_frame["frame"].tolist()
                 x_positions = psf_current_frame["x"].tolist()
