@@ -3,7 +3,7 @@ name = "piscat"
 dynamic = ["version"]
 description = "A high-performance library for interferometric scattering microscopy."
 readme = "README.md"
-license = "GPL-3.0-or-later"
+license = { text = "GPL-3.0-or-later" }
 requires-python = ">=3.8"
 authors = [
     { name = "The PiSCAT Developers", email = "piscat@mpl.mpg.de" },
