@@ -1,6 +1,8 @@
 from PySide6 import QtCore, QtWidgets
 
 from piscat.Analysis.plot_protein_histogram import PlotProteinHistogram
+import os
+import time
 
 
 class Histogram_GUI(QtWidgets.QWidget):
@@ -28,6 +30,10 @@ class Histogram_GUI(QtWidgets.QWidget):
         self.plot_hist = QtWidgets.QPushButton("plot_histogram")
         self.plot_hist.clicked.connect(self.do_hist)
         self.plot_hist.setFixedWidth(150)
+
+        self.save_hist = QtWidgets.QPushButton("save_histogram")
+        self.save_hist.clicked.connect(self.save_histogram)
+        self.save_hist.setFixedWidth(150)
 
         self.le_lower_contrast_trim = QtWidgets.QLineEdit()
         self.le_lower_contrast_trim.setPlaceholderText("lower_limitation")
@@ -69,6 +75,7 @@ class Histogram_GUI(QtWidgets.QWidget):
         self.grid.addWidget(self.createFirstExclusiveGroup(), 0, 0)
         self.grid.addWidget(self.createSecondExclusiveGroup(), 1, 0)
         self.grid.addWidget(self.plot_hist, 2, 0)
+        self.grid.addWidget(self.save_hist, 3, 0)
 
         self.setLayout(self.grid)
 
@@ -114,8 +121,8 @@ class Histogram_GUI(QtWidgets.QWidget):
         self.get_values_histogram_plot()
         if self.empty_value_box_flag:
             if self.groupBox_gmm.isChecked():
-                his_ = PlotProteinHistogram(intersection_display_flag=False)
-                his_(
+                self.his_ = PlotProteinHistogram(intersection_display_flag=False)
+                self.his_(
                     folder_name="",
                     particles=self.input_data,
                     batch_size=self.batch_size,
@@ -124,7 +131,7 @@ class Histogram_GUI(QtWidgets.QWidget):
                     MinPeakProminence=0,
                 )
 
-                his_.plot_histogram(
+                self.his_.plot_histogram(
                     bins=self.n_bins,
                     upper_limitation=self.upper_limit,
                     lower_limitation=self.lower_limit,
@@ -134,9 +141,20 @@ class Histogram_GUI(QtWidgets.QWidget):
                     Flag_GMM_fit=True,
                     max_n_components=self.max_n_components,
                 )
+
+                #
+                # self.his_. plot_fit_histogram(bins=self.n_bins,
+                #                     upper_limitation=self.upper_limit,
+                #                     lower_limitation=self.lower_limit,
+                #                     step_range=self.step_limit,
+                #                     face="g",
+                #                     edge="y",
+                #                     Flag_GMM_fit=True,
+                #                     max_n_components=self.max_n_components,
+                #                 )
             else:
-                his_ = PlotProteinHistogram(intersection_display_flag=False)
-                his_(
+                self.his_ = PlotProteinHistogram(intersection_display_flag=False)
+                self.his_(
                     folder_name="",
                     particles=self.input_data,
                     batch_size=self.batch_size,
@@ -144,7 +162,7 @@ class Histogram_GUI(QtWidgets.QWidget):
                     MinPeakWidth=self.minPeak_width,
                     MinPeakProminence=0,
                 )
-                his_.plot_histogram(
+                self.his_.plot_histogram(
                     bins=self.n_bins,
                     upper_limitation=self.upper_limit,
                     lower_limitation=self.lower_limit,
@@ -154,7 +172,52 @@ class Histogram_GUI(QtWidgets.QWidget):
                     Flag_GMM_fit=False,
                     max_n_components=self.max_n_components,
                 )
+
+                # self.his_.plot_fit_histogram(bins=self.n_bins,
+                #                         upper_limitation=self.upper_limit,
+                #                         lower_limitation=self.lower_limit,
+                #                         step_range=self.step_limit,
+                #                         face="g",
+                #                         edge="y",
+                #                         Flag_GMM_fit=False,
+                #                         max_n_components=self.max_n_components,
+                #                         )
+
             self.empty_value_box_flag = False
+
+    def save_histogram(self):
+
+        self.file_path = False
+        self.file_path = QtWidgets.QFileDialog.getExistingDirectory(
+            self, "Select Folder", os.path.expanduser("~"), QtWidgets.QFileDialog.ShowDirsOnly
+        )
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        name_mkdir = timestr
+        try:
+            dr_mk = os.path.join(self.file_path, name_mkdir)
+            os.mkdir(dr_mk)
+            print("Directory ", name_mkdir, " Created ")
+        except FileExistsError:
+            dr_mk = os.path.join(self.file_path, name_mkdir)
+            print("Directory ", name_mkdir, " already exists")
+
+        self.file_path = dr_mk
+
+        if self.file_path:
+            if self.groupBox_gmm.isChecked():
+                self.his_.save_hist_data(self.file_path,
+                name='plot_hist_',
+                upper_limitation=self.upper_limit,
+                lower_limitation=self.lower_limit,
+                Flag_GMM_fit=True,
+                max_n_components=self.max_n_components)
+            else:
+                self.his_.save_hist_data(self.file_path,
+                                         name='plot_hist.h5',
+                                         upper_limitation=self.upper_limit,
+                                         lower_limitation=self.lower_limit,
+                                         Flag_GMM_fit=False,
+                                         max_n_components=self.max_n_components)
 
     def get_values_histogram_plot(self):
         try:

@@ -136,12 +136,14 @@ class Localization_GUI(QtWidgets.QWidget):
 
     def createFourthExclusiveGroup(self):
         self.checkbox_filter_double_PSF = QtWidgets.QCheckBox("Filter dense PSFs", self)
+        self.checkbox_filter_border = QtWidgets.QCheckBox("Filter border PSFs", self)
         self.checkbox_filter_side_lobes_PSF = QtWidgets.QCheckBox("Filter side lobes PSFs", self)
         self.checkbox_filter_asymmetry_PSF = QtWidgets.QCheckBox("Filter asymmetry PSFs", self)
         self.checkbox_2DFitting = QtWidgets.QCheckBox("2D Gaussian Fitting", self)
         self.checkbox_crappy_frames = QtWidgets.QCheckBox("Filter outlier frames", self)
 
         self.checkbox_filter_asymmetry_PSF.toggled.connect(lambda: self.add_line_asymmetry_PSF())
+        self.checkbox_filter_border.toggled.connect(lambda: self.add_line_border_margin_PSF())
         self.checkbox_2DFitting.toggled.connect(lambda: self.add_line_2DFitting())
         self.checkbox_crappy_frames.toggled.connect(lambda: self.add_line_crappy_frames())
 
@@ -155,7 +157,8 @@ class Localization_GUI(QtWidgets.QWidget):
         self.grid_filters.addWidget(self.checkbox_filter_side_lobes_PSF, 2, 0)
         self.grid_filters.addWidget(self.checkbox_filter_asymmetry_PSF, 3, 0)
         self.grid_filters.addWidget(self.checkbox_2DFitting, 4, 0)
-        self.grid_filters.addWidget(self.btn_filtering, 5, 0)
+        self.grid_filters.addWidget(self.checkbox_filter_border, 5, 0)
+        self.grid_filters.addWidget(self.btn_filtering, 6, 0)
 
         self.groupBox_filters.setLayout(self.grid_filters)
 
@@ -177,6 +180,21 @@ class Localization_GUI(QtWidgets.QWidget):
                     layout.widget().deleteLater()
                     self.grid_filters.removeItem(layout)
 
+    def add_line_border_margin_PSF(self):
+        if self.checkbox_filter_border.isChecked():
+            self.line_border_margin  = QtWidgets.QLineEdit(self)
+            self.line_border_margin.setPlaceholderText("border margin")
+            self.line_border_margin_label = QtWidgets.QLabel("border margin (px):")
+
+            self.grid_filters.addWidget(self.line_border_margin_label, 5, 1)
+            self.grid_filters.addWidget(self.line_border_margin, 5, 2)
+
+        if not self.checkbox_filter_border.isChecked():
+            for i_ in range(1, 5, 1):
+                layout = self.grid_filters.itemAtPosition(5, i_)
+                if layout is not None:
+                    layout.widget().deleteLater()
+                    self.grid_filters.removeItem(layout)
     def add_line_asymmetry_PSF(self):
         if self.checkbox_filter_asymmetry_PSF.isChecked():
             self.line_asymmetry_PSF = QtWidgets.QLineEdit(self)
@@ -524,6 +542,19 @@ class Localization_GUI(QtWidgets.QWidget):
 
             self.empty_value_box_flag = False
 
+    def get_values_border_filtering(self):
+        try:
+            self.border_margin  = int(self.line_border_margin.text())
+            self.empty_value_box_flag = True
+
+        except:
+            self.msg_box3 = QtWidgets.QMessageBox()
+            self.msg_box3.setWindowTitle("Warning!")
+            self.msg_box3.setText("Please filled all parameters!")
+            self.msg_box3.exec_()
+
+            self.empty_value_box_flag = False
+
     def get_values_asymmetry_filtering(self):
         try:
             self.scale = int(self.line_asymmetry_PSF.text())
@@ -802,6 +833,22 @@ class Localization_GUI(QtWidgets.QWidget):
             ):
                 pass
 
+            if self.checkbox_filter_border.isChecked():
+                self.get_values_border_filtering()
+                if self.empty_value_box_flag:
+                    self.df_PSFs_s_filter = self.df_PSFs_s_filter[(self.df_PSFs_s_filter['x'] > self.border_margin) &
+                                                                  (self.df_PSFs_s_filter['x'] < (self.input_video.shape[
+                                                                                                     2] - self.border_margin)) &
+                                                                  (self.df_PSFs_s_filter['y'] > self.border_margin) &
+                                                                  (self.df_PSFs_s_filter['y'] < (self.input_video.shape[
+                                                                                                     1] - self.border_margin))]
+
+                    self.setting_localization["Flag_border_PSFs_filter"] = True
+                    self.setting_localization["border_margin"] = self.border_margin
+
+                    self.PSFs_Particels_num["#PSFs_after_border_PSFs_filter"] = self.df_PSFs_s_filter.shape[0]
+                    self.empty_value_box_flag = False
+
             if self.checkbox_2DFitting.isChecked():
                 self.get_values_2DFitting()
                 if self.empty_value_box_flag:
@@ -839,6 +886,8 @@ class Localization_GUI(QtWidgets.QWidget):
                         "#PSFs_after_asymmetry_PSFs_filtering"
                     ] = self.df_PSFs_s_filter.shape[0]
                     self.empty_value_box_flag = False
+
+
 
             self.update_localization.emit(self.df_PSFs_s_filter)
             self.output_setting_Tab_Localization.emit(self.setting_localization)

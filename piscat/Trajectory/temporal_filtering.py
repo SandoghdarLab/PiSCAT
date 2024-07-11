@@ -184,28 +184,36 @@ class TemporalFilter:
 
             start_frame = np.max([0, first_frame - window_size])
             end_frame = np.min([self.video.shape[0], last_frame + window_size])
+            particle_center_intensity = []
+            for f_, x_, y_ in zip(particle_frame, particle_X, particle_Y):
+                particle_center_intensity.append(self.video[int(f_), int(y_), int(x_)])
 
-            particle_center_intensity_follow_backward = self.video[
-                int(start_frame) : int(first_frame), y_first_frame, x_first_frame
-            ]
-            particle_center_intensity_follow_forward = self.video[
-                int(last_frame) : int(end_frame), y_last_frame, x_last_frame
-            ]
+            particle_center_intensity_follow = self.video[start_frame:end_frame, y_first_frame, x_first_frame]
+            particle_frame_follow = list(range(int(start_frame), int(end_frame)))
 
-            particle_center_intensity_follow = np.concatenate(
-                (
-                    particle_center_intensity_follow_backward,
-                    particle_center_intensity,
-                    particle_center_intensity_follow_forward,
-                ),
-                axis=0,
-            )
+
+            # particle_center_intensity_follow_backward = self.video[
+            #     int(start_frame) : int(first_frame), y_first_frame, x_first_frame
+            # ]
+            # particle_center_intensity_follow_forward = self.video[
+            #     int(last_frame) : int(end_frame), y_last_frame, x_last_frame
+            # ]
+
+            # particle_center_intensity_follow = np.concatenate(
+            #     (
+            #         particle_center_intensity_follow_backward,
+            #         particle_center_intensity,
+            #         particle_center_intensity_follow_forward,
+            #     ),
+            #     axis=0,
+            # )
             trajectories = []
             trajectories.append(intensity_horizontal)
             trajectories.append(intensity_vertical)
             trajectories.append(particle_center_intensity)
             trajectories.append(particle_center_intensity_follow)
             trajectories.append(particle_frame)
+            trajectories.append(particle_frame_follow)
             trajectories.append(particle_sigma)
             trajectories.append(particle_X)
             trajectories.append(particle_Y)
