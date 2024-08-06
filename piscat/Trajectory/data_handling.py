@@ -49,7 +49,64 @@ def protein_trajectories_list2dic(v_shape_list):
     dic_all = {}
 
     if type(v_shape_list) is list:
-        v_shape_list = np.asarray(v_shape_list)
+        for idx_, n_particle in enumerate(v_shape_list):
+            dic_particles = {}
+
+            if isinstance(n_particle, list):
+                dic_particles["intensity_horizontal"] = np.asarray(fixed_length(n_particle[0]))
+                dic_particles["intensity_vertical"] = np.asarray(fixed_length(n_particle[1]))
+                dic_particles["center_int"] = np.asarray(n_particle[2])
+                dic_particles["center_int_flow"] = np.asarray(n_particle[3])
+                dic_particles["frame_number"] = np.asarray(n_particle[4])
+                dic_particles["frame_number_flow"] = np.asarray(n_particle[5])
+                dic_particles["sigma"] = np.asarray(n_particle[6])
+                dic_particles["x_center"] = np.asarray(n_particle[7])
+                dic_particles["y_center"] = np.asarray(n_particle[8])
+                dic_particles["particle_ID"] = np.asarray(n_particle[9])
+            else:
+                dic_particles["intensity_horizontal"] = n_particle[0].ravel()
+                dic_particles["intensity_vertical"] = n_particle[1].ravel()
+                dic_particles["center_int"] = n_particle[2].ravel()
+                dic_particles["center_int_flow"] = n_particle[3].ravel()
+                dic_particles["frame_number"] = n_particle[4].ravel()
+                dic_particles["frame_number_flow"] = n_particle[5].ravel()
+                dic_particles["sigma"] = n_particle[6].ravel()
+                dic_particles["x_center"] = n_particle[7].ravel()
+                dic_particles["y_center"] = n_particle[8].ravel()
+                dic_particles["particle_ID"] = n_particle[9].ravel()
+
+                # Check the number of parameters to handle additional data
+            num_parameters = len(n_particle)
+
+            if num_parameters == 22:
+                if isinstance(n_particle, list):
+                    dic_particles["fit_intensity"] = np.asarray(n_particle[10])
+                    dic_particles["fit_x"] = np.asarray(n_particle[11])
+                    dic_particles["fit_y"] = np.asarray(n_particle[12])
+                    dic_particles["fit_X_sigma"] = np.asarray(n_particle[13])
+                    dic_particles["fit_Y_sigma"] = np.asarray(n_particle[14])
+                    dic_particles["fit_Bias"] = np.asarray(n_particle[15])
+                    dic_particles["fit_intensity_error"] = np.asarray(n_particle[16])
+                    dic_particles["fit_x_error"] = np.asarray(n_particle[17])
+                    dic_particles["fit_y_error"] = np.asarray(n_particle[18])
+                    dic_particles["fit_X_sigma_error"] = np.asarray(n_particle[19])
+                    dic_particles["fit_Y_sigma_error"] = np.asarray(n_particle[20])
+                    dic_particles["fit_Bias_error"] = np.asarray(n_particle[21])
+                else:
+                    dic_particles["fit_intensity"] = n_particle[10].ravel()
+                    dic_particles["fit_x"] = n_particle[11].ravel()
+                    dic_particles["fit_y"] = n_particle[12].ravel()
+                    dic_particles["fit_X_sigma"] = n_particle[13].ravel()
+                    dic_particles["fit_Y_sigma"] = n_particle[14].ravel()
+                    dic_particles["fit_Bias"] = n_particle[15].ravel()
+                    dic_particles["fit_intensity_error"] = n_particle[16].ravel()
+                    dic_particles["fit_x_error"] = n_particle[17].ravel()
+                    dic_particles["fit_y_error"] = n_particle[18].ravel()
+                    dic_particles["fit_X_sigma_error"] = n_particle[19].ravel()
+                    dic_particles["fit_Y_sigma_error"] = n_particle[20].ravel()
+                    dic_particles["fit_Bias_error"] = n_particle[21].ravel()
+            dic_all["#" + str(idx_)] = dic_particles
+        return dic_all
 
     if type(v_shape_list) is np.ndarray:
         for n_particle in range(v_shape_list.shape[0]):
@@ -65,52 +122,54 @@ def protein_trajectories_list2dic(v_shape_list):
                 dic_particles["center_int"] = np.asarray(v_shape_list[n_particle][2])
                 dic_particles["center_int_flow"] = np.asarray(v_shape_list[n_particle][3])
                 dic_particles["frame_number"] = np.asarray(v_shape_list[n_particle][4])
-                dic_particles["sigma"] = np.asarray(v_shape_list[n_particle][5])
-                dic_particles["x_center"] = np.asarray(v_shape_list[n_particle][6])
-                dic_particles["y_center"] = np.asarray(v_shape_list[n_particle][7])
-                dic_particles["particle_ID"] = np.asarray(v_shape_list[n_particle][8])
+                dic_particles["frame_number_flow"] = np.asarray(v_shape_list[n_particle][5])
+                dic_particles["sigma"] = np.asarray(v_shape_list[n_particle][6])
+                dic_particles["x_center"] = np.asarray(v_shape_list[n_particle][7])
+                dic_particles["y_center"] = np.asarray(v_shape_list[n_particle][8])
+                dic_particles["particle_ID"] = np.asarray(v_shape_list[n_particle][9])
             else:
                 dic_particles["intensity_horizontal"] = v_shape_list[n_particle][0].ravel()
                 dic_particles["intensity_vertical"] = v_shape_list[n_particle][1].ravel()
                 dic_particles["center_int"] = v_shape_list[n_particle][2].ravel()
                 dic_particles["center_int_flow"] = v_shape_list[n_particle][3].ravel()
                 dic_particles["frame_number"] = v_shape_list[n_particle][4].ravel()
-                dic_particles["sigma"] = v_shape_list[n_particle][5].ravel()
-                dic_particles["x_center"] = v_shape_list[n_particle][6].ravel()
-                dic_particles["y_center"] = v_shape_list[n_particle][7].ravel()
-                dic_particles["particle_ID"] = v_shape_list[n_particle][8].ravel()
+                dic_particles["frame_number_flow"] = v_shape_list[n_particle][5].ravel()
+                dic_particles["sigma"] = v_shape_list[n_particle][6].ravel()
+                dic_particles["x_center"] = v_shape_list[n_particle][7].ravel()
+                dic_particles["y_center"] = v_shape_list[n_particle][8].ravel()
+                dic_particles["particle_ID"] = v_shape_list[n_particle][9].ravel()
 
             num_parameters = len(v_shape_list[n_particle])
 
-            if num_parameters == 21:
+            if num_parameters == 22:
                 if type(v_shape_list[n_particle][0]) is list:
-                    dic_particles["fit_intensity"] = np.asarray(v_shape_list[n_particle][9])
-                    dic_particles["fit_x"] = np.asarray(v_shape_list[n_particle][10])
-                    dic_particles["fit_y"] = np.asarray(v_shape_list[n_particle][11])
-                    dic_particles["fit_X_sigma"] = np.asarray(v_shape_list[n_particle][12])
-                    dic_particles["fit_Y_sigma"] = np.asarray(v_shape_list[n_particle][13])
-                    dic_particles["fit_Bias"] = np.asarray(v_shape_list[n_particle][14])
+                    dic_particles["fit_intensity"] = np.asarray(v_shape_list[n_particle][10])
+                    dic_particles["fit_x"] = np.asarray(v_shape_list[n_particle][11])
+                    dic_particles["fit_y"] = np.asarray(v_shape_list[n_particle][12])
+                    dic_particles["fit_X_sigma"] = np.asarray(v_shape_list[n_particle][13])
+                    dic_particles["fit_Y_sigma"] = np.asarray(v_shape_list[n_particle][14])
+                    dic_particles["fit_Bias"] = np.asarray(v_shape_list[n_particle][15])
                     dic_particles["fit_intensity_error"] = np.asarray(
-                        v_shape_list[n_particle][15]
+                        v_shape_list[n_particle][16]
                     )
-                    dic_particles["fit_x_error"] = np.asarray(v_shape_list[n_particle][16])
-                    dic_particles["fit_y_error"] = np.asarray(v_shape_list[n_particle][17])
-                    dic_particles["fit_X_sigma_error"] = np.asarray(v_shape_list[n_particle][18])
-                    dic_particles["fit_Y_sigma_error"] = np.asarray(v_shape_list[n_particle][19])
-                    dic_particles["fit_Bias_error"] = np.asarray(v_shape_list[n_particle][20])
+                    dic_particles["fit_x_error"] = np.asarray(v_shape_list[n_particle][17])
+                    dic_particles["fit_y_error"] = np.asarray(v_shape_list[n_particle][18])
+                    dic_particles["fit_X_sigma_error"] = np.asarray(v_shape_list[n_particle][19])
+                    dic_particles["fit_Y_sigma_error"] = np.asarray(v_shape_list[n_particle][20])
+                    dic_particles["fit_Bias_error"] = np.asarray(v_shape_list[n_particle][21])
 
                 else:
-                    dic_particles["fit_intensity"] = v_shape_list[n_particle][9].ravel()
-                    dic_particles["fit_x"] = v_shape_list[n_particle][10].ravel()
-                    dic_particles["fit_y"] = v_shape_list[n_particle][11].ravel()
-                    dic_particles["fit_X_sigma"] = v_shape_list[n_particle][12].ravel()
-                    dic_particles["fit_Y_sigma"] = v_shape_list[n_particle][13].ravel()
-                    dic_particles["fit_Bias"] = v_shape_list[n_particle][14].ravel()
-                    dic_particles["fit_intensity_error"] = v_shape_list[n_particle][15].ravel()
-                    dic_particles["fit_x_error"] = v_shape_list[n_particle][16].ravel()
-                    dic_particles["fit_y_error"] = v_shape_list[n_particle][17].ravel()
-                    dic_particles["fit_X_sigma_error"] = v_shape_list[n_particle][18].ravel()
-                    dic_particles["fit_Y_sigma_error"] = v_shape_list[n_particle][19].ravel()
-                    dic_particles["fit_Bias_error"] = v_shape_list[n_particle][20].ravel()
+                    dic_particles["fit_intensity"] = v_shape_list[n_particle][10].ravel()
+                    dic_particles["fit_x"] = v_shape_list[n_particle][11].ravel()
+                    dic_particles["fit_y"] = v_shape_list[n_particle][12].ravel()
+                    dic_particles["fit_X_sigma"] = v_shape_list[n_particle][13].ravel()
+                    dic_particles["fit_Y_sigma"] = v_shape_list[n_particle][14].ravel()
+                    dic_particles["fit_Bias"] = v_shape_list[n_particle][15].ravel()
+                    dic_particles["fit_intensity_error"] = v_shape_list[n_particle][16].ravel()
+                    dic_particles["fit_x_error"] = v_shape_list[n_particle][17].ravel()
+                    dic_particles["fit_y_error"] = v_shape_list[n_particle][18].ravel()
+                    dic_particles["fit_X_sigma_error"] = v_shape_list[n_particle][19].ravel()
+                    dic_particles["fit_Y_sigma_error"] = v_shape_list[n_particle][20].ravel()
+                    dic_particles["fit_Bias_error"] = v_shape_list[n_particle][21].ravel()
             dic_all["#" + str(n_particle)] = dic_particles
         return dic_all
